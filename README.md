@@ -6,6 +6,8 @@
 ·
 [Launch the Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)
 ·
+[Launch the Lithium-ion Cell Architecture tutorial](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)
+·
 [Run Part 02 in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)
 ·
 [Run the Fick's-law notebook](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/transport/ficks_first_law.ipynb)
@@ -20,9 +22,10 @@ be added gradually with explicit assumptions and validation.
 The fundamentals are developed as connected parts, even when different formats
 are best for different concepts:
 
-1. **[Cell anatomy and charge/discharge paths](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)** — an interactive conceptual browser workbench.
-2. **[Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)** — a tested Python API and executable Jupyter notebook.
-3. **Voltage, energy, and power** — planned.
+1. **[Part 01 — Cell anatomy and charge/discharge paths](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)** — an interactive conceptual browser workbench.
+2. **[Part 01B — Lithium-ion cell architecture](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)** — an interactive tutorial from cell layers to porous electrodes, electrolyte molecules, and separator function.
+3. **[Part 02 — Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)** — a tested Python API and executable Jupyter notebook.
+4. **Part 03 — Voltage, energy, and power** — planned.
 
 See [`LEARNING_PATH.md`](LEARNING_PATH.md) for the growing sequence and the
 distinction between fundamentals and existing physics building blocks.
@@ -35,8 +38,19 @@ explains cell components and charge/discharge directions. It is a conceptual
 visualization, not a quantitative simulation. Its source files are in
 [`docs/fundamentals/cell-anatomy-workbench/`](docs/fundamentals/cell-anatomy-workbench/).
 
-To open the source version locally, run this command from the repository root
-and visit `http://localhost:8000/fundamentals/cell-anatomy-workbench/`:
+### Part 01B — Lithium-ion Cell Architecture
+
+The
+**[interactive architecture tutorial](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)**
+connects the full cell stack to porous composite electrodes, conductive
+additives, binder, electrolyte-filled pores, carbonate solvent molecules,
+dissolved ions, and separator behavior. The diagrams are original and
+conceptual; no reference-book artwork or microscopy image is reused. Its source
+files are in
+[`docs/fundamentals/lithium-ion-cell-architecture/`](docs/fundamentals/lithium-ion-cell-architecture/).
+
+To open either browser module locally, run this command from the repository root
+and visit the corresponding path under `http://localhost:8000/`:
 
 ```bash
 python -m http.server 8000 -d docs
