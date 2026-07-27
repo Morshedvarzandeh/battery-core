@@ -2,10 +2,31 @@
 
 [![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/01_ficks_first_law.ipynb)
 
-`battery-core` is an early-stage, open-source Python library for building clear,
-well-tested battery physics models. The project currently implements only
-Fick's first law; single-particle (SPM), SPMe, and Doyle–Fuller–Newman (DFN)
-models are intentionally out of scope for this first release.
+`battery-core` is an early-stage, open-source project for building clear,
+well-tested battery physics models and independently authored learning tools.
+The quantitative Python API currently implements only Fick's first law;
+single-particle (SPM), SPMe, and Doyle–Fuller–Newman (DFN) models are
+intentionally out of scope for this first release.
+
+## Learning resources
+
+The project keeps conceptual learning tools separate from quantitative models:
+
+- **[Cell Anatomy Workbench](docs/fundamentals/cell-anatomy-workbench/)** — a
+  conceptual browser visualization of a layered-oxide/graphite lithium-ion cell,
+  its components, and charge/discharge directions. It is not a quantitative
+  simulation and does not calculate voltage, current, state of charge, or time.
+- **Fick's first-law notebook** — an executable quantitative lesson that calls
+  the tested `battery_core` Python implementation. Use the **Launch Binder**
+  badge above to run it online.
+
+To open the Cell Anatomy Workbench locally, run this command from the repository
+root and visit
+`http://localhost:8000/fundamentals/cell-anatomy-workbench/`:
+
+```bash
+python -m http.server 8000 -d docs
+```
 
 ## Principles
 
@@ -14,6 +35,7 @@ models are intentionally out of scope for this first release.
 - Prefer small typed functions over unnecessary classes.
 - State assumptions and limitations alongside each model.
 - Test physical sign conventions, input validation, and edge cases.
+- Label conceptual visualizations clearly and keep them separate from model output.
 
 ## Installation
 
