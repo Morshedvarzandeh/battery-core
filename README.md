@@ -18,10 +18,8 @@ will be added gradually with explicit assumptions and validation.
 The fundamentals are developed as connected parts, even when different formats
 are best for different concepts:
 
-1. **Cell anatomy and charge/discharge paths** — an interactive conceptual
-   browser workbench.
-2. **[Nominal capacity and C-rate](docs/fundamentals/capacity_and_c_rate.md)** —
-   a tested Python API and executable Jupyter notebook.
+1. **[Cell anatomy and charge/discharge paths](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)** — an interactive conceptual browser workbench.
+2. **[Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)** — a tested Python API and executable Jupyter notebook.
 3. **Voltage, energy, and power** — planned.
 
 See [`LEARNING_PATH.md`](LEARNING_PATH.md) for the growing sequence and the
@@ -30,12 +28,13 @@ distinction between fundamentals and existing physics building blocks.
 ### Part 01 — Cell Anatomy Workbench
 
 The
-**[Cell Anatomy Workbench](docs/fundamentals/cell-anatomy-workbench/)**
+**[live Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)**
 explains cell components and charge/discharge directions. It is a conceptual
-visualization, not a quantitative simulation.
+visualization, not a quantitative simulation. Its source files are in
+[`docs/fundamentals/cell-anatomy-workbench/`](docs/fundamentals/cell-anatomy-workbench/).
 
-To open it locally, run this command from the repository root and visit
-`http://localhost:8000/fundamentals/cell-anatomy-workbench/`:
+To open the source version locally, run this command from the repository root
+and visit `http://localhost:8000/fundamentals/cell-anatomy-workbench/`:
 
 ```bash
 python -m http.server 8000 -d docs
