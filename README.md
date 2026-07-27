@@ -1,5 +1,7 @@
 # battery-core
 
+[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/01_ficks_first_law.ipynb)
+
 `battery-core` is an early-stage, open-source Python library for building clear,
 well-tested battery physics models. The project currently implements only
 Fick's first law; single-particle (SPM), SPMe, and Doyle–Fuller–Newman (DFN)
@@ -27,6 +29,12 @@ For development, clone the repository and install the test dependencies:
 python -m pip install -e '.[test]'
 pytest
 ```
+
+## Run online
+
+Use the **Launch Binder** badge above to open the interactive Fick's first-law
+notebook in your browser. The first build can take a few minutes while Binder
+creates the environment.
 
 ## Quick start
 
