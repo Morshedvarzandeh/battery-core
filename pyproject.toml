@@ -24,6 +24,11 @@ dependencies = ["numpy>=1.23"]
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
+notebook = [
+    "jupyterlab>=4.2,<5",
+    "matplotlib>=3.8,<4",
+    "nbconvert>=7.16,<8",
+]
 
 [project.urls]
 Documentation = "https://github.com/Morshedvarzandeh/battery-core/tree/main/docs"
