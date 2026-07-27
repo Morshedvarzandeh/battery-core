@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Conceptual visualization of lithium-ion cell anatomy and charge transport.">
+<title>Battery Core — Cell Anatomy Workbench</title>
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+<main class="page">
+<header>
+  <div class="eyebrow">Battery Core Learning Lab</div>
+  <h1>Cell Anatomy Workbench</h1>
+  <p class="subtitle">Explore the structure of a rechargeable lithium-ion intercalation cell and the movement of electrons and lithium ions during charge and discharge.</p>
+</header>
+
+<div class="notice" role="note">Conceptual visualization — not a quantitative simulation. Animation speed does not represent current, C-rate, diffusivity, reaction rate, state of charge, or time.</div>
+
+<section class="shell" aria-labelledby="workbench-title">
+  <div class="toolbar">
+    <div class="group" role="group" aria-label="Cell operating mode">
+      <button class="btn active" type="button" data-mode="discharge" aria-pressed="true">Discharge</button>
+      <button class="btn" type="button" data-mode="charge" aria-pressed="false">Charge</button>
+      <button class="btn" type="button" id="motion" aria-pressed="true">Pause motion</button>
+    </div>
+    <div class="status" role="group" aria-label="Illustrative cell information">
+      <span class="pill">Lithium-ion</span>
+      <span class="pill">Layered-oxide/graphite cell ≈ 3.6–3.7 V</span>
+      <span class="pill">Illustrative, not model output</span>
+    </div>
+  </div>
+
+  <div class="workbench">
+    <h2 id="workbench-title" class="sr-only">Interactive lithium-ion cell cross-section</h2>
+    <p class="sr-only" id="mode-status" role="status"></p>
+    <div class="visual" id="visual" role="group" aria-label="Lithium-ion cell cross-section">
+      <div class="wire" aria-hidden="true"></div>
+      <div class="device" id="device">Load</div>
+      <div class="flow" id="electron-flow">Electrons: negative electrode → load → positive electrode</div>
+      <div class="terminal left" aria-hidden="true">−</div>
+      <div class="terminal right" aria-hidden="true">+</div>
+
+      <div class="cell">
+        <button class="part collector" type="button" data-part="negative-collector" aria-label="Inspect copper negative current collector"></button>
+        <button class="part electrode negative" type="button" data-part="negative-electrode">
+          <span class="copy">
+            <span class="title">Negative electrode</span>
+            <span class="material">Graphite</span>
+            <span class="reaction" id="neg-reaction">Oxidation · releases Li+ and e−</span>
+          </span>
+        </button>
+        <button class="part separator" type="button" data-part="separator"><span>Separator</span></button>
+        <button class="part electrode positive" type="button" data-part="positive-electrode">
+          <span class="copy">
+            <span class="title">Positive electrode</span>
+            <span class="material">Lithium metal oxide</span>
+            <span class="reaction" id="pos-reaction">Reduction · accepts Li+ and e−</span>
+          </span>
+        </button>
+        <button class="part collector" type="button" data-part="positive-collector" aria-label="Inspect aluminum positive current collector"></button>
+      </div>
+
+      <div class="electrolyte-region" id="electrolyte-region" aria-hidden="true">
+        <span>Electrolyte · Li+ conducting medium</span>
+      </div>
+      <div class="ion-lane" id="ion-lane" aria-hidden="true"></div>
+      <div class="ion-label" id="ion-flow">Li+ moves internally through the electrolyte toward the positive electrode. Electrons cannot cross the separator and must use the external circuit.</div>
+    </div>
+
+    <div class="components" role="group" aria-label="Inspect cell components">
+      <button class="btn" type="button" data-inspect="negative-electrode">Negative electrode</button>
+      <button class="btn" type="button" data-inspect="positive-electrode">Positive electrode</button>
+      <button class="btn" type="button" data-inspect="electrolyte">Electrolyte</button>
+      <button class="btn" type="button" data-inspect="separator">Separator</button>
+      <button class="btn" type="button" data-inspect="negative-collector">Copper collector</button>
+      <button class="btn" type="button" data-inspect="positive-collector">Aluminum collector</button>
+    </div>
+
+    <div class="detail-grid">
+      <article class="card" aria-live="polite">
+        <h2 id="detail-title">Select a component</h2>
+        <p id="detail-text">Choose a component above or click directly on the cell cross-section to see its role.</p>
+      </article>
+      <aside class="card">
+        <h2 id="role-heading">Reaction roles during discharge</h2>
+        <table class="roles">
+          <tbody>
+            <tr><th scope="row">Anode</th><td id="anode">Negative electrode, where oxidation occurs.</td></tr>
+            <tr><th scope="row">Cathode</th><td id="cathode">Positive electrode, where reduction occurs.</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:10px;color:var(--muted);font-size:.86rem">“Anode” and “cathode” describe reaction roles, so they switch sides between discharge and charge. “Negative electrode” and “positive electrode” remain fixed.</p>
+        <p style="margin-top:10px;color:var(--muted);font-size:.86rem">Battery literature often continues to call the negative-electrode material the “anode” and the positive-electrode material the “cathode,” even during charging. This workbench distinguishes fixed electrode polarity from reaction-based anode and cathode roles.</p>
+      </aside>
+    </div>
+
+    <p class="note">Simplified educational view: no voltage losses, concentration fields, SOC, thermal behavior, kinetics, degradation, or porous-electrode calculations are solved.</p>
+  </div>
+</section>
+</main>
+
+<script src="app.js" defer></script>
+</body>
+</html>
