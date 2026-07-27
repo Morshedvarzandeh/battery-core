@@ -58,7 +58,8 @@ the next fundamentals lesson.
 
 ## Principles
 
-- Use SI units internally and document every quantity.
+- Use explicit units; prefer SI, while documenting established battery
+  conventions such as ampere-hours and C-rate when they improve clarity.
 - Keep physical equations separate from numerical discretizations and solvers.
 - Prefer small typed functions over unnecessary classes.
 - State assumptions and limitations alongside each model.
