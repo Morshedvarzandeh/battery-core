@@ -5,20 +5,22 @@ Books, papers, standards, and public datasets may inform the work, but the
 project's explanations, examples, code, tests, notebooks, and visualizations
 are written specifically for this repository.
 
+[Open the public course homepage](https://morshedvarzandeh.github.io/battery-core/)
+
 ## Fundamentals sequence
 
 | Part | Concept | Status | Main format |
 | ---: | --- | --- | --- |
 | 01 | [Cell anatomy and charge/discharge paths](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/) | Available — launch online | Browser workbench |
-| 02 | [Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb) | Available after PR #5 is merged | Python API and Jupyter notebook |
+| 02 | [Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb) | Available — launch notebook | Python API and Jupyter notebook |
 | 03 | Voltage, energy, and power | Planned | Python API and Jupyter notebook |
 | 04 | Open-circuit voltage and state of charge | Planned | Documentation and notebook |
 | 05 | Simple internal-resistance model | Planned | Python model and notebook |
 | 06 | Dynamic equivalent-circuit models | Planned | Python model and notebook |
 
 The Part 01 link opens the published GitHub Pages workbench. The Part 02 link
-opens the executable notebook in Binder after its files are merged into
-`main`.
+opens the executable notebook in Binder. Binder may take a few minutes to build
+the environment on its first launch.
 
 Each part should state its assumptions, units, limitations, and validation
 method. A new part is added only when its implementation and learning material
