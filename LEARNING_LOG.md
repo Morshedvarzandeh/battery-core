@@ -16,5 +16,16 @@ the code remains visible as the project grows.
 - Rejecting non-finite quantities at the physics boundary prevents `NaN` and
   infinity from silently contaminating later numerical calculations.
 
-Future entries may discuss numerical diffusion solvers, but SPM, SPMe, and DFN
-models are deliberately deferred.
+## 2026-07-27 — Capacity and C-rate
+
+- C-rate is a normalization of current by nominal capacity; it is not a
+  chemistry-specific performance model.
+- The ideal duration `1 / C-rate` is an exact definitional calculation, but it
+  must not be presented as a guarantee of real voltage-cutoff time.
+- Current magnitude, current direction, energy, and voltage are separate
+  concepts and should not be combined prematurely in one API.
+- A 20 Ah example is useful for arithmetic, but the nameplate value must not be
+  treated as rate-independent usable capacity.
+
+Future entries may discuss voltage, energy, equivalent-circuit behavior, and
+numerical diffusion solvers. SPM, SPMe, and DFN models remain deferred.
