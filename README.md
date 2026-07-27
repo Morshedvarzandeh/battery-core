@@ -1,32 +1,60 @@
 # battery-core
 
-[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/01_ficks_first_law.ipynb)
+[Open the Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)
+·
+[Run Part 02 in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)
+·
+[Run the Fick's-law notebook](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/transport/ficks_first_law.ipynb)
 
 `battery-core` is an early-stage, open-source project for building clear,
 well-tested battery physics models and independently authored learning tools.
-The quantitative Python API currently implements only Fick's first law;
-single-particle (SPM), SPMe, and Doyle–Fuller–Newman (DFN) models are
-intentionally out of scope for this first release.
 
-## Learning resources
+The project now includes ideal capacity/C-rate conversions and Fick's first
+law. More complete electrical, electrochemical, thermal, aging, and pack models
+will be added gradually with explicit assumptions and validation.
 
-The project keeps conceptual learning tools separate from quantitative models:
+## Learning sequence
 
-- **[Cell Anatomy Workbench](docs/fundamentals/cell-anatomy-workbench/)** — a
-  conceptual browser visualization of a layered-oxide/graphite lithium-ion cell,
-  its components, and charge/discharge directions. It is not a quantitative
-  simulation and does not calculate voltage, current, state of charge, or time.
-- **Fick's first-law notebook** — an executable quantitative lesson that calls
-  the tested `battery_core` Python implementation. Use the **Launch Binder**
-  badge above to run it online.
+The fundamentals are developed as connected parts, even when different formats
+are best for different concepts:
 
-To open the Cell Anatomy Workbench locally, run this command from the repository
-root and visit
+1. **Cell anatomy and charge/discharge paths** — an interactive conceptual
+   browser workbench.
+2. **[Nominal capacity and C-rate](docs/fundamentals/capacity_and_c_rate.md)** —
+   a tested Python API and executable Jupyter notebook.
+3. **Voltage, energy, and power** — planned.
+
+See [`LEARNING_PATH.md`](LEARNING_PATH.md) for the growing sequence and the
+distinction between fundamentals and existing physics building blocks.
+
+### Part 01 — Cell Anatomy Workbench
+
+The
+**[Cell Anatomy Workbench](docs/fundamentals/cell-anatomy-workbench/)**
+explains cell components and charge/discharge directions. It is a conceptual
+visualization, not a quantitative simulation.
+
+To open it locally, run this command from the repository root and visit
 `http://localhost:8000/fundamentals/cell-anatomy-workbench/`:
 
 ```bash
 python -m http.server 8000 -d docs
 ```
+
+### Part 02 — Capacity and C-rate
+
+The
+**[capacity and C-rate notebook](notebooks/fundamentals/02_capacity_and_c_rate.ipynb)**
+uses the tested package functions to calculate current, C-rate, and ideal
+constant-current duration. It clearly separates the exact ideal relationships
+from real-cell voltage-cutoff behavior.
+
+### Additional transport module
+
+The
+**[Fick's first-law notebook](notebooks/transport/ficks_first_law.ipynb)**
+remains available as a tested transport-physics module. It is not presented as
+the next fundamentals lesson.
 
 ## Principles
 
@@ -35,6 +63,7 @@ python -m http.server 8000 -d docs
 - Prefer small typed functions over unnecessary classes.
 - State assumptions and limitations alongside each model.
 - Test physical sign conventions, input validation, and edge cases.
+- Separate exact definitions from empirical or model-dependent predictions.
 - Label conceptual visualizations clearly and keep them separate from model output.
 
 ## Installation
@@ -52,16 +81,24 @@ python -m pip install -e '.[test]'
 pytest
 ```
 
-## Run online
-
-Use the **Launch Binder** badge above to open the interactive Fick's first-law
-notebook in your browser. The first build can take a few minutes while Binder
-creates the environment.
-
 ## Quick start
 
+### Capacity and C-rate
+
 ```python
-from battery_core.diffusion import ficks_first_law_flux
+from battery_core import current_from_c_rate, ideal_duration_hours
+
+current_a = current_from_c_rate(20.0, 10.0)
+duration_minutes = ideal_duration_hours(10.0) * 60.0
+
+print(current_a)          # 200.0
+print(duration_minutes)   # 6.0
+```
+
+### Fick's first law
+
+```python
+from battery_core import ficks_first_law_flux
 
 # D in m^2/s; dc_dx in mol/m^4; result in mol/(m^2 s)
 flux = ficks_first_law_flux(1.0e-14, 2.0e6)
@@ -69,9 +106,7 @@ print(flux)  # -2e-08
 ```
 
 See [`docs/diffusion/ficks_laws.md`](docs/diffusion/ficks_laws.md) for the
-equation, assumptions, and sign convention, and
-[`examples/diffusion_example.py`](examples/diffusion_example.py) for a runnable
-example.
+diffusion equation, assumptions, and sign convention.
 
 ## Contributing
 
