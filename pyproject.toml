@@ -9,7 +9,7 @@ description = "Small, well-documented building blocks for battery physics models
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
-authors = [{ name = "battery-core contributors" }]
+authors = [{ name = "Morshed Varzandeh" }]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "License :: OSI Approved :: MIT License",
@@ -26,8 +26,8 @@ dependencies = ["numpy>=1.23"]
 test = ["pytest>=7"]
 
 [project.urls]
-Documentation = "https://github.com/battery-core/battery-core/tree/main/docs"
-Repository = "https://github.com/battery-core/battery-core"
+Documentation = "https://github.com/Morshedvarzandeh/battery-core/tree/main/docs"
+Repository = "https://github.com/Morshedvarzandeh/battery-core"
 
 [tool.setuptools.packages.find]
 where = ["src"]
