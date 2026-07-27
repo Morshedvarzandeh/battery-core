@@ -1,17 +1,19 @@
-# battery-core
+# Battery Core
 
-[Open the Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)
+**Open-source, executable battery engineering fundamentals.**
+
+[Open the course homepage](https://morshedvarzandeh.github.io/battery-core/)
+·
+[Launch the Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)
 ·
 [Run Part 02 in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)
 ·
 [Run the Fick's-law notebook](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/transport/ficks_first_law.ipynb)
 
-`battery-core` is an early-stage, open-source project for building clear,
-well-tested battery physics models and independently authored learning tools.
-
-The project now includes ideal capacity/C-rate conversions and Fick's first
-law. More complete electrical, electrochemical, thermal, aging, and pack models
-will be added gradually with explicit assumptions and validation.
+`battery-core` develops battery concepts through interactive visualizations,
+well-tested Python models, and independently authored executable notebooks.
+More complete electrical, electrochemical, thermal, aging, and pack models will
+be added gradually with explicit assumptions and validation.
 
 ## Learning sequence
 
