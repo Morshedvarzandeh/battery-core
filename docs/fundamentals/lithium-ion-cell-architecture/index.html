@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive, conceptual tutorial for lithium-ion cell architecture, porous electrodes, electrolyte solvents, ions, and separator function.">
+  <meta name="theme-color" content="#07131d">
+  <link rel="stylesheet" href="styles.css">
+  <title>Lithium-ion Cell Architecture — Battery Core</title>
+</head>
+<body>
+  <a class="skip-link" href="#tutorial">Skip to tutorial</a>
+
+  <header class="site-header">
+    <a class="brand" href="../../" aria-label="Battery Core course homepage">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span>Battery Core</span>
+    </a>
+    <nav aria-label="Tutorial navigation">
+      <a href="#stack">Cell stack</a>
+      <a href="#electrode">Electrode</a>
+      <a href="#molecules">Molecules</a>
+      <a href="#separator">Separator</a>
+      <a href="#check">Check</a>
+    </nav>
+  </header>
+
+  <main id="tutorial">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Part 01B · Interactive browser tutorial</p>
+        <h1>Lithium-ion cell architecture, from layers to molecules.</h1>
+        <p class="hero-copy">
+          Move through four structural scales: the cell stack, a porous composite electrode,
+          the liquid electrolyte, and the separator. Click, switch, and test each component
+          instead of reading a static diagram.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#stack">Start the tutorial</a>
+          <a class="button secondary" href="../../">Course homepage</a>
+        </div>
+        <p class="scope-note">
+          Conceptual visualization — not to scale, not molecular dynamics, and not a
+          quantitative electrochemical model.
+        </p>
+      </div>
+      <div class="scale-map" aria-label="Four conceptual scales in a lithium-ion cell">
+        <div class="scale-step"><strong>1</strong><span>Cell stack</span></div>
+        <div class="connector" aria-hidden="true"></div>
+        <div class="scale-step"><strong>2</strong><span>Composite electrode</span></div>
+        <div class="connector" aria-hidden="true"></div>
+        <div class="scale-step"><strong>3</strong><span>Electrolyte molecules</span></div>
+        <div class="connector" aria-hidden="true"></div>
+        <div class="scale-step"><strong>4</strong><span>Separator pores</span></div>
+      </div>
+    </section>
+
+    <section id="stack" class="lesson">
+      <div class="lesson-heading">
+        <div>
+          <p class="step-label">Step 1</p>
+          <h2>Build the cell stack</h2>
+        </div>
+        <p>
+          A lithium-ion cell is a layered assembly. Select a layer to learn its job, then
+          switch between discharge and charge to reverse the conceptual ion and electron paths.
+        </p>
+      </div>
+
+      <div class="mode-switch" role="group" aria-label="Operating direction">
+        <button class="mode-button active" type="button" data-mode="discharge" aria-pressed="true">Discharge</button>
+        <button class="mode-button" type="button" data-mode="charge" aria-pressed="false">Charge</button>
+      </div>
+
+      <div class="stack-layout">
+        <div class="stack-stage" data-mode="discharge">
+          <div class="external-wire" aria-hidden="true">
+            <span class="electron e1">e−</span>
+            <span class="electron e2">e−</span>
+            <span class="wire-arrow">→</span>
+          </div>
+
+          <div class="cell-stack" role="group" aria-label="Clickable lithium-ion cell layers">
+            <button class="stack-layer collector negative-collector" type="button" data-part="negative-collector">
+              <span>Cu</span>
+              <small>negative current collector</small>
+            </button>
+            <button class="stack-layer electrode negative-electrode" type="button" data-part="negative-electrode">
+              <span>Negative composite electrode</span>
+              <small>often graphite-based</small>
+            </button>
+            <button class="stack-layer separator-layer" type="button" data-part="separator">
+              <span>Separator</span>
+              <small>porous electronic insulator</small>
+            </button>
+            <button class="stack-layer electrode positive-electrode" type="button" data-part="positive-electrode">
+              <span>Positive composite electrode</span>
+              <small>for example NMC, LFP, LMO, or LCO</small>
+            </button>
+            <button class="stack-layer collector positive-collector" type="button" data-part="positive-collector">
+              <span>Al</span>
+              <small>positive current collector</small>
+            </button>
+          </div>
+
+          <div class="ion-lane" aria-hidden="true">
+            <span class="ion li1">Li<sup>+</sup></span>
+            <span class="ion li2">Li<sup>+</sup></span>
+            <span class="ion li3">Li<sup>+</sup></span>
+            <span class="ion-arrow">→</span>
+          </div>
+
+          <div class="direction-caption" aria-live="polite">
+            During discharge, Li<sup>+</sup> moves through the electrolyte toward the positive electrode,
+            while electrons travel through the external circuit.
+          </div>
+        </div>
+
+        <aside class="info-panel" aria-live="polite">
+          <p class="panel-kicker">Selected component</p>
+          <h3 id="part-title">Negative composite electrode</h3>
+          <p id="part-description">
+            Stores lithium in an active material and connects that material to the current collector
+            through an electronically conductive network.
+          </p>
+          <dl>
+            <div><dt>Main transport</dt><dd id="part-transport">Li⁺ in pores; electrons in solids</dd></div>
+            <div><dt>Architecture role</dt><dd id="part-role">Stores lithium and hosts electrochemical reactions</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section id="electrode" class="lesson">
+      <div class="lesson-heading">
+        <div>
+          <p class="step-label">Step 2</p>
+          <h2>Look inside a composite electrode</h2>
+        </div>
+        <p>
+          An electrode coating is not a solid block. It is a porous composite containing active
+          particles, conductive additive, binder, and electrolyte-filled pore space.
+        </p>
+      </div>
+
+      <div class="electrode-layout">
+        <div class="microstructure" aria-label="Conceptual porous composite electrode">
+          <div class="foil-label">Current collector</div>
+          <div class="foil"></div>
+          <div class="coating">
+            <span class="particle p1"></span><span class="particle p2"></span><span class="particle p3"></span>
+            <span class="particle p4"></span><span class="particle p5"></span><span class="particle p6"></span>
+            <span class="carbon c1"></span><span class="carbon c2"></span><span class="carbon c3"></span>
+            <span class="carbon c4"></span><span class="carbon c5"></span><span class="carbon c6"></span>
+            <span class="binder b1"></span><span class="binder b2"></span><span class="binder b3"></span>
+            <span class="binder b4"></span>
+            <span class="pore pore1">Li<sup>+</sup></span><span class="pore pore2">Li<sup>+</sup></span>
+            <span class="pore pore3">Li<sup>+</sup></span>
+          </div>
+        </div>
+
+        <div>
+          <fieldset class="visibility-controls">
+            <legend>Show or hide each ingredient</legend>
+            <label><input type="checkbox" data-visibility="particle" checked> Active-material particles</label>
+            <label><input type="checkbox" data-visibility="carbon" checked> Conductive additive</label>
+            <label><input type="checkbox" data-visibility="binder" checked> Binder network</label>
+            <label><input type="checkbox" data-visibility="pore" checked> Electrolyte-filled pores</label>
+          </fieldset>
+
+          <div class="role-cards">
+            <article><span class="legend-dot particle-dot"></span><h3>Active material</h3><p>Hosts lithium and provides most of the electrode's reversible charge-storage capacity.</p></article>
+            <article><span class="legend-dot carbon-dot"></span><h3>Conductive additive</h3><p>Builds electronic pathways between poorly conducting particles and the current collector.</p></article>
+            <article><span class="legend-line binder-line"></span><h3>Binder</h3><p>Helps hold particles together and attach the coating to the current collector.</p></article>
+            <article><span class="legend-dot pore-dot"></span><h3>Pore electrolyte</h3><p>Provides ionic pathways through the coating so Li⁺ can reach particle surfaces.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="molecules" class="lesson">
+      <div class="lesson-heading">
+        <div>
+          <p class="step-label">Step 3</p>
+          <h2>Explore common carbonate solvent molecules</h2>
+        </div>
+        <p>
+          Select a solvent to redraw its original schematic structure. The drawings emphasize
+          connectivity and functional groups; they do not represent bond lengths, angles, charge
+          distribution, or three-dimensional molecular shape.
+        </p>
+      </div>
+
+      <div class="molecule-tabs" role="tablist" aria-label="Electrolyte solvent molecule">
+        <button type="button" role="tab" aria-selected="true" data-molecule="EC">EC</button>
+        <button type="button" role="tab" aria-selected="false" data-molecule="PC">PC</button>
+        <button type="button" role="tab" aria-selected="false" data-molecule="DMC">DMC</button>
+        <button type="button" role="tab" aria-selected="false" data-molecule="EMC">EMC</button>
+        <button type="button" role="tab" aria-selected="false" data-molecule="DEC">DEC</button>
+      </div>
+
+      <div class="molecule-layout">
+        <div class="molecule-card">
+          <svg id="molecule-svg" viewBox="0 0 520 330" role="img" aria-labelledby="molecule-name molecule-description">
+            <g id="bond-layer"></g>
+            <g id="atom-layer"></g>
+          </svg>
+          <p class="visual-disclaimer">Conceptual 2D connectivity diagram · original drawing · not to scale</p>
+        </div>
+
+        <aside class="molecule-info" aria-live="polite">
+          <p class="panel-kicker">Selected solvent</p>
+          <h3 id="molecule-name">Ethylene carbonate (EC)</h3>
+          <p id="molecule-formula" class="formula">C₃H₄O₃</p>
+          <p id="molecule-description">
+            A cyclic carbonate. Its ring contains two oxygen atoms and an ethylene group around
+            the carbonate center.
+          </p>
+          <dl>
+            <div><dt>Family</dt><dd id="molecule-family">Cyclic carbonate</dd></div>
+            <div><dt>Architecture lesson</dt><dd id="molecule-lesson">The solvent surrounds dissolved ions and fills electrode and separator pores.</dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <div class="salt-lab">
+        <div>
+          <p class="step-label">Electrolyte mixture</p>
+          <h3>Conceptually dissolve LiPF₆</h3>
+          <p>
+            The salt contributes mobile ions. The organic solvent is the liquid medium that
+            separates and coordinates those ions. This button changes only the teaching diagram.
+          </p>
+          <button id="dissolve-button" class="button primary" type="button" aria-pressed="false">Dissolve salt</button>
+        </div>
+        <div id="salt-stage" class="salt-stage" data-state="paired" aria-live="polite">
+          <div class="salt-pair">
+            <span class="lithium">Li<sup>+</sup></span>
+            <span class="association" aria-hidden="true">···</span>
+            <span class="pf6">PF<sub>6</sub><sup>−</sup></span>
+          </div>
+          <div class="solvent-shell" aria-hidden="true">
+            <span>EC</span><span>EMC</span><span>EC</span><span>DMC</span>
+          </div>
+          <p id="salt-caption">Before the conceptual dissolve step, the ions are shown as an associated salt pair.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="separator" class="lesson">
+      <div class="lesson-heading">
+        <div>
+          <p class="step-label">Step 4</p>
+          <h2>Test the separator</h2>
+        </div>
+        <p>
+          The separator is a porous electronic insulator. Choose a traveler and test whether the
+          conceptual barrier should allow it through.
+        </p>
+      </div>
+
+      <div class="gate-controls" role="group" aria-label="Choose a traveler">
+        <button type="button" class="traveler-button active" data-traveler="ion" aria-pressed="true">Li⁺ ion</button>
+        <button type="button" class="traveler-button" data-traveler="electron" aria-pressed="false">Electron</button>
+        <button type="button" class="traveler-button" data-traveler="particle" aria-pressed="false">Electrode particle</button>
+        <button type="button" id="test-gate" class="button primary">Test passage</button>
+      </div>
+
+      <div class="gate-stage">
+        <div id="traveler" class="traveler ion-traveler">Li<sup>+</sup></div>
+        <div class="separator-sheet" aria-label="Conceptual porous separator">
+          <span class="hole h1"></span><span class="hole h2"></span><span class="hole h3"></span>
+          <span class="hole h4"></span><span class="hole h5"></span><span class="hole h6"></span>
+        </div>
+        <div class="destination">Other electrode side</div>
+      </div>
+      <p id="gate-result" class="gate-result" aria-live="polite">
+        Li⁺ can move through electrolyte-filled separator pores.
+      </p>
+    </section>
+
+    <section id="check" class="lesson">
+      <div class="lesson-heading">
+        <div>
+          <p class="step-label">Step 5</p>
+          <h2>Check the big picture</h2>
+        </div>
+        <p>Answer all four questions. Feedback appears immediately and the score updates below.</p>
+      </div>
+
+      <form id="quiz" class="quiz">
+        <fieldset data-answer="b">
+          <legend>1. Which phase provides the main ionic pathway inside a porous electrode?</legend>
+          <label><input type="radio" name="q1" value="a"> The metallic current collector</label>
+          <label><input type="radio" name="q1" value="b"> Electrolyte filling the pore space</label>
+          <label><input type="radio" name="q1" value="c"> The binder alone</label>
+          <p class="feedback"></p>
+        </fieldset>
+
+        <fieldset data-answer="c">
+          <legend>2. Why is conductive additive included in many composite electrodes?</legend>
+          <label><input type="radio" name="q2" value="a"> To replace the separator</label>
+          <label><input type="radio" name="q2" value="b"> To become the main lithium-storage material</label>
+          <label><input type="radio" name="q2" value="c"> To improve electronic connectivity</label>
+          <p class="feedback"></p>
+        </fieldset>
+
+        <fieldset data-answer="a">
+          <legend>3. What is the separator designed to do?</legend>
+          <label><input type="radio" name="q3" value="a"> Allow ionic transport while preventing direct electronic contact</label>
+          <label><input type="radio" name="q3" value="b"> Conduct electrons between electrodes</label>
+          <label><input type="radio" name="q3" value="c"> Store most of the cell's lithium</label>
+          <p class="feedback"></p>
+        </fieldset>
+
+        <fieldset data-answer="b">
+          <legend>4. What do EC, PC, DMC, EMC, and DEC represent in this tutorial?</legend>
+          <label><input type="radio" name="q4" value="a"> Positive-electrode active materials</label>
+          <label><input type="radio" name="q4" value="b"> Organic carbonate solvents</label>
+          <label><input type="radio" name="q4" value="c"> Separator polymers</label>
+          <p class="feedback"></p>
+        </fieldset>
+
+        <button class="button primary" type="submit">Check answers</button>
+        <p id="quiz-score" class="quiz-score" aria-live="polite">Score: not checked yet</p>
+      </form>
+    </section>
+
+    <section class="limits">
+      <h2>Scope and limitations</h2>
+      <ul>
+        <li>Colors, particle positions, pores, and molecule layouts are illustrative.</li>
+        <li>Animation direction does not represent current, C-rate, diffusivity, reaction rate, or elapsed time.</li>
+        <li>The electrolyte treatment is conceptual; solvation structure and salt speciation are not calculated.</li>
+        <li>No material is recommended for a specific product, safety case, or operating condition.</li>
+        <li>Cell chemistry, manufacturing details, and electrolyte formulations vary widely.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Battery Core · Independently authored, conceptual lithium-ion architecture tutorial</p>
+    <a href="https://github.com/Morshedvarzandeh/battery-core">View source</a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
