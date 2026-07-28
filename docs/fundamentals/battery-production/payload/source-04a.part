@@ -1,0 +1,140 @@
+  <span class="eyebrow" id="tourStep"></span>
+  <h2 id="tourTitle"></h2>
+  <figure class="tour-pic" id="tourPic"></figure>
+  <p id="tourText"></p>
+  <div class="tour-dots" id="tourDots"></div>
+  <nav>
+    <button type="button" id="tourBack">Back</button>
+    <button type="button" class="next" id="tourNext">Next stop →</button>
+  </nav>
+</section>
+<script>
+/* =====================================================================
+   CellForge — production learning simulator
+   Process data after PEM RWTH Aachen, "Production Process of a
+   Lithium-Ion Battery Cell". The process sequence and many displayed
+   operating ranges follow that guide; the linked physics chain is a teaching model.
+   ===================================================================== */
+
+/* ---------- SVG primitives ---------- */
+const H = (k, x, y, w, h, body) =>
+  `<g class="hot" data-k="${k}" tabindex="0" role="button">${body}` +
+  `<rect class="hit" x="${x}" y="${y}" width="${w}" height="${h}" rx="9"/>` +
+  `<rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="9"/></g>`;
+const T  = (x, y, s, c = "mTxt", a = "start") => `<text class="${c}" x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
+const R  = (x, y, w, h, c = "mSteel", rx = 3) => `<rect class="${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const C  = (x, y, r, c = "mSteel") => `<circle class="${c}" cx="${x}" cy="${y}" r="${r}"/>`;
+const P  = (d, c = "mLine") => `<path class="${c}" d="${d}"/>`;
+const LEAD = (x1, y1, x2, y2) => `<path class="mLead" d="M${x1} ${y1}L${x2} ${y2}"/>`;
+/* a driven roller: dark rim, light hub, spins while the line runs */
+const ROLLER = (x, y, r) =>
+  `<g class="spin"><circle class="mDark" cx="${x}" cy="${y}" r="${r}"/>` +
+  `<circle class="mSteel2" cx="${x}" cy="${y}" r="${Math.max(2, r * .34)}"/>` +
+  `<rect class="mSteel2" x="${x - 1}" y="${y - r + 2}" width="2" height="${r * .5}" rx="1"/></g>`;
+/* a coil / reel of foil */
+const REEL = (x, y, r, cls) =>
+  `<g class="spin"><circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/>` +
+  `<circle class="${cls}" cx="${x}" cy="${y}" r="${r * .66}" opacity=".55"/>` +
+  `<circle class="mDark" cx="${x}" cy="${y}" r="${Math.max(2.5, r * .18)}"/></g>`;
+const GAUGE = (x, y, label) =>
+  `<g><circle class="mSteel2" cx="${x}" cy="${y}" r="15"/>` +
+  `<path class="mLine" d="M${x} ${y}L${x + 8} ${y - 8}"/>` +
+  `<circle class="mDark" cx="${x}" cy="${y}" r="2"/>` + T(x, y + 27, label, "mTxtS", "middle") + `</g>`;
+const ARROW = (x, y, dir = 1) =>
+  `<path class="mArrow" d="M${x} ${y}l${14 * dir} 0l${-4 * dir} -4l${9 * dir} 4l${-9 * dir} 4l${4 * dir} -4z"/>`;
+const NOZZLES = (x, y, n, w, down = true) => {
+  let s = "";
+  for (let i = 0; i < n; i++) {
+    const cx = x + i * w;
+    s += `<path class="mEl" d="M${cx} ${y}l4 0l0 ${down ? 7 : -7}l-2 ${down ? 4 : -4}l-2 ${down ? -4 : 4}z"/>`;
+  }
+  return s;
+};
+
+/* =====================================================================
+   MACHINE SCHEMATICS — one per station, redrawn from the PEM figures
+   ===================================================================== */
+const M = {};
+
+M.mixing = () => `
+${T(40, 30, "Step I · dry mixing", "mTxtS")}${T(430, 30, "Step II · wet dispersing", "mTxtS")}
+${H(0, 30, 34, 150, 178, `
+  ${R(46, 60, 118, 108, "mSteel2", 6)}${R(58, 52, 94, 12, "mDark", 3)}
+  ${T(60, 46, "Powder dosing", "mTxtS")}
+  ${P("M76 64l0 92M105 64l0 92M134 64l0 92", "mLine")}
+  <g class="bob">${C(76, 96, 7, "mAn")}${C(105, 104, 6, "mCa")}${C(134, 98, 5, "mDark")}</g>
+  ${T(64, 186, "Active · carbon · binder", "mTxtS")}`)}
+${ARROW(178, 112)}
+${H(1, 208, 34, 210, 240, `
+  ${R(232, 92, 150, 132, "mGlass", 8)}
+  ${P("M232 116q75 26 150 0", "mLine")}
+  ${R(300, 40, 14, 60, "mDark", 3)}
+  ${R(276, 34, 62, 14, "mSteel", 4)}
+  <g class="spin">${R(288, 150, 38, 9, "mDark", 4)}${C(307, 154, 7, "mSteel2")}</g>
+  ${P("M307 100l0 46", "mDark")}
+  ${T(268, 246, "Intensive mixer", "mTxt")}${T(268, 260, "with dissolver tool", "mTxtS")}
+  ${T(388, 74, "α: 0°–10°", "mTxtS")}
+  ${P("M336 60l30 0", "mAcc")}`)}
+${H(2, 430, 60, 130, 120, `
+  ${C(470, 104, 20, "mEl")}${P("M470 92l0 24l14 -12z", "mSteel2")}
+  ${T(444, 146, "Pump", "mTxt")}
+  ${P("M382 158q60 0 68 -40", "mPipe")}<path class="mPipe flowdash" stroke="var(--primary)" d="M382 158q60 0 68 -40"/>`)}
+${H(3, 578, 44, 170, 226, `
+  ${R(600, 70, 116, 150, "mSteel2", 6)}${R(600, 70, 116, 16, "mDark", 4)}
+  ${P("M604 118h108v96h-108z", "mEl")}
+  ${T(612, 240, "Buffer tank", "mTxt")}${T(612, 254, "stirred, filtered", "mTxtS")}
+  ${P("M490 104q60 -34 110 -6", "mPipe")}<path class="mPipe flowdash" stroke="var(--primary)" d="M490 104q60 -34 110 -6"/>`)}
+${H(4, 764, 60, 190, 162, `
+  ${R(790, 92, 140, 96, "mSteel2", 6)}
+  ${P("M796 100h128v80h-128z", "mGlass")}
+  ${T(800, 128, "VISCOSITY", "mTxtS onpanel")}${T(800, 152, "2 000–6 000 mPa·s", "mTxt onpanel")}
+  ${T(790, 208, "Release gate to coating", "mTxtS")}
+  ${P("M716 140l70 0", "mPipe")}${ARROW(756, 140)}`)}
+`;
+
+M.coating = () => `
+${H(0, 26, 120, 130, 152, `
+  ${R(52, 168, 74, 80, "mSteel2", 5)}
+  ${P("M58 178h62v62h-62z", "mDark")}
+  ${T(46, 264, "Slurry storage", "mTxtS")}
+  ${P("M89 168l0 -30", "mPipe")}`)}
+${H(1, 60, 60, 96, 96, `
+  ${C(104, 112, 20, "mEl")}${P("M104 100l0 24l14 -12z", "mSteel2")}
+  ${T(80, 76, "Pump", "mTxtS", "middle")}
+  ${P("M104 92q0 -34 42 -34l150 0", "mPipe")}<path class="mPipe flowdash" stroke="var(--primary)" d="M104 92q0 -34 42 -34l150 0"/>`)}
+${H(2, 262, 18, 130, 162, `
+  ${P("M300 42l86 0l-30 96l-40 0z", "mSteel2")}
+  ${P("M316 130l24 0l-4 22l-16 0z", "mAcc")}
+  ${T(300, 34, "Slot die", "mTxt")}${LEAD(330, 152, 360, 176)}`)}
+${H(3, 300, 150, 120, 130, `
+  ${ROLLER(348, 208, 40)}
+  ${T(392, 254, "Application roll", "mTxtS")}`)}
+${H(4, 96, 196, 130, 110, `
+  ${REEL(160, 250, 30, "mCu")}
+  ${T(120, 296, "Copper foil (anode)", "mTxtS")}`)}
+${P("M160 250q60 -18 148 -30l520 0", "mWeb")}
+<path class="mWeb flowdash" stroke="var(--copper)" d="M160 250q60 -18 148 -30l520 0"/>
+${H(5, 470, 148, 180, 92, `
+  ${R(492, 170, 140, 40, "mSteel2", 5)}
+  ${R(506, 176, 26, 28, "mAn")}${R(548, 176, 26, 28, "mAn")}${R(590, 176, 26, 28, "mAn")}
+  ${T(492, 164, "Intermittent coating (top view)", "mTxtS")}`)}
+${H(6, 690, 176, 150, 130, `
+  ${R(712, 190, 20, 30, "mAcc", 3)}${ARROW(722, 232, 1)}
+  ${GAUGE(760, 254, "wet-film gauge")}
+  ${T(700, 300, "±2 g/m² dry accuracy", "mTxtS")}`)}
+${H(7, 856, 186, 110, 112, `
+  ${REEL(908, 240, 28, "mAn")}
+  ${T(866, 292, "One side coated", "mTxtS")}`)}
+${T(700, 60, "Second side is coated on a second pass", "mTxtS")}
+`;
+
+M.drying = () => `
+${R(150, 40, 680, 22, "mSteel", 4)}
+${P("M470 40l0 -22l40 0", "mSteel")}${ARROW(500, 18)}
+${T(516, 22, "Solvent vapour → recovery", "mTxtS")}
+${H(0, 132, 16, 100, 54, `${T(140, 34, "Exhaust", "mTxtS")}${LEAD(178, 30, 200, 40)}`)}
+${[0, 1, 2, 3].map(i => {
+  const x = 168 + i * 168;
+  return H(i + 1, x, 76, 158, 192, `
+    ${R(x + 4, 84, 150, 118, "mHot", 5)}
+    ${NOZZLES(x + 22, 96, 6, 22, true)}${NOZZLES(x + 22, 190, 6, 22, false)}
