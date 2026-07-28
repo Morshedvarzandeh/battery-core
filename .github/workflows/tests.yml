@@ -64,7 +64,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/bml-debug.txt docs/labs/battery-materials-lab/index.html 2>/dev/null || true
+          git add .github/bml-debug.txt
+          if [ -f docs/labs/battery-materials-lab/index.html ]; then
+            git add docs/labs/battery-materials-lab/index.html
+          fi
           git diff --cached --quiet && exit 0
           git commit -m "Reconstruct Battery Materials Lab [skip ci]"
           git push origin HEAD:feature/battery-materials-lab
