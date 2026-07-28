@@ -22,13 +22,15 @@ def test_course_homepage_uses_local_styles() -> None:
 def test_course_homepage_links_available_modules() -> None:
     html = HOMEPAGE.read_text(encoding="utf-8")
     assert 'href="fundamentals/cell-anatomy-workbench/"' in html
+    assert 'href="fundamentals/lithium-ion-cell-architecture/"' in html
+    assert 'href="labs/battery-materials-lab/"' in html
     assert "notebooks/fundamentals/02_capacity_and_c_rate.ipynb" in html
     assert "notebooks/transport/ficks_first_law.ipynb" in html
 
 
 def test_course_homepage_distinguishes_available_and_planned_parts() -> None:
     html = HOMEPAGE.read_text(encoding="utf-8")
-    assert html.count('<span class="status">Available</span>') == 2
+    assert html.count('<span class="status">Available</span>') == 3
     assert '<span class="status">Planned</span>' in html
     assert "Voltage, energy, and power" in html
 
