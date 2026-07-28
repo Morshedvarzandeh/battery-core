@@ -23,33 +23,50 @@ jobs:
           from pathlib import Path
           import base64
           import gzip
+          import hashlib
+          import traceback
 
-          parts = sorted(Path('.github/bml-payload').glob('part-*.txt'))
-          assert len(parts) == 5, parts
-          payload = ''.join(path.read_text(encoding='utf-8').strip() for path in parts)
-          print(f'payload characters: {len(payload)}')
-          compressed = base64.b64decode(payload, validate=True)
-          print(f'compressed bytes: {len(compressed)}')
-          html = gzip.decompress(compressed)
-          print(f'HTML bytes: {len(html)}')
+          debug = Path('.github/bml-debug.txt')
+          try:
+              parts = sorted(Path('.github/bml-payload').glob('part-*.txt'))
+              payload = ''.join(path.read_text(encoding='utf-8').strip() for path in parts)
+              compressed = base64.b64decode(payload, validate=True)
+              html = gzip.decompress(compressed)
+              text = html.decode('utf-8')
 
-          output = Path('docs/labs/battery-materials-lab/index.html')
-          output.parent.mkdir(parents=True, exist_ok=True)
-          output.write_bytes(html)
+              checks = {
+                  'part count': len(parts) == 5,
+                  'Battery Materials Lab': 'Battery Materials Lab' in text,
+                  'Zn default': 'let negativeId = "zn"' in text,
+                  'Cu default': 'let positiveId = "cu"' in text,
+                  'no unpkg': 'unpkg.com' not in text,
+              }
+              failed = [name for name, passed in checks.items() if not passed]
+              if failed:
+                  raise AssertionError('failed checks: ' + ', '.join(failed))
 
-          text = html.decode('utf-8')
-          assert 'Battery Materials Lab' in text
-          assert 'let negativeId = "zn"' in text
-          assert 'let positiveId = "cu"' in text
-          assert 'unpkg.com' not in text
+              output = Path('docs/labs/battery-materials-lab/index.html')
+              output.parent.mkdir(parents=True, exist_ok=True)
+              output.write_bytes(html)
+              debug.write_text(
+                  f'success\nparts={len(parts)}\npayload={len(payload)}\n'
+                  f'compressed={len(compressed)}\nhtml={len(html)}\n'
+                  f'sha256={hashlib.sha256(html).hexdigest()}\n',
+                  encoding='utf-8',
+              )
+          except Exception:
+              debug.write_text(
+                  'failure\n' + traceback.format_exc(),
+                  encoding='utf-8',
+              )
           PY
-      - name: Commit generated page
+      - name: Commit generated page or diagnostics
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/labs/battery-materials-lab/index.html
+          git add .github/bml-debug.txt docs/labs/battery-materials-lab/index.html 2>/dev/null || true
           git diff --cached --quiet && exit 0
-          git commit -m "Add revised Battery Materials Lab [skip ci]"
+          git commit -m "Reconstruct Battery Materials Lab [skip ci]"
           git push origin HEAD:feature/battery-materials-lab
 
   pytest:
