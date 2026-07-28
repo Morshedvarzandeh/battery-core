@@ -1,0 +1,4597 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Battery Materials Lab — Electrode Potentials &amp; Material Selection</title>
+<style>:root {
+  color-scheme: light dark;
+  background-color: transparent !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --main-surface-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --red: light-dark(rgb(186 38 35), rgb(250 66 62));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 10px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-visualize-standalone] {
+  background-color: var(--background) !important;
+}
+
+/* Generic mobile code-block hosts provide light/dark mode but no series palette.
+   AppBlock hosts set all six variables themselves. */
+:root:not([data-app-block-surface]) {
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(#f3883b, #f59a56);
+  --viz-series-3: light-dark(#5dc977, #74d58b);
+  --viz-series-4: light-dark(#eb77b1, #f08fc0);
+  --viz-series-5: light-dark(#9b79ec, #aa91ef);
+  --viz-series-6: light-dark(#3ab9b1, #5acbc2);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+:root:not([data-app-block-surface]) > body {
+  padding: 12px;
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive > .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align="right"]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align="center"]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The bundled tooltip runtime owns [data-tooltip]. AppBlock's CSS-only
+   pseudo-tooltip can widen dense grids even while hidden. */
+main [data-tooltip]::after {
+  content: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--interactive-label-primary-default, var(--primary-foreground));
+  background: var(--interactive-bg-primary-default, var(--foreground));
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(
+    in srgb,
+    var(--interactive-label-primary-default, var(--primary-foreground)) 50%,
+    transparent
+  );
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+.bml-local-icon {
+  display: inline-grid;
+  min-width: 1em;
+  place-items: center;
+  font-style: normal;
+  line-height: 1;
+}
+</style>
+</head>
+<body>
+<section id="battery-materials-lab" aria-label="Interactive periodic table and battery materials lesson">
+
+  <div class="bml-header">
+    <h2 class="bml-title">Battery Materials Lab: electrode potentials &amp; material selection</h2>
+    <p class="text-small text-muted bml-subtitle">
+      An advanced electrochemistry lab. Start with a zinc–copper aqueous cell, then explore reference
+      electrodes, standard reduction potentials E° at 25&nbsp;°C and unit activity, the water stability window,
+      lithium-ion intercalation, and representative commercial material trade-offs.
+    </p>
+  </div>
+
+  <nav class="card bml-course-map" aria-label="Battery Materials Lab learning path">
+    <strong>Recommended learning path</strong>
+    <a href="#bml-reference-lab">1 · Potential differences &amp; references</a>
+    <a href="#bml-aqueous-mechanism">2 · Aqueous-cell mechanism</a>
+    <a href="#bml-liion-mechanism">3 · Lithium-ion intercalation</a>
+    <a href="#bml-material-selection">4 · Material selection</a>
+    <span class="text-small text-muted">The periodic table is an optional half-reaction explorer, not a predictor of battery chemistry by itself.</span>
+  </nav>
+
+  <div class="viz-controls bml-mode-row" id="bml-reference-lab" aria-label="Electrode selection mode">
+    <button class="btn" type="button" id="bml-pick-negative" aria-pressed="true">
+      <span class="bml-role-dot bml-role-dot-negative" aria-hidden="true"></span>
+      1 · Pick negative electrode
+    </button>
+    <button class="btn" type="button" id="bml-pick-positive" aria-pressed="false">
+      <span class="bml-role-dot bml-role-dot-positive" aria-hidden="true"></span>
+      2 · Pick positive electrode
+    </button>
+    <button class="btn btn-ghost" type="button" id="bml-swap">
+      <i data-lucide="arrow-left-right" aria-hidden="true"></i>
+      <span>Swap</span>
+    </button>
+    <label class="form-label" for="bml-reference">
+      Measure voltages against…
+      <select class="form-select" id="bml-reference">
+        <option value="she" selected>The hydrogen electrode (the textbook zero)</option>
+        <option value="li">Lithium metal (what battery engineers use)</option>
+        <option value="sce">Calomel electrode (a lab bench zero)</option>
+        <option value="agcl">Silver/silver chloride (the other bench zero)</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="card bml-ref-explain" aria-live="polite">
+    <div class="bml-ref-explain-head">
+      <i data-lucide="ruler" aria-hidden="true"></i>
+      <strong>Why you have to choose a zero</strong>
+    </div>
+    <p class="text-small" id="bml-ref-explain-body">
+      A voltmeter always needs two probes. There is no way to measure one electrode on its own —
+      only the difference between two. So chemists agreed to pick one electrode and simply
+      <em>define</em> it as 0.000 V.
+    </p>
+    <p class="text-small text-muted" id="bml-ref-explain-detail">
+      The one they chose is the <strong>standard hydrogen electrode</strong>: platinum in an electrolyte where H⁺ has unit activity, with hydrogen gas at 1 bar, running 2H⁺ + 2e⁻ ⇌ H₂.
+      So "Li⁺/Li = −3.040 V" really means "3.040 volts more negative than that particular electrode".
+    </p>
+    <p class="text-small bml-ref-explain-fixed">
+      Change the zero and every number on the scale slides by the same amount — like renumbering a ruler
+      from a different end. The <em>gap</em> between your two electrodes never moves, and that gap is the
+      only thing your battery actually delivers.
+    </p>
+  </div>
+
+  <div class="card bml-element-summary" aria-live="polite">
+    <div class="bml-atom" id="bml-atom" role="img" aria-label="Zinc with variable oxidation-state behavior">
+      <div class="bml-atom-nucleus" id="bml-atom-symbol">Zn</div>
+      <div class="bml-valence-dots" id="bml-valence-dots" aria-hidden="true"></div>
+    </div>
+    <div class="bml-element-copy">
+      <div class="bml-element-heading">
+        <strong id="bml-element-name">Zinc</strong>
+        <span class="text-small bml-element-meta" id="bml-element-meta">Z = 30 · group 12 · period 4 · d-block</span>
+      </div>
+      <div id="bml-element-insight">Transition-metal behavior depends on the selected half-reaction and electrolyte conditions.</div>
+      <div class="text-small bml-element-potential" id="bml-element-potential">
+        Zn²⁺ + 2e⁻ ⇌ Zn(s) · E° = −0.762 V vs SHE
+      </div>
+      <div class="bml-couple-list" id="bml-couple-list" aria-label="Other tabulated couples for this element"></div>
+    </div>
+  </div>
+
+  <div class="card bml-concept-warning">
+    <strong>Read the table as half-reactions, not as intrinsic element voltages.</strong>
+    <span class="text-small">Each tile displays one selected aqueous reduction couple under standard conditions.
+    The value belongs to that specific half-reaction and depends on oxidation state, products, solvent, activity,
+    and temperature. Periodic trends are qualitative context only.</span>
+  </div>
+
+  <div class="table-responsive bml-table-wrap">
+    <div
+      class="bml-periodic-grid"
+      id="bml-periodic-grid"
+      role="group"
+      aria-label="Periodic table. Use the arrow keys to move between elements, Enter to assign one to the active electrode."
+    ></div>
+  </div>
+
+  <div class="bml-table-legend text-small" aria-label="Periodic table colour legend">
+    <span><i class="bml-swatch bml-swatch-donor" aria-hidden="true"></i>selected couple: E° &lt; −1 V</span>
+    <span><i class="bml-swatch bml-swatch-weak" aria-hidden="true"></i>selected couple: −1 to 0 V</span>
+    <span><i class="bml-swatch bml-swatch-noble-metal" aria-hidden="true"></i>selected couple: 0 to +1 V</span>
+    <span><i class="bml-swatch bml-swatch-acceptor" aria-hidden="true"></i>selected couple: E° &gt; +1 V</span>
+    <span><i class="bml-swatch bml-swatch-none" aria-hidden="true"></i>no tabulated aqueous couple</span>
+  </div>
+
+  <div class="bml-direction" aria-label="Qualitative atomic trends">
+    <span>← lower ionisation energy can favour oxidation</span>
+    <span class="text-small">context only — not an E° predictor</span>
+    <span>higher electron affinity can favour reduction →</span>
+  </div>
+
+  <div class="viz-grid bml-stats" aria-live="polite">
+    <div class="card viz-stat">
+      <div class="text-small text-muted" id="bml-negative-label">Negative electrode · E° vs SHE</div>
+      <div class="viz-stat-value" id="bml-negative-value">−0.762 V</div>
+      <div class="text-small text-muted" id="bml-negative-sub">Zn²⁺ + 2e⁻ ⇌ Zn(s)</div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-small text-muted" id="bml-positive-label">Positive electrode · E° vs SHE</div>
+      <div class="viz-stat-value" id="bml-positive-value">+0.342 V</div>
+      <div class="text-small text-muted" id="bml-positive-sub">Cu²⁺ + 2e⁻ ⇌ Cu(s)</div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-small text-muted">E°<sub>cell</sub> = E°<sub>positive</sub> − E°<sub>negative</sub></div>
+      <div class="viz-stat-value" id="bml-cell-value">1.104 V</div>
+      <div class="text-small text-muted" id="bml-cell-sub">spontaneous as written</div>
+    </div>
+    <div class="card viz-stat">
+      <div class="text-small text-muted">ΔG° = −nFE°<sub>cell</sub></div>
+      <div class="viz-stat-value" id="bml-gibbs-value">−213 kJ/mol</div>
+      <div class="text-small text-muted" id="bml-gibbs-sub">n = 2 electrons transferred</div>
+    </div>
+  </div>
+
+  <div class="bml-stage" id="bml-stage" role="img" aria-label="Reduction-potential scale">
+    <div class="bml-water-window" id="bml-water-window" aria-hidden="true"></div>
+    <div class="bml-water-label text-small" id="bml-water-label" aria-hidden="true">water stable · 1.23 V wide</div>
+    <div class="bml-axis" aria-hidden="true"></div>
+    <div class="bml-tick-layer" id="bml-ticks" aria-hidden="true"></div>
+    <div class="bml-gap" id="bml-gap" aria-hidden="true"></div>
+    <div class="bml-gap-label text-small" id="bml-gap-label" aria-hidden="true">ΔE° = 1.104 V</div>
+
+    <div class="bml-marker bml-marker-negative" id="bml-negative-marker" aria-hidden="true">
+      <div class="bml-marker-label" id="bml-negative-marker-label">Zn²⁺/Zn</div>
+      <div class="bml-marker-stem"></div>
+      <div class="bml-marker-dot"></div>
+    </div>
+
+    <div class="bml-marker bml-marker-positive" id="bml-positive-marker" aria-hidden="true">
+      <div class="bml-marker-dot"></div>
+      <div class="bml-marker-stem"></div>
+      <div class="bml-marker-label" id="bml-positive-marker-label">Cu²⁺/Cu</div>
+    </div>
+
+    <div class="bml-reference-line" id="bml-reference-line" aria-hidden="true">
+      <div class="bml-reference-label text-small" id="bml-reference-label">0 V · SHE</div>
+    </div>
+    <div class="bml-axis-title text-small" id="bml-axis-title">Standard reduction potential E° vs SHE (V)</div>
+  </div>
+
+  <div class="bml-notes">
+    <p class="text-small bml-note" id="bml-window-note">
+      <strong>Shaded band = the thermodynamic stability window of water</strong> (0 V to +1.229 V vs SHE at pH 0;
+      both edges shift by −0.059 V per pH unit, so the band stays 1.23 V wide and simply slides down as pH rises).
+      An electrode below the band should reduce water to H₂, above it should oxidise water to O₂.
+      Kinetics buys some room — lead–acid runs at 2.05 V in water because H₂ evolution on lead is extremely slow —
+      but not the 3.7 V a lithium-ion cell needs, which is why those use an organic electrolyte.
+    </p>
+    <p class="text-small bml-note">
+      Moving the zero reference shifts both readings together, but their <em>separation</em> — the cell voltage — never changes.
+      Only potential <em>differences</em> are measurable; the absolute value of a single electrode potential is not.
+    </p>
+  </div>
+
+  <h3 class="bml-inside-title" id="bml-aqueous-mechanism">What actually happens inside an aqueous cell</h3>
+  <p class="text-small text-muted bml-inside-intro">
+    Follow one electron and one ion around the loop. Press <em>Run discharge</em> to watch it move.
+  </p>
+
+  <div class="bml-cell-scroll" id="bml-circuit">
+    <svg
+      class="bml-cell-svg"
+      id="bml-cell-svg"
+      viewBox="0 0 900 500"
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label="Atomic view of the cell."
+    ></svg>
+  </div>
+
+  <div class="bml-atom-cards">
+    <div class="card bml-atom-card bml-atom-card-neg">
+      <span class="text-small bml-atom-role">Negative electrode · gives an electron away</span>
+      <strong id="bml-neg-atom-title">Zinc</strong>
+      <code id="bml-neg-atom-eq">Zn(s) → Zn²⁺ + 2e⁻</code>
+      <span class="text-small text-muted" id="bml-neg-atom-note"></span>
+    </div>
+    <div class="card bml-atom-card bml-atom-card-pos">
+      <span class="text-small bml-atom-role">Positive electrode · takes an electron in</span>
+      <strong id="bml-pos-atom-title">Copper</strong>
+      <code id="bml-pos-atom-eq">Cu²⁺ + 2e⁻ → Cu(s)</code>
+      <span class="text-small text-muted" id="bml-pos-atom-note"></span>
+    </div>
+  </div>
+
+  <ol class="bml-steps">
+    <li>An outer-shell electron is furthest from the nucleus and the least tightly held. On the negative electrode it lets go, leaving a positive ion behind.</li>
+    <li>That electron cannot cross the electrolyte, so it takes the long way round — out through the wire and your device. This is where you get the energy.</li>
+    <li>Charge cannot simply pile up. Ionic charge therefore moves through the electrolyte in the amount required by the reaction stoichiometry; a divalent ion, for example, carries twice the charge of a monovalent ion.</li>
+    <li>At the far side the arriving electron drops into a vacancy in the outer shell of the positive electrode's atoms. The loop is closed.</li>
+  </ol>
+
+  <p class="bml-key-insight" id="bml-key-insight">
+    <strong>The electrolyte is the whole trick.</strong> It lets ions through but not electrons.
+    The electron therefore cannot take the short cut straight across — it has to go the long way,
+    out through the wire and your device, which is exactly where you take the energy out.
+    Sustained current requires both paths: interrupt the electronic path or the ionic path and charge imbalance quickly opposes further reaction.
+  </p>
+
+  <p class="text-small bml-scope-note">
+    <strong>What this picture is, and is not.</strong> This is a generic metal / metal-ion cell and closely
+    represents a Zn/Cu Daniell cell. Lead–acid and alkaline batteries use more complex conversion reactions,
+    although they still require separate electronic and ionic pathways. A <strong>lithium-ion</strong> cell instead
+    stores lithium mainly by reversible insertion into solid host materials; its mechanism is shown below.
+  </p>
+
+  <div class="viz-row bml-action-row">
+    <button class="btn btn-primary" type="button" id="bml-run">
+      <i data-lucide="play" aria-hidden="true"></i>
+      <span id="bml-run-text">Run discharge</span>
+    </button>
+    <span class="text-small text-muted" id="bml-flow-label">e⁻ through the wire, ions through the electrolyte — the loop must close</span>
+  </div>
+
+  <div class="bml-reaction-block" aria-live="polite">
+    <div class="bml-reaction-line" id="bml-reaction-negative">Zn(s) → Zn²⁺ + 2e⁻</div>
+    <div class="bml-reaction-line" id="bml-reaction-positive">Cu²⁺ + 2e⁻ → Cu(s)</div>
+    <div class="bml-reaction-line bml-reaction-overall" id="bml-reaction-overall">Zn(s) + Cu²⁺ → Zn²⁺ + Cu(s)</div>
+  </div>
+
+  <div class="bml-warn text-small" id="bml-warn" hidden></div>
+
+  <details class="bml-details" id="bml-real-cells" open>
+    <summary>Aqueous cells you can build straight from the table above</summary>
+    <p class="text-small text-muted bml-details-intro">
+      For water-based cells the tabulated E° values do the job exactly — pick both half-reactions
+      in the periodic table above and the widget reproduces the real cell voltage.
+      Lithium and sodium chemistries do not work this way; they get their own section below.
+    </p>
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <caption class="sr-only">Practical battery cells and their voltages</caption>
+        <thead>
+          <tr>
+            <th scope="col">Cell</th>
+            <th scope="col">Negative</th>
+            <th scope="col">Positive</th>
+            <th scope="col" class="text-end">Nominal V</th>
+            <th scope="col">Basis</th>
+          </tr>
+        </thead>
+        <tbody id="bml-cells-body"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <section class="bml-market" id="bml-market" aria-label="Commercial battery chemistries">
+    <h3 class="bml-market-title" id="bml-liion-mechanism">Lithium-ion intercalation and commercial material families</h3>
+    <p class="text-small text-muted bml-market-intro">
+      Everything above is aqueous thermodynamics. Commercial lithium cells run in organic electrolyte,
+      so their electrodes are quoted as <strong>average discharge potential versus Li⁺/Li</strong> —
+      measured plateaus, not tabulated E°. The rule that matters is unchanged:
+      <strong>cell voltage = cathode potential − anode potential</strong>.
+      LFP, NMC, NCA, LCO, LMO, and emerging families occupy different application niches. Their practical
+      performance depends on composition, electrode design, cell format, operating window, and test method.
+    </p>
+
+    <!-- ---------- intercalation ---------- -->
+    <h4 class="bml-ladder-title bml-interc-title">How a lithium-ion cell works — lithium shuttles between host structures</h4>
+    <p class="text-small text-muted bml-market-intro">
+      The aqueous picture higher up is a generic metal / metal-ion model and closely represents Zn | Cu.
+      During intended reversible lithium-ion operation, lithium moves mainly by insertion into and removal from
+      solid host structures rather than by bulk dissolution and plating of the electrode materials. Side reactions
+      and limited transition-metal dissolution can still occur in real cells.
+    </p>
+
+    <div class="viz-controls bml-interc-controls" aria-label="Intercalation controls">
+      <button class="btn" type="button" id="bml-interc-discharge" aria-pressed="true">Discharging</button>
+      <button class="btn" type="button" id="bml-interc-charge" aria-pressed="false">Charging</button>
+      <button class="btn btn-ghost" type="button" id="bml-interc-cathode" aria-pressed="false">
+        <i data-lucide="repeat" aria-hidden="true"></i>
+        <span id="bml-interc-cathode-text">Show LiCoO₂ instead</span>
+      </button>
+    </div>
+
+    <svg
+      class="bml-interc-svg"
+      id="bml-interc-svg"
+      viewBox="0 0 900 430"
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label="Lithium-ion cell shown as two host structures with lithium ions shuttling between them."
+    ></svg>
+
+    <div class="bml-atom-cards bml-interc-cards">
+      <div class="card bml-atom-card bml-atom-card-neg">
+        <span class="text-small bml-atom-role" id="bml-interc-neg-role">Negative electrode · graphite host</span>
+        <strong>Graphite, LiC₆</strong>
+        <code id="bml-interc-neg-eq">LiC₆ → 6C + Li⁺ + e⁻</code>
+        <span class="text-small text-muted" id="bml-interc-neg-note"></span>
+      </div>
+      <div class="card bml-atom-card bml-atom-card-pos">
+        <span class="text-small bml-atom-role" id="bml-interc-pos-role">Positive electrode · oxide host</span>
+        <strong id="bml-interc-pos-name">Lithium iron phosphate, LiFePO₄</strong>
+        <code id="bml-interc-pos-eq">FePO₄ + Li⁺ + e⁻ → LiFePO₄</code>
+        <span class="text-small text-muted" id="bml-interc-pos-note"></span>
+      </div>
+    </div>
+
+    <ol class="bml-steps bml-interc-steps">
+      <li><strong>The host frameworks are designed to remain largely intact.</strong> Lithium occupies sites within graphite and positive-electrode structures and moves between those hosts during cycling.</li>
+      <li><strong>Li⁺ carries ionic charge across the electrolyte.</strong> In the ideal intercalation reaction, one Li⁺ is associated with each electron transferred through the external circuit.</li>
+      <li><strong>Redox is distributed across the electrode materials.</strong> The positive electrode commonly changes transition-metal oxidation state, while the negative graphite host changes lithium content and electronic occupancy.</li>
+      <li><strong>Rechargeability requires reversibility.</strong> Charging drives lithium back toward the negative host, but side reactions, structural change, and lithium inventory loss gradually limit cycle life.</li>
+    </ol>
+
+    <p class="bml-key-insight">
+      <strong>So is the aqueous atom diagram wrong?</strong> No—it represents a different reaction family and is
+      useful for learning half-cell potentials and external/internal charge paths. Use this host-structure view for
+      conventional intercalation-based lithium-ion cells.
+      The one rule both obey is the same: electrons through the wire, ions through the electrolyte,
+      and cell voltage = positive potential − negative potential.
+    </p>
+
+    <!-- ---------- the ladder ---------- -->
+    <div class="bml-ladder-head" id="bml-material-selection">
+      <h4 class="bml-ladder-title">Pick a negative-electrode material and a positive-electrode material</h4>
+      <span class="text-small text-muted">their average-potential difference estimates nominal cell voltage</span>
+    </div>
+
+    <div class="bml-ladder-wrap">
+      <div class="bml-ladder-scroll">
+        <svg
+          class="bml-ladder-svg"
+          id="bml-ladder-svg"
+          viewBox="0 0 880 620"
+          preserveAspectRatio="xMidYMid meet"
+          role="group"
+          aria-label="Voltage ladder of commercial electrode materials versus lithium. Every material is also listed in the table below."
+        ></svg>
+      </div>
+      <div class="bml-ladder-axis-title text-small text-muted">Average discharge potential vs Li⁺/Li (V)</div>
+    </div>
+
+    <p class="text-small text-muted bml-market-note">
+      Dots sit at the true potential; where labels would collide they are spread apart and joined back by a
+      leader line, so read the number on the label rather than its height. The crowding is the point —
+      every oxide cathode from LFP to LMO lives inside a single 0.65 V band. Voltage is <em>not</em> what
+      separates these materials. Capacity, cost, cycle life and thermal stability are.
+    </p>
+
+    <div class="viz-grid bml-market-stats" aria-live="polite">
+      <div class="card viz-stat">
+        <div class="text-small text-muted">Cell voltage</div>
+        <div class="viz-stat-value" id="bml-mkt-voltage">3.25 V</div>
+        <div class="text-small text-muted" id="bml-mkt-voltage-sub">3.40 V cathode − 0.15 V anode</div>
+      </div>
+      <div class="card viz-stat">
+        <div class="text-small text-muted">Active-material-only estimate</div>
+        <div class="viz-stat-value" id="bml-mkt-theory">349 Wh/kg</div>
+        <div class="text-small text-muted">Uses average potentials and practical capacities; assumes balanced capacities and excludes inactive mass</div>
+      </div>
+      <div class="card viz-stat">
+        <div class="text-small text-muted">Real commercial cell</div>
+        <div class="viz-stat-value" id="bml-mkt-real">160–200 Wh/kg</div>
+        <div class="text-small text-muted" id="bml-mkt-real-sub">fraction of the active-material estimate</div>
+      </div>
+    </div>
+
+    <details class="bml-details bml-estimate-assumptions">
+      <summary>Assumptions behind the active-material estimate</summary>
+      <ul class="bml-caveat-list text-small">
+        <li>Average electrode potentials are treated as constants instead of integrating full voltage profiles.</li>
+        <li>Negative- and positive-electrode capacities are balanced at a 1:1 usable-capacity ratio.</li>
+        <li>Practical specific-capacity values are treated as rate- and temperature-independent inputs.</li>
+        <li>Inactive materials, excess electrode capacity, first-cycle lithium loss, and packaging are excluded.</li>
+      </ul>
+    </details>
+
+    <p class="text-small text-muted bml-market-note" id="bml-pair-note">
+      Graphite + LFP is the standard-range EV and home-storage cell.
+    </p>
+
+    <p class="text-small text-muted bml-market-note">
+      Cell-level specific energy is lower than the active-material-only estimate because a complete cell includes
+      current collectors, separator, electrolyte, binder, conductive carbon, tabs, casing, capacity-balancing margin,
+      and voltage-profile losses. The exact difference is design- and manufacturer-dependent.
+    </p>
+
+    <!-- ---------- energy comparison ---------- -->
+    <h4 class="bml-ladder-title bml-energy-title">Cell-level energy density, as shipped</h4>
+    <div class="bml-energy" id="bml-energy" role="img" aria-label="Gravimetric energy density ranges by chemistry; values are given in the table below"></div>
+    <div class="bml-energy-axis" aria-hidden="true">
+      <span class="bml-energy-axis-spacer"></span>
+      <span class="bml-energy-axis-scale text-small text-muted">
+        <span>0</span><span>100</span><span>200</span><span>300 Wh/kg</span>
+      </span>
+    </div>
+
+    <!-- ---------- the table view ---------- -->
+    <div class="table-responsive bml-market-table">
+      <table class="table table-sm">
+        <caption class="sr-only">Commercial cell chemistries compared</caption>
+        <thead>
+          <tr>
+            <th scope="col">Chemistry</th>
+            <th scope="col">Cathode</th>
+            <th scope="col" class="text-end">Cell V</th>
+            <th scope="col" class="text-end">Wh/kg</th>
+            <th scope="col" class="text-end">Cycles</th>
+            <th scope="col">Reported self-heating onset*</th>
+            <th scope="col">Where you meet it</th>
+          </tr>
+        </thead>
+        <tbody id="bml-market-body"></tbody>
+      </table>
+    </div>
+
+    <p class="text-small text-muted bml-market-note">
+      *These are representative source ranges, not universal specifications. Cycle life depends on depth of
+      discharge, rate, temperature, voltage window, and end-of-life definition. Reported self-heating onset depends
+      strongly on state of charge, cell design, sample preparation, and calorimetry method; it is only one part of
+      safety assessment. Sodium-ion values are quoted versus Na⁺/Na and are therefore kept off the Li⁺/Li ladder.
+    </p>
+
+    <!-- ---------- references ---------- -->
+    <div class="bml-refs">
+      <h4 class="bml-ladder-title">References</h4>
+      <ol class="bml-refs-list">
+        <li>
+          P. Vanýsek, <em>Electrochemical Series</em>, in CRC Handbook of Chemistry and Physics.
+          Source of every E° value in the periodic table above (aqueous, 25 °C, unit activity, 1 bar).
+          <a href="https://diverdi.colostate.edu/all_courses/CRC%20reference%20data/electrochemical%20series.pdf" target="_blank" rel="noreferrer">PDF</a>
+        </li>
+        <li>
+          Chemistry LibreTexts, <em>Standard Reduction Potentials by Value</em> — cross-check on the tabulated potentials.
+          <a href="https://chem.libretexts.org/Ancillary_Materials/Reference/Reference_Tables/Electrochemistry_Tables/P2:_Standard_Reduction_Potentials_by_Value" target="_blank" rel="noreferrer">Link</a>
+        </li>
+        <li>
+          Faraday Institution, <em>Developments in lithium-ion battery cathodes</em> (Faraday Insights 18) —
+          cost, energy, thermal stability and cycle-life comparison across cathode families.
+          <a href="https://www.faraday.ac.uk/wp-content/uploads/2023/09/Faraday_Insights_18_FINAL.pdf" target="_blank" rel="noreferrer">PDF</a>
+        </li>
+        <li>
+          Battery Burn Book, <em>Cathode Materials</em> — average discharge voltages and practical capacities
+          for LCO, NMC, NCA, LFP, LMFP, LMO, LNMO and LMR.
+          <a href="https://www.batteryburnbook.com/learn/cathode-materials" target="_blank" rel="noreferrer">Link</a>
+        </li>
+        <li>
+          EVreporter, <em>Analysis of Electrodes of Li-ion Cells</em> — nominal voltages and specific capacities
+          for the NMC grades and the graphite / silicon–graphite / LTO anodes.
+          <a href="https://evreporter.com/analysis-of-electrodes-of-lithium-ion-cells/" target="_blank" rel="noreferrer">Link</a>
+        </li>
+        <li>
+          Merck / Sigma-Aldrich, <em>Electrode Materials for Lithium-Ion Batteries</em> — anode capacities and
+          operating windows.
+          <a href="https://www.sigmaaldrich.com/US/en/technical-documents/technical-article/materials-science-and-engineering/batteries-supercapacitors-and-fuel-cells/electrode-materials-for-lithium-ion-batteries" target="_blank" rel="noreferrer">Link</a>
+        </li>
+        <li>
+          Battery Design, <em>Objective Safety Analysis of NMC vs LFP</em> — accelerating-rate-calorimetry
+          self-heating onset (T₁) and runaway (T₂) temperatures.
+          <a href="https://www.batterydesign.net/objective-safety-analysis-of-nmc-vs-lfp/" target="_blank" rel="noreferrer">Link</a>
+        </li>
+        <li>
+          Battery MBA, <em>LFP vs NMC vs Sodium-ion</em> — cell-level energy densities and cycle-life ranges.
+          <a href="https://www.battery.mba/resources/lfp-vs-nmc-vs-sodium-ion" target="_blank" rel="noreferrer">Link</a>
+        </li>
+      </ol>
+      <p class="bml-refs-note">
+        Standard potentials refer to defined standard conditions. Theoretical capacity is fixed for a specified
+        reaction and stoichiometric range, while practical capacity and average voltage depend on rate, temperature,
+        voltage limits, electrode design, state of health, and test procedure. Commercial energy-density, cycle-life,
+        and thermal figures are representative source ranges—not specification-sheet guarantees.
+      </p>
+    </div>
+  </section>
+
+  <details class="bml-details">
+    <summary>What E° does not tell you</summary>
+    <ul class="bml-caveat-list text-small">
+      <li><strong>E° is intensive.</strong> Doubling a half-reaction doubles n and ΔG°, but leaves E° unchanged. Never multiply E° by a stoichiometric coefficient.</li>
+      <li><strong>E° is thermodynamics, not kinetics.</strong> A large positive E°<sub>cell</sub> says a reaction <em>can</em> go, not that it goes fast. Overpotential and internal resistance always make the delivered voltage lower than E°<sub>cell</sub>.</li>
+      <li><strong>Alkali and alkaline-earth values are calculated, not measured in water.</strong> These metals reduce water on contact; their aqueous E° values are derived from thermochemical cycles.</li>
+      <li><strong>Concentration matters.</strong> Away from standard conditions, use the Nernst equation: E = E° − (RT/nF)·lnQ ≈ E° − (0.05916/n)·logQ at 25 °C.</li>
+      <li><strong>Anode and cathode swap on charging.</strong> "Negative" and "positive" are fixed terminal labels; "anode" and "cathode" are defined by which electrode is oxidising, so they reverse when a rechargeable cell is charged.</li>
+      <li><strong>Energy needs capacity too.</strong> Voltage is only half the story — specific energy is voltage × charge stored per unit mass, which is why light elements dominate battery chemistry.</li>
+    </ul>
+  </details>
+
+</section>
+<style>
+  #battery-materials-lab {
+    --bml-axis-y: 118px;
+    --bml-neg: var(--viz-series-1);
+    --bml-pos: var(--viz-series-2);
+    width: 100%;
+    color: var(--foreground);
+  }
+
+  #battery-materials-lab .bml-title {
+    margin-bottom: 2px;
+  }
+
+  #battery-materials-lab .bml-course-map {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  #battery-materials-lab .bml-course-map strong {
+    flex-basis: 100%;
+  }
+
+  #battery-materials-lab .bml-course-map a {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+  }
+
+  #battery-materials-lab .bml-concept-warning {
+    display: grid;
+    gap: 4px;
+    margin-top: 12px;
+    border-left: 3px solid var(--viz-series-3);
+  }
+
+  #battery-materials-lab .bml-estimate-assumptions {
+    margin-top: 10px;
+  }
+
+  #battery-materials-lab .bml-subtitle {
+    max-width: 72ch;
+  }
+
+  #battery-materials-lab .bml-mode-row {
+    margin-top: 14px;
+  }
+
+  #battery-materials-lab .bml-role-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+  }
+
+  #battery-materials-lab .bml-role-dot-negative {
+    background: var(--bml-neg);
+  }
+
+  #battery-materials-lab .bml-role-dot-positive {
+    background: var(--bml-pos);
+  }
+
+  #battery-materials-lab .btn[aria-pressed="true"] .bml-role-dot {
+    box-shadow: 0 0 0 2px var(--primary-foreground);
+  }
+
+  /* ---------- element summary ---------- */
+
+  #battery-materials-lab .bml-element-summary {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  #battery-materials-lab .bml-atom {
+    position: relative;
+    width: 86px;
+    height: 86px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+  }
+
+  #battery-materials-lab .bml-atom::before {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    border: 1px dashed var(--border);
+    border-radius: 50%;
+  }
+
+  #battery-materials-lab .bml-atom-nucleus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 34px;
+    height: 34px;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--primary-foreground);
+    background: var(--primary);
+    font-weight: 500;
+  }
+
+  #battery-materials-lab .bml-valence-dot {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--viz-series-1);
+  }
+
+  #battery-materials-lab .bml-atom[data-tendency="acceptor"] .bml-valence-dot {
+    background: var(--viz-series-2);
+  }
+
+  #battery-materials-lab .bml-atom[data-tendency="noble"] .bml-valence-dot {
+    background: var(--viz-series-5);
+  }
+
+  #battery-materials-lab .bml-atom[data-tendency="mixed"] .bml-valence-dot,
+  #battery-materials-lab .bml-atom[data-tendency="fblock"] .bml-valence-dot,
+  #battery-materials-lab .bml-atom[data-tendency="transition"] .bml-valence-dot {
+    background: var(--viz-series-4);
+  }
+
+  #battery-materials-lab .bml-element-copy {
+    min-width: 0;
+  }
+
+  #battery-materials-lab .bml-element-heading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+
+  #battery-materials-lab .bml-element-meta,
+  #battery-materials-lab .bml-note {
+    color: var(--muted-foreground);
+  }
+
+  #battery-materials-lab .bml-element-potential {
+    margin-top: 5px;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-small);
+  }
+
+  #battery-materials-lab .bml-couple-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    margin-top: 7px;
+  }
+
+  #battery-materials-lab .bml-couple-chip {
+    min-height: 22px;
+    padding: 0 7px;
+    font-size: var(--font-size-small);
+    border-radius: var(--radius-full);
+  }
+
+  /* ---------- periodic table ---------- */
+
+  #battery-materials-lab .bml-table-wrap {
+    margin-top: 14px;
+    padding-bottom: 4px;
+  }
+
+  #battery-materials-lab .bml-periodic-grid {
+    display: grid;
+    grid-template-columns: 26px repeat(18, minmax(38px, 1fr));
+    grid-template-rows: 20px repeat(7, 40px) 12px repeat(2, 40px);
+    gap: 3px;
+    min-width: 780px;
+    align-items: stretch;
+  }
+
+  #battery-materials-lab .bml-grid-label {
+    display: grid;
+    place-items: center;
+    color: var(--muted-foreground);
+  }
+
+  #battery-materials-lab .bml-series-placeholder {
+    display: grid;
+    place-items: center;
+    color: var(--muted-foreground);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-lg);
+  }
+
+  #battery-materials-lab .bml-element {
+    position: relative;
+    display: grid;
+    gap: 0;
+    padding: 2px 3px;
+    align-content: center;
+    justify-items: center;
+    line-height: 1.1;
+    background-color: var(--secondary);
+  }
+
+  #battery-materials-lab .bml-el-symbol {
+    font-weight: var(--font-weight-medium);
+  }
+
+  #battery-materials-lab .bml-el-value {
+    font-size: max(9px, calc(var(--font-size-base) - 4px));
+    font-variant-numeric: tabular-nums;
+    color: var(--muted-foreground);
+  }
+
+  #battery-materials-lab .bml-element[data-band="strong-reducer"] {
+    background-color: color-mix(in srgb, var(--viz-series-1) 30%, var(--secondary));
+  }
+
+  #battery-materials-lab .bml-element[data-band="weak-reducer"] {
+    background-color: color-mix(in srgb, var(--viz-series-1) 13%, var(--secondary));
+  }
+
+  #battery-materials-lab .bml-element[data-band="weak-oxidiser"] {
+    background-color: color-mix(in srgb, var(--viz-series-2) 14%, var(--secondary));
+  }
+
+  #battery-materials-lab .bml-element[data-band="strong-oxidiser"] {
+    background-color: color-mix(in srgb, var(--viz-series-2) 32%, var(--secondary));
+  }
+
+  #battery-materials-lab .bml-element[data-band="none"] {
+    background-color: var(--secondary);
+    color: var(--muted-foreground);
+  }
+
+  #battery-materials-lab .bml-element[data-role="negative"] {
+    border-color: var(--bml-neg);
+    box-shadow: inset 0 0 0 2px var(--bml-neg);
+  }
+
+  #battery-materials-lab .bml-element[data-role="positive"] {
+    border-color: var(--bml-pos);
+    box-shadow: inset 0 0 0 2px var(--bml-pos);
+  }
+
+  #battery-materials-lab .bml-table-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    align-items: center;
+    margin-top: 8px;
+    color: var(--muted-foreground);
+  }
+
+  #battery-materials-lab .bml-table-legend > span {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  #battery-materials-lab .bml-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    border-radius: 3px;
+  }
+
+  #battery-materials-lab .bml-swatch-donor {
+    background: color-mix(in srgb, var(--viz-series-1) 55%, var(--secondary));
+  }
+
+  #battery-materials-lab .bml-swatch-weak {
+    background: color-mix(in srgb, var(--viz-series-1) 22%, var(--secondary));
+  }
+
+  #battery-materials-lab .bml-swatch-noble-metal {
+    background: color-mix(in srgb, var(--viz-series-2) 22%, var(--secondary));
+  }
+
+  #battery-materials-lab .bml-swatch-acceptor {
+    background: color-mix(in srgb, var(--viz-series-2) 55%, var(--secondary));
+  }
+
+  #battery-materials-lab .bml-swatch-none {
+    background: var(--secondary);
+    border: 1px solid var(--border);
+  }
+
+  #battery-materials-lab .bml-direction {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-small);
+  }
+
+  #battery-materials-lab .bml-direction > :last-child {
+    text-align: right;
+  }
+
+  #battery-materials-lab .bml-direction > :nth-child(2) {
+    text-align: center;
+  }
+
+  /* ---------- stats + axis ---------- */
+
+  #battery-materials-lab .bml-stats {
+    margin-top: 18px;
+  }
+
+  #battery-materials-lab .bml-stats .viz-stat-value {
+    font-variant-numeric: tabular-nums;
+  }
+
+  #battery-materials-lab .bml-stats .viz-stat-value.is-invalid {
+    color: var(--destructive);
+  }
+
+  #battery-materials-lab .bml-stage {
+    position: relative;
+    min-height: 250px;
+    margin-top: 14px;
+  }
+
+  #battery-materials-lab .bml-water-window {
+    position: absolute;
+    top: calc(var(--bml-axis-y) - 44px);
+    height: 88px;
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--viz-series-6) 16%, transparent);
+    border-inline: 1px dashed color-mix(in srgb, var(--viz-series-6) 60%, transparent);
+  }
+
+  #battery-materials-lab .bml-water-label {
+    position: absolute;
+    top: calc(var(--bml-axis-y) - 62px);
+    transform: translateX(-50%);
+    color: var(--muted-foreground);
+    white-space: nowrap;
+  }
+
+  #battery-materials-lab .bml-axis {
+    position: absolute;
+    top: var(--bml-axis-y);
+    left: 12%;
+    right: 12%;
+    height: 2px;
+    background: var(--border);
+  }
+
+  #battery-materials-lab .bml-tick-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  #battery-materials-lab .bml-tick {
+    position: absolute;
+    top: calc(var(--bml-axis-y) - 5px);
+    width: 1px;
+    height: 12px;
+    background: var(--border);
+  }
+
+  #battery-materials-lab .bml-tick-label {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--muted-foreground);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  #battery-materials-lab .bml-gap {
+    position: absolute;
+    top: calc(var(--bml-axis-y) - 2px);
+    height: 6px;
+    border-radius: 3px;
+    background: var(--viz-series-3);
+    transition: left 220ms ease, width 220ms ease;
+  }
+
+  #battery-materials-lab .bml-gap.is-invalid {
+    background: var(--destructive);
+  }
+
+  #battery-materials-lab .bml-gap-label {
+    position: absolute;
+    top: calc(var(--bml-axis-y) - 30px);
+    transform: translateX(-50%);
+    padding: 1px 5px;
+    border-radius: var(--radius-sm);
+    background: var(--background);
+    color: var(--foreground);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    transition: left 220ms ease;
+  }
+
+  #battery-materials-lab .bml-marker {
+    position: absolute;
+    width: min(110px, 34%);
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    color: var(--foreground);
+    text-align: center;
+    transition: left 220ms ease;
+  }
+
+  #battery-materials-lab .bml-marker-negative {
+    top: 6px;
+    height: calc(var(--bml-axis-y) - 5px);
+    flex-direction: column;
+  }
+
+  #battery-materials-lab .bml-marker-positive {
+    top: calc(var(--bml-axis-y) - 6px);
+    height: 68px;
+    flex-direction: column;
+  }
+
+  #battery-materials-lab .bml-marker-label {
+    max-width: 100%;
+    padding: 0 3px;
+    border-radius: var(--radius-sm);
+    background: var(--background);
+    white-space: nowrap;
+  }
+
+  #battery-materials-lab .bml-marker-stem {
+    width: 2px;
+    flex: 1;
+    min-height: 18px;
+  }
+
+  #battery-materials-lab .bml-marker-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex: 0 0 14px;
+  }
+
+  #battery-materials-lab .bml-marker-negative .bml-marker-stem,
+  #battery-materials-lab .bml-marker-negative .bml-marker-dot {
+    background: var(--bml-neg);
+  }
+
+  #battery-materials-lab .bml-marker-positive .bml-marker-stem,
+  #battery-materials-lab .bml-marker-positive .bml-marker-dot {
+    background: var(--bml-pos);
+  }
+
+  #battery-materials-lab .bml-reference-line {
+    position: absolute;
+    top: calc(var(--bml-axis-y) - 46px);
+    height: 138px;
+    border-left: 1px dashed var(--muted-foreground);
+    transition: left 220ms ease;
+  }
+
+  #battery-materials-lab .bml-reference-label {
+    position: absolute;
+    top: 140px;
+    left: 0;
+    transform: translateX(-50%);
+    color: var(--muted-foreground);
+    white-space: nowrap;
+  }
+
+  #battery-materials-lab .bml-axis-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: var(--muted-foreground);
+    text-align: center;
+  }
+
+  /* ---------- notes ---------- */
+
+  #battery-materials-lab .bml-notes {
+    display: grid;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  #battery-materials-lab .bml-note {
+    max-width: 82ch;
+  }
+
+  /* ---------- circuit ---------- */
+
+  #battery-materials-lab .bml-circuit {
+    display: grid;
+    grid-template-columns: minmax(104px, 1fr) minmax(170px, 2.2fr) minmax(104px, 1fr);
+    gap: 12px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  #battery-materials-lab .bml-electrode {
+    display: grid;
+    gap: 5px;
+    justify-items: center;
+    text-align: center;
+  }
+
+  #battery-materials-lab .bml-badge-negative {
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--bml-neg) 26%, transparent);
+  }
+
+  #battery-materials-lab .bml-badge-positive {
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--bml-pos) 26%, transparent);
+  }
+
+  #battery-materials-lab .bml-conductors {
+    display: grid;
+    gap: 30px;
+  }
+
+  #battery-materials-lab .bml-wire,
+  #battery-materials-lab .bml-electrolyte {
+    position: relative;
+    height: 2px;
+  }
+
+  #battery-materials-lab .bml-wire {
+    border-top: 2px solid var(--border);
+  }
+
+  #battery-materials-lab .bml-electrolyte {
+    border-top: 2px dashed color-mix(in srgb, var(--viz-series-6) 70%, transparent);
+  }
+
+  #battery-materials-lab .bml-wire::after,
+  #battery-materials-lab .bml-electrolyte::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    right: -1px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid var(--border);
+  }
+
+  #battery-materials-lab .bml-wire-tag,
+  #battery-materials-lab .bml-electrolyte-tag {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--muted-foreground);
+    white-space: nowrap;
+  }
+
+  #battery-materials-lab .bml-electrolyte-tag {
+    top: 6px;
+  }
+
+  #battery-materials-lab .bml-electron,
+  #battery-materials-lab .bml-ion {
+    position: absolute;
+    top: -7px;
+    left: 3%;
+    display: grid;
+    place-items: center;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    font-size: 9px;
+    line-height: 1;
+    opacity: 0;
+  }
+
+  #battery-materials-lab .bml-electron {
+    background: var(--bml-neg);
+  }
+
+  #battery-materials-lab .bml-ion {
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--viz-series-6) 55%, transparent);
+  }
+
+  #battery-materials-lab .bml-circuit.is-running :is(.bml-electron, .bml-ion) {
+    animation: bml-electron-run 1.35s ease-in-out 1 both;
+  }
+
+  #battery-materials-lab .bml-circuit.is-running :is(.bml-electron, .bml-ion):nth-of-type(2) {
+    animation-delay: 170ms;
+  }
+
+  #battery-materials-lab .bml-circuit.is-running :is(.bml-electron, .bml-ion):nth-of-type(3) {
+    animation-delay: 340ms;
+  }
+
+  #battery-materials-lab .bml-action-row {
+    margin-top: 14px;
+  }
+
+  /* ---------- reactions + notes ---------- */
+
+  #battery-materials-lab .bml-reaction-block {
+    display: grid;
+    gap: 3px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    text-align: center;
+  }
+
+  #battery-materials-lab .bml-reaction-line {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-small);
+    overflow-wrap: anywhere;
+  }
+
+  #battery-materials-lab .bml-reaction-overall {
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+    font-weight: var(--font-weight-medium);
+  }
+
+  #battery-materials-lab .bml-warn {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius-lg);
+    border: 1px solid color-mix(in srgb, var(--destructive) 40%, transparent);
+    background: color-mix(in srgb, var(--destructive) 8%, transparent);
+    color: var(--foreground);
+  }
+
+  #battery-materials-lab .bml-details {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  #battery-materials-lab .bml-details > summary {
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+  }
+
+  #battery-materials-lab .bml-details-intro {
+    max-width: 82ch;
+    margin-top: 8px;
+  }
+
+  #battery-materials-lab .bml-caveat-list {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    color: var(--muted-foreground);
+  }
+
+  #battery-materials-lab .bml-caveat-list li + li {
+    margin-top: 5px;
+  }
+
+  #battery-materials-lab .bml-cell-basis-aq {
+    color: var(--viz-series-3);
+  }
+
+  @keyframes bml-electron-run {
+    0% {
+      left: 3%;
+      opacity: 0.25;
+    }
+    18% {
+      opacity: 1;
+    }
+    100% {
+      left: 92%;
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 560px) {
+    #battery-materials-lab .bml-element-summary {
+      grid-template-columns: 1fr;
+    }
+
+    #battery-materials-lab .bml-atom {
+      justify-self: center;
+    }
+
+    #battery-materials-lab .bml-direction {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    #battery-materials-lab .bml-direction > :nth-child(2) {
+      display: none;
+    }
+
+    #battery-materials-lab .bml-circuit {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    #battery-materials-lab .bml-conductors {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      margin-top: 22px;
+      margin-inline: 28px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #battery-materials-lab .bml-gap,
+    #battery-materials-lab .bml-gap-label,
+    #battery-materials-lab .bml-marker,
+    #battery-materials-lab .bml-reference-line {
+      transition: none;
+    }
+
+    #battery-materials-lab .bml-circuit.is-running :is(.bml-electron, .bml-ion) {
+      animation-duration: 1ms;
+      animation-delay: 0ms;
+    }
+  }
+
+  /* ================= zero-reference explainer ================= */
+
+  #battery-materials-lab .bml-ref-explain {
+    margin-top: 10px;
+    padding: 12px 14px;
+  }
+
+  #battery-materials-lab .bml-ref-explain-head {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  #battery-materials-lab .bml-ref-explain p {
+    max-width: 88ch;
+  }
+
+  #battery-materials-lab .bml-ref-explain p + p {
+    margin-top: 6px;
+  }
+
+  #battery-materials-lab .bml-ref-explain-fixed {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ================= inside-the-cell diagram ================= */
+
+  #battery-materials-lab .bml-inside-title { margin-top: 26px; }
+  #battery-materials-lab .bml-inside-intro { margin-top: 2px; max-width: 84ch; }
+
+  /* Scales with the page instead of living in its own scroll box, so browser
+     zoom behaves the way it does everywhere else on the page. */
+  #battery-materials-lab .bml-cell-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+    overflow: visible;
+  }
+
+  #battery-materials-lab .bml-lyte {
+    fill: color-mix(in srgb, var(--viz-series-6) 12%, transparent);
+    stroke: color-mix(in srgb, var(--viz-series-6) 45%, transparent);
+    stroke-width: 1.5;
+  }
+
+  #battery-materials-lab .bml-sep {
+    stroke: color-mix(in srgb, var(--foreground) 22%, transparent);
+    stroke-width: 2;
+    stroke-dasharray: 5 6;
+  }
+
+  #battery-materials-lab .bml-wire-path {
+    fill: none;
+    stroke: color-mix(in srgb, var(--foreground) 42%, transparent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  #battery-materials-lab .bml-load {
+    fill: var(--background);
+    stroke: color-mix(in srgb, var(--foreground) 42%, transparent);
+    stroke-width: 2;
+  }
+
+  #battery-materials-lab .bml-load-text { fill: var(--foreground); font-size: 14px; }
+
+  /* --- the atoms --- */
+
+  #battery-materials-lab .bml-ring {
+    fill: none;
+    stroke: color-mix(in srgb, var(--foreground) 16%, transparent);
+    stroke-width: 1;
+  }
+
+  #battery-materials-lab .bml-ring.is-outer {
+    stroke: color-mix(in srgb, var(--foreground) 34%, transparent);
+    stroke-dasharray: 3 4;
+  }
+
+  #battery-materials-lab .bml-nucleus { stroke: var(--background); stroke-width: 2; }
+  #battery-materials-lab .bml-bohr-neg .bml-nucleus { fill: var(--viz-series-1); }
+  #battery-materials-lab .bml-bohr-pos .bml-nucleus { fill: var(--viz-series-2); }
+
+  #battery-materials-lab .bml-nucleus-text {
+    fill: var(--primary-foreground);
+    font-size: 20px;
+    font-weight: var(--font-weight-medium);
+  }
+
+  #battery-materials-lab .bml-shell-dot { stroke: var(--background); stroke-width: 1.5; }
+  #battery-materials-lab .bml-bohr-neg .bml-shell-dot {
+    fill: color-mix(in srgb, var(--viz-series-1) 78%, transparent);
+  }
+  #battery-materials-lab .bml-bohr-pos .bml-shell-dot {
+    fill: color-mix(in srgb, var(--viz-series-2) 78%, transparent);
+  }
+
+  /* the one electron that actually moves */
+  #battery-materials-lab .bml-shell-dot.is-leaving,
+  #battery-materials-lab .bml-shell-dot.is-arriving {
+    r: 7.5;
+    fill: var(--viz-series-3);
+    stroke: var(--background);
+    stroke-width: 2.5;
+  }
+
+  #battery-materials-lab .bml-cell-head { font-size: 12px; letter-spacing: 0.08em; }
+  #battery-materials-lab .bml-head-neg { fill: var(--viz-series-1); }
+  #battery-materials-lab .bml-head-pos { fill: var(--viz-series-2); }
+
+  #battery-materials-lab .bml-cell-caption {
+    fill: var(--foreground);
+    font-size: 17px;
+    font-weight: var(--font-weight-medium);
+  }
+
+  #battery-materials-lab .bml-cell-sub { fill: var(--muted-foreground); font-size: 13px; }
+  #battery-materials-lab .bml-cell-sub-strong {
+    fill: var(--foreground);
+    font-weight: var(--font-weight-medium);
+  }
+  #battery-materials-lab .bml-flow-tag { fill: var(--muted-foreground); font-size: 13px; }
+
+  /* --- particles --- */
+
+  #battery-materials-lab .bml-e-dot { fill: var(--viz-series-3); }
+  #battery-materials-lab .bml-ion-dot {
+    fill: color-mix(in srgb, var(--viz-series-1) 82%, transparent);
+  }
+  #battery-materials-lab .bml-e-text,
+  #battery-materials-lab .bml-ion-text {
+    fill: var(--background);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* At rest they wait at the start line, so the still picture still reads. */
+  #battery-materials-lab .bml-e-runner {
+    transform: translate(var(--e-start), var(--e-y));
+    opacity: 0.3;
+  }
+  #battery-materials-lab .bml-ion-runner {
+    transform: translate(var(--ion-start), var(--ion-y));
+    opacity: 0.3;
+  }
+
+  #battery-materials-lab .bml-cell-scroll.is-running .bml-e-runner {
+    animation: bml-e-travel 2.6s linear infinite;
+  }
+  #battery-materials-lab .bml-cell-scroll.is-running .bml-ion-runner {
+    animation: bml-ion-travel 2.6s linear infinite;
+  }
+  #battery-materials-lab .bml-cell-scroll.is-running .bml-shell-dot.is-leaving {
+    animation: bml-shell-leave 2.6s ease-in-out infinite;
+  }
+  #battery-materials-lab .bml-cell-scroll.is-running .bml-shell-dot.is-arriving {
+    animation: bml-shell-arrive 2.6s ease-in-out infinite;
+  }
+
+  @keyframes bml-e-travel {
+    0%   { transform: translate(var(--e-start), var(--e-y)); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translate(var(--e-end), var(--e-y)); opacity: 0; }
+  }
+
+  @keyframes bml-ion-travel {
+    0%   { transform: translate(var(--ion-start), var(--ion-y)); opacity: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translate(var(--ion-end), var(--ion-y)); opacity: 0; }
+  }
+
+  @keyframes bml-shell-leave {
+    0%, 8%    { opacity: 1; }
+    26%, 100% { opacity: 0.12; }
+  }
+
+  @keyframes bml-shell-arrive {
+    0%, 74%   { opacity: 0.12; }
+    92%, 100% { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #battery-materials-lab .bml-cell-scroll.is-running :is(
+      .bml-e-runner, .bml-ion-runner, .bml-shell-dot
+    ) { animation: none; opacity: 1; }
+  }
+
+  /* --- atom description cards --- */
+
+  #battery-materials-lab .bml-atom-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  #battery-materials-lab .bml-atom-card {
+    display: grid;
+    gap: 4px;
+    align-content: start;
+    padding: 12px 14px;
+    border-left: 3px solid var(--border);
+  }
+
+  #battery-materials-lab .bml-atom-card-neg { border-left-color: var(--viz-series-1); }
+  #battery-materials-lab .bml-atom-card-pos { border-left-color: var(--viz-series-2); }
+
+  #battery-materials-lab .bml-atom-role { color: var(--muted-foreground); }
+
+  #battery-materials-lab .bml-atom-card > code {
+    justify-self: start;
+    margin: 2px 0 4px;
+  }
+
+  /* --- numbered steps, in HTML so they scale with the page text --- */
+
+  #battery-materials-lab .bml-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: bml-step;
+  }
+
+  #battery-materials-lab .bml-steps > li {
+    position: relative;
+    min-width: 0;
+    padding: 10px 12px 10px 36px;
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    font-size: var(--font-size-small);
+    counter-increment: bml-step;
+  }
+
+  #battery-materials-lab .bml-steps > li::before {
+    content: counter(bml-step);
+    position: absolute;
+    top: 10px;
+    left: 11px;
+    display: grid;
+    width: 18px;
+    height: 18px;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--background);
+    background: var(--foreground);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  #battery-materials-lab .bml-key-insight {
+    max-width: 86ch;
+    margin-top: 12px;
+    padding: 11px 13px;
+    border-radius: var(--radius-lg);
+    border-left: 3px solid var(--viz-series-6);
+    background: color-mix(in srgb, var(--viz-series-6) 8%, transparent);
+    font-size: var(--font-size-small);
+  }
+
+  /* ================= references ================= */
+
+  #battery-materials-lab .bml-refs {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  #battery-materials-lab .bml-refs-list {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-small);
+  }
+
+  #battery-materials-lab .bml-refs-list li + li {
+    margin-top: 6px;
+  }
+
+  #battery-materials-lab .bml-refs-note {
+    margin-top: 12px;
+    max-width: 86ch;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-small);
+  }
+
+  /* ================= intercalation ================= */
+
+  #battery-materials-lab .bml-interc-title { margin-top: 28px; }
+  #battery-materials-lab .bml-interc-controls { margin-top: 12px; }
+  #battery-materials-lab .bml-interc-cards,
+  #battery-materials-lab .bml-interc-steps { margin-top: 12px; }
+
+  #battery-materials-lab .bml-interc-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+    overflow: visible;
+  }
+
+  #battery-materials-lab .bml-slab {
+    stroke-width: 1;
+  }
+
+  #battery-materials-lab .bml-slab-left {
+    fill: color-mix(in srgb, var(--foreground) 34%, transparent);
+    stroke: color-mix(in srgb, var(--foreground) 46%, transparent);
+  }
+
+  #battery-materials-lab .bml-slab-right {
+    fill: color-mix(in srgb, var(--viz-series-2) 46%, transparent);
+    stroke: color-mix(in srgb, var(--viz-series-2) 62%, transparent);
+  }
+
+  /* an empty lithium site is a hole in the lattice, a filled one holds Li⁺ */
+  #battery-materials-lab .bml-li-site {
+    fill: none;
+    stroke: color-mix(in srgb, var(--foreground) 26%, transparent);
+    stroke-width: 1.2;
+    stroke-dasharray: 2 2.5;
+  }
+
+  #battery-materials-lab .bml-li-site.is-filled {
+    fill: var(--viz-series-1);
+    stroke: var(--background);
+    stroke-width: 1.5;
+    stroke-dasharray: none;
+  }
+
+  #battery-materials-lab .bml-shuttle-dot { fill: var(--viz-series-1); }
+  #battery-materials-lab .bml-shuttle-text {
+    fill: var(--primary-foreground);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  #battery-materials-lab .bml-interc-formula {
+    fill: var(--foreground);
+    font-size: 16px;
+    font-weight: var(--font-weight-medium);
+  }
+
+  #battery-materials-lab .bml-interc-metal {
+    fill: var(--viz-series-2);
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+  }
+
+  #battery-materials-lab .bml-shuttle {
+    transform: translate(var(--sh-start), var(--sh-y));
+    animation: bml-shuttle-right 3.2s linear infinite;
+  }
+
+  #battery-materials-lab .bml-interc-e {
+    transform: translate(var(--we-start), var(--we-y));
+    animation: bml-interc-e-right 3.2s linear infinite;
+  }
+
+  #battery-materials-lab .is-charging .bml-shuttle {
+    animation-name: bml-shuttle-left;
+  }
+
+  #battery-materials-lab .is-charging .bml-interc-e {
+    animation-name: bml-interc-e-left;
+  }
+
+  @keyframes bml-shuttle-right {
+    0%   { transform: translate(var(--sh-start), var(--sh-y)); opacity: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translate(var(--sh-end), var(--sh-y)); opacity: 0; }
+  }
+
+  @keyframes bml-shuttle-left {
+    0%   { transform: translate(var(--sh-end), var(--sh-y)); opacity: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translate(var(--sh-start), var(--sh-y)); opacity: 0; }
+  }
+
+  @keyframes bml-interc-e-right {
+    0%   { transform: translate(var(--we-start), var(--we-y)); opacity: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translate(var(--we-end), var(--we-y)); opacity: 0; }
+  }
+
+  @keyframes bml-interc-e-left {
+    0%   { transform: translate(var(--we-end), var(--we-y)); opacity: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translate(var(--we-start), var(--we-y)); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #battery-materials-lab :is(.bml-shuttle, .bml-interc-e) {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  #battery-materials-lab .bml-scope-note {
+    max-width: 86ch;
+    margin-top: 10px;
+    padding: 11px 13px;
+    border-radius: var(--radius-lg);
+    border-left: 3px solid var(--destructive);
+    background: color-mix(in srgb, var(--destructive) 7%, transparent);
+    font-size: var(--font-size-small);
+  }
+
+  /* ================= commercial chemistries ================= */
+
+  #battery-materials-lab .bml-market {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    /* Validated pair: passes lightness band, chroma, CVD, normal-vision and
+       contrast checks against both the light and dark chart surfaces. */
+    --mkt-cathode: light-dark(#339cff, #4494dd);
+    --mkt-anode: light-dark(#f3883b, #cf701f);
+    --mkt-neutral: color-mix(in srgb, var(--foreground) 22%, transparent);
+  }
+
+  #battery-materials-lab .bml-market-title {
+    margin-bottom: 4px;
+  }
+
+  #battery-materials-lab .bml-market-intro,
+  #battery-materials-lab .bml-market-note {
+    max-width: 84ch;
+  }
+
+  #battery-materials-lab .bml-market-note {
+    margin-top: 8px;
+  }
+
+  /* ---- voltage ladder ---- */
+
+  #battery-materials-lab .bml-ladder-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 12px;
+    align-items: baseline;
+    margin-top: 22px;
+  }
+
+  #battery-materials-lab .bml-ladder-title {
+    margin: 0;
+  }
+
+  #battery-materials-lab .bml-energy-title {
+    margin-top: 24px;
+  }
+
+  #battery-materials-lab .bml-ladder-wrap {
+    margin-top: 10px;
+  }
+
+  #battery-materials-lab .bml-ladder-scroll {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  #battery-materials-lab .bml-ladder-svg {
+    display: block;
+    /* below this the 13px SVG labels stop being legible, so scroll instead */
+    min-width: 780px;
+    width: 100%;
+    height: auto;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-rule {
+    stroke: color-mix(in srgb, var(--foreground) 8%, transparent);
+    stroke-width: 1;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-axis-num,
+  #battery-materials-lab .bml-ladder-svg .bml-col-title {
+    fill: var(--muted-foreground);
+    font-size: 12px;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-leader {
+    stroke: color-mix(in srgb, var(--foreground) 22%, transparent);
+    stroke-width: 1;
+    fill: none;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-dot {
+    /* 2px surface ring keeps clustered markers separable */
+    stroke: var(--background);
+    stroke-width: 2;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-dot-anode { fill: var(--mkt-anode); }
+  #battery-materials-lab .bml-ladder-svg .bml-dot-cathode { fill: var(--mkt-cathode); }
+
+  #battery-materials-lab .bml-ladder-svg .bml-dot.is-active {
+    r: 6.5;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-name {
+    fill: var(--foreground);
+    font-size: 13px;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-num {
+    fill: var(--muted-foreground);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-mat {
+    cursor: var(--cursor-interaction, pointer);
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-hit {
+    fill: transparent;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-chip {
+    fill: transparent;
+    stroke: transparent;
+    stroke-width: 1;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-mat:hover .bml-chip {
+    fill: color-mix(in srgb, var(--foreground) 7%, transparent);
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-mat:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 1px;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-mat[aria-pressed="true"] .bml-name {
+    font-weight: var(--font-weight-medium);
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-mat[aria-pressed="true"] .bml-num {
+    fill: var(--foreground);
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-mat-anode[aria-pressed="true"] .bml-chip {
+    fill: color-mix(in srgb, var(--mkt-anode) 16%, transparent);
+    stroke: var(--mkt-anode);
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-mat-cathode[aria-pressed="true"] .bml-chip {
+    fill: color-mix(in srgb, var(--mkt-cathode) 16%, transparent);
+    stroke: var(--mkt-cathode);
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-gap-bar {
+    fill: color-mix(in srgb, var(--viz-series-3) 75%, transparent);
+    transition: y 200ms ease, height 200ms ease;
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-gap-chip {
+    fill: var(--background);
+  }
+
+  #battery-materials-lab .bml-ladder-svg .bml-gap-text {
+    fill: var(--foreground);
+    font-size: 13px;
+    font-weight: var(--font-weight-medium);
+    font-variant-numeric: tabular-nums;
+  }
+
+  #battery-materials-lab .bml-ladder-axis-title {
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  #battery-materials-lab .bml-market-stats {
+    margin-top: 16px;
+  }
+
+  /* ---- energy bars ---- */
+
+  #battery-materials-lab .bml-energy {
+    display: grid;
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  #battery-materials-lab .bml-energy-row {
+    display: grid;
+    grid-template-columns: minmax(92px, 132px) 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+
+  #battery-materials-lab .bml-energy-name {
+    font-size: var(--font-size-small);
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  #battery-materials-lab .bml-energy-track {
+    position: relative;
+    height: 16px;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--foreground) 4%, transparent);
+  }
+
+  #battery-materials-lab .bml-energy-fill {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--mkt-cathode);
+  }
+
+  #battery-materials-lab .bml-energy-value {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted-foreground);
+    font-size: var(--font-size-small);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  #battery-materials-lab .bml-energy-axis {
+    display: grid;
+    grid-template-columns: minmax(92px, 132px) 1fr;
+    gap: 10px;
+    margin-top: 5px;
+  }
+
+  #battery-materials-lab .bml-energy-axis-scale {
+    display: flex;
+    justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+  }
+
+  #battery-materials-lab .bml-market-table {
+    margin-top: 20px;
+  }
+
+  #battery-materials-lab .bml-market-table .table {
+    min-width: 660px;
+  }
+
+  #battery-materials-lab .bml-market-table .bml-row-lfp th,
+  #battery-materials-lab .bml-market-table .bml-row-nmc th {
+    position: relative;
+  }
+
+  #battery-materials-lab .bml-chem-tag {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 2px;
+    background: var(--mkt-neutral);
+  }
+
+  #battery-materials-lab .bml-chem-tag-lfp { background: var(--mkt-cathode); }
+  #battery-materials-lab .bml-chem-tag-nmc { background: var(--mkt-anode); }
+
+  @media (max-width: 640px) {
+    #battery-materials-lab .bml-ladder {
+      grid-template-columns: 1fr 56px 1fr;
+      height: 420px;
+    }
+
+    #battery-materials-lab .bml-mat {
+      font-size: max(10px, calc(var(--font-size-base) - 3px));
+      padding: 1px 4px;
+    }
+
+    #battery-materials-lab .bml-energy-row,
+    #battery-materials-lab .bml-energy-axis {
+      grid-template-columns: 70px 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #battery-materials-lab .bml-ladder-gap {
+      transition: none;
+    }
+  }
+</style>
+<script>
+  (() => {
+    const root = document.getElementById("battery-materials-lab");
+    const svg = document.getElementById("bml-cell-svg");
+    if (!root || !svg) return;
+
+    const NS = "http://www.w3.org/2000/svg";
+    const make = (tag, attrs, text) => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs || {}).forEach(([k, v]) => node.setAttribute(k, v));
+      if (text != null) node.textContent = text;
+      return node;
+    };
+
+    /* ------------------------------------------------------------------
+       Electron shells. Orbitals fill in Madelung order; the counts are then
+       collapsed onto principal shells (n = 1, 2, 3 …) to give the Bohr
+       picture a school textbook draws. Ground-state exceptions where an
+       electron moves between shells are listed explicitly.
+       ------------------------------------------------------------------ */
+    const ORBITALS = [
+      [1, 2], [2, 2], [2, 6], [3, 2], [3, 6], [4, 2], [3, 10], [4, 6],
+      [5, 2], [4, 10], [5, 6], [6, 2], [4, 14], [5, 10], [6, 6],
+      [7, 2], [5, 14], [6, 10], [7, 6]
+    ];
+    const SHELL_EXCEPTIONS = {
+      24: [2, 8, 13, 1],            // Cr  [Ar]3d⁵4s¹
+      29: [2, 8, 18, 1],            // Cu  [Ar]3d¹⁰4s¹
+      41: [2, 8, 18, 12, 1],        // Nb
+      42: [2, 8, 18, 13, 1],        // Mo
+      44: [2, 8, 18, 15, 1],        // Ru
+      45: [2, 8, 18, 16, 1],        // Rh
+      46: [2, 8, 18, 18],           // Pd  [Kr]4d¹⁰
+      47: [2, 8, 18, 18, 1],        // Ag
+      57: [2, 8, 18, 18, 9, 2],     // La
+      58: [2, 8, 18, 19, 9, 2],     // Ce
+      64: [2, 8, 18, 25, 9, 2],     // Gd
+      78: [2, 8, 18, 32, 17, 1],    // Pt
+      79: [2, 8, 18, 32, 18, 1],    // Au
+      89: [2, 8, 18, 32, 18, 9, 2], // Ac
+      90: [2, 8, 18, 32, 18, 10, 2],// Th
+      91: [2, 8, 18, 32, 20, 9, 2], // Pa
+      92: [2, 8, 18, 32, 21, 9, 2], // U
+      93: [2, 8, 18, 32, 22, 9, 2], // Np
+      96: [2, 8, 18, 32, 25, 9, 2], // Cm
+      103: [2, 8, 18, 32, 32, 8, 3] // Lr
+    };
+
+    function shellsFor(atomicNumber) {
+      if (SHELL_EXCEPTIONS[atomicNumber]) return SHELL_EXCEPTIONS[atomicNumber].slice();
+      let left = atomicNumber;
+      const shells = [];
+      for (const [n, capacity] of ORBITALS) {
+        if (left <= 0) break;
+        const take = Math.min(capacity, left);
+        shells[n - 1] = (shells[n - 1] || 0) + take;
+        left -= take;
+      }
+      return shells.filter((count) => count > 0);
+    }
+
+    /* ---------------- geometry (SVG user units) ---------------- */
+    const W = 900;
+    const WIRE_Y = 58;
+    const ATOM_CY = 330;
+    const ATOM_R = 132;          // identical for both sides, always
+    const NUCLEUS_R = 26;
+    const INNER_R = 46;
+    const LEFT_CX = 168;
+    const RIGHT_CX = 732;
+    const LYTE_X = 332, LYTE_W = 236;
+    const LYTE_TOP = 214, LYTE_BOTTOM = 446;
+    const LOAD_W = 132;
+
+    const layerOf = (cls) => {
+      const g = make("g", { class: cls });
+      svg.appendChild(g);
+      return g;
+    };
+    const bg = layerOf("bml-cell-bg");
+    const atomLayer = layerOf("bml-cell-atoms");
+    const flow = layerOf("bml-cell-flow");
+    const labels = layerOf("bml-cell-labels");
+
+    /* electrolyte */
+    bg.appendChild(make("rect", {
+      class: "bml-lyte", x: LYTE_X, y: LYTE_TOP, width: LYTE_W,
+      height: LYTE_BOTTOM - LYTE_TOP, rx: 10
+    }));
+    bg.appendChild(make("line", {
+      class: "bml-sep", x1: LYTE_X + LYTE_W / 2, x2: LYTE_X + LYTE_W / 2,
+      y1: LYTE_TOP + 10, y2: LYTE_BOTTOM - 10
+    }));
+
+    /* external circuit */
+    bg.appendChild(make("path", {
+      class: "bml-wire-path",
+      d: `M${LEFT_CX} ${ATOM_CY - ATOM_R - 16} V${WIRE_Y} H${W / 2 - LOAD_W / 2}` +
+         ` M${W / 2 + LOAD_W / 2} ${WIRE_Y} H${RIGHT_CX} V${ATOM_CY - ATOM_R - 16}`
+    }));
+    // drawn in the label layer so electrons pass behind it, into the device
+    labels.appendChild(make("rect", {
+      class: "bml-load", x: W / 2 - LOAD_W / 2, y: WIRE_Y - 21, width: LOAD_W, height: 42, rx: 9
+    }));
+    labels.appendChild(make("text", {
+      class: "bml-load-text", x: W / 2, y: WIRE_Y + 5, "text-anchor": "middle"
+    }, "your device"));
+
+    /* ---------------- one Bohr atom ---------------- */
+    function buildAtom(cx, side) {
+      const g = make("g", { class: "bml-bohr bml-bohr-" + side });
+      atomLayer.appendChild(g);
+      const rings = make("g", { class: "bml-rings" });
+      const dots = make("g", { class: "bml-shell-dots" });
+      const nucleus = make("circle", { class: "bml-nucleus", cx, cy: ATOM_CY, r: NUCLEUS_R });
+      const symbol = make("text", {
+        class: "bml-nucleus-text", x: cx, y: ATOM_CY + 6, "text-anchor": "middle"
+      }, "");
+      const charge = make("text", {
+        class: "bml-charge", x: cx + NUCLEUS_R + 6, y: ATOM_CY - NUCLEUS_R + 4
+      }, "");
+      g.append(rings, nucleus, symbol, dots, charge);
+      return { group: g, rings, dots, nucleus, symbol, charge, cx };
+    }
+    const leftAtom = buildAtom(LEFT_CX, "neg");
+    const rightAtom = buildAtom(RIGHT_CX, "pos");
+
+    /* Shell radii are normalised to ATOM_R whatever the shell count, so the
+       two atoms are always exactly the same size on screen. */
+    function drawAtom(atom, element, mode) {
+      atom.rings.replaceChildren();
+      atom.dots.replaceChildren();
+      if (!element) return null;
+
+      const shells = shellsFor(element.atomicNumber);
+      const count = shells.length;
+      let outerDot = null;
+
+      shells.forEach((electrons, index) => {
+        const r = count === 1
+          ? (INNER_R + ATOM_R) / 2
+          : INNER_R + (index * (ATOM_R - INNER_R)) / (count - 1);
+        const isOuter = index === count - 1;
+        atom.rings.appendChild(make("circle", {
+          class: "bml-ring" + (isOuter ? " is-outer" : ""), cx: atom.cx, cy: ATOM_CY, r
+        }));
+
+        // the outer shell of the negative atom loses one; the positive gains one
+        const shown = isOuter && mode === "gain" ? electrons + 1 : electrons;
+        for (let i = 0; i < shown; i += 1) {
+          const angle = -Math.PI / 2 + (i * 2 * Math.PI) / shown;
+          const dot = make("circle", {
+            class: "bml-shell-dot", r: 5.5,
+            cx: atom.cx + Math.cos(angle) * r,
+            cy: ATOM_CY + Math.sin(angle) * r
+          });
+          if (isOuter && i === 0) {
+            dot.classList.add(mode === "lose" ? "is-leaving" : "is-arriving");
+            outerDot = dot;
+          }
+          atom.dots.appendChild(dot);
+        }
+      });
+      return { shells, outerDot };
+    }
+
+    /* ---------------- moving particles ---------------- */
+    const electronBank = [];
+    const ionBank = [];
+    function electron(index) {
+      const g = make("g", { class: "bml-e-runner" });
+      g.appendChild(make("circle", { class: "bml-e-dot", cx: 0, cy: 0, r: 10 }));
+      g.appendChild(make("text", { class: "bml-e-text", x: 0, y: 4, "text-anchor": "middle" }, "e⁻"));
+      flow.appendChild(g);
+      electronBank.push(g);
+      return g;
+    }
+    function ionRunner() {
+      const g = make("g", { class: "bml-ion-runner" });
+      g.appendChild(make("circle", { class: "bml-ion-dot", cx: 0, cy: 0, r: 13 }));
+      const text = make("text", { class: "bml-ion-text", x: 0, y: 4, "text-anchor": "middle" }, "+");
+      g.appendChild(text);
+      flow.appendChild(g);
+      ionBank.push({ group: g, text });
+      return g;
+    }
+    for (let i = 0; i < 6; i += 1) { electron(i); ionRunner(); }
+
+    svg.style.setProperty("--e-start", LEFT_CX + "px");
+    svg.style.setProperty("--e-end", RIGHT_CX + "px");
+    svg.style.setProperty("--e-y", WIRE_Y + "px");
+    svg.style.setProperty("--ion-start", (LYTE_X + 22) + "px");
+    svg.style.setProperty("--ion-end", (LYTE_X + LYTE_W - 22) + "px");
+
+    /* ---------------- in-diagram labels ---------------- */
+    const addText = (cls, x, y, anchor, text) =>
+      labels.appendChild(make("text", { class: cls, x, y, "text-anchor": anchor || "middle" }, text));
+
+    addText("bml-cell-head bml-head-neg", LEFT_CX, 150, "middle", "NEGATIVE ELECTRODE");
+    addText("bml-cell-head bml-head-pos", RIGHT_CX, 150, "middle", "POSITIVE ELECTRODE");
+    addText("bml-cell-sub", W / 2, 176, "middle", "ELECTROLYTE");
+    addText("bml-cell-sub bml-cell-sub-strong", W / 2, 196, "middle", "ions pass · electrons cannot");
+    const flowTag = addText("bml-flow-tag", W / 2, LYTE_TOP + 26, "middle", "cations →");
+    void flowTag;
+
+    /* Everything wordy lives in HTML below the picture: it wraps, and it
+       scales with the page instead of with the drawing. */
+    const html = {
+      negTitle: root.querySelector("#bml-neg-atom-title"),
+      negEq: root.querySelector("#bml-neg-atom-eq"),
+      negNote: root.querySelector("#bml-neg-atom-note"),
+      posTitle: root.querySelector("#bml-pos-atom-title"),
+      posEq: root.querySelector("#bml-pos-atom-eq"),
+      posNote: root.querySelector("#bml-pos-atom-note")
+    };
+    const setText = (node, value) => { if (node) node.textContent = value; };
+
+    /* ---------------- public API ---------------- */
+    function ionCharge(n) {
+      if (n === 1) return "+";
+      return n + "+";
+    }
+
+    const api = {
+      update(negativeCouple, positiveCouple, negElement, posElement) {
+        const negSides = String(negativeCouple.label).split("/");
+        const posSides = String(positiveCouple.label).split("/");
+        const negReduced = negSides[1] || negativeCouple.label;
+        const negOxidised = negSides[0] || negativeCouple.label;
+        const posOxidised = posSides[0] || positiveCouple.label;
+        const posReduced = posSides[1] || positiveCouple.label;
+
+        const left = drawAtom(leftAtom, negElement, "lose");
+        const right = drawAtom(rightAtom, posElement, "gain");
+
+        leftAtom.symbol.textContent = negElement ? negElement.symbol : "";
+        rightAtom.symbol.textContent = posElement ? posElement.symbol : "";
+        leftAtom.charge.textContent = "";
+        rightAtom.charge.textContent = "";
+
+        setText(html.negTitle, negElement ? negElement.name : negativeCouple.label);
+        setText(html.posTitle, posElement ? posElement.name : positiveCouple.label);
+        // the couple's own equations already carry the right electron count
+        setText(html.negEq, negativeCouple.oxidation);
+        setText(html.posEq, positiveCouple.reduction);
+
+        if (left && negElement) {
+          const outer = left.shells[left.shells.length - 1];
+          setText(html.negNote,
+            negElement.atomicNumber + " protons · shells " + left.shells.join("·") + ". " +
+            (outer === 1
+              ? "That single outer electron sits furthest from the nucleus and is held most weakly, "
+              : "The " + outer + " outer electrons sit furthest from the nucleus and are held most weakly, ") +
+            "so it is the one that leaves. What is left behind is " + negOxidised +
+            " — the same nucleus, one electron short, so the charge no longer balances.");
+        } else {
+          setText(html.negNote, "");
+        }
+        if (right && posElement) {
+          const outer = right.shells[right.shells.length - 1] - 1;
+          setText(html.posNote,
+            posElement.atomicNumber + " protons · shells " + right.shells.slice(0, -1).concat(outer).join("·") +
+            ". Its outer shell has room to spare, and a nearly full shell pulls hard on a passing electron — " +
+            "that pull is what drags the electron all the way round the circuit. " +
+            "The highlighted electron is the arriving one.");
+        } else {
+          setText(html.posNote, "");
+        }
+
+        /* how many electrons actually move is the couple's n, not a fixed 3 */
+        const movingElectrons = Math.min(6, Math.max(1, negativeCouple.n));
+        const isCation = /[⁺+]/.test(negOxidised);
+        electronBank.forEach((g, i) => {
+          const active = i < movingElectrons;
+          g.style.display = active ? "" : "none";
+          g.style.animationDelay = (i * (2600 / movingElectrons)) + "ms";
+        });
+        ionBank.forEach((ion, i) => {
+          const active = i < movingElectrons;
+          ion.group.style.display = active ? "" : "none";
+          ion.group.style.animationDelay = (i * (2600 / movingElectrons) + 300) + "ms";
+          ion.group.style.setProperty("--ion-y",
+            (ATOM_CY - 34 + i * (68 / Math.max(1, movingElectrons - 1 || 1))) + "px");
+          ion.text.textContent = isCation ? negOxidised : ionCharge(negativeCouple.n);
+        });
+
+        svg.setAttribute("aria-label",
+          "Atomic view of the cell. On the left, a " + (negElement ? negElement.name : "negative electrode") +
+          " atom with electron shells " + (left ? left.shells.join(", ") : "") +
+          " gives up an outer electron and becomes " + negOxidised +
+          ". The electron travels through the wire and your device to the right, where " +
+          posOxidised + " accepts it and becomes " + posReduced +
+          ". Meanwhile " + movingElectrons + " ion" + (movingElectrons === 1 ? "" : "s") +
+          " cross the electrolyte, which ions can pass but electrons cannot.");
+      }
+    };
+    root.bmlCellDiagram = api;
+  })();
+</script>
+<script>
+  (() => {
+    const root = document.getElementById("battery-materials-lab");
+    if (!root) return;
+
+    const FARADAY = 96485; // C/mol
+
+    /* ------------------------------------------------------------------
+       Standard reduction potentials, E° / V vs SHE.
+       Source: CRC Handbook of Chemistry and Physics, "Electrochemical
+       Series" (P. Vanysek). Aqueous, 25 °C, unit activity, 1 bar.
+       Values marked est: estimated / poorly characterised.
+       Fields: [id, symbol, label, n, E°, reduction, flags]
+       ------------------------------------------------------------------ */
+    const COUPLE_DATA = [
+      // --- group 1 -----------------------------------------------------
+      ["li",  "Li", "Li⁺/Li",   1, -3.0401, "Li⁺ + e⁻ → Li(s)"],
+      ["na",  "Na", "Na⁺/Na",   1, -2.71,   "Na⁺ + e⁻ → Na(s)"],
+      ["k",   "K",  "K⁺/K",     1, -2.931,  "K⁺ + e⁻ → K(s)"],
+      ["rb",  "Rb", "Rb⁺/Rb",   1, -2.98,   "Rb⁺ + e⁻ → Rb(s)"],
+      ["cs",  "Cs", "Cs⁺/Cs",   1, -3.026,  "Cs⁺ + e⁻ → Cs(s)"],
+      ["fr",  "Fr", "Fr⁺/Fr",   1, -2.9,    "Fr⁺ + e⁻ → Fr(s)", { est: true }],
+      // --- group 2 -----------------------------------------------------
+      ["be",  "Be", "Be²⁺/Be",  2, -1.847,  "Be²⁺ + 2e⁻ → Be(s)"],
+      ["mg",  "Mg", "Mg²⁺/Mg",  2, -2.372,  "Mg²⁺ + 2e⁻ → Mg(s)"],
+      ["ca",  "Ca", "Ca²⁺/Ca",  2, -2.868,  "Ca²⁺ + 2e⁻ → Ca(s)"],
+      ["sr",  "Sr", "Sr²⁺/Sr",  2, -2.899,  "Sr²⁺ + 2e⁻ → Sr(s)"],
+      ["ba",  "Ba", "Ba²⁺/Ba",  2, -2.912,  "Ba²⁺ + 2e⁻ → Ba(s)"],
+      ["ra",  "Ra", "Ra²⁺/Ra",  2, -2.8,    "Ra²⁺ + 2e⁻ → Ra(s)", { est: true }],
+      // --- hydrogen ----------------------------------------------------
+      ["h",   "H",  "H⁺/H₂",    2,  0.0000, "2H⁺ + 2e⁻ → H₂(g)", { note: "defines the zero of the scale" }],
+      ["h2o", "H",  "H₂O/H₂",   2, -0.8277, "2H₂O + 2e⁻ → H₂(g) + 2OH⁻", { alk: true, note: "the same couple at pH 14" }],
+      // --- group 3 / f-block anchors -----------------------------------
+      ["sc",  "Sc", "Sc³⁺/Sc",  3, -2.077,  "Sc³⁺ + 3e⁻ → Sc(s)"],
+      ["y",   "Y",  "Y³⁺/Y",    3, -2.372,  "Y³⁺ + 3e⁻ → Y(s)"],
+      // --- 3d transition metals ----------------------------------------
+      ["ti",  "Ti", "Ti²⁺/Ti",  2, -1.630,  "Ti²⁺ + 2e⁻ → Ti(s)"],
+      ["v",   "V",  "V²⁺/V",    2, -1.175,  "V²⁺ + 2e⁻ → V(s)"],
+      ["cr",  "Cr", "Cr³⁺/Cr",  3, -0.744,  "Cr³⁺ + 3e⁻ → Cr(s)"],
+      ["cr6", "Cr", "Cr₂O₇²⁻/Cr³⁺", 6, 1.36, "Cr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O"],
+      ["mn",  "Mn", "Mn²⁺/Mn",  2, -1.185,  "Mn²⁺ + 2e⁻ → Mn(s)"],
+      ["mno2","Mn", "MnO₂/Mn²⁺",2,  1.224,  "MnO₂(s) + 4H⁺ + 2e⁻ → Mn²⁺ + 2H₂O"],
+      ["mnalk","Mn","MnO₂/MnOOH",1, 0.30,   "MnO₂(s) + H₂O + e⁻ → MnOOH(s) + OH⁻", { alk: true, note: "alkaline cell positive electrode" }],
+      ["mno4","Mn", "MnO₄⁻/Mn²⁺",5, 1.507,  "MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O"],
+      ["fe",  "Fe", "Fe²⁺/Fe",  2, -0.447,  "Fe²⁺ + 2e⁻ → Fe(s)"],
+      ["fe3", "Fe", "Fe³⁺/Fe²⁺",1,  0.771,  "Fe³⁺ + e⁻ → Fe²⁺"],
+      ["co",  "Co", "Co²⁺/Co",  2, -0.28,   "Co²⁺ + 2e⁻ → Co(s)"],
+      ["co3", "Co", "Co³⁺/Co²⁺",1,  1.92,   "Co³⁺ + e⁻ → Co²⁺"],
+      ["ni",  "Ni", "Ni²⁺/Ni",  2, -0.257,  "Ni²⁺ + 2e⁻ → Ni(s)"],
+      ["niox","Ni", "NiOOH/Ni(OH)₂", 1, 0.52, "NiOOH(s) + H₂O + e⁻ → Ni(OH)₂(s) + OH⁻", { alk: true, note: "NiMH / NiCd positive electrode" }],
+      ["cu",  "Cu", "Cu²⁺/Cu",  2,  0.3419, "Cu²⁺ + 2e⁻ → Cu(s)"],
+      ["cu1", "Cu", "Cu⁺/Cu",   1,  0.521,  "Cu⁺ + e⁻ → Cu(s)"],
+      ["zn",  "Zn", "Zn²⁺/Zn",  2, -0.7618, "Zn²⁺ + 2e⁻ → Zn(s)"],
+      ["znalk","Zn","ZnO/Zn",   2, -1.260,  "ZnO(s) + H₂O + 2e⁻ → Zn(s) + 2OH⁻", { alk: true, note: "alkaline cell negative electrode" }],
+      // --- 4d transition metals ----------------------------------------
+      ["zr",  "Zr", "Zr⁴⁺/Zr",  4, -1.45,   "Zr⁴⁺ + 4e⁻ → Zr(s)"],
+      ["nb",  "Nb", "Nb³⁺/Nb",  3, -1.099,  "Nb³⁺ + 3e⁻ → Nb(s)"],
+      ["mo",  "Mo", "Mo³⁺/Mo",  3, -0.200,  "Mo³⁺ + 3e⁻ → Mo(s)"],
+      ["tc",  "Tc", "Tc²⁺/Tc",  2,  0.400,  "Tc²⁺ + 2e⁻ → Tc(s)"],
+      ["ru",  "Ru", "Ru²⁺/Ru",  2,  0.455,  "Ru²⁺ + 2e⁻ → Ru(s)"],
+      ["rh",  "Rh", "Rh³⁺/Rh",  3,  0.758,  "Rh³⁺ + 3e⁻ → Rh(s)"],
+      ["pd",  "Pd", "Pd²⁺/Pd",  2,  0.951,  "Pd²⁺ + 2e⁻ → Pd(s)"],
+      ["ag",  "Ag", "Ag⁺/Ag",   1,  0.7996, "Ag⁺ + e⁻ → Ag(s)"],
+      ["cd",  "Cd", "Cd²⁺/Cd",  2, -0.4030, "Cd²⁺ + 2e⁻ → Cd(s)"],
+      // --- 5d transition metals ----------------------------------------
+      ["hf",  "Hf", "Hf⁴⁺/Hf",  4, -1.55,   "Hf⁴⁺ + 4e⁻ → Hf(s)"],
+      ["ta",  "Ta", "Ta³⁺/Ta",  3, -0.6,    "Ta³⁺ + 3e⁻ → Ta(s)", { est: true }],
+      ["w",   "W",  "W³⁺/W",    3,  0.1,    "W³⁺ + 3e⁻ → W(s)", { est: true }],
+      ["re",  "Re", "Re³⁺/Re",  3,  0.300,  "Re³⁺ + 3e⁻ → Re(s)"],
+      ["os",  "Os", "Os²⁺/Os",  2,  0.85,   "Os²⁺ + 2e⁻ → Os(s)", { est: true }],
+      ["ir",  "Ir", "Ir³⁺/Ir",  3,  1.156,  "Ir³⁺ + 3e⁻ → Ir(s)"],
+      ["pt",  "Pt", "Pt²⁺/Pt",  2,  1.18,   "Pt²⁺ + 2e⁻ → Pt(s)"],
+      ["au",  "Au", "Au³⁺/Au",  3,  1.498,  "Au³⁺ + 3e⁻ → Au(s)"],
+      ["hg",  "Hg", "Hg²⁺/Hg",  2,  0.851,  "Hg²⁺ + 2e⁻ → Hg(l)"],
+      // --- p-block ------------------------------------------------------
+      ["b",   "B",  "H₃BO₃/B",  3, -0.8698, "H₃BO₃ + 3H⁺ + 3e⁻ → B(s) + 3H₂O"],
+      ["al",  "Al", "Al³⁺/Al",  3, -1.662,  "Al³⁺ + 3e⁻ → Al(s)"],
+      ["ga",  "Ga", "Ga³⁺/Ga",  3, -0.549,  "Ga³⁺ + 3e⁻ → Ga(s)"],
+      ["in",  "In", "In³⁺/In",  3, -0.3382, "In³⁺ + 3e⁻ → In(s)"],
+      ["tl",  "Tl", "Tl⁺/Tl",   1, -0.336,  "Tl⁺ + e⁻ → Tl(s)"],
+      ["c",   "C",  "CO₂/HCOOH",2, -0.199,  "CO₂(g) + 2H⁺ + 2e⁻ → HCOOH(aq)"],
+      ["si",  "Si", "SiO₂/Si",  4, -0.857,  "SiO₂(quartz) + 4H⁺ + 4e⁻ → Si(s) + 2H₂O"],
+      ["ge",  "Ge", "Ge²⁺/Ge",  2,  0.24,   "Ge²⁺ + 2e⁻ → Ge(s)"],
+      ["sn",  "Sn", "Sn²⁺/Sn",  2, -0.1375, "Sn²⁺ + 2e⁻ → Sn(s)"],
+      ["pb",  "Pb", "Pb²⁺/Pb",  2, -0.1262, "Pb²⁺ + 2e⁻ → Pb(s)"],
+      ["pbsu","Pb", "PbSO₄/Pb", 2, -0.3588, "PbSO₄(s) + 2e⁻ → Pb(s) + SO₄²⁻", { note: "lead–acid negative electrode" }],
+      ["pbo2","Pb", "PbO₂/PbSO₄",2, 1.6913, "PbO₂(s) + SO₄²⁻ + 4H⁺ + 2e⁻ → PbSO₄(s) + 2H₂O", { note: "lead–acid positive electrode" }],
+      ["n",   "N",  "NO₃⁻/NO",  3,  0.957,  "NO₃⁻ + 4H⁺ + 3e⁻ → NO(g) + 2H₂O"],
+      ["p",   "P",  "P/PH₃",    3, -0.063,  "P(white) + 3H⁺ + 3e⁻ → PH₃(g)"],
+      ["as",  "As", "H₃AsO₃/As",3,  0.240,  "H₃AsO₃ + 3H⁺ + 3e⁻ → As(s) + 3H₂O"],
+      ["sb",  "Sb", "Sb₂O₃/Sb", 6,  0.152,  "Sb₂O₃(s) + 6H⁺ + 6e⁻ → 2Sb(s) + 3H₂O"],
+      ["bi",  "Bi", "Bi³⁺/Bi",  3,  0.308,  "Bi³⁺ + 3e⁻ → Bi(s)"],
+      ["o",   "O",  "O₂/H₂O",   4,  1.229,  "O₂(g) + 4H⁺ + 4e⁻ → 2H₂O", { note: "upper edge of the water window" }],
+      ["o3",  "O",  "O₃/O₂",    2,  2.076,  "O₃(g) + 2H⁺ + 2e⁻ → O₂(g) + H₂O"],
+      ["oalk","O",  "O₂/OH⁻",   4,  0.401,  "O₂(g) + 2H₂O + 4e⁻ → 4OH⁻", { alk: true }],
+      ["s",   "S",  "S/H₂S",    2,  0.142,  "S(s) + 2H⁺ + 2e⁻ → H₂S(aq)"],
+      ["se",  "Se", "Se/H₂Se",  2, -0.399,  "Se(s) + 2H⁺ + 2e⁻ → H₂Se(aq)"],
+      ["te",  "Te", "Te/H₂Te",  2, -0.793,  "Te(s) + 2H⁺ + 2e⁻ → H₂Te(aq)"],
+      ["f",   "F",  "F₂/F⁻",    2,  2.866,  "F₂(g) + 2e⁻ → 2F⁻"],
+      ["cl",  "Cl", "Cl₂/Cl⁻",  2,  1.358,  "Cl₂(g) + 2e⁻ → 2Cl⁻"],
+      ["br",  "Br", "Br₂/Br⁻",  2,  1.066,  "Br₂(l) + 2e⁻ → 2Br⁻"],
+      ["i",   "I",  "I₂/I⁻",    2,  0.5355, "I₂(s) + 2e⁻ → 2I⁻"],
+      // --- lanthanides, Ln³⁺/Ln ----------------------------------------
+      ["la", "La", "La³⁺/La", 3, -2.379, "La³⁺ + 3e⁻ → La(s)"],
+      ["ce", "Ce", "Ce³⁺/Ce", 3, -2.336, "Ce³⁺ + 3e⁻ → Ce(s)"],
+      ["pr", "Pr", "Pr³⁺/Pr", 3, -2.353, "Pr³⁺ + 3e⁻ → Pr(s)"],
+      ["nd", "Nd", "Nd³⁺/Nd", 3, -2.323, "Nd³⁺ + 3e⁻ → Nd(s)"],
+      ["pm", "Pm", "Pm³⁺/Pm", 3, -2.30,  "Pm³⁺ + 3e⁻ → Pm(s)", { est: true }],
+      ["sm", "Sm", "Sm³⁺/Sm", 3, -2.304, "Sm³⁺ + 3e⁻ → Sm(s)"],
+      ["eu", "Eu", "Eu³⁺/Eu", 3, -1.991, "Eu³⁺ + 3e⁻ → Eu(s)"],
+      ["gd", "Gd", "Gd³⁺/Gd", 3, -2.279, "Gd³⁺ + 3e⁻ → Gd(s)"],
+      ["tb", "Tb", "Tb³⁺/Tb", 3, -2.28,  "Tb³⁺ + 3e⁻ → Tb(s)"],
+      ["dy", "Dy", "Dy³⁺/Dy", 3, -2.295, "Dy³⁺ + 3e⁻ → Dy(s)"],
+      ["ho", "Ho", "Ho³⁺/Ho", 3, -2.33,  "Ho³⁺ + 3e⁻ → Ho(s)"],
+      ["er", "Er", "Er³⁺/Er", 3, -2.331, "Er³⁺ + 3e⁻ → Er(s)"],
+      ["tm", "Tm", "Tm³⁺/Tm", 3, -2.319, "Tm³⁺ + 3e⁻ → Tm(s)"],
+      ["yb", "Yb", "Yb³⁺/Yb", 3, -2.19,  "Yb³⁺ + 3e⁻ → Yb(s)"],
+      ["lu", "Lu", "Lu³⁺/Lu", 3, -2.28,  "Lu³⁺ + 3e⁻ → Lu(s)"],
+      // --- actinides ----------------------------------------------------
+      ["ac", "Ac", "Ac³⁺/Ac", 3, -2.20,  "Ac³⁺ + 3e⁻ → Ac(s)"],
+      ["th", "Th", "Th⁴⁺/Th", 4, -1.899, "Th⁴⁺ + 4e⁻ → Th(s)"],
+      ["pa", "Pa", "Pa⁴⁺/Pa", 4, -1.49,  "Pa⁴⁺ + 4e⁻ → Pa(s)", { est: true }],
+      ["u",  "U",  "U³⁺/U",   3, -1.798, "U³⁺ + 3e⁻ → U(s)"],
+      ["np", "Np", "Np³⁺/Np", 3, -1.856, "Np³⁺ + 3e⁻ → Np(s)"],
+      ["pu", "Pu", "Pu³⁺/Pu", 3, -2.031, "Pu³⁺ + 3e⁻ → Pu(s)"],
+      ["am", "Am", "Am³⁺/Am", 3, -2.048, "Am³⁺ + 3e⁻ → Am(s)"],
+      ["cm", "Cm", "Cm³⁺/Cm", 3, -2.04,  "Cm³⁺ + 3e⁻ → Cm(s)"],
+      ["bk", "Bk", "Bk³⁺/Bk", 3, -2.01,  "Bk³⁺ + 3e⁻ → Bk(s)"],
+      ["cf", "Cf", "Cf³⁺/Cf", 3, -1.96,  "Cf³⁺ + 3e⁻ → Cf(s)"],
+      ["es", "Es", "Es³⁺/Es", 3, -1.91,  "Es³⁺ + 3e⁻ → Es(s)", { est: true }],
+      ["fm", "Fm", "Fm³⁺/Fm", 3, -1.89,  "Fm³⁺ + 3e⁻ → Fm(s)", { est: true }],
+      ["md", "Md", "Md³⁺/Md", 3, -1.65,  "Md³⁺ + 3e⁻ → Md(s)", { est: true }],
+      ["no", "No", "No³⁺/No", 3, -1.20,  "No³⁺ + 3e⁻ → No(s)", { est: true }],
+      ["lr", "Lr", "Lr³⁺/Lr", 3, -1.96,  "Lr³⁺ + 3e⁻ → Lr(s)", { est: true }]
+    ];
+
+    /* Reverse "A + B → C" into "C → A + B" so oxidation is never mistyped. */
+    function reverseEquation(equation) {
+      const [left, right] = equation.split(" → ");
+      return right + " → " + left;
+    }
+
+    const couples = {};
+    const couplesByElement = {};
+    COUPLE_DATA.forEach((row) => {
+      const flags = row[6] || {};
+      const couple = {
+        id: row[0],
+        element: row[1],
+        label: row[2],
+        n: row[3],
+        e: row[4],
+        reduction: row[5],
+        oxidation: reverseEquation(row[5]),
+        est: Boolean(flags.est),
+        alk: Boolean(flags.alk),
+        note: flags.note || ""
+      };
+      couples[couple.id] = couple;
+      (couplesByElement[couple.element] ||= []).push(couple);
+    });
+    // Primary couple per element = the metal/element ⇌ ion couple listed first.
+    const primaryCouple = {};
+    Object.keys(couplesByElement).forEach((symbol) => {
+      primaryCouple[symbol] = couplesByElement[symbol][0].id;
+    });
+
+    /* Reference electrodes, V vs SHE at 25 °C. Li is derived, never retyped. */
+    const references = {
+      she: {
+        label: "SHE", e: 0,
+        detail: "The one they chose is the <strong>standard hydrogen electrode</strong>: platinum in an electrolyte where H⁺ has unit activity, with hydrogen gas at 1 bar, running 2H⁺ + 2e⁻ ⇌ H₂. " +
+          "So \"Li⁺/Li = −3.040 V\" really means \"3.040 volts more negative than that particular electrode\"."
+      },
+      li: {
+        label: "Li⁺/Li", e: couples.li.e,
+        detail: "Battery engineers use a different zero: <strong>lithium metal</strong>. Lithium-ion electrode materials are commonly characterized " +
+          "in half-cells against a lithium counter-electrode, so \"graphite at 0.15 V\" means 0.15 V " +
+          "above lithium metal. Switching to this zero adds 3.040 V to every number on the scale — " +
+          "notice that lithium now reads exactly 0."
+      },
+      sce: {
+        label: "SCE", e: 0.2412,
+        detail: "A <strong>saturated calomel electrode</strong> — mercury in contact with Hg₂Cl₂ paste and saturated KCl. " +
+          "A real hydrogen electrode needs a gas cylinder and fresh platinum, so labs dip this in the beaker instead. " +
+          "It sits 0.241 V above the hydrogen electrode, and that offset is how measurements get converted back."
+      },
+      agcl: {
+        label: "Ag/AgCl", e: 0.197,
+        detail: "A <strong>silver wire coated in silver chloride</strong>, sitting in saturated KCl. The other everyday " +
+          "bench electrode: cheap, rugged and mercury-free. It sits 0.197 V above the hydrogen electrode."
+      }
+    };
+
+    /* Aqueous cells whose voltage IS computable from the table above.
+       Lithium and sodium chemistries are handled in their own section,
+       because their electrodes are measured plateaus, not tabulated E°. */
+    const realCells = [
+      ["Lead–acid", "Pb → PbSO₄ (−0.359 V)", "PbO₂ → PbSO₄ (+1.691 V)", "2.05", "aq", "E°cell straight from the table: +1.691 − (−0.359) = 2.050 V"],
+      ["Alkaline Zn–MnO₂", "Zn → ZnO (−1.260 V)", "MnO₂ → MnOOH (+0.30 V)", "1.5", "aq", "alkaline-medium E°; ≈1.56 V calculated"],
+      ["Ni–MH", "MH → M (≈−0.83 V)", "NiOOH → Ni(OH)₂ (+0.52 V)", "1.2", "aq", "≈1.35 V calculated; the hydride alloy value is approximate"]
+    ];
+
+    /* ---------------- periodic table layout ---------------- */
+    const elements = [
+      [1, "H", "Hydrogen", 1, 1], [2, "He", "Helium", 1, 18],
+      [3, "Li", "Lithium", 2, 1], [4, "Be", "Beryllium", 2, 2], [5, "B", "Boron", 2, 13],
+      [6, "C", "Carbon", 2, 14], [7, "N", "Nitrogen", 2, 15], [8, "O", "Oxygen", 2, 16],
+      [9, "F", "Fluorine", 2, 17], [10, "Ne", "Neon", 2, 18],
+      [11, "Na", "Sodium", 3, 1], [12, "Mg", "Magnesium", 3, 2], [13, "Al", "Aluminium", 3, 13],
+      [14, "Si", "Silicon", 3, 14], [15, "P", "Phosphorus", 3, 15], [16, "S", "Sulfur", 3, 16],
+      [17, "Cl", "Chlorine", 3, 17], [18, "Ar", "Argon", 3, 18],
+      [19, "K", "Potassium", 4, 1], [20, "Ca", "Calcium", 4, 2], [21, "Sc", "Scandium", 4, 3],
+      [22, "Ti", "Titanium", 4, 4], [23, "V", "Vanadium", 4, 5], [24, "Cr", "Chromium", 4, 6],
+      [25, "Mn", "Manganese", 4, 7], [26, "Fe", "Iron", 4, 8], [27, "Co", "Cobalt", 4, 9],
+      [28, "Ni", "Nickel", 4, 10], [29, "Cu", "Copper", 4, 11], [30, "Zn", "Zinc", 4, 12],
+      [31, "Ga", "Gallium", 4, 13], [32, "Ge", "Germanium", 4, 14], [33, "As", "Arsenic", 4, 15],
+      [34, "Se", "Selenium", 4, 16], [35, "Br", "Bromine", 4, 17], [36, "Kr", "Krypton", 4, 18],
+      [37, "Rb", "Rubidium", 5, 1], [38, "Sr", "Strontium", 5, 2], [39, "Y", "Yttrium", 5, 3],
+      [40, "Zr", "Zirconium", 5, 4], [41, "Nb", "Niobium", 5, 5], [42, "Mo", "Molybdenum", 5, 6],
+      [43, "Tc", "Technetium", 5, 7], [44, "Ru", "Ruthenium", 5, 8], [45, "Rh", "Rhodium", 5, 9],
+      [46, "Pd", "Palladium", 5, 10], [47, "Ag", "Silver", 5, 11], [48, "Cd", "Cadmium", 5, 12],
+      [49, "In", "Indium", 5, 13], [50, "Sn", "Tin", 5, 14], [51, "Sb", "Antimony", 5, 15],
+      [52, "Te", "Tellurium", 5, 16], [53, "I", "Iodine", 5, 17], [54, "Xe", "Xenon", 5, 18],
+      [55, "Cs", "Caesium", 6, 1], [56, "Ba", "Barium", 6, 2],
+      [57, "La", "Lanthanum", 6, null, "ln", 0], [58, "Ce", "Cerium", 6, null, "ln", 1],
+      [59, "Pr", "Praseodymium", 6, null, "ln", 2], [60, "Nd", "Neodymium", 6, null, "ln", 3],
+      [61, "Pm", "Promethium", 6, null, "ln", 4], [62, "Sm", "Samarium", 6, null, "ln", 5],
+      [63, "Eu", "Europium", 6, null, "ln", 6], [64, "Gd", "Gadolinium", 6, null, "ln", 7],
+      [65, "Tb", "Terbium", 6, null, "ln", 8], [66, "Dy", "Dysprosium", 6, null, "ln", 9],
+      [67, "Ho", "Holmium", 6, null, "ln", 10], [68, "Er", "Erbium", 6, null, "ln", 11],
+      [69, "Tm", "Thulium", 6, null, "ln", 12], [70, "Yb", "Ytterbium", 6, null, "ln", 13],
+      [71, "Lu", "Lutetium", 6, null, "ln", 14],
+      [72, "Hf", "Hafnium", 6, 4], [73, "Ta", "Tantalum", 6, 5], [74, "W", "Tungsten", 6, 6],
+      [75, "Re", "Rhenium", 6, 7], [76, "Os", "Osmium", 6, 8], [77, "Ir", "Iridium", 6, 9],
+      [78, "Pt", "Platinum", 6, 10], [79, "Au", "Gold", 6, 11], [80, "Hg", "Mercury", 6, 12],
+      [81, "Tl", "Thallium", 6, 13], [82, "Pb", "Lead", 6, 14], [83, "Bi", "Bismuth", 6, 15],
+      [84, "Po", "Polonium", 6, 16], [85, "At", "Astatine", 6, 17], [86, "Rn", "Radon", 6, 18],
+      [87, "Fr", "Francium", 7, 1], [88, "Ra", "Radium", 7, 2],
+      [89, "Ac", "Actinium", 7, null, "an", 0], [90, "Th", "Thorium", 7, null, "an", 1],
+      [91, "Pa", "Protactinium", 7, null, "an", 2], [92, "U", "Uranium", 7, null, "an", 3],
+      [93, "Np", "Neptunium", 7, null, "an", 4], [94, "Pu", "Plutonium", 7, null, "an", 5],
+      [95, "Am", "Americium", 7, null, "an", 6], [96, "Cm", "Curium", 7, null, "an", 7],
+      [97, "Bk", "Berkelium", 7, null, "an", 8], [98, "Cf", "Californium", 7, null, "an", 9],
+      [99, "Es", "Einsteinium", 7, null, "an", 10], [100, "Fm", "Fermium", 7, null, "an", 11],
+      [101, "Md", "Mendelevium", 7, null, "an", 12], [102, "No", "Nobelium", 7, null, "an", 13],
+      [103, "Lr", "Lawrencium", 7, null, "an", 14],
+      [104, "Rf", "Rutherfordium", 7, 4], [105, "Db", "Dubnium", 7, 5], [106, "Sg", "Seaborgium", 7, 6],
+      [107, "Bh", "Bohrium", 7, 7], [108, "Hs", "Hassium", 7, 8], [109, "Mt", "Meitnerium", 7, 9],
+      [110, "Ds", "Darmstadtium", 7, 10], [111, "Rg", "Roentgenium", 7, 11], [112, "Cn", "Copernicium", 7, 12],
+      [113, "Nh", "Nihonium", 7, 13], [114, "Fl", "Flerovium", 7, 14], [115, "Mc", "Moscovium", 7, 15],
+      [116, "Lv", "Livermorium", 7, 16], [117, "Ts", "Tennessine", 7, 17], [118, "Og", "Oganesson", 7, 18]
+    ].map((item) => ({
+      atomicNumber: item[0],
+      symbol: item[1],
+      name: item[2],
+      period: item[3],
+      group: item[4],
+      block: item[5] || null,
+      blockIndex: item[6] ?? null
+    }));
+
+    const elementBySymbol = {};
+    elements.forEach((element) => { elementBySymbol[element.symbol] = element; });
+
+    /* ---------------- DOM handles ---------------- */
+    const periodicGrid = root.querySelector("#bml-periodic-grid");
+    const pickNegative = root.querySelector("#bml-pick-negative");
+    const pickPositive = root.querySelector("#bml-pick-positive");
+    const swapButton = root.querySelector("#bml-swap");
+    const referenceSelect = root.querySelector("#bml-reference");
+    const stage = root.querySelector("#bml-stage");
+    const ticks = root.querySelector("#bml-ticks");
+    const negativeMarker = root.querySelector("#bml-negative-marker");
+    const positiveMarker = root.querySelector("#bml-positive-marker");
+    const referenceLine = root.querySelector("#bml-reference-line");
+    const waterWindow = root.querySelector("#bml-water-window");
+    const waterLabel = root.querySelector("#bml-water-label");
+    const gap = root.querySelector("#bml-gap");
+    const gapLabel = root.querySelector("#bml-gap-label");
+    const runButton = root.querySelector("#bml-run");
+    const runText = root.querySelector("#bml-run-text");
+    const circuit = root.querySelector("#bml-circuit");
+    const warnBox = root.querySelector("#bml-warn");
+    const coupleList = root.querySelector("#bml-couple-list");
+
+    let activeRole = "negative";
+    let negativeId = "zn";
+    let positiveId = "cu";
+    let inspectedSymbol = "Zn";
+    let animationTimer;
+
+    /* ---------------- scale ---------------- */
+    const minE = -3.2;
+    const maxE = 3.1;
+    const padding = 12;
+    const span = 76;
+    const WATER_LOW = 0;      // H⁺/H₂ at pH 0
+    const WATER_HIGH = 1.229; // O₂/H₂O at pH 0
+
+    function positionFor(value) {
+      const clamped = Math.min(maxE, Math.max(minE, value));
+      return padding + ((clamped - minE) / (maxE - minE)) * span;
+    }
+
+    function formatPotential(value, digits) {
+      const places = digits ?? 3;
+      if (Math.abs(value) < 5e-4) return (0).toFixed(places) + " V";
+      return (value > 0 ? "+" : "−") + Math.abs(value).toFixed(places) + " V";
+    }
+
+    function formatTick(value) {
+      if (Math.abs(value) < 0.05) return "0.0";
+      return (value > 0 ? "+" : "−") + Math.abs(value).toFixed(1);
+    }
+
+    function bandFor(value) {
+      if (value === null) return "none";
+      if (value < -1) return "strong-reducer";
+      if (value < 0) return "weak-reducer";
+      if (value < 1) return "weak-oxidiser";
+      return "strong-oxidiser";
+    }
+
+    function greatestCommonDivisor(a, b) {
+      return b === 0 ? a : greatestCommonDivisor(b, a % b);
+    }
+
+    function leastCommonMultiple(a, b) {
+      return (a * b) / greatestCommonDivisor(a, b);
+    }
+
+    /* ---------------- equation algebra ----------------
+       Terms are "<optional ASCII coefficient><species>". Unicode subscripts
+       are part of the species, so a leading-digit match is unambiguous. */
+    function parseSide(side) {
+      return side.split(" + ").map((term) => {
+        const match = /^(\d+)(.+)$/.exec(term.trim());
+        return match
+          ? { coefficient: Number(match[1]), species: match[2] }
+          : { coefficient: 1, species: term.trim() };
+      });
+    }
+
+    function scaleTerms(terms, factor) {
+      return terms.map((term) => ({ coefficient: term.coefficient * factor, species: term.species }));
+    }
+
+    function accumulate(target, terms) {
+      terms.forEach((term) => {
+        if (term.species === "e⁻") return;
+        target.set(term.species, (target.get(term.species) || 0) + term.coefficient);
+      });
+    }
+
+    function renderSide(map) {
+      const parts = [];
+      map.forEach((coefficient, species) => {
+        if (coefficient <= 0) return;
+        parts.push((coefficient === 1 ? "" : String(coefficient)) + species);
+      });
+      return parts.length ? parts.join(" + ") : "—";
+    }
+
+    function overallEquation(oxidationCouple, reductionCouple, n) {
+      const oxFactor = n / oxidationCouple.n;
+      const redFactor = n / reductionCouple.n;
+      const [oxLeft, oxRight] = oxidationCouple.oxidation.split(" → ");
+      const [redLeft, redRight] = reductionCouple.reduction.split(" → ");
+
+      const left = new Map();
+      const right = new Map();
+      accumulate(left, scaleTerms(parseSide(oxLeft), oxFactor));
+      accumulate(left, scaleTerms(parseSide(redLeft), redFactor));
+      accumulate(right, scaleTerms(parseSide(oxRight), oxFactor));
+      accumulate(right, scaleTerms(parseSide(redRight), redFactor));
+
+      // cancel spectators appearing on both sides
+      left.forEach((coefficient, species) => {
+        if (!right.has(species)) return;
+        const shared = Math.min(coefficient, right.get(species));
+        left.set(species, coefficient - shared);
+        right.set(species, right.get(species) - shared);
+      });
+
+      return renderSide(left) + " → " + renderSide(right);
+    }
+
+    /* ---------------- element text ---------------- */
+    function valenceFor(element) {
+      if (element.block) return null;
+      if (element.group === null || (element.group >= 3 && element.group <= 12)) return null;
+      if (element.symbol === "He") return 2;
+      if (element.group <= 2) return element.group;
+      return element.group - 10;
+    }
+
+    function structureTendency(element) {
+      if (element.group === 18) return "noble";
+      if (element.block) return "fblock";
+      if (element.group >= 3 && element.group <= 12) return "transition";
+      if (element.group === 16 || element.group === 17) return "acceptor";
+      if (element.group <= 2 && element.symbol !== "H") return "donor";
+      return "mixed";
+    }
+
+    function insightFor(element) {
+      const best = couplesByElement[element.symbol];
+      const value = best ? best[0].e : null;
+      if (element.group === 18) {
+        return "Closed-shell configuration usually makes simple electron transfer unfavorable; no selected aqueous couple is shown here.";
+      }
+      if (element.symbol === "H") {
+        return "Hydrogen participates in both oxidation and reduction half-reactions; the standard hydrogen electrode defines 0 V by convention.";
+      }
+      if (element.block === "ln" || element.block === "an") {
+        return "f-block element: multiple oxidation states and strong solvation effects mean the specific half-reaction, not table position alone, determines E°.";
+      }
+      if (element.group === 1) {
+        return "Low ionisation energy often favors oxidation, but aqueous E° also depends on solvation, products, activity, and the specific half-reaction.";
+      }
+      if (element.group === 2) {
+        return "Low ionisation energy can favor oxidation, but removing two electrons and solvating the products means the specific aqueous couple must be checked.";
+      }
+      if (element.group === 17) {
+        return "High electron affinity can favor reduction of the halogen couple, but E° belongs to the complete half-reaction under specified conditions.";
+      }
+      if (element.group === 16) {
+        return "Electron affinity provides qualitative context, but oxidation state, bonding, products, and solvent determine the selected E°.";
+      }
+      if (element.group >= 3 && element.group <= 12) {
+        return value === null
+          ? "Transition metal: partly filled d orbitals give several accessible oxidation states, so a single trend is not enough — use E° for each specific couple."
+          : "Transition metal: several accessible oxidation states, so the couple matters as much as the element. Its M/Mⁿ⁺ couple sits at " + formatPotential(value) + ".";
+      }
+      return "p-block: behaviour depends on oxidation state and on the partner in the reaction, so read E° for the specific couple rather than the group.";
+    }
+
+    function metadataFor(element) {
+      const block = element.block === "ln" ? "f-block (lanthanide)"
+        : element.block === "an" ? "f-block (actinide)"
+        : element.group === null ? "f-block"
+        : element.group <= 2 || element.symbol === "He" ? "s-block"
+        : element.group >= 13 ? "p-block" : "d-block";
+      const location = element.block
+        ? (element.block === "ln" ? "lanthanide" : "actinide")
+        : "group " + element.group;
+      return "Z = " + element.atomicNumber + " · " + location + " · period " + element.period + " · " + block;
+    }
+
+    /* ---------------- build the table ---------------- */
+    function addGridLabel(text, row, column, ariaLabel) {
+      const label = document.createElement("span");
+      label.className = "bml-grid-label text-small";
+      label.textContent = text;
+      label.style.gridRow = row;
+      label.style.gridColumn = column;
+      if (ariaLabel) label.setAttribute("aria-label", ariaLabel);
+      periodicGrid.appendChild(label);
+    }
+
+    const tileBySymbol = {};
+
+    function buildPeriodicTable() {
+      for (let group = 1; group <= 18; group += 1) {
+        addGridLabel(String(group), 1, group + 1, "Group " + group);
+      }
+      for (let period = 1; period <= 7; period += 1) {
+        addGridLabel(String(period), period + 1, 1, "Period " + period);
+      }
+      addGridLabel("Ln", 10, 1, "Lanthanides");
+      addGridLabel("An", 11, 1, "Actinides");
+
+      [{ text: "57–71", row: 7 }, { text: "89–103", row: 8 }].forEach((data) => {
+        const placeholder = document.createElement("span");
+        placeholder.className = "bml-series-placeholder text-small";
+        placeholder.textContent = data.text;
+        placeholder.style.gridRow = data.row;
+        placeholder.style.gridColumn = 4;
+        periodicGrid.appendChild(placeholder);
+      });
+
+      elements.forEach((element) => {
+        const list = couplesByElement[element.symbol];
+        const primary = list ? couples[primaryCouple[element.symbol]] : null;
+        const value = primary ? primary.e : null;
+        const row = element.block === "ln" ? 10 : element.block === "an" ? 11 : element.period + 1;
+        const column = element.block ? 4 + element.blockIndex : element.group + 1;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn viz-tile bml-element";
+        button.style.gridRow = row;
+        button.style.gridColumn = column;
+        button.dataset.symbol = element.symbol;
+        button.dataset.band = bandFor(value);
+        button.tabIndex = element.symbol === "Zn" ? 0 : -1;
+
+        const symbolSpan = document.createElement("span");
+        symbolSpan.className = "bml-el-symbol";
+        symbolSpan.textContent = element.symbol;
+        const valueSpan = document.createElement("span");
+        valueSpan.className = "bml-el-value";
+        valueSpan.textContent = value === null
+          ? "—"
+          : Math.abs(value) < 5e-3
+            ? "0.00"
+            : (value > 0 ? "+" : "−") + Math.abs(value).toFixed(2);
+        button.append(symbolSpan, valueSpan);
+
+        button.setAttribute(
+          "aria-label",
+          element.name + ", atomic number " + element.atomicNumber +
+          (primary ? ". " + primary.label + ", E° " + formatPotential(primary.e) + " versus SHE."
+                   : ". No tabulated aqueous couple.")
+        );
+        button.setAttribute(
+          "data-tooltip",
+          primary
+            ? element.name + " · " + primary.label + " · " + formatPotential(primary.e) + " vs SHE"
+            : element.name + " · no aqueous E°"
+        );
+
+        button.addEventListener("click", () => {
+          focusTile(element.symbol);
+          inspectElement(element.symbol);
+          if (!primary) return;
+          assign(activeRole, primaryCouple[element.symbol]);
+        });
+        periodicGrid.appendChild(button);
+        tileBySymbol[element.symbol] = button;
+      });
+
+      periodicGrid.addEventListener("keydown", handleGridKeys);
+    }
+
+    /* roving-tabindex arrow navigation: one tab stop, not 118 */
+    function handleGridKeys(event) {
+      const current = event.target.closest(".bml-element");
+      if (!current) return;
+      const deltas = {
+        ArrowRight: [0, 1], ArrowLeft: [0, -1],
+        ArrowDown: [1, 0], ArrowUp: [-1, 0]
+      };
+      const delta = deltas[event.key];
+      if (!delta) return;
+      event.preventDefault();
+      const row = Number(current.style.gridRow);
+      const column = Number(current.style.gridColumn);
+      for (let step = 1; step <= 18; step += 1) {
+        const target = Object.values(tileBySymbol).find((tile) =>
+          Number(tile.style.gridRow) === row + delta[0] * step &&
+          Number(tile.style.gridColumn) === column + delta[1] * step
+        );
+        if (target) {
+          focusTile(target.dataset.symbol);
+          inspectElement(target.dataset.symbol);
+          return;
+        }
+      }
+    }
+
+    function focusTile(symbol) {
+      Object.values(tileBySymbol).forEach((tile) => { tile.tabIndex = -1; });
+      const tile = tileBySymbol[symbol];
+      if (!tile) return;
+      tile.tabIndex = 0;
+      tile.focus({ preventScroll: false });
+    }
+
+    /* ---------------- element inspector ---------------- */
+    function updateValenceDots(element) {
+      const dots = root.querySelector("#bml-valence-dots");
+      const atom = root.querySelector("#bml-atom");
+      const count = valenceFor(element);
+      dots.replaceChildren();
+      root.querySelector("#bml-atom-symbol").textContent = element.symbol;
+      atom.dataset.tendency = structureTendency(element);
+
+      if (count === null) {
+        atom.setAttribute("aria-label", element.name + ", a d- or f-block element with variable oxidation states");
+        return;
+      }
+      for (let index = 0; index < count; index += 1) {
+        const angle = -Math.PI / 2 + index * ((Math.PI * 2) / count);
+        const dot = document.createElement("span");
+        dot.className = "bml-valence-dot";
+        dot.style.left = 38.5 + Math.cos(angle) * 35 + "px";
+        dot.style.top = 38.5 + Math.sin(angle) * 35 + "px";
+        dots.appendChild(dot);
+      }
+      atom.setAttribute("aria-label", element.name + " with " + count + " valence electron" + (count === 1 ? "" : "s"));
+    }
+
+    function inspectElement(symbol) {
+      const element = elementBySymbol[symbol];
+      if (!element) return;
+      inspectedSymbol = symbol;
+      root.querySelector("#bml-element-name").textContent = element.name;
+      root.querySelector("#bml-element-meta").textContent = metadataFor(element);
+      root.querySelector("#bml-element-insight").textContent = insightFor(element);
+      updateValenceDots(element);
+
+      const list = couplesByElement[symbol] || [];
+      const potentialLine = root.querySelector("#bml-element-potential");
+      if (list.length) {
+        const primary = couples[primaryCouple[symbol]];
+        potentialLine.textContent =
+          primary.reduction + " · E° = " + formatPotential(primary.e) + " vs SHE" +
+          (primary.est ? " (estimated)" : "") +
+          (primary.note ? " · " + primary.note : "");
+      } else {
+        potentialLine.textContent =
+          "No aqueous half-reaction is tabulated for " + element.name +
+          " — its position in the table gives only a qualitative expectation.";
+      }
+
+      coupleList.replaceChildren();
+      list.forEach((couple) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "btn bml-couple-chip";
+        chip.textContent = couple.label + " " + formatPotential(couple.e, 2) + (couple.alk ? " (alk)" : "");
+        chip.setAttribute("data-tooltip", couple.reduction + (couple.note ? " · " + couple.note : ""));
+        chip.setAttribute("aria-pressed", couple.id === negativeId || couple.id === positiveId ? "true" : "false");
+        chip.addEventListener("click", () => assign(activeRole, couple.id));
+        coupleList.appendChild(chip);
+      });
+    }
+
+    /* ---------------- selection ---------------- */
+    function setActiveRole(role) {
+      activeRole = role;
+      pickNegative.setAttribute("aria-pressed", role === "negative" ? "true" : "false");
+      pickPositive.setAttribute("aria-pressed", role === "positive" ? "true" : "false");
+    }
+
+    function assign(role, coupleId) {
+      if (role === "negative") {
+        negativeId = coupleId;
+        setActiveRole("positive");
+      } else {
+        positiveId = coupleId;
+        setActiveRole("negative");
+      }
+      updateCell();
+      inspectElement(inspectedSymbol);
+    }
+
+    function syncTiles() {
+      const negativeSymbol = couples[negativeId].element;
+      const positiveSymbol = couples[positiveId].element;
+      Object.entries(tileBySymbol).forEach(([symbol, tile]) => {
+        if (symbol === negativeSymbol) tile.dataset.role = "negative";
+        else if (symbol === positiveSymbol) tile.dataset.role = "positive";
+        else delete tile.dataset.role;
+      });
+    }
+
+    function buildTicks(reference) {
+      ticks.replaceChildren();
+      [-3, -2, -1, 0, 1, 2, 3].forEach((value) => {
+        const tick = document.createElement("span");
+        tick.className = "bml-tick";
+        tick.style.left = positionFor(value) + "%";
+        const label = document.createElement("span");
+        label.className = "bml-tick-label text-small";
+        label.textContent = formatTick(value - reference.e);
+        tick.appendChild(label);
+        ticks.appendChild(tick);
+      });
+    }
+
+    function resetAnimation() {
+      clearTimeout(animationTimer);
+      circuit.classList.remove("is-running");
+      if (runText) runText.textContent = "Run discharge";
+    }
+
+    /* Hydrogen-overpotential margin. On Pb, Zn, Cd and Hg the kinetic barrier
+       to H₂ evolution is large (roughly 0.7–1.2 V), which is precisely why
+       lead–acid and alkaline zinc cells survive in water despite sitting
+       outside the thermodynamic window. */
+    const HIGH_OVERPOTENTIAL = new Set(["Pb", "Zn", "Cd", "Hg", "Sn", "Tl", "Bi"]);
+
+    function warningsFor(negative, positive, cellVoltage) {
+      const messages = [];
+      // Alkaline half-reactions are quoted at pH 14; the water limits move with pH.
+      const lowLimit = (couple) => (couple.alk ? -0.828 : WATER_LOW);
+      const highLimit = (couple) => (couple.alk ? 0.401 : WATER_HIGH);
+
+      if (cellVoltage <= 0) {
+        messages.push("E°cell ≤ 0: this arrangement is not spontaneous as written. Swap the electrodes.");
+        return messages;
+      }
+      if (negative.alk !== positive.alk) {
+        messages.push("These two half-reactions are quoted at different pH (one acidic, one alkaline). A real cell shares one electrolyte, so subtracting them gives a number, not a buildable cell voltage.");
+      }
+      if (negative.e < lowLimit(negative) - 0.05) {
+        const forgiving = HIGH_OVERPOTENTIAL.has(negative.element);
+        messages.push(
+          negative.label + " sits below the H₂-evolution line, so thermodynamically it should reduce water. " +
+          (forgiving
+            ? "In practice the hydrogen overpotential on " + negative.element + " is large enough to suppress this — which is exactly why this chemistry works in water."
+            : "Without a large overpotential the metal simply corrodes and the cell self-discharges.")
+        );
+      }
+      if (positive.e > highLimit(positive) + 0.05) {
+        messages.push(positive.label + " sits above the O₂-evolution line, so it can oxidise water. Practical cells rely on a sluggish O₂ reaction, a non-aqueous solvent, or accept some gassing.");
+      }
+      if (cellVoltage > 2.5) {
+        messages.push("At " + cellVoltage.toFixed(2) + " V this is far outside the 1.23 V water window — overpotential cannot bridge that gap, so it needs a non-aqueous electrolyte. This is the reason lithium-ion cells use organic carbonates.");
+      } else if (cellVoltage > 1.23) {
+        messages.push("At " + cellVoltage.toFixed(2) + " V this exceeds the 1.23 V thermodynamic window of water, but only kinetically — real aqueous cells like lead–acid (2.05 V) do run here, held together by slow gas-evolution kinetics rather than thermodynamic stability.");
+      }
+      return messages;
+    }
+
+    function updateCell() {
+      resetAnimation();
+      const negative = couples[negativeId];
+      const positive = couples[positiveId];
+      const reference = references[referenceSelect.value];
+      const negativeDisplayed = negative.e - reference.e;
+      const positiveDisplayed = positive.e - reference.e;
+      const cellVoltage = positive.e - negative.e;
+      const isSpontaneous = cellVoltage > 0;
+      const n = leastCommonMultiple(negative.n, positive.n);
+      const gibbs = (-n * FARADAY * cellVoltage) / 1000; // kJ/mol
+
+      const negativeX = positionFor(negative.e);
+      const positiveX = positionFor(positive.e);
+      const referenceX = positionFor(reference.e);
+      const lowX = Math.min(negativeX, positiveX);
+      const highX = Math.max(negativeX, positiveX);
+
+      root.querySelector("#bml-negative-label").textContent = "Negative electrode · E° vs " + reference.label;
+      root.querySelector("#bml-positive-label").textContent = "Positive electrode · E° vs " + reference.label;
+      root.querySelector("#bml-negative-value").textContent = formatPotential(negativeDisplayed);
+      root.querySelector("#bml-positive-value").textContent = formatPotential(positiveDisplayed);
+      root.querySelector("#bml-negative-sub").textContent = negative.reduction;
+      root.querySelector("#bml-positive-sub").textContent = positive.reduction;
+
+      const cellValue = root.querySelector("#bml-cell-value");
+      cellValue.textContent = (cellVoltage >= 0 ? "" : "−") + Math.abs(cellVoltage).toFixed(3) + " V";
+      cellValue.classList.toggle("is-invalid", !isSpontaneous);
+      root.querySelector("#bml-cell-sub").textContent = isSpontaneous
+        ? "spontaneous as written · independent of n"
+        : "not spontaneous — swap the electrodes";
+
+      root.querySelector("#bml-gibbs-value").textContent =
+        (gibbs >= 0 ? "+" : "−") + Math.abs(gibbs).toFixed(0) + " kJ/mol";
+      root.querySelector("#bml-gibbs-sub").textContent =
+        "n = " + n + " e⁻ · " + negative.n + "e⁻ half-cell × " + (n / negative.n) +
+        ", " + positive.n + "e⁻ half-cell × " + (n / positive.n);
+
+      negativeMarker.style.left = negativeX + "%";
+      positiveMarker.style.left = positiveX + "%";
+      referenceLine.style.left = referenceX + "%";
+      waterWindow.style.left = positionFor(WATER_LOW) + "%";
+      waterWindow.style.width = positionFor(WATER_HIGH) - positionFor(WATER_LOW) + "%";
+      waterLabel.style.left = (positionFor(WATER_LOW) + positionFor(WATER_HIGH)) / 2 + "%";
+      gap.style.left = lowX + "%";
+      gap.style.width = highX - lowX + "%";
+      gap.classList.toggle("is-invalid", !isSpontaneous);
+      gapLabel.style.left = Math.min(88, Math.max(12, (negativeX + positiveX) / 2)) + "%";
+      gapLabel.textContent = "ΔE° = " + Math.abs(cellVoltage).toFixed(3) + " V";
+
+      root.querySelector("#bml-negative-marker-label").textContent = negative.label;
+      root.querySelector("#bml-positive-marker-label").textContent = positive.label;
+      root.querySelector("#bml-reference-label").textContent = "0 V · " + reference.label;
+      root.querySelector("#bml-axis-title").textContent =
+        "Standard reduction potential E° vs " + reference.label + " (V) — tick spacing is fixed; only the labels move";
+
+      const flowLabel = root.querySelector("#bml-flow-label");
+      if (isSpontaneous) {
+        root.querySelector("#bml-reaction-negative").textContent =
+          "oxidation ×" + (n / negative.n) + ":  " + negative.oxidation;
+        root.querySelector("#bml-reaction-positive").textContent =
+          "reduction ×" + (n / positive.n) + ":  " + positive.reduction;
+        root.querySelector("#bml-reaction-overall").textContent =
+          "overall:  " + overallEquation(negative, positive, n);
+        flowLabel.textContent = "e⁻ through the wire, ions through the electrolyte — the loop must close";
+        runButton.disabled = false;
+        runText.textContent = circuit.classList.contains("is-running") ? "Pause" : "Run discharge";
+      } else {
+        root.querySelector("#bml-reaction-negative").textContent = "—";
+        root.querySelector("#bml-reaction-positive").textContent = "—";
+        root.querySelector("#bml-reaction-overall").textContent =
+          "Not spontaneous as written: the positive electrode must have the higher E°.";
+        flowLabel.textContent = "Swap the electrodes to make E°cell positive";
+        runButton.disabled = true;
+        runText.textContent = "Electron flow unavailable";
+      }
+
+      const messages = warningsFor(negative, positive, cellVoltage);
+      warnBox.hidden = messages.length === 0;
+      warnBox.replaceChildren();
+      messages.forEach((message) => {
+        const line = document.createElement("div");
+        line.textContent = "⚠ " + message;
+        warnBox.appendChild(line);
+      });
+
+      stage.setAttribute(
+        "aria-label",
+        negative.label + " sits at " + formatPotential(negativeDisplayed) + " versus " + reference.label +
+        "; " + positive.label + " sits at " + formatPotential(positiveDisplayed) +
+        "; the cell voltage is " + formatPotential(cellVoltage) + " with " + n + " electrons transferred."
+      );
+      const detail = root.querySelector("#bml-ref-explain-detail");
+      if (detail) detail.innerHTML = reference.detail;
+
+      root.bmlCellDiagram?.update(negative, positive,
+        elementBySymbol[negative.element], elementBySymbol[positive.element]);
+
+      buildTicks(reference);
+      syncTiles();
+    }
+
+    /* ---------------- real cells table ---------------- */
+    function buildCellsTable() {
+      const body = root.querySelector("#bml-cells-body");
+      realCells.forEach((row) => {
+        const tr = document.createElement("tr");
+        const cells = [row[0], row[1], row[2]];
+        cells.forEach((text, index) => {
+          const cell = document.createElement(index === 0 ? "th" : "td");
+          if (index === 0) cell.scope = "row";
+          cell.textContent = text;
+          tr.appendChild(cell);
+        });
+        const voltage = document.createElement("td");
+        voltage.className = "text-end";
+        voltage.textContent = row[3];
+        tr.appendChild(voltage);
+        const basis = document.createElement("td");
+        const tag = document.createElement("span");
+        tag.textContent = row[4] === "aq" ? "tabulated E° (aqueous)" : "measured plateau vs Li⁺/Li";
+        if (row[4] === "aq") tag.className = "bml-cell-basis-aq";
+        basis.append(tag);
+        basis.append(document.createElement("br"));
+        const note = document.createElement("small");
+        note.className = "text-muted";
+        note.textContent = row[5];
+        basis.append(note);
+        tr.appendChild(basis);
+        body.appendChild(tr);
+      });
+    }
+
+    /* ---------------- wiring ---------------- */
+    pickNegative.addEventListener("click", () => setActiveRole("negative"));
+    pickPositive.addEventListener("click", () => setActiveRole("positive"));
+    referenceSelect.addEventListener("change", updateCell);
+    swapButton.addEventListener("click", () => {
+      const previous = negativeId;
+      negativeId = positiveId;
+      positiveId = previous;
+      updateCell();
+      inspectElement(inspectedSymbol);
+    });
+
+    runButton.addEventListener("click", () => {
+      const running = circuit.classList.toggle("is-running");
+      runText.textContent = running ? "Pause" : "Run discharge";
+      const icon = runButton.querySelector("[data-lucide], svg");
+      if (icon) icon.setAttribute("data-lucide", running ? "pause" : "play");
+      globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+    });
+
+    buildPeriodicTable();
+    buildCellsTable();
+    inspectElement("Zn");
+    updateCell();
+  })();
+</script>
+<script>
+  (() => {
+    const root = document.getElementById("battery-materials-lab");
+    if (!root) return;
+
+    /* ------------------------------------------------------------------
+       Commercial electrode materials.
+       V   = average discharge potential vs Li⁺/Li (measured plateau, V)
+       cap = practical reversible specific capacity (mAh/g of active material)
+       Sources: EVreporter electrode analysis; Battery Burn Book cathode
+       table; Faraday Institution Insight 18; Sigma-Aldrich Li-ion electrode
+       materials. Practical, not theoretical, values throughout.
+       ------------------------------------------------------------------ */
+    const anodes = [
+      { id: "li",   name: "Li metal",     formula: "Li",          v: 0.00, cap: 3860, note: "the benchmark — 0 V by definition; dendrites still block mass-market use" },
+      { id: "gr",   name: "Graphite",     formula: "LiC₆",        v: 0.15, cap: 350,  note: "the dominant negative-electrode host in conventional commercial lithium-ion cells" },
+      { id: "sigr", name: "Si–graphite",  formula: "Si + LiC₆",   v: 0.30, cap: 450,  note: "silicon blended with graphite can raise capacity, but expansion and first-cycle loss require careful design" },
+      { id: "si",   name: "Silicon",      formula: "Li₁₅Si₄",     v: 0.40, cap: 3000, note: "very high specific capacity, but large volume change causes stress, cracking, and rapid interface growth" },
+      { id: "lto",  name: "LTO",          formula: "Li₄Ti₅O₁₂",   v: 1.55, cap: 165,  note: "sits well above the electrolyte reduction limit — very safe, very fast, low energy" }
+    ];
+
+    const cathodes = [
+      { id: "s",     name: "Sulfur",   formula: "S₈",                     v: 2.15, cap: 1000, note: "huge capacity, low voltage; polysulfide shuttle limits life" },
+      { id: "lmr",   name: "LMR-NMC",  formula: "Li₁.₂Mn₀.₆Ni₀.₂O₂",      v: 3.55, cap: 250,  note: "highest capacity of the oxides; voltage fades on cycling" },
+      { id: "lfp",   name: "LFP",      formula: "LiFePO₄",                v: 3.40, cap: 155,  note: "flat voltage plateau and strong thermal stability; practical cost and life depend on cell design" },
+      { id: "nmc1",  name: "NMC111",   formula: "LiNi⅓Mn⅓Co⅓O₂",          v: 3.75, cap: 155,  note: "the original balanced ternary; being displaced by Ni-rich grades" },
+      { id: "nmc6",  name: "NMC622",   formula: "LiNi₀.₆Mn₀.₂Co₀.₂O₂",    v: 3.80, cap: 175,  note: "a nickel-rich layered oxide balancing capacity, life, cost, and thermal management" },
+      { id: "nca",   name: "NCA",      formula: "LiNi₀.₈Co₀.₁₅Al₀.₀₅O₂",  v: 3.80, cap: 195,  note: "aluminium-stabilised nickel-rich oxide used in high-energy cylindrical and other cell formats" },
+      { id: "nmc8",  name: "NMC811",   formula: "LiNi₀.₈Mn₀.₁Co₀.₁O₂",    v: 3.85, cap: 195,  note: "high practical capacity, with tighter requirements for coatings, electrolyte, charging, and thermal management" },
+      { id: "lmfp",  name: "LMFP",     formula: "LiMn₀.₆Fe₀.₄PO₄",        v: 3.85, cap: 145,  note: "manganese substitution raises average voltage; life, energy, and thermal behavior depend on composition and processing" },
+      { id: "lco",   name: "LCO",      formula: "LiCoO₂",                 v: 3.95, cap: 150,  note: "high volumetric energy and mature processing; cobalt content raises cost and supply concerns" },
+      { id: "lmo",   name: "LMO",      formula: "LiMn₂O₄",                v: 4.05, cap: 115,  note: "spinel structure supports power, while manganese dissolution and high-temperature aging can limit life" },
+      { id: "lnmo",  name: "LNMO",     formula: "LiNi₀.₅Mn₁.₅O₄",         v: 4.70, cap: 130,  note: "high-voltage spinel that requires demanding electrolyte and interface-stabilization strategies" }
+    ];
+
+    /* Known commercial pairings: measured cell-level energy density. */
+    const realPairs = {
+      "gr+lfp":   { range: "160–200 Wh/kg", note: "Representative of standard-range EV, home-storage, grid-storage, and e-bike applications." },
+      "gr+nmc8":  { range: "250–290 Wh/kg", note: "Representative high-energy EV pairing; cycle life and thermal response depend strongly on design and operating conditions." },
+      "gr+nmc6":  { range: "240–270 Wh/kg", note: "Representative nickel-rich EV pairing balancing energy, life, cost, and thermal management." },
+      "gr+nmc1":  { range: "200–230 Wh/kg", note: "A balanced ternary formulation used as a reference point for later nickel-rich grades." },
+      "gr+nca":   { range: "250–300 Wh/kg", note: "A high-energy pairing used in cylindrical and other demanding applications." },
+      "gr+lco":   { range: "200–250 Wh/kg", note: "Common in compact consumer electronics where volumetric energy is important." },
+      "gr+lmo":   { range: "100–150 Wh/kg", note: "Used in power-oriented applications and often blended with layered oxides to balance performance." },
+      "gr+lmfp":  { range: "210–240 Wh/kg", note: "A higher-voltage phosphate option; representative performance depends on manganese fraction and implementation." },
+      "sigr+nmc8":{ range: "280–320 Wh/kg", note: "A high-energy design direction using modest silicon content in a graphite-based negative electrode." },
+      "lto+nmc6": { range: "60–110 Wh/kg",  note: "High-power and fast-charge niche; the elevated negative-electrode potential reduces cell voltage and energy." },
+      "li+s":     { range: "350–500 Wh/kg", note: "Demonstrated at multiple scales; cycle life, lithium protection, and polysulfide management remain central challenges." },
+      "si+nmc8":  { range: "not yet commercial", note: "High-silicon negative electrodes remain challenging because volume change and interface growth degrade the composite." }
+    };
+
+    /* Cell-level comparison. Cycles are to 80% capacity retention. */
+    const marketRows = [
+      { key: "lfp",  name: "LFP",       cathode: "LiFePO₄", v: "3.2", wh: [160, 200], whLabel: "160–200",
+        cycles: "4,000–10,000", t1: "150–170 °C", use: "standard-range EVs, home and grid storage, e-bikes" },
+      { key: "lmfp", name: "LMFP",      cathode: "LiMn₀.₆Fe₀.₄PO₄", v: "3.7", wh: [210, 240], whLabel: "210–240",
+        cycles: "3,000+", t1: "LFP-like", use: "emerging higher-voltage phosphate applications" },
+      { key: "nmc",  name: "NMC 622/811", cathode: "LiNiₓMnᵧCo𝑧O₂", v: "3.6–3.7", wh: [240, 290], whLabel: "240–290",
+        cycles: "1,500–3,000", t1: "90–110 °C", use: "long-range EVs, power tools, laptops" },
+      { key: "nca",  name: "NCA",       cathode: "LiNi₀.₈Co₀.₁₅Al₀.₀₅O₂", v: "3.6–3.7", wh: [250, 300], whLabel: "250–300",
+        cycles: "1,000–2,000", t1: "90–110 °C", use: "high-energy cylindrical cells and aviation-oriented development" },
+      { key: "lco",  name: "LCO",       cathode: "LiCoO₂", v: "3.7", wh: [200, 250], whLabel: "200–250",
+        cycles: "500–1,000", t1: "130–150 °C", use: "phones, laptops, cameras" },
+      { key: "lmo",  name: "LMO",       cathode: "LiMn₂O₄", v: "3.8", wh: [100, 150], whLabel: "100–150",
+        cycles: "300–700", t1: "≈150 °C", use: "power tools, medical — usually blended with NMC" },
+      { key: "na",   name: "Sodium-ion", cathode: "layered Na oxide", v: "3.1", wh: [120, 160], whLabel: "120–160",
+        cycles: "4,000–15,000", t1: "LFP-like", use: "grid storage and cold-climate applications; composition-dependent use of critical materials" }
+    ];
+
+    /* ---------------- ladder geometry (SVG user units) ---------------- */
+    const V_MIN = -0.2;
+    const V_MAX = 5.0;
+    const PLOT_TOP = 36;
+    const PLOT_BOTTOM = 590;
+    const AXIS_X = 30;
+    const ANODE_DOT_X = 392;
+    const CATHODE_DOT_X = 480;
+    const ANODE_LABEL_X = 380;
+    const CATHODE_LABEL_X = 492;
+    const RIGHT_EDGE = 876;
+    const GAP_X = 430;
+    const GAP_W = 12;
+    const ROW_MIN = 19;   // label pitch; must exceed the hit-rect height so rows never overlap
+    const ENERGY_MAX = 300;
+    const SVG_NS = "http://www.w3.org/2000/svg";
+
+    let anodeId = "gr";
+    let cathodeId = "lfp";
+
+    const svg = root.querySelector("#bml-ladder-svg");
+    if (!svg) return;
+
+    const byId = (list, id) => list.find((item) => item.id === id);
+    const yFor = (v) =>
+      PLOT_BOTTOM - ((v - V_MIN) / (V_MAX - V_MIN)) * (PLOT_BOTTOM - PLOT_TOP);
+
+    function make(tag, attrs, text) {
+      const node = document.createElementNS(SVG_NS, tag);
+      Object.entries(attrs || {}).forEach(([key, value]) => node.setAttribute(key, value));
+      if (text != null) node.textContent = text;
+      return node;
+    }
+
+    /* Label de-collision. Dots stay at the true potential; labels are spread to
+       ROW_MIN and joined back to their dot by a leader. Colliding labels form a
+       cluster that is centred on the mean of its members, so a tight group like
+       the eight oxide cathodes between 3.40 V and 4.05 V opens symmetrically
+       instead of sliding one-way down the axis. */
+    function decollide(values) {
+      const points = values
+        .map((v, index) => ({ index, y: yFor(v) }))
+        .sort((a, b) => a.y - b.y); // top of the plot first
+
+      const clusters = [];
+      const height = (cluster) => (cluster.members.length - 1) * ROW_MIN;
+      const top = (cluster) => cluster.centre - height(cluster) / 2;
+      const bottom = (cluster) => cluster.centre + height(cluster) / 2;
+
+      points.forEach((point) => {
+        clusters.push({ members: [point], centre: point.y });
+        while (clusters.length > 1) {
+          const lower = clusters[clusters.length - 1];
+          const upper = clusters[clusters.length - 2];
+          if (top(lower) - bottom(upper) >= ROW_MIN) break;
+          const members = upper.members.concat(lower.members);
+          clusters.splice(clusters.length - 2, 2, {
+            members,
+            centre: members.reduce((sum, m) => sum + m.y, 0) / members.length
+          });
+        }
+      });
+
+      const result = [];
+      clusters.forEach((cluster) => {
+        const start = top(cluster);
+        cluster.members.forEach((member, k) => { result[member.index] = start + k * ROW_MIN; });
+      });
+
+      // keep everything inside the plot, then guarantee separation both ways
+      const ordered = points.map((point) => point.index);
+      ordered.forEach((index, i) => {
+        if (i === 0) result[index] = Math.max(PLOT_TOP, result[index]);
+        else result[index] = Math.max(result[ordered[i - 1]] + ROW_MIN, result[index]);
+      });
+      for (let i = ordered.length - 1; i >= 0; i -= 1) {
+        const index = ordered[i];
+        if (i === ordered.length - 1) result[index] = Math.min(PLOT_BOTTOM, result[index]);
+        else result[index] = Math.min(result[ordered[i + 1]] - ROW_MIN, result[index]);
+      }
+      return result;
+    }
+
+    function buildAxis() {
+      for (let v = 0; v <= 5; v += 1) {
+        const y = yFor(v);
+        svg.appendChild(make("line", { class: "bml-rule", x1: AXIS_X + 8, x2: RIGHT_EDGE, y1: y, y2: y }));
+        svg.appendChild(make("text", {
+          class: "bml-axis-num", x: AXIS_X, y: y + 4, "text-anchor": "end"
+        }, v.toFixed(0)));
+      }
+      svg.appendChild(make("text", {
+        class: "bml-col-title", x: ANODE_LABEL_X, y: 20, "text-anchor": "end"
+      }, "Anodes (negative)"));
+      svg.appendChild(make("text", {
+        class: "bml-col-title", x: CATHODE_LABEL_X, y: 20
+      }, "Cathodes (positive)"));
+    }
+
+    /* Marks (dots + leaders) live in a non-interactive layer so that each
+       interactive group's bounding box is exactly its label row. Otherwise the
+       box spans from the dot to the label and its centre falls on empty space. */
+    const marksLayer = make("g", { class: "bml-marks", "pointer-events": "none" });
+    svg.appendChild(marksLayer);
+    const pendingChips = [];
+
+    function buildColumn(list, kind) {
+      const isAnode = kind === "anode";
+      const labelYs = decollide(list.map((material) => material.v));
+      const dotX = isAnode ? ANODE_DOT_X : CATHODE_DOT_X;
+      const labelX = isAnode ? ANODE_LABEL_X : CATHODE_LABEL_X;
+      const anchor = isAnode ? "end" : "start";
+      const edge = isAnode ? AXIS_X + 16 : RIGHT_EDGE;
+
+      list.forEach((material, index) => {
+        const trueY = yFor(material.v);
+        const labelY = labelYs[index];
+
+        // leader from the label back to the true potential, then the dot
+        marksLayer.appendChild(make("path", {
+          class: "bml-leader",
+          d: "M" + labelX + " " + labelY + " H" + (isAnode ? dotX - 12 : dotX + 12) +
+             " L" + dotX + " " + trueY
+        }));
+        marksLayer.appendChild(make("circle", {
+          class: "bml-dot bml-dot-" + kind, "data-id": material.id,
+          cx: dotX, cy: trueY, r: 4.5
+        }));
+
+        const group = make("g", {
+          class: "bml-mat bml-mat-" + kind,
+          role: "button",
+          tabindex: "0",
+          "data-id": material.id,
+          "aria-pressed": "false",
+          "data-tooltip": material.formula + " — " + material.note,
+          "aria-label": material.name + ", " + material.formula + ", " +
+            material.v.toFixed(2) + " volts versus lithium, " + material.cap +
+            " milliamp-hours per gram. " + material.note
+        });
+
+        // generous hit target spanning the whole label row (never painted)
+        group.appendChild(make("rect", {
+          class: "bml-hit",
+          x: Math.min(labelX, edge) - (isAnode ? 0 : 4),
+          y: labelY - 8.5,
+          width: Math.abs(edge - labelX) + 4,
+          height: 17,
+          rx: 4
+        }));
+        // the painted selection chip is sized to the text after layout
+        const chip = make("rect", { class: "bml-chip", y: labelY - 8.5, height: 17, rx: 8.5 });
+        group.appendChild(chip);
+
+        const label = make("text", { x: labelX + (isAnode ? -14 : 14), y: labelY + 4, "text-anchor": anchor });
+        if (isAnode) {
+          label.appendChild(make("tspan", { class: "bml-num" },
+            material.v.toFixed(2) + " V · " + material.cap + " mAh/g "));
+          label.appendChild(make("tspan", { class: "bml-name" }, material.name));
+        } else {
+          label.appendChild(make("tspan", { class: "bml-name" }, material.name));
+          label.appendChild(make("tspan", { class: "bml-num" },
+            "  " + material.v.toFixed(2) + " V · " + material.cap + " mAh/g"));
+        }
+        group.appendChild(label);
+
+        const choose = () => {
+          if (isAnode) anodeId = material.id;
+          else cathodeId = material.id;
+          updateMarket();
+        };
+        group.addEventListener("click", choose);
+        group.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            choose();
+          }
+        });
+        svg.appendChild(group);
+        pendingChips.push({ chip, label });
+      });
+    }
+
+    /* getBBox needs the node laid out, so size the chips once at the end. */
+    function sizeChips() {
+      pendingChips.forEach(({ chip, label }) => {
+        const box = label.getBBox();
+        chip.setAttribute("x", box.x - 7);
+        chip.setAttribute("width", box.width + 14);
+      });
+    }
+
+    let gapBar, gapChip, gapText;
+    function buildGap() {
+      const layer = make("g", { class: "bml-gap-layer", "pointer-events": "none" });
+      gapBar = make("rect", { class: "bml-gap-bar", x: GAP_X, width: GAP_W, rx: GAP_W / 2, y: 0, height: 0 });
+      gapChip = make("rect", { class: "bml-gap-chip", x: GAP_X - 20, width: GAP_W + 40, height: 18, rx: 4, y: 0 });
+      gapText = make("text", { class: "bml-gap-text", x: GAP_X + GAP_W / 2, y: 0, "text-anchor": "middle" }, "");
+      layer.append(gapBar, gapChip, gapText);
+      svg.appendChild(layer);
+    }
+
+    function buildEnergyBars() {
+      const host = root.querySelector("#bml-energy");
+      marketRows.forEach((row) => {
+        const line = document.createElement("div");
+        line.className = "bml-energy-row";
+
+        const name = document.createElement("span");
+        name.className = "bml-energy-name";
+        name.textContent = row.name;
+
+        const track = document.createElement("span");
+        track.className = "bml-energy-track";
+        track.setAttribute("data-tooltip", row.name + " — " + row.whLabel + " Wh/kg at cell level");
+
+        const fill = document.createElement("span");
+        fill.className = "bml-energy-fill";
+        fill.style.left = (row.wh[0] / ENERGY_MAX) * 100 + "%";
+        fill.style.width = ((row.wh[1] - row.wh[0]) / ENERGY_MAX) * 100 + "%";
+
+        const value = document.createElement("span");
+        value.className = "bml-energy-value";
+        value.textContent = row.whLabel;
+        // keep the direct label off the right edge
+        const rightEdge = (row.wh[1] / ENERGY_MAX) * 100;
+        if (rightEdge > 82) {
+          value.style.right = 100 - (row.wh[0] / ENERGY_MAX) * 100 + 1 + "%";
+        } else {
+          value.style.left = rightEdge + 1.5 + "%";
+        }
+
+        track.append(fill, value);
+        line.append(name, track);
+        host.appendChild(line);
+      });
+    }
+
+    function buildMarketTable() {
+      const body = root.querySelector("#bml-market-body");
+      marketRows.forEach((row) => {
+        const tr = document.createElement("tr");
+
+        const th = document.createElement("th");
+        th.scope = "row";
+        th.textContent = row.name;
+        tr.appendChild(th);
+
+        [row.cathode].forEach((text) => {
+          const td = document.createElement("td");
+          td.textContent = text;
+          tr.appendChild(td);
+        });
+        [row.v, row.whLabel, row.cycles].forEach((text) => {
+          const td = document.createElement("td");
+          td.className = "text-end";
+          td.textContent = text;
+          tr.appendChild(td);
+        });
+        [row.t1, row.use].forEach((text) => {
+          const td = document.createElement("td");
+          td.textContent = text;
+          tr.appendChild(td);
+        });
+        body.appendChild(tr);
+      });
+    }
+
+    function updateMarket() {
+      const anode = byId(anodes, anodeId);
+      const cathode = byId(cathodes, cathodeId);
+      const voltage = cathode.v - anode.v;
+      // series capacities: 1/C = 1/Ca + 1/Cc
+      const combined = (anode.cap * cathode.cap) / (anode.cap + cathode.cap);
+      const activeMaterialEstimate = voltage * combined;
+
+      root.querySelector("#bml-mkt-voltage").textContent = voltage.toFixed(2) + " V";
+      root.querySelector("#bml-mkt-voltage-sub").textContent =
+        cathode.v.toFixed(2) + " V " + cathode.name + " − " + anode.v.toFixed(2) + " V " + anode.name;
+      root.querySelector("#bml-mkt-theory").textContent = Math.round(activeMaterialEstimate) + " Wh/kg";
+
+      const pair = realPairs[anode.id + "+" + cathode.id];
+      const realValue = root.querySelector("#bml-mkt-real");
+      const realSub = root.querySelector("#bml-mkt-real-sub");
+      if (pair) {
+        realValue.textContent = pair.range;
+        const numbers = pair.range.match(/\d+/g);
+        realSub.textContent = numbers
+          ? "≈" + Math.round((((Number(numbers[0]) + Number(numbers[1])) / 2) / activeMaterialEstimate) * 100) +
+            "% of the active-material estimate"
+          : "not in volume production";
+      } else {
+        realValue.textContent = "—";
+        realSub.textContent = "not a commercial pairing";
+      }
+      root.querySelector("#bml-pair-note").textContent = pair
+        ? pair.note
+        : anode.name + " + " + cathode.name + " is not a cell anyone ships; the ladder still gives its voltage.";
+
+      const topY = Math.min(yFor(anode.v), yFor(cathode.v));
+      const bottomY = Math.max(yFor(anode.v), yFor(cathode.v));
+      gapBar.setAttribute("y", topY);
+      gapBar.setAttribute("height", Math.max(0, bottomY - topY));
+      const midY = (topY + bottomY) / 2;
+      gapChip.setAttribute("y", midY - 9);
+      gapText.setAttribute("y", midY + 4);
+      gapText.textContent = voltage.toFixed(2) + " V";
+      svg.setAttribute("aria-label",
+        "Voltage ladder. Selected cell: " + anode.name + " at " + anode.v.toFixed(2) +
+        " volts and " + cathode.name + " at " + cathode.v.toFixed(2) +
+        " volts versus lithium, giving " + voltage.toFixed(2) + " volts.");
+
+      svg.querySelectorAll(".bml-mat").forEach((group) => {
+        const selected = group.classList.contains("bml-mat-anode")
+          ? group.dataset.id === anodeId
+          : group.dataset.id === cathodeId;
+        group.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+      svg.querySelectorAll(".bml-dot").forEach((dot) => {
+        const selected = dot.classList.contains("bml-dot-anode")
+          ? dot.dataset.id === anodeId
+          : dot.dataset.id === cathodeId;
+        dot.classList.toggle("is-active", selected);
+      });
+    }
+
+    buildAxis();
+    buildColumn(anodes, "anode");
+    buildColumn(cathodes, "cathode");
+    buildGap();
+    sizeChips();
+    buildEnergyBars();
+    buildMarketTable();
+    updateMarket();
+  })();
+</script>
+<script>
+  (() => {
+    const root = document.getElementById("battery-materials-lab");
+    const svg = document.getElementById("bml-interc-svg");
+    if (!root || !svg) return;
+
+    const NS = "http://www.w3.org/2000/svg";
+    const make = (tag, attrs, text) => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs || {}).forEach(([k, v]) => node.setAttribute(k, v));
+      if (text != null) node.textContent = text;
+      return node;
+    };
+
+    /* geometry */
+    const W = 900;
+    const WIRE_Y = 44;
+    const HOST_TOP = 132, HOST_BOTTOM = 372;
+    const LEFT_X = 84, RIGHT_X = 632, HOST_W = 184;
+    const LYTE_X = 322, LYTE_W = 256;
+    const LOAD_W = 128;
+    const LAYERS = 6;
+
+    const bg = make("g", {}); svg.appendChild(bg);
+    const hostLayer = make("g", {}); svg.appendChild(hostLayer);
+    const flow = make("g", {}); svg.appendChild(flow);
+    const labelLayer = make("g", {}); svg.appendChild(labelLayer);
+
+    /* electrolyte + separator */
+    bg.appendChild(make("rect", {
+      class: "bml-lyte", x: LYTE_X, y: HOST_TOP, width: LYTE_W,
+      height: HOST_BOTTOM - HOST_TOP, rx: 10
+    }));
+    bg.appendChild(make("line", {
+      class: "bml-sep", x1: LYTE_X + LYTE_W / 2, x2: LYTE_X + LYTE_W / 2,
+      y1: HOST_TOP + 10, y2: HOST_BOTTOM - 10
+    }));
+
+    /* external circuit */
+    const tabL = LEFT_X + HOST_W / 2;
+    const tabR = RIGHT_X + HOST_W / 2;
+    bg.appendChild(make("path", {
+      class: "bml-wire-path",
+      d: `M${tabL} ${HOST_TOP} V${WIRE_Y} H${W / 2 - LOAD_W / 2}` +
+         ` M${W / 2 + LOAD_W / 2} ${WIRE_Y} H${tabR} V${HOST_TOP}`
+    }));
+    // the load sits above the flow layer, so an electron visibly enters it
+    labelLayer.appendChild(make("rect", {
+      class: "bml-load", x: W / 2 - LOAD_W / 2, y: WIRE_Y - 20, width: LOAD_W, height: 40, rx: 9
+    }));
+    const loadText = make("text", {
+      class: "bml-load-text", x: W / 2, y: WIRE_Y + 5, "text-anchor": "middle"
+    }, "your device");
+    labelLayer.appendChild(loadText);
+
+    /* ---- host structures: stacked slabs with lithium sites in the gaps ---- */
+    const gapY = [];
+    const slabH = (HOST_BOTTOM - HOST_TOP) / (LAYERS * 2 - 1);
+    for (let i = 0; i < LAYERS; i += 1) {
+      const y = HOST_TOP + i * slabH * 2;
+      [["left", LEFT_X], ["right", RIGHT_X]].forEach(([side, x]) => {
+        hostLayer.appendChild(make("rect", {
+          class: "bml-slab bml-slab-" + side, x, y, width: HOST_W, height: slabH, rx: 3
+        }));
+      });
+      if (i < LAYERS - 1) gapY.push(y + slabH + slabH / 2);
+    }
+
+    /* lithium sites sitting between the slabs */
+    const SITES_PER_GAP = 4;
+    const sites = { left: [], right: [] };
+    [["left", LEFT_X], ["right", RIGHT_X]].forEach(([side, x]) => {
+      gapY.forEach((y) => {
+        for (let i = 0; i < SITES_PER_GAP; i += 1) {
+          const cx = x + (HOST_W / (SITES_PER_GAP + 1)) * (i + 1);
+          const site = make("circle", { class: "bml-li-site", cx, cy: y, r: 7 });
+          hostLayer.appendChild(site);
+          sites[side].push(site);
+        }
+      });
+    });
+
+    /* shuttling lithium ions */
+    const shuttles = [];
+    for (let i = 0; i < 4; i += 1) {
+      const g = make("g", { class: "bml-shuttle" });
+      g.appendChild(make("circle", { class: "bml-shuttle-dot", cx: 0, cy: 0, r: 13 }));
+      g.appendChild(make("text", { class: "bml-shuttle-text", x: 0, y: 4, "text-anchor": "middle" }, "Li⁺"));
+      g.style.setProperty("--sh-y", (HOST_TOP + 44 + i * 52) + "px");
+      g.style.animationDelay = (i * 620) + "ms";
+      flow.appendChild(g);
+      shuttles.push(g);
+    }
+
+    /* electrons on the wire */
+    const electrons = [];
+    for (let i = 0; i < 3; i += 1) {
+      const g = make("g", { class: "bml-interc-e" });
+      g.appendChild(make("circle", { class: "bml-e-dot", cx: 0, cy: 0, r: 10 }));
+      g.appendChild(make("text", { class: "bml-e-text", x: 0, y: 4, "text-anchor": "middle" }, "e⁻"));
+      g.style.animationDelay = (i * 800) + "ms";
+      flow.appendChild(g);
+      electrons.push(g);
+    }
+
+    svg.style.setProperty("--sh-start", (LYTE_X + 24) + "px");
+    svg.style.setProperty("--sh-end", (LYTE_X + LYTE_W - 24) + "px");
+    svg.style.setProperty("--we-start", tabL + "px");
+    svg.style.setProperty("--we-end", tabR + "px");
+    svg.style.setProperty("--we-y", WIRE_Y + "px");
+
+    /* ---- labels ---- */
+    const addText = (cls, x, y, text, anchor) =>
+      labelLayer.appendChild(make("text", {
+        class: cls, x, y, "text-anchor": anchor || "middle"
+      }, text));
+
+    addText("bml-cell-head bml-head-neg", tabL, HOST_TOP - 56, "NEGATIVE · GRAPHITE HOST");
+    const negFormula = addText("bml-interc-formula", tabL, HOST_TOP - 32, "LiC₆");
+    addText("bml-cell-head bml-head-pos", tabR, HOST_TOP - 56, "POSITIVE · OXIDE HOST");
+    const posFormula = addText("bml-interc-formula", tabR, HOST_TOP - 32, "LiFePO₄");
+    addText("bml-cell-sub", W / 2, HOST_TOP - 44, "ELECTROLYTE");
+    const arrowLabel = addText("bml-flow-tag", W / 2, HOST_TOP - 24, "Li⁺ →");
+    const metalLabel = addText("bml-interc-metal", tabR, HOST_BOTTOM + 30, "Fe³⁺ → Fe²⁺");
+    const hostNote = addText("bml-cell-sub", W / 2, HOST_BOTTOM + 30,
+      "the host frameworks never dissolve");
+
+    /* ---- state ---- */
+    const cathodes = {
+      lfp: {
+        name: "Lithium iron phosphate, LiFePO₄",
+        formula: "LiFePO₄",
+        lithiated: "LiFePO₄", delithiated: "FePO₄",
+        metal: "Fe", low: "Fe²⁺", high: "Fe³⁺",
+        note: "Iron sits at +2 in LiFePO₄ and +3 in FePO₄. Charging pulls the lithium out and oxidises the iron; discharging pushes it back in and reduces it. The phosphate framework never moves.",
+        other: "Show LiCoO₂ instead"
+      },
+      lco: {
+        name: "Lithium cobalt oxide, LiCoO₂",
+        formula: "LiCoO₂",
+        lithiated: "LiCoO₂", delithiated: "Li₁₋ₓCoO₂",
+        metal: "Co", low: "Co³⁺", high: "Co⁴⁺",
+        note: "Cobalt sits at +3 in LiCoO₂ and is driven towards +4 as lithium is removed on charging. Take out too much lithium and the layered framework starts to collapse — which is why these cells have a charge-voltage limit.",
+        other: "Show LiFePO₄ instead"
+      }
+    };
+    let mode = "discharge";
+    let cathodeKey = "lfp";
+
+    const btnDischarge = root.querySelector("#bml-interc-discharge");
+    const btnCharge = root.querySelector("#bml-interc-charge");
+    const btnCathode = root.querySelector("#bml-interc-cathode");
+    const cathodeText = root.querySelector("#bml-interc-cathode-text");
+
+    function fillSites(side, fraction) {
+      const list = sites[side];
+      list.forEach((site, index) => {
+        site.classList.toggle("is-filled", index / list.length < fraction);
+      });
+    }
+
+    function render() {
+      const cathode = cathodes[cathodeKey];
+      const discharging = mode === "discharge";
+
+      svg.classList.toggle("is-charging", !discharging);
+      btnDischarge.setAttribute("aria-pressed", discharging ? "true" : "false");
+      btnCharge.setAttribute("aria-pressed", discharging ? "false" : "true");
+      cathodeText.textContent = cathode.other;
+
+      // on discharge lithium is leaving the graphite and filling the oxide
+      fillSites("left", discharging ? 0.3 : 0.85);
+      fillSites("right", discharging ? 0.85 : 0.3);
+
+      negFormula.textContent = discharging ? "LiC₆ → C₆" : "C₆ → LiC₆";
+      posFormula.textContent = discharging
+        ? cathode.delithiated + " → " + cathode.lithiated
+        : cathode.lithiated + " → " + cathode.delithiated;
+      arrowLabel.textContent = discharging ? "Li⁺ →" : "← Li⁺";
+      metalLabel.textContent = discharging
+        ? cathode.high + " → " + cathode.low + "  (gains an electron)"
+        : cathode.low + " → " + cathode.high + "  (loses an electron)";
+      loadText.textContent = discharging ? "your device" : "charger";
+      hostNote.textContent = "the host frameworks never dissolve";
+
+      root.querySelector("#bml-interc-neg-role").textContent =
+        "Negative electrode · " + (discharging ? "oxidation on discharge" : "gains lithium while charging");
+      root.querySelector("#bml-interc-pos-role").textContent =
+        "Positive electrode · " + (discharging ? "reduction on discharge" : "gives lithium up while charging");
+      root.querySelector("#bml-interc-pos-name").textContent = cathode.name;
+
+      root.querySelector("#bml-interc-neg-eq").textContent = discharging
+        ? "LiC₆ → 6C + Li⁺ + e⁻"
+        : "6C + Li⁺ + e⁻ → LiC₆";
+      root.querySelector("#bml-interc-pos-eq").textContent = discharging
+        ? cathode.delithiated + " + Li⁺ + e⁻ → " + cathode.lithiated
+        : cathode.lithiated + " → " + cathode.delithiated + " + Li⁺ + e⁻";
+
+      root.querySelector("#bml-interc-neg-note").textContent =
+        "Lithium sits between the graphene sheets, not bonded into them. The electron comes out of the " +
+        "graphite framework itself as the lithium leaves — the carbon layers stay exactly where they are.";
+      root.querySelector("#bml-interc-pos-note").textContent = cathode.note;
+
+      svg.setAttribute("aria-label",
+        "Lithium-ion cell, " + (discharging ? "discharging" : "charging") + ". Lithium ions move " +
+        (discharging ? "from the graphite host to the " : "from the ") + cathode.formula +
+        (discharging ? " host" : " host back to the graphite") +
+        ", while " + cathode.metal + " changes between " + cathode.low + " and " + cathode.high +
+        ". Neither host dissolves.");
+    }
+
+    btnDischarge.addEventListener("click", () => { mode = "discharge"; render(); });
+    btnCharge.addEventListener("click", () => { mode = "charge"; render(); });
+    btnCathode.addEventListener("click", () => {
+      cathodeKey = cathodeKey === "lfp" ? "lco" : "lfp";
+      render();
+    });
+
+    render();
+  })();
+</script>
+
+<script id="battery-materials-offline-ui">
+(() => {
+  const iconText = {
+    "arrow-left-right": "⇄", ruler: "↔", play: "▶", pause: "⏸", repeat: "↻"
+  };
+  const enhance = (scope = document) => {
+    const tooltipNodes = [
+      ...(scope.matches?.("[data-tooltip]") ? [scope] : []),
+      ...(scope.querySelectorAll?.("[data-tooltip]") || [])
+    ];
+    tooltipNodes.forEach((node) => {
+      if (!node.title) node.title = node.getAttribute("data-tooltip") || "";
+    });
+    const iconNodes = [
+      ...(scope.matches?.("i[data-lucide]") ? [scope] : []),
+      ...(scope.querySelectorAll?.("i[data-lucide]") || [])
+    ];
+    iconNodes.forEach((node) => {
+      const name = node.getAttribute("data-lucide");
+      node.textContent = iconText[name] || "•";
+      node.setAttribute("aria-hidden", "true");
+      node.classList.add("bml-local-icon");
+    });
+  };
+  enhance();
+  new MutationObserver((records) => records.forEach((record) =>
+    record.addedNodes.forEach((node) => node.nodeType === 1 && enhance(node))
+  )).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
+</body>
+</html>

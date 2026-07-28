@@ -6,6 +6,8 @@
 ·
 [Launch the Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)
 ·
+[Open the Battery Materials Lab](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)
+·
 [Run Part 02 in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)
 ·
 [Run the Fick's-law notebook](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/transport/ficks_first_law.ipynb)
@@ -25,7 +27,8 @@ are best for different concepts:
 3. **Voltage, energy, and power** — planned.
 
 See [`LEARNING_PATH.md`](LEARNING_PATH.md) for the growing sequence and the
-distinction between fundamentals and existing physics building blocks.
+distinction among fundamentals, supplementary labs, and existing physics
+building blocks.
 
 ### Part 01 — Cell Anatomy Workbench
 
@@ -49,6 +52,16 @@ The
 uses the tested package functions to calculate current, C-rate, and ideal
 constant-current duration. It clearly separates the exact ideal relationships
 from real-cell voltage-cutoff behavior.
+
+### Supplementary interactive lab — Battery materials
+
+The
+**[Battery Materials Lab](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)**
+starts with a Zn/Cu aqueous cell and develops electrode-potential differences,
+reference electrodes, the water stability window, lithium-ion intercalation,
+and representative material trade-offs. It is an advanced supplementary lab,
+not a replacement for the fundamentals sequence. The page is self-contained in
+[`docs/labs/battery-materials-lab/`](docs/labs/battery-materials-lab/).
 
 ### Additional transport module
 
