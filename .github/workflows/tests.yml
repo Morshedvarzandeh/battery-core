@@ -27,9 +27,14 @@ jobs:
           import traceback
 
           debug = Path('.github/bml-debug.txt')
+          parts = sorted(Path('.github/bml-payload').glob('part-*.txt'))
+          details = '\n'.join(
+              f'{path.name}: {len(path.read_bytes())} bytes, sha256={hashlib.sha256(path.read_bytes()).hexdigest()}'
+              for path in parts
+          )
+          payload = ''.join(path.read_text(encoding='utf-8').strip() for path in parts)
+          compressed = b''
           try:
-              parts = sorted(Path('.github/bml-payload').glob('part-*.txt'))
-              payload = ''.join(path.read_text(encoding='utf-8').strip() for path in parts)
               compressed = base64.b64decode(payload, validate=True)
               html = gzip.decompress(compressed)
               text = html.decode('utf-8')
@@ -49,14 +54,15 @@ jobs:
               output.parent.mkdir(parents=True, exist_ok=True)
               output.write_bytes(html)
               debug.write_text(
-                  f'success\nparts={len(parts)}\npayload={len(payload)}\n'
+                  f'success\n{details}\npayload={len(payload)}\n'
                   f'compressed={len(compressed)}\nhtml={len(html)}\n'
                   f'sha256={hashlib.sha256(html).hexdigest()}\n',
                   encoding='utf-8',
               )
           except Exception:
               debug.write_text(
-                  'failure\n' + traceback.format_exc(),
+                  f'failure\n{details}\npayload={len(payload)}\ncompressed={len(compressed)}\n'
+                  + traceback.format_exc(),
                   encoding='utf-8',
               )
           PY
