@@ -20,9 +20,10 @@ are written specifically for this repository.
 | 06 | Dynamic equivalent-circuit models | Planned | Python model and notebook |
 
 Part 01 introduces the named cell components and charge/discharge paths. Part
-01B then moves through structural scales: the complete stack, porous composite
-electrodes, electrolyte solvent molecules and ions, and separator pores. Part
-02 introduces the first quantitative battery rating relationships.
+01B assembles the five-layer architecture and then moves through porous
+composite electrodes, electrolyte-filled pores, solvent molecules, dissolved
+ions, and connected ionic/electronic paths. Part 02 introduces the first
+quantitative battery-rating relationships.
 
 The browser modules open directly in GitHub Pages. The Part 02 link opens the
 executable notebook in Binder. Binder may take a few minutes to build the
@@ -31,6 +32,13 @@ environment on its first launch.
 Each part should state its assumptions, units, limitations, and validation
 method. A new part is added only when its implementation and learning material
 are ready.
+
+## Supplementary interactive labs
+
+These labs extend the curriculum without changing the numbered fundamentals
+sequence:
+
+- **[Electrode potentials and battery materials](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)** — a self-contained browser lab that starts with a Zn/Cu aqueous cell, explains voltage references and the water stability window, distinguishes generic electrochemical cells from lithium-ion intercalation, and compares representative electrode-material trade-offs. Its active-material energy calculation states its assumptions and is not presented as a complete cell prediction.
 
 ## Existing physics building blocks
 

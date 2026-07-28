@@ -8,6 +8,8 @@
 ·
 [Launch the Lithium-ion Cell Architecture tutorial](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)
 ·
+[Open the Battery Materials Lab](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)
+·
 [Run Part 02 in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)
 ·
 [Run the Fick's-law notebook](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/transport/ficks_first_law.ipynb)
@@ -23,12 +25,13 @@ The fundamentals are developed as connected parts, even when different formats
 are best for different concepts:
 
 1. **[Part 01 — Cell anatomy and charge/discharge paths](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)** — an interactive conceptual browser workbench.
-2. **[Part 01B — Lithium-ion cell architecture](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)** — an interactive tutorial from cell layers to porous electrodes, electrolyte molecules, and separator function.
+2. **[Part 01B — Lithium-ion cell architecture](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)** — a layer-first interactive tutorial connecting the cell stack to porous electrodes, pore electrolyte, solvent molecules, and transport paths.
 3. **[Part 02 — Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)** — a tested Python API and executable Jupyter notebook.
 4. **Part 03 — Voltage, energy, and power** — planned.
 
 See [`LEARNING_PATH.md`](LEARNING_PATH.md) for the growing sequence and the
-distinction between fundamentals and existing physics building blocks.
+distinction among fundamentals, supplementary labs, and existing physics
+building blocks.
 
 ### Part 01 — Cell Anatomy Workbench
 
@@ -42,11 +45,11 @@ visualization, not a quantitative simulation. Its source files are in
 
 The
 **[interactive architecture tutorial](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)**
-connects the full cell stack to porous composite electrodes, conductive
-additives, binder, electrolyte-filled pores, carbonate solvent molecules,
-dissolved ions, and separator behavior. The diagrams are original and
-conceptual; no reference-book artwork or microscopy image is reused. Its source
-files are in
+starts with the five physical layers, keeps the parent stack visible during
+every zoom, and shows that electrolyte fills connected pores rather than forming
+a sixth structural layer. It then connects porous-electrode ingredients,
+carbonate solvent molecules, dissolved ions, and ionic/electronic transport
+paths. Its source files are in
 [`docs/fundamentals/lithium-ion-cell-architecture/`](docs/fundamentals/lithium-ion-cell-architecture/).
 
 To open either browser module locally, run this command from the repository root
@@ -63,6 +66,16 @@ The
 uses the tested package functions to calculate current, C-rate, and ideal
 constant-current duration. It clearly separates the exact ideal relationships
 from real-cell voltage-cutoff behavior.
+
+### Supplementary interactive lab — Battery materials
+
+The
+**[Battery Materials Lab](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)**
+starts with a Zn/Cu aqueous cell and develops electrode-potential differences,
+reference electrodes, the water stability window, lithium-ion intercalation,
+and representative material trade-offs. It is an advanced supplementary lab,
+not a replacement for the fundamentals sequence. The page is self-contained in
+[`docs/labs/battery-materials-lab/`](docs/labs/battery-materials-lab/).
 
 ### Additional transport module
 
