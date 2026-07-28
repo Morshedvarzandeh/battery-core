@@ -40,7 +40,7 @@ jobs:
               text = html.decode('utf-8')
 
               checks = {
-                  'part count': len(parts) == 5,
+                  'part count': len(parts) == 6,
                   'Battery Materials Lab': 'Battery Materials Lab' in text,
                   'Zn default': 'let negativeId = "zn"' in text,
                   'Cu default': 'let positiveId = "cu"' in text,
