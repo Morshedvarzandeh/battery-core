@@ -1,0 +1,187 @@
+    V("Batch time", (S.mixMin / 60).toFixed(1) + " h", ok(S.mixMin, 30, 300), "PEM 30 min – 5 h")],
+  verdict:m => m.visc < 2000 ? ["bad", "Batch rejected — too thin",
+      "The solids will settle in the buffer tank and the film will run at the die. Raise the solid content or drop the jacket temperature."]
+    : m.visc > 6000 ? ["bad", "Batch rejected — too thick",
+      "The die will streak and coat weight will drift. Lower the solid content, or warm the jacket to thin it."]
+    : m.disp < 85 ? ["warn", "Released with a note — under-dispersed",
+      "Agglomerates survive into the coating and print through as thickness scatter. Give it more dispersing time."]
+    : ["ok", "Batch released to coating",
+      `Viscosity ${m.visc.toFixed(0)} mPa·s, dispersion ${m.disp.toFixed(0)}%. This is a coatable slurry.`],
+  viz:m => ({ fill: clamp((m.visc - 1000) / 7000 * 100, 10, 95) })
+},
+
+coating: {
+  lead:"You are at the coater. The pump and the web speed together set coat weight; the die gap has to match the wet film the recipe needs.",
+  ctl:["tC","tA","speed","gap"],
+  read:m => [
+    V("Wet film the recipe needs", m.wetNeed.toFixed(0) + " µm", "ok", "dry thickness ÷ solids by volume"),
+    V("Gap error", (S.gap - m.wetNeed).toFixed(0) + " µm", Math.abs(S.gap - m.wetNeed) < 12 ? "ok" : Math.abs(S.gap - m.wetNeed) < 30 ? "warn" : "bad"),
+    V("Coat weight scatter", "±" + m.coatErr.toFixed(1) + " g/m²", m.coatErr <= 2 ? "ok" : m.coatErr <= 3 ? "warn" : "bad", "PEM target ±2 g/m²"),
+    V("Areal capacity, cathode", m.capC.toFixed(2) + " mAh/cm²", band(m.capC, 2.5, 5, 1), "sets the cell's capacity"),
+    V("Web throughput", (S.speed * 60).toFixed(0) + " m/h", "ok"),
+    V("Coating uniformity", m.uniformity.toFixed(0) + "%", m.uniformity >= 92 ? "ok" : "warn")],
+  verdict:m => m.coatErr > 3 ? ["bad", "Coat weight out of specification",
+      `±${m.coatErr.toFixed(1)} g/m² against a ±2 g/m² target. Set the gap to ${m.wetNeed.toFixed(0)} µm and slow the web.`]
+    : m.coatErr > 2 ? ["warn", "Coat weight drifting",
+      `±${m.coatErr.toFixed(1)} g/m². Thickness variation becomes capacity variation, and grading will find it.`]
+    : ["ok", "Coating on target",
+      `±${m.coatErr.toFixed(1)} g/m² at ${S.speed} m/min. Cathode is laying down ${m.capC.toFixed(2)} mAh/cm².`],
+  viz:m => ({ coat: clamp(S.tC / 80 * 100, 20, 100), err: m.coatErr })
+},
+
+drying: {
+  lead:"You are at the dryer control desk. The web needs a certain amount of heat to lose its solvent — set the zones, and mind that more is not better.",
+  ctl:["dryT","speed","dryLen","solid"],
+  read:m => [
+    V("Heat the web needs", m.needT.toFixed(0) + " °C", "ok", "from speed, solvent load and dryer length"),
+    V("Peak set", S.dryT + " °C", "ok"),
+    V("Margin", (S.dryT - m.needT).toFixed(0) + " °C", m.solventGap > 0 ? "bad" : m.crackGap > 12 ? "warn" : "ok", "aim for 0 to +30 °C"),
+    V("Residual solvent", m.solventGap > 0 ? (m.solventGap * 240).toFixed(0) + " ppm" : "< 300 ppm", m.solventGap > 0 ? "bad" : "ok"),
+    V("Binder migration", m.crackGap > 12 ? "high" : m.crackGap > 0 ? "some" : "low", m.crackGap > 12 ? "warn" : "ok", "binder pulled to the surface"),
+    V("Dwell time in the dryer", (S.dryLen / S.speed * 60).toFixed(0) + " s", "ok")],
+  verdict:m => m.solventGap > 10 ? ["bad", "Web leaving wet",
+      `Needs about ${m.needT.toFixed(0)} °C, set to ${S.dryT} °C. Solvent left in the coating destroys adhesion and poisons the cell.`]
+    : m.crackGap > 12 ? ["warn", "Over-dried",
+      "The surface skins before the depth is dry. Binder migrates up, adhesion to the foil falls, and the coating cracks at the calender."]
+    : ["ok", "Drying profile balanced",
+      `${(S.dryT - m.needT).toFixed(0)} °C of margin over what the web needs, ${(S.dryLen / S.speed * 60).toFixed(0)} s of dwell.`],
+  viz:m => ({ heat: clamp((S.dryT - 50) / 110 * 100), gap: m.solventGap })
+},
+
+calendering: {
+  lead:"You are at the calender. This one nip decides energy density, wetting and crack risk at the same time — it is the most consequential setpoint on the line.",
+  ctl:["force","rollT","speed"],
+  read:m => [
+    V("Porosity", m.por.toFixed(0) + "%", band(m.por, 20, 35, 5), "commercial cells run 20–25%, research 30–35%"),
+    V("Coating density", (4.65 * (1 - m.por / 100)).toFixed(2) + " g/cm³", "ok"),
+    V("Areal capacity, cathode", m.capC.toFixed(2) + " mAh/cm²", "ok"),
+    V("N/P ratio", m.np.toFixed(2), band(m.np, 1.05, 1.25, 0.05), "anode must stay oversized"),
+    V("Particle cracking", S.force > 2300 ? "likely" : S.force > 1900 ? "possible" : "unlikely", S.force > 2300 ? "bad" : S.force > 1900 ? "warn" : "ok"),
+    V("Electrolyte access", m.por > 24 ? "good" : m.por > 19 ? "tight" : "poor", m.por > 24 ? "ok" : m.por > 19 ? "warn" : "bad", "pores are the ion path")],
+  verdict:m => m.np < 1.02 ? ["bad", "Anode under-sized — plating risk",
+      `N/P ${m.np.toFixed(2)}. Compressing both coatings equally does not fix a balance problem; change coat thickness instead.`]
+    : S.force > 2300 ? ["bad", "Squeezing, not compacting",
+      "Above roughly 2 300 N/mm the particles fracture and the coating develops stress cracks. PEM caps line pressure at 2 500 N/mm."]
+    : m.por < 20 ? ["warn", "Very low porosity",
+      `${m.por.toFixed(0)}% leaves the electrolyte almost nowhere to go. Energy density is up, rate capability and wetting are down.`]
+    : ["ok", "Nip inside the useful window",
+      `${m.por.toFixed(0)}% porosity, ${(4.65 * (1 - m.por / 100)).toFixed(2)} g/cm³, N/P ${m.np.toFixed(2)}.`],
+  viz:m => ({ squeeze: clamp((50 - m.por) / 32 * 100) })
+},
+
+slitting: {
+  lead:"You are at the slitter. Everything here is about the edge you leave behind — a burr from this station is what pierces a separator six stations later.",
+  ctl:["knife","cutSpd","wear"],
+  read:m => [
+    V("Burr from this cut", m.burrSlit.toFixed(1) + " µm", m.burrSlit < 8 ? "ok" : m.burrSlit < 10 ? "warn" : "bad", "separator is only 12–25 µm"),
+    V("Tallest burr in the cell", m.burr.toFixed(1) + " µm", m.burr < 8 ? "ok" : m.burr < 10 ? "warn" : "bad", m.burrSep > m.burrSlit ? "separation is currently worse" : "this station sets it"),
+    V("Method", S.knife ? "Laser" : "Rolling knives", "ok"),
+    V("Edge dust", S.knife ? "very low" : S.wear > 60 ? "high" : "low", S.knife || S.wear <= 60 ? "ok" : "warn"),
+    V("Heat-affected edge", S.knife ? "yes — binder degrades locally" : "none", S.knife ? "warn" : "ok"),
+    V("Throughput", S.cutSpd + " m/min", ok(S.cutSpd, 80, 150))],
+  verdict:m => m.burrSlit > 10 ? ["bad", "Burr taller than is safe",
+      `${m.burrSlit.toFixed(1)} µm against a separator 12–25 µm thick. Change the knife or switch to laser cutting.`]
+    : m.burr > 10 ? ["warn", "This cut is clean, but the cell's worst burr is not",
+      `${m.burr.toFixed(1)} µm is coming from separation, not from here. The tallest burr anywhere in the cell is the one that pierces.`]
+    : S.wear > 70 ? ["warn", "Knife due for change",
+      "A worn blade smears active material over the edge instead of cutting it, which is the other way this station makes shorts."]
+    : ["ok", "Edge quality acceptable",
+      `${m.burrSlit.toFixed(1)} µm burr at ${S.cutSpd} m/min. Keep logging blade hours — burr grows quietly.`],
+  viz:m => ({ burr: clamp(m.burrSlit / 16 * 100) })
+},
+
+vacdry: {
+  lead:"You are at the vacuum ovens. This is the last chance to take water out of the electrode. After this the material never sees room air again.",
+  ctl:["vac","vacT"],
+  read:m => [
+    V("Residual moisture", m.ppm.toFixed(0) + " ppm", m.ppm < 50 ? "ok" : m.ppm < 120 ? "warn" : "bad", "target below 50 ppm"),
+    V("Batch time", S.vac + " h", ok(S.vac, 8, 48), "PEM 8–48 h per batch"),
+    V("Oven temperature", S.vacT + " °C", ok(S.vacT, 60, 150), "PEM 60–150 °C"),
+    V("Binder risk", S.vacT > 140 ? "PVDF softening" : "none", S.vacT > 140 ? "warn" : "ok"),
+    V("HF risk carried forward", m.ppm > 80 ? "elevated" : "low", m.ppm > 80 ? "warn" : "ok", "water + LiPF₆ → HF")],
+  verdict:m => m.ppm > 120 ? ["bad", "Too wet to release",
+      `${m.ppm.toFixed(0)} ppm. Water hydrolyses LiPF₆ to hydrofluoric acid, which attacks the cathode and the aluminium collector.`]
+    : m.ppm > 50 ? ["warn", "Above target, releasable under concession",
+      `${m.ppm.toFixed(0)} ppm. Longer or hotter, but watch the binder above 140 °C.`]
+    : ["ok", "Electrode dry",
+      `${m.ppm.toFixed(0)} ppm after ${S.vac} h at ${S.vacT} °C. Cleared for the dry room.`],
+  viz:m => ({ dryness: clamp(100 - m.ppm / 4) })
+},
+
+separation: {
+  lead:"You are at the punching station. Each sheet is cut with its contact lug already on it — 0.2 seconds per sheet, and every one has four fresh edges.",
+  ctl:["sepMode","cutSpd","wear"],
+  read:m => [
+    V("Burr from this cut", m.burrSep.toFixed(1) + " µm", m.burrSep < 8 ? "ok" : "bad", "separator is only 12–25 µm"),
+    V("Tallest burr in the cell", m.burr.toFixed(1) + " µm", m.burr < 8 ? "ok" : m.burr < 10 ? "warn" : "bad", "slitting may still be worse"),
+    V("Contour tolerance", S.sepMode ? "±60 µm" : "±200 µm", "ok", "PEM: approx. ±200 µm for punching"),
+    V("Cycle", S.sepMode ? "≈0.5 s/sheet" : "0.2 s/sheet", "ok"),
+    V("Tool wear cost", S.sepMode ? "none — no contact" : "punch and die regrind", S.sepMode ? "ok" : "warn"),
+    V("Method", S.sepMode ? "Laser cutting" : "Punching", "ok")],
+  verdict:m => (!S.sepMode && m.burrSep > 8) ? ["bad", "Punch is making burrs",
+      "Regrind or replace the tool. A burr on the lug edge is directly across from the separator once the stack closes."]
+    : m.burr > 10 ? ["warn", "This cut is clean, but slitting is not",
+      `The tallest burr in the cell is ${m.burr.toFixed(1)} µm and it came from the slitter. A clean punch does not undo a bad slit.`]
+    : S.sepMode ? ["ok", "Laser cutting — no mechanical burr",
+      "Contact-free, tighter contour, no tool wear. You pay for it in cycle time and a heat-affected edge."]
+    : ["ok", "Punching within tolerance",
+      `${m.burrSep.toFixed(1)} µm burr, ±200 µm contour, 0.2 s per sheet. This is the throughput route.`],
+  viz:m => ({ burr: clamp(m.burrSep / 16 * 100) })
+},
+
+stacking: {
+  lead:"You are at the stacker. Anode, separator, cathode, separator — up to 120 times, about a second per sheet, and every sheet has to land in the same place.",
+  ctl:["stackAcc","tA","tC"],
+  read:m => [
+    V("Positioning tolerance", S.stackAcc + " µm", S.stackAcc <= 300 ? "ok" : "bad", "PEM: 200–300 µm"),
+    V("Anode overhang left", Math.max(0, (600 - S.stackAcc) / 2).toFixed(0) + " µm", S.stackAcc <= 400 ? "ok" : "warn", "cathode must never sit proud"),
+    V("Layers", "up to 120", "ok"),
+    V("Sheet rate", "≈1 s per sheet", "ok"),
+    V("Stack height", ((S.tA * 2 + S.tC * 2 + 40) * 18 / 1000).toFixed(1) + " mm", "ok", "18 double-sided layers")],
+  verdict:m => S.stackAcc > 400 ? ["bad", "Alignment outside the safe window",
+      "If a cathode edge ends up outside the anode, lithium arriving there has no graphite to enter and plates as metal."]
+    : S.stackAcc > 300 ? ["warn", "Alignment drifting",
+      "PEM specifies 200–300 µm. Beyond that the anode overhang that protects the cathode edge starts to disappear."]
+    : ["ok", "Stack building square",
+      `±${S.stackAcc} µm with the anode overhanging the cathode on every side.`],
+  viz:m => ({ align: clamp(100 - (S.stackAcc - 100) / 5) })
+},
+
+winding: {
+  lead:"You are at the winder. Four webs are pulled onto one mandrel at up to 30 cells a minute — tension is the whole game.",
+  ctl:["webTens","stackAcc"],
+  read:m => [
+    V("Web tension", S.webTens + " N", band(S.webTens, 40, 90, 20)),
+    V("Telescoping risk", S.webTens < 40 ? "high" : "low", S.webTens < 40 ? "bad" : "ok", "loose winding walks sideways"),
+    V("Foil tear risk", S.webTens > 100 ? "high" : S.webTens > 90 ? "some" : "low", S.webTens > 100 ? "bad" : S.webTens > 90 ? "warn" : "ok", "copper is only 6–15 µm"),
+    V("Edge alignment", S.stackAcc + " µm", S.stackAcc <= 300 ? "ok" : "warn"),
+    V("Throughput", route === "cyl" ? "up to 30 cells/min" : "up to 6 cells/min", "ok", "PEM: round vs prismatic")],
+  verdict:m => S.webTens > 100 ? ["bad", "Tension will tear the foil",
+      "Copper at 6–15 µm has very little to give. A break here stops the line and scraps the roll."]
+    : S.webTens < 40 ? ["bad", "Roll will telescope",
+      "Too little tension and the layers walk sideways as the roll grows. The jelly roll will not fit the can."]
+    : ["ok", "Winding stable",
+      `${S.webTens} N holds the webs flat without stressing the copper.`],
+  viz:m => ({ tight: clamp((S.webTens - 20) / 120 * 100) })
+},
+
+packPouch: {
+  lead:"You are at the pouch line. Deep-draw the film, weld the tabs, seal three sides — and leave one side open for the electrolyte.",
+  ctl:["drawDepth","sealT"],
+  read:m => [
+    V("Draw depth", S.drawDepth.toFixed(1) + " mm", S.drawDepth <= 10 ? "ok" : "bad", "PEM: up to 10 mm"),
+    V("Film thinning at the corner", (S.drawDepth * 4.5).toFixed(0) + "%", S.drawDepth <= 8 ? "ok" : "warn"),
+    V("Sealing temperature", S.sealT + " °C", band(S.sealT, 180, 200, 15), "PP sealant melts around 165 °C"),
+    V("Seal quality", m.sealQ.toFixed(0) + "%", m.sealQ >= 96 ? "ok" : m.sealQ >= 90 ? "warn" : "bad"),
+    V("Moisture ingress over life", m.sealQ >= 96 ? "within spec" : "elevated", m.sealQ >= 96 ? "ok" : "warn")],
+  verdict:m => m.sealQ < 90 ? ["bad", "Seal outside its process window",
+      S.sealT < 180 ? "Too cold — the sealant never fully bonds and the pouch leaks slowly for years."
+                    : "Too hot — the sealant thins and the barrier layer is compromised."]
+    : S.drawDepth > 8 ? ["warn", "Deep draw near the film's limit",
+      "The corners thin fastest. Past about 8 mm you are trading barrier thickness for volume."]
+    : ["ok", "Pouch formed and sealed",
+      `${S.drawDepth.toFixed(1)} mm draw, sealed at ${S.sealT} °C, seal quality ${m.sealQ.toFixed(0)}%.`],
+  viz:m => ({ seal: m.sealQ })
+},
+
+packHard: {
