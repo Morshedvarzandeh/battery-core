@@ -1,9 +1,10 @@
 # Lithium-ion Cell Architecture tutorial
 
 This browser module is Part 01B of the Battery Core fundamentals sequence. It is
-an independently authored, interactive tutorial for moving from the full cell
-stack down to porous-electrode ingredients, electrolyte solvent molecules, ions,
-and separator function.
+an independently authored, layer-first tutorial that keeps the five-layer cell
+stack visible while learners zoom into porous electrodes, separator pores,
+carbonate solvents, dissolved ions, and the connected ionic and electronic
+transport paths.
 
 ## Launch
 
@@ -25,22 +26,32 @@ Then open:
 
 The tutorial includes:
 
-- clickable current collectors, electrodes, and separator;
-- charge/discharge direction switching;
-- a porous composite-electrode ingredient explorer;
-- original schematic structures for EC, PC, DMC, EMC, and DEC;
-- a conceptual LiPF6 dissolution interaction;
-- a separator passage test for Li+, electrons, and electrode particles;
-- a short knowledge check.
+- assembly of five physical layers from the negative side to the positive side;
+- a persistent mini-stack showing the architectural origin of every zoom;
+- an explicit explanation that electrolyte fills pores in layers 2, 3, and 4 and is not a sixth layer;
+- selectable current collectors, composite electrodes, and separator;
+- a fixed component readout and legend for active material, conductive additive, binder, pore electrolyte, Li+, polymer, and metal foil;
+- original schematic connectivity diagrams for EC, PC, DMC, EMC, and DEC;
+- a locked molecule view that opens only after entering a porous layer;
+- a three-stage conceptual LiPF6 interaction: associated pair, greater separation, and solvent reorientation;
+- a return path that automatically selects a porous layer when the learner becomes stuck;
+- a final reconnection of ionic and electronic transport paths to the original five-layer stack.
 
 ## Scientific limitations
 
 This is a conceptual visualization, not a quantitative electrochemical model.
-Geometry, colors, pore sizes, molecular positions, and motion are illustrative.
-Animation speed must not be interpreted as current, C-rate, diffusivity,
-conductivity, reaction rate, or elapsed time. The electrolyte section does not
-calculate solvation, ion pairing, transport properties, stability, or
-electrochemical reactions.
+Geometry, colors, pore sizes, molecular positions, and transitions are
+illustrative. Transition speed must not be interpreted as current, C-rate,
+diffusivity, conductivity, reaction rate, state of charge, or elapsed time.
+The electrolyte section does not calculate coordination numbers, solvation
+energies, ion-pairing equilibria, transport properties, stability, or
+electrochemical reaction rates.
+
+Some polyolefin separators can close pores at elevated temperature, but this
+shutdown behavior is not universal and does not prevent every failure mode.
+The SEI explanation is intentionally qualitative and notes that its composition
+depends on solvents, salt, additives, electrode surface, and operating
+conditions.
 
 ## Authorship and references
 
