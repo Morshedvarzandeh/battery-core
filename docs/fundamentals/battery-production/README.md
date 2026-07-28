@@ -38,12 +38,13 @@ and applicable regulations always take precedence.
 The reviewed standalone HTML is kept verbatim across ordered files under
 `payload/`. `loader.js` fetches those readable source parts, concatenates them in
 order, and opens the complete simulator. This packaging keeps each repository file
-small enough for review while preserving the exact validated standalone page.
+small enough for review while preserving the validated standalone page.
 
 - `index.html` — lightweight loading page;
 - `loader.js` — ordered source-part loader;
-- `payload/source-01.part` through `payload/source-18.part` — the complete reviewed
-  standalone HTML, split only at line boundaries.
+- `payload/source-01.part` through `payload/source-18.part`, with source 04 split
+  into `source-04a.part` and `source-04b.part` — the complete standalone HTML,
+  split only at line boundaries.
 
 ## Local preview
 
