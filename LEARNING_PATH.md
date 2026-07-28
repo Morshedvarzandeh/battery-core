@@ -26,6 +26,13 @@ Each part should state its assumptions, units, limitations, and validation
 method. A new part is added only when its implementation and learning material
 are ready.
 
+## Supplementary interactive labs
+
+These labs extend the curriculum without changing the numbered fundamentals
+sequence:
+
+- **[Electrode potentials and battery materials](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)** — a self-contained browser lab that starts with a Zn/Cu aqueous cell, explains voltage references and the water stability window, distinguishes generic electrochemical cells from lithium-ion intercalation, and compares representative electrode-material trade-offs. Its active-material energy calculation states its assumptions and is not presented as a complete cell prediction.
+
 ## Existing physics building blocks
 
 The repository also contains tested physics modules that will be connected to
