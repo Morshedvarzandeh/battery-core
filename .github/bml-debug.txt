@@ -3,13 +3,10 @@ part-01.txt: 12000 bytes, sha256=2b0997658dc8f4b3c5643ce60108da8804d9d0f0cb4427e
 part-02.txt: 12000 bytes, sha256=6912b32bf3977e9446a100991afd8dd15d1e9274f63f27b8301e7d3bcfeabb8b
 part-03.txt: 12000 bytes, sha256=e5b4fb0d5ebeaec7042c7d913cc92af9300532e83d747e1c350fdebb0be804fa
 part-04.txt: 12000 bytes, sha256=f0ec4eb4832ee560fa3c89d3ea899304c0f2b2404176610f376d114dbe199d5a
-part-05.txt: 17589 bytes, sha256=2fa30f06fb6cf16229f4c20c11d1f625c21086b7dfba9f0493ae061d67d7bb5d
 part-05a.txt: 6000 bytes, sha256=b601831bb1d9ab7551413741a3e623e3f70be96b7daacafeb26d71533453bfc5
-payload=71589
-compressed=0
+part-05b.txt: 5896 bytes, sha256=3803c181395702b0f5126a7c4de733174816e525eacf7f469ba3f5c2cb363970
+payload=59896
+compressed=44922
 Traceback (most recent call last):
-  File "<stdin>", line 16, in <module>
-  File "/usr/lib/python3.12/base64.py", line 88, in b64decode
-    return binascii.a2b_base64(s, strict_mode=validate)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-binascii.Error: Discontinuous padding not allowed
+  File "<stdin>", line 29, in <module>
+AssertionError: failed checks: part count
