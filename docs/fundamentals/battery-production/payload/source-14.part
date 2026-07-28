@@ -1,0 +1,199 @@
+    { x:"vacT", title:"Temperature does the same job faster", unit:" ppm", limit:50, limitLabel:"50 ppm target", lo:0, dp:0,
+      series:[{ y:m => m.ppm, label:"Residual moisture", col:"var(--elyte)" }] }],
+  separation: [
+    { x:"wear", title:"A worn punch is a burr generator", unit:" µm", limit:10, limitLabel:"pierces the separator", lo:0, dp:1,
+      series:[{ y:m => m.burrSep, label:"Burr from this cut", col:"var(--primary)" },
+              { y:m => m.burr,    label:"tallest in the cell", col:"var(--destructive)", dash:1 }] }],
+  stacking: [
+    { x:"stackAcc", title:"Alignment has a cliff, not a slope", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
+  winding: [
+    { x:"webTens", title:"Too loose telescopes, too tight tears", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
+  packPouch: [
+    { x:"sealT", title:"The seal has one narrow window", unit:"%", good:[96,100], goodLabel:"sound seal", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.sealQ, label:"Seal quality", col:"var(--primary)" }] },
+    { x:"drawDepth", title:"Depth costs barrier thickness", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
+  packHard: [
+    { x:"sealT", title:"Weld energy window", unit:"%", good:[96,100], goodLabel:"sound weld", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.sealQ, label:"Weld quality index", col:"var(--primary)" }] }],
+  fillPouch: [
+    { x:"soak", title:"Wetting is slow, and then it is done", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] },
+    { x:"doseFac", title:"Under-dose starves it, over-dose gasses it", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
+  fillHard: [
+    { x:"soak", title:"A wound cell wets more slowly", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] },
+    { x:"fillP", title:"Wetting-cycle pressure changes infiltration", unit:"%", good:[96,100], goodLabel:"well wetted", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--elyte)" }] }],
+  rollpress: [
+    { x:"pressP", title:"Pressing buys time — up to a point", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] }],
+  formation: [
+    { x:"cRate", title:"Formation rate strongly influences the SEI", unit:"%", good:[90,100], goodLabel:"good film", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.seiQ, label:"Illustrative SEI score", col:"var(--primary)" }] },
+    { x:"cRate", title:"…and the lithium you never get back", unit:"%", limit:12, limitLabel:"12% — expensive", dp:1,
+      series:[{ y:m => m.liLoss, label:"Illustrative cyclable-Li loss", col:"var(--destructive)" }] }],
+  degassing: [
+    { x:"degP", title:"How much gas you leave behind", unit:"%", limit:6, limitLabel:"6% — cell swells", lo:0, dp:1,
+      series:[{ y:m => m.gasLeft, label:"Gas remaining", col:"var(--primary)" }] }],
+  aging: [
+    { x:"ageDays", title:"How much the screen can actually see", unit:"%", good:[88,100], goodLabel:"trustworthy screen", lo:30, hi:100, dp:0,
+      series:[{ y:m => m.screenSens, label:"Screen sensitivity", col:"var(--primary)" }] },
+    { x:"ageDays", title:"A shorter screen reduces defect sensitivity", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
+  eol: [
+    { x:"ageDays", title:"Process health is influenced upstream and summarised here", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] },
+    { x:"shipSOC", title:"Energy in the box is what the regulator caps", unit:" Wh", dp:1,
+      xMark:30, xMarkLabel:"above IATA PI 965", lo:0,
+      series:[{ y:m => m.cellAh * 3.65 * S.shipSOC / 100, label:"Watt-hours per cell as shipped", col:"var(--elyte)" }] }]
+};
+const CUSTOM = { aging:agingOCVChart, formation:formationChart };
+
+function renderCharts(st) {
+  const list = (CHARTS[st.id] || []).map(chartSVG);
+  if (CUSTOM[st.id]) list.unshift(CUSTOM[st.id]());
+  if (!list.length) return "";
+  return `<div class="charts">${list.join("")}</div>`;
+}
+
+/* --- the process window bar under every control -------------------------
+   answers the plain question "am I allowed to set it here?" before any
+   of the physics gets a chance to answer it for you.                     */
+function windowBar(k) {
+  const c = CTL[k];
+  if (c.opts || !c.good) return "";
+  const p = v => Math.max(1.6, Math.min(98.4, (v - c.min) / (c.max - c.min) * 100)).toFixed(1);
+  const inside = S[k] >= c.good[0] && S[k] <= c.good[1];
+  const full = c.good[0] <= c.min && c.good[1] >= c.max;
+  if (full && S[k] >= c.good[0] && S[k] <= c.good[1]) return "";   /* nothing to warn about */
+  const dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+  return `<div class="winbar" title="Recommended window ${c.good[0]}–${c.good[1]}${c.unit || ""}">
+      <i style="left:${p(c.good[0])}%;width:${(p(c.good[1]) - p(c.good[0])).toFixed(1)}%"></i>
+      <b data-in="${inside}" style="left:${p(S[k])}%"></b>
+    </div>
+    <small class="winmsg" data-in="${inside}">${inside
+      ? (full ? "whole range is inside the recommended window"
+              : `inside the recommended window, ${c.good[0].toFixed(dec)}–${c.good[1].toFixed(dec)}${c.unit || ""}`)
+      : `outside the recommended window of ${c.good[0].toFixed(dec)}–${c.good[1].toFixed(dec)}${c.unit || ""} — expect trouble`}</small>`;
+}
+</script>
+<script>
+/* =====================================================================
+   RENDERING + INTERACTION
+   ===================================================================== */
+
+/* ---------------- sidebar ---------------- */
+function renderNav() {
+  renderLayerNav();
+  const list = active();
+  $("nav").innerHTML = PHASES.map(([p, col]) => {
+    const items = list.filter(s => s.phase === p);
+    if (!items.length) return "";
+    return `<div class="phase"><div class="phase-title"><i style="background:${col}"></i>${p}</div>` +
+      items.map(s => {
+        const n = list.indexOf(s) + 1;
+        return `<button class="stage-btn" data-go="${s.id}" aria-current="${current === s.id}">
+          <b>${String(n).padStart(2, "0")}</b><em>${esc(s.title)}</em>
+          <i style="background:${col}"></i></button>`;
+      }).join("") + `</div>`;
+  }).join("");
+}
+
+/* ---------------- overview ---------------- */
+const WORD = {12:"Twelve", 13:"Thirteen", 14:"Fourteen", 15:"Fifteen"};
+function renderOverview() {
+  const m = model(), list = active(), g = GEOM[route];
+  $("overview").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">Production simulator · ${g.name.toLowerCase()} line</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Walk the line from powder to packed cell</h2>
+      <p class="lede" style="max-width:78ch">${WORD[list.length] || list.length} stations, drawn as the machines you would actually stand next to. Pick any
+      station to open its machine, hover any part to learn what it does, and use the setpoint lab on the right —
+      every change updates the teaching relationships and reference-line estimates shown below.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>Reference recipe</h4>
+        <p class="lede"><b>Graphite negative electrode · NMC positive electrode.</b> The material properties, voltage guidance and simplified capacity relationships apply only to this reference chemistry. LFP, silicon-rich, dry-electrode and other routes require different inputs and process windows.</p>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--elyte)"></i>Model scope</h4>
+        <p class="lede">Published sources support the process sequence and displayed operating ranges. Capacity, throughput, wetting, process-health and risk-control outputs are illustrative teaching relationships. They are not calibrated plant predictions, equipment-sizing calculations or release criteria.</p>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <span class="eyebrow">The line</span>
+      <div class="map" style="margin-top:10px">
+        ${PHASES.map(([p, col]) => {
+          const items = list.filter(s => s.phase === p);
+          if (!items.length) return "";
+          return `<div><div style="font-size:9px;font-weight:900;letter-spacing:.13em;color:var(--faint);margin-bottom:6px">
+            <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${col};margin-right:6px"></span>${p.toUpperCase()}</div>
+            <div class="map-row">${items.map(s => {
+              const n = list.indexOf(s) + 1;
+              return `<button class="map-node" data-go="${s.id}">
+                <b>${String(n).padStart(2, "0")}</b><strong>${esc(s.title)}</strong>
+                <small>${esc(s.env.iso)}${s.env.dew !== "—" ? " · " + esc(s.env.dew) : ""}</small>
+                <i style="background:${col}"></i></button>`;
+            }).join("")}</div></div>`;
+        }).join("")}
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <span class="eyebrow">Illustrative reference-line estimates</span>
+      <div class="kpi" style="margin-top:10px">
+        <div><small>Reference capacity estimate</small><b>${m.cellAh.toFixed(1)} Ah</b><span>${g.unit}</span></div>
+        <div><small>Illustrative cells per day</small><b>${fmt(m.cellsDay)}</b><span>assumes one 1 m line and 85% uptime</span></div>
+        <div><small>Illustrative annual output</small><b>${m.gwh.toFixed(1)} GWh</b><span>simplified geometry and uptime estimate</span></div>
+        <div><small>Process-health score</small><b>${m.yieldPct.toFixed(1)}%</b><span>teaching score, not a factory-yield prediction</span></div>
+        <div><small>Coating porosity</small><b>${m.por.toFixed(0)}%</b><span>set by calender line force</span></div>
+        <div><small>N/P ratio</small><b>${m.np.toFixed(2)}</b><span>anode capacity ÷ cathode capacity</span></div>
+      </div>
+      <div class="srcline">Cell geometry, foil thicknesses and plant-scale assumptions follow ${
+        [1,2,13].map(n => `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>How to read this simulator</h4>
+        <ul>
+          <li><b>Every station is a real machine.</b> The schematics follow the PEM RWTH Aachen process figures — unwinders, slot die, four-chamber dryer, calender nip, punching unit, Z-folder, formation racks.</li>
+          <li><b>Hover or tab any part</b> of a machine to get its job, its setpoints and why it matters.</li>
+          <li><b>The setpoint lab is live.</b> Coat thickness, line speed, dryer temperature, calender force, vacuum drying time, formation C-rate and aging period all feed one model.</li>
+          <li><b>Change the cell format</b> in the sidebar and the line itself changes — the pouch route separates and stacks sheets, the can routes wind a jelly roll instead.</li>
+          <li><b>Start with the big picture.</b> <button type="button" data-go="view:anatomy" style="color:var(--green);font-weight:800;text-decoration:underline">Cell anatomy</button> shows what you are building and who builds each layer; <button type="button" data-go="view:flow" style="color:var(--green);font-weight:800;text-decoration:underline">material flow</button> follows one material through every state; <button type="button" data-go="view:matrix" style="color:var(--green);font-weight:800;text-decoration:underline">process ↔ component</button> maps every station onto every part of the cell.</li>
+        </ul>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--destructive)"></i>Three major defect drivers</h4>
+        <ul>
+          <li><b>Particles and burrs.</b> A burr from slitting or a particle rolled in at the calender can pierce the separator. A severe internal short can create local heating that external controls may not stop; prevention depends on cleanliness, edge quality, separator integrity and screening.</li>
+          <li><b>Water.</b> Residual water can hydrolyse LiPF₆ and generate HF-containing species that degrade electrolyte and interfaces. That is why the dew point drops station by station to −50…−70 °C at electrolyte filling.</li>
+          <li><b>Cross-contamination.</b> Anode and cathode powders look identical and are both black. Mixing rooms are commonly separated to reduce this risk.</li>
+        </ul>
+      </div>
+    </div>`;
+}
+
+/* ---------------- station ---------------- */
+function renderStation(st) {
+  const list = active(), n = list.indexOf(st) + 1, m = model(), col = phaseColor(st.phase);
+  $("stationView").innerHTML = `
+    <div class="machine ${running ? "is-run" : ""}" id="machineWrap">
+      <div class="machine-head">
+        <h3>${String(n).padStart(2, "0")} · ${esc(st.title)}</h3>
+        <div class="tag">
+          <span>${esc(st.env.iso)}</span>
+          ${st.env.dew !== "—" ? `<span>Dew point ${esc(st.env.dew)}</span>` : ""}
+          <span>${esc(st.env.temp)}</span>
+          <span>${esc(st.takt)}</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 980 318" role="img" aria-label="${esc(st.title)} machine schematic"
