@@ -33,17 +33,17 @@ The machine schematics are educational redraws informed by the cited production
 references. Site procedures, equipment manuals, validated recipes, safety systems,
 and applicable regulations always take precedence.
 
-## Files
+## Repository packaging
 
-- `index.html` — document structure and accessible controls;
-- `styles.css` — self-contained visual system and machine styling;
-- `scripts/01-machine-schematics.js` — interactive process-equipment drawings;
-- `scripts/02-stations-and-model.js` — station data, controls, and teaching model;
-- `scripts/03-components-and-references.js` — components, material states, and sources;
-- `scripts/04-operator-consoles.js` — station-specific operating panels;
-- `scripts/05-response-charts.js` — setpoint-response visualizations;
-- `scripts/06-rendering-and-tour.js` — navigation, rendering, and guided-tour behavior;
-- `scripts/07-big-picture-views.js` — overview, flow, matrix, reference views, and startup.
+The reviewed standalone HTML is kept verbatim across ordered files under
+`payload/`. `loader.js` fetches those readable source parts, concatenates them in
+order, and opens the complete simulator. This packaging keeps each repository file
+small enough for review while preserving the exact validated standalone page.
+
+- `index.html` — lightweight loading page;
+- `loader.js` — ordered source-part loader;
+- `payload/source-01.part` through `payload/source-18.part` — the complete reviewed
+  standalone HTML, split only at line boundaries.
 
 ## Local preview
 
@@ -57,8 +57,12 @@ Then open:
 
 `http://localhost:8000/fundamentals/battery-production/`
 
+The module must be served over HTTP because the loader retrieves the ordered source
+parts with `fetch()`.
+
 ## Validation
 
-Static tests check local assets, chapter scope, route coverage, scientific
-qualifications, accessibility references, and the distinction between illustrative
-scores and measured factory outcomes.
+Static tests reconstruct the standalone source and check chapter scope, route
+coverage, scientific qualifications, accessibility references, JavaScript asset
+ordering, and the distinction between illustrative scores and measured factory
+outcomes.
