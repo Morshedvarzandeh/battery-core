@@ -10,6 +10,11 @@ MODULE = ROOT / "docs" / "fundamentals" / "battery-production"
 HTML = MODULE / "index.html"
 LOADER = MODULE / "loader.js"
 PAYLOAD = MODULE / "payload"
+EXPECTED_PARTS = [
+    "source-01.part", "source-02.part", "source-03.part",
+    "source-04a.part", "source-04b.part",
+    *[f"source-{index:02d}.part" for index in range(5, 19)],
+]
 
 
 class _StructureParser(HTMLParser):
@@ -31,7 +36,7 @@ class _StructureParser(HTMLParser):
 
 
 def _parts() -> list[Path]:
-    return sorted(PAYLOAD.glob("source-*.part"))
+    return [PAYLOAD / name for name in EXPECTED_PARTS]
 
 
 def _source() -> str:
@@ -42,8 +47,8 @@ def test_production_loader_and_payload_exist() -> None:
     assert HTML.is_file()
     assert LOADER.is_file()
     parts = _parts()
-    assert len(parts) == 18
-    assert [path.name for path in parts] == [f"source-{index:02d}.part" for index in range(1, 19)]
+    assert all(path.is_file() for path in parts)
+    assert sorted(path.name for path in PAYLOAD.glob("source-*.part")) == sorted(EXPECTED_PARTS)
     html = HTML.read_text(encoding="utf-8")
     loader = LOADER.read_text(encoding="utf-8")
     assert 'src="loader.js"' in html
