@@ -19,16 +19,30 @@ jobs:
           ref: feature/battery-materials-lab
       - name: Generate Battery Materials Lab page
         run: |
-          mkdir -p docs/labs/battery-materials-lab
-          cat .github/bml-payload/part-*.txt \
-            | base64 --decode \
-            | gzip --decompress \
-            > docs/labs/battery-materials-lab/index.html
-          test -s docs/labs/battery-materials-lab/index.html
-          grep -q "Battery Materials Lab" docs/labs/battery-materials-lab/index.html
-          grep -q 'let negativeId = "zn"' docs/labs/battery-materials-lab/index.html
-          grep -q 'let positiveId = "cu"' docs/labs/battery-materials-lab/index.html
-          ! grep -q "unpkg.com" docs/labs/battery-materials-lab/index.html
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          import gzip
+
+          parts = sorted(Path('.github/bml-payload').glob('part-*.txt'))
+          assert len(parts) == 5, parts
+          payload = ''.join(path.read_text(encoding='utf-8').strip() for path in parts)
+          print(f'payload characters: {len(payload)}')
+          compressed = base64.b64decode(payload, validate=True)
+          print(f'compressed bytes: {len(compressed)}')
+          html = gzip.decompress(compressed)
+          print(f'HTML bytes: {len(html)}')
+
+          output = Path('docs/labs/battery-materials-lab/index.html')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_bytes(html)
+
+          text = html.decode('utf-8')
+          assert 'Battery Materials Lab' in text
+          assert 'let negativeId = "zn"' in text
+          assert 'let positiveId = "cu"' in text
+          assert 'unpkg.com' not in text
+          PY
       - name: Commit generated page
         run: |
           git config user.name "github-actions[bot]"
