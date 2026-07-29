@@ -22,6 +22,13 @@
     return JSON.parse(await new Response(stream).text());
   }
 
+  function normalizeReviewBase(source) {
+    return source.replace(
+      /<h1 class="sr">CellForge — Lithium-ion Cell Production Simulator<\/h1>\r?\n?/,
+      ""
+    );
+  }
+
   function applyLineDelta(source, operations) {
     const lines = source.match(/.*(?:\n|$)/g) || [];
     if (lines.at(-1) === "") lines.pop();
@@ -39,7 +46,9 @@
       if (failed) throw new Error(`Could not load ${failed.url} (${failed.status})`);
       const sourceResponses = responses.slice(0, parts.length);
       const deltaResponses = responses.slice(parts.length);
-      const source = (await Promise.all(sourceResponses.map(response => response.text()))).join("");
+      const source = normalizeReviewBase(
+        (await Promise.all(sourceResponses.map(response => response.text()))).join("")
+      );
       const packedDelta = (await Promise.all(deltaResponses.map(response => response.text()))).join("");
       const operations = await unpackDelta(packedDelta);
       const html = applyLineDelta(source, operations);
