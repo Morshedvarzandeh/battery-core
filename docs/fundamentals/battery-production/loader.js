@@ -1,6 +1,15 @@
 (() => {
   const parts = ['payload/source-01.part', 'payload/source-02.part', 'payload/source-03.part', 'payload/source-04a.part', 'payload/source-04b.part', 'payload/source-05.part', 'payload/source-06.part', 'payload/source-07.part', 'payload/source-08.part', 'payload/source-09.part', 'payload/source-10.part', 'payload/source-11.part', 'payload/source-12.part', 'payload/source-13.part', 'payload/source-14.part', 'payload/source-15.part', 'payload/source-16.part', 'payload/source-17.part', 'payload/source-18.part'];
-  const deltaPath = 'payload/review-2026.delta';
+  const deltaParts = [
+    'payload/review-2026-s01.delta',
+    'payload/review-2026-s02.delta',
+    'payload/review-2026-s03.delta',
+    'payload/review-2026-s04.delta',
+    'payload/review-2026-s05.delta',
+    'payload/review-2026-s06.delta',
+    'payload/review-2026-s07.delta',
+    'payload/review-2026-s08.delta'
+  ];
   const status = document.getElementById("load-status");
 
   async function unpackDelta(base64Text) {
@@ -25,11 +34,14 @@
 
   async function boot() {
     try {
-      const responses = await Promise.all([...parts, deltaPath].map(path => fetch(path)));
+      const responses = await Promise.all([...parts, ...deltaParts].map(path => fetch(path)));
       const failed = responses.find(response => !response.ok);
       if (failed) throw new Error(`Could not load ${failed.url} (${failed.status})`);
-      const source = (await Promise.all(responses.slice(0, -1).map(response => response.text()))).join("");
-      const operations = await unpackDelta(await responses.at(-1).text());
+      const sourceResponses = responses.slice(0, parts.length);
+      const deltaResponses = responses.slice(parts.length);
+      const source = (await Promise.all(sourceResponses.map(response => response.text()))).join("");
+      const packedDelta = (await Promise.all(deltaResponses.map(response => response.text()))).join("");
+      const operations = await unpackDelta(packedDelta);
       const html = applyLineDelta(source, operations);
       document.open();
       document.write(html);
