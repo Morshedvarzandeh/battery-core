@@ -6,6 +6,8 @@ project's explanations, examples, code, tests, notebooks, and visualizations are
 written specifically for this repository.
 
 [Open the public course homepage](https://morshedvarzandeh.github.io/battery-core/)
+·
+[Open the Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/chapter-1/)
 
 ## Chapter 1 — Battery Cell Foundations
 
@@ -32,7 +34,10 @@ but their quality, throughput, interface, energy, margin, and risk-control
 outputs are illustrative teaching relationships rather than calibrated factory
 predictions. The aging notebook likewise uses simplified equations for trend
 exploration, not cell-specific state-of-health or lifetime prediction. Part 04
-closes Chapter 1.
+closes Chapter 1. The
+[Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/chapter-1/)
+connects all six modules with focus points and knowledge checkpoints in the same
+visual system as the course homepage.
 
 ## Chapter 2 — Equivalent Circuit Models
 

@@ -4,6 +4,8 @@
 
 [Open the course homepage](https://morshedvarzandeh.github.io/battery-core/)
 ·
+[Open the Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/chapter-1/)
+·
 [Launch the Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)
 ·
 [Launch the Lithium-ion Cell Architecture tutorial](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)
@@ -38,6 +40,9 @@ with explicit assumptions and validation.
 
 Part 04 closes Chapter 1 by connecting the cell structures, ratings, and
 production routes to the degradation mechanisms that change cells in service.
+The **[Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/chapter-1/)**
+provides one consistently designed route through all six modules, with a focus
+and knowledge checkpoint for each part.
 
 ### Chapter 2 — Equivalent Circuit Models
 

@@ -18,6 +18,9 @@ the code remains visible as the project grows.
   diagnostic model.
 - Apparent short-term capacity recovery does not reverse degradation, and deep
   discharge should not be presented as a general cell-rejuvenation method.
+- A chapter-level study guide should connect modules through shared focus points
+  and checkpoints while leaving each interactive module responsible for its own
+  specialized teaching interface.
 
 ## 2026-07-27 — Fick's first law
 
