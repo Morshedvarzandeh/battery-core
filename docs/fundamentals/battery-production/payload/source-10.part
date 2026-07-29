@@ -1,0 +1,162 @@
+  { n:12, tag:"IEC 62660-1:2018", txt:"IEC 62660-1:2018, <em>Secondary lithium-ion cells for the propulsion of electric road vehicles — Part 1: Performance testing</em>, Ed. 2.0; International Electrotechnical Commission: Geneva, 2018.",
+    use:"Capacity, power and internal-resistance test definitions behind end-of-line grading.",
+    url:"https://webstore.iec.ch/publication/28965" },
+  { n:13, tag:"ANL BatPaC v5.0", txt:"Knehr, K. W.; Kubal, J. J.; Nelson, P. A.; Ahmed, S. <em>A Manual for BatPaC v5.0: Battery Performance and Cost Modeling for Electric Vehicles</em>, ANL/CSE-22/1; Argonne National Laboratory: Lemont, IL, 2022.",
+    use:"Current-collector foil thicknesses, cell-level mass and cost breakdown, plant-scale assumptions.",
+    url:"https://www.anl.gov/partnerships/batpac-battery-manufacturing-cost-estimation" }
+];
+const refMap = Object.fromEntries(REFS.map(r => [r.n, r]));
+/* inline citation chips: r(1,2) → superscript buttons that open the source */
+const r = (...ns) => `<sup class="rf">` +
+  ns.map(n => `<button type="button" data-ref="${n}" title="${esc(refMap[n] ? refMap[n].tag : "")}">${n}</button>`).join("") +
+  `</sup>`;
+
+/* ---------------- 2 · the cell, layer by layer ---------------- */
+/* made  = stations that create or shape this component
+   risk  = stations where this component is most easily ruined
+   Order is the physical order through one repeat unit of the stack.     */
+const COMPONENTS = [
+  { id:"alfoil", name:"Aluminium current collector", short:"Al foil", col:"var(--alu)", h:9,
+    spec:"12–20 µm", mat:"Aluminium ≥ 99.5%", src:"Bought in — not made in the cell plant",
+    role:"Carries electrons between the cathode coating and the positive tab.",
+    why:`Aluminium is used on the positive side because it forms a passive oxide that survives the high potential there; copper would dissolve above about 3.5 V. It also sets the mechanical limit of the whole web — everything downstream pulls on this foil.${r(13,2)}`,
+    made:["coating","calendering","slitting","separation","winding"],
+    risk:["slitting","separation"], checks:["eol"],
+    riskWhy:"A burr on a cut edge is the classic separator-piercing defect." },
+
+  { id:"cathode", name:"Cathode coating", short:"Cathode", col:"var(--cathode)", h:26,
+    spec:"40–80 µm per side", mat:"NMC reference material ≈ 90 wt%, carbon black ≈ 5 wt%, PVDF ≈ 5 wt%, NMP solvent",
+    src:"Made here, over five stations",
+    role:"Holds the lithium when the cell is discharged. Its areal capacity sets the cell's capacity.",
+    why:`Everything upstream exists to put this layer down evenly. Coat weight varies by no more than about ±2 g/m² dry, because thickness variation becomes capacity variation becomes a cell that fails grading.${r(1,2)}`,
+    made:["mixing","coating","drying","calendering","vacdry"],
+    risk:["drying","calendering"], checks:["eol"],
+    riskWhy:"Over-drying cracks it and drags binder to the surface; over-calendering fractures the particles." },
+
+  { id:"sep", name:"Separator", short:"Separator", col:"var(--sep)", h:12,
+    spec:"12–25 µm", mat:"Polyolefin — PE, PP, or a PP/PE/PP trilayer, often ceramic-coated",
+    src:"Bought in as an endless tape",
+    role:"Keeps the electrodes apart while letting lithium ions through the electrolyte in its pores.",
+    why:`It physically separates the electrodes while supporting ionic transport. Because severe internal shorts can create local heating that external controls may not stop, cleanliness, edge quality, separator integrity and screening are essential. Some multilayer separator designs include a PE shutdown layer whose pores can close as temperature rises. Shutdown behaviour depends on construction and does not guarantee prevention of thermal runaway.${r(2,3)}`,
+    made:["stacking","winding"],
+    risk:["stacking","winding","rollpress"], checks:["aging"],
+    riskWhy:"Any particle or burr rolled against it here becomes a short later." },
+
+  { id:"anode", name:"Anode coating", short:"Anode", col:"var(--anode)", h:30,
+    spec:"50–100 µm per side", mat:"Graphite ≈ 90 wt%, carbon black ≈ 5 wt%, CMC ≈ 3 wt%, SBR ≈ 2 wt%, water",
+    src:"Made here, over five stations",
+    role:"Receives the lithium during charge. Deliberately oversized relative to the cathode.",
+    why:`The anode is typically designed with more usable capacity than the cathode. The target N/P ratio is design- and protocol-dependent; insufficient anode capacity raises the risk of lithium plating during charge.${r(2,7)}`,
+    made:["mixing","coating","drying","calendering","vacdry"],
+    risk:["calendering","formation"], checks:["eol"],
+    riskWhy:"Compress it too hard, or charge it too fast the first time, and lithium plates instead of intercalating." },
+
+  { id:"cufoil", name:"Copper current collector", short:"Cu foil", col:"var(--copper)", h:8,
+    spec:"6–15 µm", mat:"Electrodeposited copper",
+    src:"Bought in — not made in the cell plant",
+    role:"Carries electrons between the anode coating and the negative tab.",
+    why:`Copper is used on the negative side because it stays stable at the low potential of graphite. It is heavier and more expensive than aluminium, so cell makers push it as thin as the web tension allows — production foils have gone from about 18 µm to under 8 µm.${r(13,2)}`,
+    made:["coating","calendering","slitting","separation","winding"],
+    risk:["slitting","calendering"], checks:["eol"],
+    riskWhy:"Thin copper tears at the calender if tension or force is wrong." },
+
+  { id:"elyte", name:"Electrolyte", short:"Electrolyte", col:"var(--elyte)", h:0,
+    spec:"1 M LiPF₆ in EC / EMC / DMC + additives (VC, FEC)", mat:"Liquid — fills every pore in both coatings and the separator",
+    src:"Added at filling, distributed by wetting",
+    role:"The ion path. Without it the cell is an open circuit.",
+    why:`This is why porosity matters: the pores you leave at the calender are the volume the electrolyte has to live in. It is also why the dry room exists — Residual water can hydrolyse LiPF₆ and generate HF-containing species that degrade the electrolyte, interfaces and aluminium collector.${r(6,1)}`,
+    made:["fillPouch","fillHard","rollpress"],
+    risk:["vacdry","fillPouch","fillHard"], checks:["aging"],
+    riskWhy:"Any residual water arrives with the electrode and turns into HF here." },
+
+  { id:"sei", name:"Solid electrolyte interphase", short:"SEI", col:"var(--jelly)", h:5,
+    spec:"roughly 10–50 nm", mat:"Li₂CO₃, LiF, semi-carbonates — grown, not applied",
+    src:"Grown inside the finished cell during formation",
+    role:"A passivating film on the graphite that lets lithium ions through but stops further electrolyte decomposition.",
+    why:`The SEI is formed in situ during the first controlled cycles and cannot be inspected or reworked like a conventional manufactured part. It consumes a chemistry- and process-dependent fraction of cyclable lithium; formation rate, temperature, voltage limits and cleanliness all influence its properties and plating risk.${r(7,3)}`,
+    made:["formation"],
+    risk:["formation","vacdry"], checks:["aging","eol"],
+    riskWhy:"Too high a first-charge rate, or water in the cell, and the film forms badly." },
+
+  { id:"tabs", name:"Tabs and current conductors", short:"Tabs", col:"var(--alu)", h:10,
+    spec:"Al tab on the cathode, Ni or Ni-plated Cu on the anode", mat:"Ultrasonically or laser welded to the uncoated foil windows",
+    src:"Welded during assembly",
+    role:"Collects current from every layer in the stack and brings it out through the housing.",
+    why:"The uncoated windows the tabs weld to are created much earlier — either by coating intermittently or by cutting a contact lug at separation. A weld defect here shows up as resistance, which end-of-line grading catches.",
+    made:["coating","separation","stacking","winding","packPouch","packHard"],
+    risk:["packPouch","packHard"], checks:["eol"],
+    riskWhy:"A cold weld or a whisker at the tab is a resistance fault and a puncture risk." },
+
+  { id:"case", name:"Housing", short:"Housing", col:"var(--alu)", h:14,
+    spec:"Pouch: aluminium composite film, deep-drawn up to 10 mm. Can: deep-drawn steel or aluminium with a lid",
+    mat:"Al/PP laminate film, or metal can plus vent and current-interrupt device",
+    src:"Formed and sealed during packaging",
+    role:"Holds the stack, holds the electrolyte, and keeps water out for the cell's whole life.",
+    why:`A pouch is light and cheap but has no vent — it swells. A hard can carries a burst disc and a current-interrupt device, which is why prismatic and cylindrical cells do not need a degassing station.${r(1)}`,
+    made:["packPouch","packHard","degassing"],
+    risk:["packPouch","packHard","degassing"], checks:["eol"],
+    riskWhy:"The final seal is made after formation gas is removed; a weak seal lets moisture in for years." }
+];
+const compMap = Object.fromEntries(COMPONENTS.map(c => [c.id, c]));
+
+/* which sources back each station's numbers */
+const SRC = {
+  mixing:[1,2],      coating:[1,2,8],   drying:[1,8],      calendering:[1,2,4],
+  slitting:[1,2],    vacdry:[1,5,6],    separation:[1],    stacking:[1,9],
+  winding:[1],       packPouch:[1],     packHard:[1],      fillPouch:[1,5,6],
+  fillHard:[1,5,6],  rollpress:[1],     formation:[1,7,3], degassing:[1],
+  aging:[1,3],       eol:[1,10,11,12]
+};
+
+/* ---------------- 3 · one material chain ---------------- */
+const FLOW = [
+  { id:"powder", by:null, name:"Active powder", state:"Solid, free-flowing",
+    note:"Graphite and NMC reference powders, carbon black and binder. Anode and cathode materials are handled in physically separate rooms." },
+  { id:"slurry", by:"mixing", name:"Slurry", state:"Liquid, 2 000–6 000 mPa·s",
+    note:"Solvent added and the agglomerates broken up. The batch is filtered and released only on viscosity and particle size." },
+  { id:"wet", by:"coating", name:"Wet film on foil", state:"Liquid on metal",
+    note:"Metered onto the current collector at a controlled wet thickness. Nothing about the electrode is fixed yet." },
+  { id:"dryel", by:"drying", name:"Dried electrode", state:"Porous solid, ≈50% porosity",
+    note:"Solvent driven off through a multi-zone dryer and recovered. The coating is now a fragile, very open structure." },
+  { id:"comp", by:"calendering", name:"Compacted electrode", state:"Porous solid, 20–35% porosity",
+    note:"Rolled to its final thickness and density. This single step sets areal capacity, contact between particles and how easily electrolyte can move." },
+  { id:"daughter", by:"slitting", name:"Daughter roll", state:"Narrow coil, 60–300 mm",
+    note:"The wide mother roll is cut to cell width. Every cut makes an edge, and every edge can carry a burr." },
+  { id:"dry", by:"vacdry", name:"Dry electrode", state:"< 50 ppm residual water",
+    note:"Batch vacuum drying at 60–150 °C. From here on the material never sees room air again." },
+  { id:"piece", by:"separation|winding", name:"Sheets or jelly roll", state:"Discrete parts",
+    note:"Pouch cells are punched into sheets with a contact lug; cylindrical and prismatic cells are wound continuously onto a mandrel." },
+  { id:"stack", by:"stacking|winding", name:"Electrode stack", state:"Assembled, dry",
+    note:"Anode, separator, cathode, separator, repeated. The anode is typically designed with overhang beyond the cathode edge according to the cell design." },
+  { id:"packed", by:"packPouch|packHard", name:"Packaged cell", state:"Sealed except for the fill port",
+    note:"Tabs welded, housing formed and sealed. The cell is now a container waiting for its electrolyte." },
+  { id:"filled", by:"fillPouch|fillHard", name:"Filled cell", state:"Wetted, not yet working",
+    note:"Electrolyte is dosed under vacuum and given time — sometimes with pressure cycling or roll pressing — to reach the porous structure. Incomplete wetting can create locally inactive or nonuniform regions and may not be fully corrected later." },
+  { id:"formed", by:"formation", name:"Formed cell", state:"Electrochemically alive",
+    note:"The first controlled cycles form the SEI and activate the cell. A chemistry- and process-dependent fraction of cyclable lithium is consumed during interphase formation." },
+  { id:"aged", by:"aging", name:"Aged cell", state:"Screened",
+    note:"Days to weeks of rest with OCV logged. Excessive voltage loss can indicate elevated self-discharge or an internal defect; the threshold depends on chemistry, SOC, temperature and test duration." },
+  { id:"graded", by:"eol", name:"Graded cell", state:"Sorted, at shipping SOC",
+    note:"Capacity and resistance measured, cell binned, discharged to transport state of charge and packed." }
+];
+</script>
+<script>
+/* =====================================================================
+   OPERATOR CONSOLES
+   Every station gets the knobs that machine actually has. They write the
+   same S the rail writes, so anything you change here is felt by every
+   station downstream and by the cell at the end of the line.
+   ===================================================================== */
+const ok   = (v, lo, hi) => v >= lo && v <= hi ? "ok" : "bad";
+const band = (v, lo, hi, soft) => v >= lo && v <= hi ? "ok" : (v >= lo - soft && v <= hi + soft ? "warn" : "bad");
+const V    = (label, value, state, hint) => ({ label, value, state: state || "ok", hint: hint || "" });
+
+const OPS = {
+
+mixing: {
+  lead:"You are at the mixer HMI. Set the recipe and the dispersing programme, then decide whether this batch releases to coating.",
+  ctl:["solid","mixMin","mixT"],
+  read:m => [
+    V("Slurry viscosity", m.visc.toFixed(0) + " mPa·s", band(m.visc, 2000, 6000, 900), "coatable window 2 000–6 000"),
+    V("Dispersion index", m.disp.toFixed(0) + "%", m.disp >= 92 ? "ok" : m.disp >= 85 ? "warn" : "bad", "agglomerates broken up"),
+    V("Solvent to remove", ((100 - S.solid) * 10).toFixed(0) + " kg/t", S.solid >= 55 ? "ok" : "warn", "every kg is dryer energy"),

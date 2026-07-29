@@ -1,0 +1,141 @@
+    ${T(x + 78, 176, "Chamber " + (i + 1), "mTxtW", "middle")}
+    ${GAUGE(x + 78, 232, [50, 100, 160, 90][i] + " °C")}`);
+}).join("")}
+${P("M96 148q40 -4 72 0l672 0", "mWebA")}
+<path class="mWebA flowdash" stroke="var(--anode)" d="M96 148q40 -4 72 0l672 0"/>
+${H(5, 52, 118, 96, 88, `${REEL(96, 152, 26, "mCu")}${T(58, 196, "wet web in", "mTxtS")}`)}
+${H(6, 846, 96, 116, 190, `
+  ${ROLLER(880, 200, 20)}${ROLLER(922, 234, 20)}
+  ${P("M840 148q30 0 40 34t42 34", "mWebA")}
+  ${T(852, 274, "Cooling rolls", "mTxtS")}`)}
+`;
+
+M.calendering = () => `
+${H(0, 26, 150, 110, 110, `${REEL(80, 204, 30, "mAn")}${T(30, 254, "Dried electrode", "mTxtS")}`)}
+${H(1, 140, 150, 110, 100, `
+  ${P("M168 176l22 -26l22 26z", "mSteel2")}${C(190, 196, 5, "mAcc")}
+  ${T(146, 246, "Static discharge", "mTxtS")}`)}
+${H(2, 254, 120, 116, 130, `
+  ${P("M280 176l28 -34l28 34z", "mSteel2")}
+  ${P("M308 142l0 -22", "mLine")}${ARROW(308, 126, 1)}
+  ${T(258, 246, "Clean + suction", "mTxtS")}`)}
+${H(3, 386, 46, 210, 210, `
+  ${ROLLER(490, 108, 44)}
+  ${ROLLER(490, 200, 52)}
+  ${T(560, 92, "Top roller", "mTxt")}${T(560, 226, "Bottom roller", "mTxt")}
+  ${P("M548 150l26 0", "mAcc")}${T(548, 142, "line force up to 2 500 N/mm", "mTxtS")}`)}
+${H(4, 620, 150, 130, 108, `
+  ${R(654, 158, 62, 44, "mSteel2", 4)}${T(660, 186, "MIN—MAX", "mTxtS onpanel")}
+  ${T(624, 250, "Thickness gauge", "mTxtS")}${LEAD(690, 202, 700, 212)}`)}
+${H(5, 762, 120, 106, 130, `
+  ${P("M790 176l24 -30l24 30z", "mSteel2")}
+  ${T(766, 244, "Clean + suction", "mTxtS")}`)}
+${H(6, 872, 150, 96, 110, `${REEL(920, 204, 30, "mAn")}${T(878, 254, "Calendered roll", "mTxtS")}`)}
+${P("M80 204q60 -26 120 0t120 0l86 -4", "mWebA")}
+${P("M490 154l0 0", "mWebA")}
+${P("M406 200l84 -46l0 92l-84 -46z", "mWebA")}
+${P("M542 200q60 26 120 0t120 0l78 4", "mWebA")}
+<path class="mWebA flowdash" stroke="var(--anode)" d="M80 204q60 -26 120 0t120 0l86 -4M542 200q60 26 120 0t120 0l78 4"/>
+${[152, 236, 320, 700, 784].map(x => ROLLER(x, 214, 11)).join("")}
+`;
+
+M.slitting = () => `
+${H(0, 26, 96, 116, 156, `${REEL(84, 168, 34, "mCu")}${T(34, 226, "Mother roll", "mTxt")}${T(34, 240, "up to 1 500 mm wide", "mTxtS")}`)}
+${H(1, 168, 66, 300, 200, `
+  ${R(190, 92, 254, 128, "mCu", 4)}
+  ${[0, 1, 2].map(r => [0, 1, 2, 3].map(c =>
+    R(202 + c * 62, 102 + r * 42, 44, 30, "mAn", 2)).join("")).join("")}
+  ${[134, 176].map(y => P(`M190 ${y}l254 0`, "mAcc")).join("")}
+  ${T(300, 84, "Cut lines", "mTxt", "middle")}
+  ${T(190, 246, "Intermittent-coated web · pouch route", "mTxtS")}`)}
+${H(2, 496, 56, 120, 220, `
+  ${R(534, 76, 30, 180, "mDark", 4)}
+  ${P("M549 76l0 -22", "mLine")}${ARROW(549, 46, 1)}
+  ${T(506, 40, "Suction", "mTxt")}
+  ${T(500, 272, "Rolling knives + suction", "mTxtS")}`)}
+${H(3, 646, 60, 230, 210, `
+  ${[0, 1, 2].map(r => R(672, 82 + r * 56, 186, 40, "mCu", 3)).join("")}
+  ${[0, 1, 2].map(r => [0, 1, 2].map(c =>
+    R(682 + c * 62, 90 + r * 56, 44, 24, "mAn", 2)).join("")).join("")}
+  ${T(660, 262, "Separated strips", "mTxtS")}`)}
+${H(4, 884, 96, 90, 172, `
+  ${REEL(928, 140, 22, "mCu")}${REEL(928, 196, 22, "mCu")}
+  ${T(890, 240, "Daughter rolls", "mTxtS")}${T(890, 254, "60–300 mm", "mTxtS")}`)}
+`;
+
+M.vacdry = () => `
+${H(0, 40, 40, 330, 248, `
+  ${R(64, 56, 282, 200, "mSteel2", 8)}${R(64, 56, 282, 18, "mDark", 4)}
+  ${[0, 1].map(r => [0, 1].map(c => REEL(132 + c * 120, 122 + r * 84, 30, "mCu")).join("")).join("")}
+  ${T(70, 276, "Vacuum oven — daughter rolls on carriers", "mTxtS")}
+  ${T(74, 50, "A", "mTxtS")}${T(336, 50, "A", "mTxtS")}
+  ${P("M74 46l268 0", "mAcc")}`)}
+${H(1, 392, 60, 130, 222, `
+  ${R(414, 82, 86, 168, "mSteel", 6)}
+  ${R(424, 96, 66, 44, "mDark", 3)}${C(457, 168, 12, "mSteel2")}${C(457, 206, 8, "mSteel2")}
+  ${T(398, 268, "Vacuum pump + inert gas", "mTxtS")}
+  ${P("M392 140l-24 0", "mPipe")}`)}
+${H(2, 552, 40, 400, 248, `
+  ${R(576, 56, 356, 200, "mGlass", 8)}
+  ${[0, 1].map(r => `
+    ${R(592, 78 + r * 92, 324, 12, "mSteel", 2)}
+    ${[0, 1, 2].map(c => R(604 + c * 106, 92 + r * 92, 86, 56, "mDark", 3)).join("")}
+    ${R(592, 152 + r * 92, 324, 10, "mSteel", 2)}`).join("")}
+  ${T(580, 276, "Side view (section A) — 12–30 h, 60–150 °C, 0.07 mbar", "mTxtS")}`)}
+`;
+
+M.separation = () => `
+${H(0, 26, 110, 116, 130, `${REEL(84, 176, 32, "mCu")}${T(30, 232, "Daughter roll", "mTxtS")}`)}
+${H(1, 152, 84, 200, 180, `
+  ${R(174, 130, 156, 46, "mCu", 3)}
+  ${[0, 1, 2].map(c => R(186 + c * 50, 138, 34, 30, "mAn", 2)).join("")}
+  ${T(174, 122, "Intermittent coating", "mTxtS")}
+  ${T(174, 240, "Blank edge → future tab", "mTxtS")}`)}
+${H(2, 372, 44, 150, 230, `
+  ${R(396, 62, 102, 46, "mDark", 4)}
+  ${P("M447 108l0 34", "mLine")}${R(404, 142, 86, 20, "mSteel", 3)}
+  ${R(396, 190, 102, 46, "mSteel2", 4)}
+  ${T(378, 262, "Punching unit · 0.2 s/sheet", "mTxtS")}
+  <g class="bob">${ARROW(447, 124, 1)}</g>`)}
+${H(3, 546, 90, 230, 170, `
+  ${[0, 1, 2].map(c => `${R(566 + c * 74, 112, 58, 52, "mCa", 3)}`).join("")}
+  ${[0, 1, 2].map(c => `${R(566 + c * 74, 180, 58, 52, "mAn", 3)}`).join("")}
+  ${T(566, 106, "Cathode sheets", "mTxtS")}${T(566, 250, "Anode sheets", "mTxtS")}`)}
+${H(4, 800, 96, 160, 160, `
+  ${[0, 1, 2, 3, 4].map(i => R(824, 120 + i * 20, 110, 12, i % 2 ? "mAn" : "mCa", 2)).join("")}
+  ${T(812, 242, "Electrode stack · ±200 µm", "mTxtS")}`)}
+${P("M84 176l90 -22", "mWeb")}${ARROW(340, 152)}${ARROW(524, 152)}${ARROW(786, 152)}
+`;
+
+M.stacking = () => `
+${H(0, 26, 60, 170, 190, `
+  ${R(48, 82, 126, 100, "mSteel2", 6)}
+  ${R(60, 96, 46, 34, "mCa", 3)}${R(116, 96, 46, 34, "mAn", 3)}${REEL(90, 158, 18, "mSep")}
+  ${T(48, 202, "Input magazines", "mTxt")}${T(48, 216, "anode · cathode · separator", "mTxtS")}`)}
+${H(1, 214, 40, 170, 120, `
+  ${R(238, 58, 122, 34, "mDark", 4)}
+  ${P("M299 92l-26 34M299 92l26 34", "mAcc")}
+  ${T(226, 150, "Position recognition", "mTxtS")}`)}
+${H(2, 214, 168, 170, 110, `
+  ${R(238, 196, 122, 22, "mSteel", 3)}
+  ${R(250, 218, 44, 16, "mCa", 2)}${R(304, 218, 44, 16, "mAn", 2)}
+  ${T(226, 262, "Vacuum gripper transfer", "mTxtS")}`)}
+${H(3, 404, 40, 300, 200, `
+  ${ROLLER(452, 92, 16)}${ROLLER(534, 92, 16)}
+  ${P("M436 108q40 40 80 0t80 0", "mWebS")}
+  ${P("M436 140q40 40 80 0t80 0", "mWebS")}
+  ${P("M436 172q40 40 80 0t80 0", "mWebS")}
+  <path class="mWebS flowdash" stroke="var(--sep)" d="M436 108q40 40 80 0t80 0"/>
+  ${T(432, 62, "Z-folded separator (endless tape)", "mTxtS")}
+  ${T(432, 226, "Anode and cathode enter from left and right", "mTxtS")}`)}
+${H(4, 724, 70, 236, 180, `
+  ${R(748, 92, 190, 118, "mSteel2", 6)}
+  ${[0, 1, 2, 3, 4, 5].map(i => `${R(760, 100 + i * 18, 160, 8, i % 2 ? "mAn" : "mCa", 1)}
+     ${R(760, 109 + i * 18, 160, 4, "mSep", 1)}`).join("")}
+  ${R(930, 96, 10, 40, "mCu", 2)}${R(930, 150, 10, 40, "mAl", 2)}
+  ${T(748, 232, "Stack · up to 120 layers · 1 s/sheet", "mTxtS")}`)}
+`;
+
+M.winding = () => `
+${H(0, 26, 60, 150, 212, `
+  ${REEL(78, 106, 26, "mCa")}${REEL(78, 174, 26, "mSep")}${REEL(78, 238, 26, "mAn")}

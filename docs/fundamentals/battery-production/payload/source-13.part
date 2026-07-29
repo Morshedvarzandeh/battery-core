@@ -1,0 +1,195 @@
+  if (cf.xMark != null) xmark = `<rect x="${px(cf.xMark)}" y="${PT}" width="${W - PR - px(cf.xMark)}"
+      height="${HH - PT - PB}" fill="color-mix(in srgb,var(--destructive) 8%,transparent)"/>
+      <line x1="${px(cf.xMark)}" y1="${PT}" x2="${px(cf.xMark)}" y2="${HH - PB}" stroke="var(--destructive)" stroke-width="1.4"/>
+      <text class="cLab" x="${px(cf.xMark) + 4}" y="${PT + 10}" fill="var(--destructive)">${esc(cf.xMarkLabel || "not allowed")}</text>`;
+
+  /* is an outcome value acceptable? drives the colour of the curve */
+  const okAt = v => cf.good ? (v >= cf.good[0] && v <= cf.good[1])
+    : cf.limit != null ? v <= cf.limit
+    : true;
+  const hasState = !!(cf.good || cf.limit != null);
+
+  /* the curves — the primary one is drawn in two colours, so the part of
+     the range that lands out of specification is red on the chart itself */
+  const lines = runs.map((pts, i) => {
+    const s = cf.series[i];
+    if (i > 0 || !hasState) {
+      const d = pts.map((p, j) => `${j ? "L" : "M"}${px(p[0]).toFixed(1)} ${py(p[1]).toFixed(1)}`).join("");
+      return `<path d="${d}" fill="none" stroke="${s.col || "var(--primary)"}" stroke-width="2.2"
+        stroke-linejoin="round" stroke-linecap="round" ${s.dash ? 'stroke-dasharray="5 4"' : ""}/>`;
+    }
+    let dIn = "", dOut = "";
+    for (let j = 1; j < pts.length; j++) {
+      const a = pts[j - 1], b = pts[j];
+      const seg = `M${px(a[0]).toFixed(1)} ${py(a[1]).toFixed(1)}L${px(b[0]).toFixed(1)} ${py(b[1]).toFixed(1)}`;
+      if (okAt(a[1]) && okAt(b[1])) dIn += seg; else dOut += seg;
+    }
+    return `<path d="${dOut}" fill="none" stroke="var(--destructive)" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="${dIn}" fill="none" stroke="${s.col || "var(--primary)"}" stroke-width="2.2" stroke-linecap="round"/>`;
+  }).join("");
+
+  /* where you are standing right now */
+  const m = model(), xv = S[cf.x];
+  const dots = cf.series.map((s, i) => {
+    const v = s.y(m);
+    const off = i === 0 && hasState && !okAt(v);
+    return `<circle cx="${px(xv)}" cy="${py(v)}" r="${off ? 5.4 : 4.6}"
+      fill="${off ? "var(--destructive)" : "#fff"}" stroke="${off ? "var(--destructive)" : (s.col || "var(--primary)")}" stroke-width="2.4"/>`;
+  }).join("");
+  const curOff = hasState && !okAt(cf.series[0].y(m));
+
+  /* legend */
+  const leg = cf.series.length > 1 ? cf.series.map((s, i) =>
+    `<g transform="translate(${PL + i * 132} ${HH - 4})">
+       <line x1="0" y1="-3" x2="13" y2="-3" stroke="${s.col}" stroke-width="2.2" ${s.dash ? 'stroke-dasharray="4 3"' : ""}/>
+       <text class="cLab" x="17" y="0">${esc(s.label)}</text></g>`).join("") : "";
+
+  const cur = cf.series[0].y(m);
+  const xdp = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+  /* axis labels: the current-value tick wins, and any end label it would
+     collide with is dropped rather than drawn on top of it */
+  const tw = t => String(t).length * 5.0;                      /* ≈ width at 9 px */
+  const loTxt = `${c.min}${c.unit || ""}`, hiTxt = `${c.max}${c.unit || ""}`;
+  const nowTxt = xv.toFixed(xdp);
+  const nowX = Math.max(PL + tw(nowTxt) / 2, Math.min(W - PR - tw(nowTxt) / 2, px(xv)));
+  const nowL = nowX - tw(nowTxt) / 2 - 5, nowR = nowX + tw(nowTxt) / 2 + 5;
+  const loLab = nowL > PL + tw(loTxt)
+    ? `<text class="cAx" x="${PL}" y="${HH - PB + 13}">${esc(loTxt)}</text>` : "";
+  const hiLab = nowR < W - PR - tw(hiTxt)
+    ? `<text class="cAx" x="${W - PR}" y="${HH - PB + 13}" text-anchor="end">${esc(hiTxt)}</text>` : "";
+  return `<figure class="chart" data-off="${curOff}">
+    <figcaption><b>${esc(cf.title)}</b><span>${esc(c.label)} → ${esc(cf.series[0].label)}</span></figcaption>
+    <svg viewBox="0 0 ${W} ${HH}" role="img" aria-label="${esc(cf.title)}: ${esc(c.label)} against ${esc(cf.series[0].label)}">
+      <line x1="${PL}" y1="${PT}" x2="${PL}" y2="${HH - PB}" stroke="var(--border-strong)"/>
+      <line x1="${PL}" y1="${HH - PB}" x2="${W - PR}" y2="${HH - PB}" stroke="var(--border-strong)"/>
+      ${band}${xmark}${limit}${lines}
+      <line x1="${px(xv)}" y1="${PT}" x2="${px(xv)}" y2="${HH - PB}" stroke="var(--foreground)" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>
+      ${dots}
+      ${loLab}${hiLab}
+      <text class="cNow" x="${nowX}" y="${HH - PB + 13}" text-anchor="middle">${xv.toFixed(xdp)}</text>
+      ${leg}
+      <text class="cAx" x="${PL - 5}" y="${py(hi - pad) + 4}" text-anchor="end">${(hi - pad).toFixed(dp)}</text>
+      <text class="cAx" x="${PL - 5}" y="${py(lo + pad) + 4}" text-anchor="end">${(lo + pad).toFixed(dp)}</text>
+      <text class="cVal" x="${PL}" y="${PT - 7}" fill="${curOff ? "var(--destructive)" : "var(--foreground)"}">${cur.toFixed(dp)}${esc(cf.unit || "")} now${curOff ? " — out of specification" : ""}</text>
+    </svg>
+  </figure>`;
+}
+
+/* --- bespoke: does the aging window actually catch a faulty cell? ------ */
+function agingOCVChart() {
+  const m = model(), days = S.ageDays, HT = S.ageHiT;
+  /* a healthy cell relaxes and then sits still; a faulty one keeps falling.
+     Higher temperature accelerates both, which is why HT aging exists.     */
+  const accel = 1 + (HT - 22) / 28;
+  const good = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 0.14 * t * accel;
+  const bad  = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 1.15 * t * accel;
+  const T = 21, W2 = 340, H2 = 176, L = 40, R = 12, TT = 22, B = 30;
+  const maxY = Math.max(bad(T), 8);
+  const px = t => L + t / T * (W2 - L - R);
+  const py = v => TT + (1 - Math.min(v, maxY) / maxY) * (H2 - TT - B);
+  const path = f => Array.from({ length: 64 }, (_, i) => {
+    const t = i / 63 * T; return `${i ? "L" : "M"}${px(t).toFixed(1)} ${py(f(t)).toFixed(1)}`;
+  }).join("");
+  const sep = (bad(days) - good(days));
+  const caught = sep >= 5;
+  return `<figure class="chart">
+    <figcaption><b>Can this screen see a faulty cell?</b><span>open-circuit voltage drop over the aging period</span></figcaption>
+    <svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Open circuit voltage drop over the aging period for a healthy and a faulty cell">
+      <line x1="${L}" y1="${TT}" x2="${L}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <line x1="${L}" y1="${H2 - B}" x2="${W2 - R}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <rect x="${px(days)}" y="${TT}" width="${W2 - R - px(days)}" height="${H2 - TT - B}" fill="var(--foreground)" opacity=".05"/>
+      <line x1="${px(days)}" y1="${TT}" x2="${px(days)}" y2="${H2 - B}" stroke="var(--foreground)" stroke-width="1.2" stroke-dasharray="3 3" opacity=".55"/>
+      <text class="cLab" x="${px(days) + (days > 11 ? -4 : 4)}" y="${TT + 10}"
+        text-anchor="${days > 11 ? "end" : "start"}">you release here</text>
+      <path d="${path(bad)}" fill="none" stroke="var(--destructive)" stroke-width="2.2"/>
+      <path d="${path(good)}" fill="none" stroke="var(--primary)" stroke-width="2.2"/>
+      <circle cx="${px(days)}" cy="${py(bad(days))}" r="4.6" fill="#fff" stroke="var(--destructive)" stroke-width="2.4"/>
+      <circle cx="${px(days)}" cy="${py(good(days))}" r="4.6" fill="#fff" stroke="var(--primary)" stroke-width="2.4"/>
+      <path d="M${px(days) + 13} ${py(good(days))}L${px(days) + 13} ${py(bad(days))}" stroke="var(--foreground)" stroke-width="1"/>
+      <text class="cVal" x="${px(days) + 18}" y="${(py(good(days)) + py(bad(days))) / 2 + 4}"
+        fill="${caught ? "var(--primary)" : "var(--destructive)"}">${sep.toFixed(1)} mV apart</text>
+      <text class="cAx" x="${L}" y="${H2 - B + 13}">0 d</text>
+      <text class="cAx" x="${W2 - R}" y="${H2 - B + 13}" text-anchor="end">21 d</text>
+      <text class="cAx" x="${L - 5}" y="${py(maxY) + 8}" text-anchor="end">${maxY.toFixed(0)}</text>
+      <text class="cAx" x="${L - 5}" y="${py(0)}" text-anchor="end">0</text>
+      <text class="cVal" x="${L}" y="${TT - 7}">mV lost</text>
+      <g transform="translate(${L} ${H2 - 6})">
+        <line x1="0" y1="-3" x2="14" y2="-3" stroke="var(--primary)" stroke-width="2.2"/><text class="cLab" x="18" y="0">healthy cell</text>
+        <line x1="112" y1="-3" x2="126" y2="-3" stroke="var(--destructive)" stroke-width="2.2"/><text class="cLab" x="130" y="0">illustrative high-self-discharge cell</text>
+      </g>
+    </svg>
+    <p class="chart-note" data-s="${caught ? "ok" : "bad"}">${caught
+      ? `At ${days} days and ${HT} °C the two cells are ${sep.toFixed(1)} mV apart — above the illustrative 5 mV/week flag, so this teaching example would trigger further investigation or rejection.`
+      : `At ${days} days and ${HT} °C the two cells are only ${sep.toFixed(1)} mV apart. In this teaching example the separation is too small for the assumed screen. A real release decision requires validated limits, measurement uncertainty and site procedures.`}</p>
+  </figure>`;
+}
+
+/* --- bespoke: the first charge, drawn ---------------------------------- */
+function formationChart() {
+  const m = model(), C = S.cRate, hours = 13 / (C / 0.25);
+  const W2 = 340, H2 = 176, L = 40, R = 12, TT = 22, B = 30;
+  const px = t => L + t / hours * (W2 - L - R);
+  const py = v => TT + (1 - (v - 2.8) / (S.vMax + 0.1 - 2.8)) * (H2 - TT - B);
+  /* CC to the cut-off, then CV taper — the shape every formation recipe has */
+  const cc = hours * 0.78;
+  const v = t => t < cc ? 2.8 + (S.vMax - 2.8) * (1 - Math.exp(-t / (cc * 0.34))) : S.vMax;
+  const path = Array.from({ length: 70 }, (_, i) => {
+    const t = i / 69 * hours; return `${i ? "L" : "M"}${px(t).toFixed(1)} ${py(v(t)).toFixed(1)}`;
+  }).join("");
+  /* the SEI grows in the first part of the charge, between about 0.7 and 1.5 V vs Li */
+  const seiEnd = px(cc * 0.42);
+  return `<figure class="chart">
+    <figcaption><b>The first charge, drawn</b><span>cell voltage against time at ${C.toFixed(2)} C</span></figcaption>
+    <svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Cell voltage against time during the first charge">
+      <line x1="${L}" y1="${TT}" x2="${L}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <line x1="${L}" y1="${H2 - B}" x2="${W2 - R}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <rect x="${L}" y="${TT}" width="${seiEnd - L}" height="${H2 - TT - B}" fill="color-mix(in srgb,var(--jelly) 12%,transparent)"/>
+      <text class="cLab" x="${L + 4}" y="${H2 - B - 6}" fill="var(--jelly)">SEI forms in here</text>
+      <line x1="${L}" y1="${py(S.vMax)}" x2="${W2 - R}" y2="${py(S.vMax)}" stroke="var(--destructive)"
+        stroke-width="1.4" stroke-dasharray="4 3"/>
+      <text class="cLab" x="${W2 - R - 3}" y="${py(S.vMax) - 4}" text-anchor="end" fill="var(--destructive)">cut-off ${S.vMax.toFixed(2)} V</text>
+      <path d="${path}" fill="none" stroke="var(--primary)" stroke-width="2.4" stroke-linejoin="round"/>
+      <text class="cAx" x="${L}" y="${H2 - B + 13}">0 h</text>
+      <text class="cAx" x="${W2 - R}" y="${H2 - B + 13}" text-anchor="end">${hours.toFixed(1)} h</text>
+      <text class="cAx" x="${L - 5}" y="${py(S.vMax) + 4}" text-anchor="end">${S.vMax.toFixed(1)}</text>
+      <text class="cAx" x="${L - 5}" y="${py(2.8) }" text-anchor="end">2.8</text>
+      <text class="cVal" x="${L}" y="${TT - 7}">cell voltage, V</text>
+    </svg>
+    <p class="chart-note" data-s="${m.seiQ >= 90 ? "ok" : m.seiQ >= 80 ? "warn" : "bad"}">
+      ${hours.toFixed(1)} h on the rack. The film forms in the shaded part of the ramp — the faster you push through it,
+      the more porous and resistive it may become in this teaching model. Illustrative SEI score ${m.seiQ.toFixed(0)}%, ${m.liLoss.toFixed(1)}% simplified cyclable-lithium loss
+      spent permanently.</p>
+  </figure>`;
+}
+
+/* --- which charts each station shows ------------------------------------ */
+const CHARTS = {
+  mixing: [
+    { x:"solid", title:"Solid content sets viscosity", unit:" mPa·s", good:[2000,6000], goodLabel:"coatable window",
+      series:[{ y:m => m.visc, label:"Slurry viscosity", col:"var(--primary)" }] },
+    { x:"mixMin", title:"Dispersing time breaks the agglomerates", unit:"%", good:[92,100], goodLabel:"released", lo:55, hi:100,
+      series:[{ y:m => m.disp, label:"Dispersion index", col:"var(--elyte)" }] }],
+  coating: [
+    { x:"gap", title:"The gap has one right answer", unit:" g/m²", limit:2, limitLabel:"±2 g/m² specification", lo:0, dp:1,
+      series:[{ y:m => m.coatErr, label:"Coat weight scatter", col:"var(--primary)" }] },
+    { x:"tC", title:"Coat thickness is cell capacity", unit:" Ah", dp:1,
+      series:[{ y:m => m.cellAh, label:"Cell capacity", col:"var(--elyte)" }] }],
+  drying: [
+    { x:"speed", title:"Faster web, hotter dryer", unit:" °C", dp:0,
+      series:[{ y:m => m.needT, label:"heat the web needs", col:"var(--destructive)" },
+              { y:() => S.dryT,  label:"your setting", col:"var(--primary)", dash:1 }] },
+    { x:"dryT", title:"Under-drying and over-drying reduce process health", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
+  calendering: [
+    { x:"force", title:"Line force sets porosity", unit:"%", good:[20,35], goodLabel:"useful window", dp:0,
+      series:[{ y:m => m.por, label:"Porosity", col:"var(--primary)" }] },
+    { x:"force", title:"…and porosity is capacity against wetting", unit:" mAh/cm²", dp:2,
+      series:[{ y:m => m.capC, label:"Cathode areal capacity", col:"var(--elyte)" }] }],
+  slitting: [
+    { x:"wear", title:"Burr grows quietly with blade wear", unit:" µm", limit:10, limitLabel:"pierces the separator", lo:0, dp:1,
+      series:[{ y:m => m.burrSlit, label:"Burr from this cut", col:"var(--primary)" }] },
+    { x:"cutSpd", title:"And with cutting speed", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
+  vacdry: [
+    { x:"vac", title:"Water leaves slowly, then very slowly", unit:" ppm", limit:50, limitLabel:"50 ppm target", lo:0, dp:0,
+      series:[{ y:m => m.ppm, label:"Residual moisture", col:"var(--primary)" }] },

@@ -1,0 +1,232 @@
+            <div class="chain-spine"><i></i></div>
+            <div class="chain-state">
+              <strong>${esc(f.name)}</strong>
+              <em>${esc(f.state)}</em>
+              ${live[f.id] ? `<em style="background:var(--foreground);color:var(--primary);border-color:var(--foreground)">${esc(live[f.id])}</em>` : ""}
+              <span>${esc(f.note)}</span>
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   3 · PROCESS ↔ COMPONENT MATRIX
+   ------------------------------------------------------------------- */
+function cellRole(st, comp) {
+  const made = comp.made.includes(st.id), risk = comp.risk.includes(st.id);
+  if (made && risk) return "both";
+  if (made) return "make";
+  if (risk) return "risk";
+  if ((comp.checks || []).includes(st.id)) return "check";
+  return "";
+}
+function renderMatrix() {
+  const list = active();
+  const mark = { make:"●", both:"◉", risk:"▲", check:"◆" };
+  const word = { make:"builds or shapes", both:"builds it — and is where it is most easily ruined",
+                 risk:"main risk to", check:"measures or screens" };
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture · 3 of 3</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Which station touches which part of the cell</h2>
+      <p class="lede" style="max-width:80ch">Read a row to see what one machine is responsible for. Read a column to see
+      how many hands a single component passes through before it is finished. Click any mark to jump straight to that
+      station. The table rebuilds when you change the cell format, because the line does.</p>
+    </div>
+    <div class="card card-pad">
+      <div class="mtxwrap">
+        <table class="mtx">
+          <thead><tr><th class="rowh">Station</th>
+            ${COMPONENTS.map(c => `<th><i style="background:${c.col}"></i>${esc(c.short)}</th>`).join("")}
+          </tr></thead>
+          <tbody>
+            ${list.map((st, i) => `
+              <tr>
+                <th class="rowh"><span style="color:var(--faint);font-weight:900;font-size:9px">${String(i + 1).padStart(2, "0")}</span>
+                  &nbsp;${esc(st.title)}</th>
+                ${COMPONENTS.map(c => {
+                  const k = cellRole(st, c);
+                  return k ? `<td data-k="${k}"><button data-go="${st.id}" title="${esc(st.title)} — ${esc(c.name)}"
+                        aria-label="${esc(st.title)}, ${esc(c.name)}, ${word[k]}">${mark[k]}</button></td>`
+                    : `<td></td>`;
+                }).join("")}
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+      <div class="legend">
+        <span><b style="background:color-mix(in srgb,var(--primary) 15%,transparent);color:var(--primary)">●</b> builds or shapes this component</span>
+        <span><b style="background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 19%,transparent) 50%,color-mix(in srgb,var(--destructive) 19%,transparent) 50%);color:var(--foreground)">◉</b> builds it — and is where it is most easily ruined</span>
+        <span><b style="background:color-mix(in srgb,var(--destructive) 15%,transparent);color:var(--destructive)">▲</b> where this component is most easily ruined</span>
+        <span><b style="background:color-mix(in srgb,var(--elyte) 15%,transparent);color:var(--elyte)">◆</b> where it is measured or screened</span>
+        <span>blank — the component passes through untouched</span>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>Reading it down a column</h4>
+        <ul>
+          <li><b>The two coatings pass through five stations each</b> before they are finished — mixing, coating, drying, calendering, vacuum drying. Nothing about an electrode is settled until the last of them.</li>
+          <li><b>The separator is introduced during stacking or winding.</b> Damage at this stage can create latent short-circuit risk, so cleanliness, alignment and edge quality are critical.${r(2,3)}</li>
+          <li><b>The SEI is formed during formation.</b> It is not installed as a conventional part, and its properties depend on the full formation and cleanliness history.${r(7)}</li>
+        </ul>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--destructive)"></i>Reading it across a row</h4>
+        <ul>
+          <li><b>Calendering appears against four components at once</b> — both coatings and both foils. That is why one setpoint there moves capacity, wetting and crack risk together.${r(4)}</li>
+          <li><b>Most stations that build a component are also where it is most easily ruined</b> — the ◉ marks. The calender that gives the cathode its density is the same nip that cracks its particles; the stacker that places the separator is where the separator gets pierced.</li>
+          <li><b>Slitting shapes, but never adds.</b> It cuts foil to width and takes material away; nothing new enters the cell here. Everything else this station can do to the product is negative, and the burr it leaves is the classic separator-piercing defect.${r(1)}</li>
+          <li><b>Vacuum drying protects a component it never touches</b> — the electrolyte, four stations later, via the water it removes now.${r(6)}</li>
+        </ul>
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   4 · REFERENCES
+   ------------------------------------------------------------------- */
+function renderRefs() {
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">Sources</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Where every number came from</h2>
+      <p class="lede" style="max-width:80ch">Process parameters, environment classes, machine investments and cycle times
+      are from the PEM RWTH Aachen and VDMA process guide. The physics that links them — porosity, areal capacity,
+      N/P balance, moisture, SEI — is from the peer-reviewed sources below. The superscript numbers throughout this
+      simulator link here.</p>
+      <p class="lede" style="max-width:80ch;margin-top:10px"><b>What is modelled rather than cited:</b> the chain that
+      connects one setpoint to the next is a teaching model, fitted so the defaults land near the reference plant. Use it
+      to understand direction and sensitivity, not to size real equipment.</p>
+    </div>
+    <div class="card card-pad">
+      <div class="reflist">
+        ${REFS.map(x => `
+          <div class="refitem" id="ref-${x.n}">
+            <div class="rn">${x.n}</div>
+            <div>
+              <p>${x.txt}</p>
+              <span class="used"><b>Used for:</b> ${x.use}</span>
+              ${x.url ? `<a href="${x.url}" target="_blank" rel="noopener">${esc(x.url)}</a>` : ""}
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   THE OPERATOR CONSOLE
+   ------------------------------------------------------------------- */
+function inWindow(k) {
+  const c = CTL[k];
+  return !c || c.opts || !c.good ? true : (S[k] >= c.good[0] && S[k] <= c.good[1]);
+}
+function ctlHTML(k) {
+  const c = CTL[k], v = S[k];
+  if (c.opts) return `
+    <div class="ctl">
+      <label>${c.label}<b>${c.opts[v]}</b></label>
+      <div class="seg" role="group" aria-label="${c.label}">
+        ${c.opts.map((o, i) => `<button type="button" data-seg="${k}" data-v="${i}" aria-pressed="${i === v}">${o}</button>`).join("")}
+      </div>
+      <small>${c.note}${c.ref ? r(...c.ref) : ""}</small>
+    </div>`;
+  const dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+  return `
+    <div class="ctl" data-in="${inWindow(k)}">
+      <label for="cc-${k}">${c.label}<b id="cv-${k}">${v.toFixed(dec)}${c.unit}</b></label>
+      <input id="cc-${k}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${v}"
+             aria-label="${c.label}" data-ctl="${k}">
+      ${windowBar(k)}
+      <small>${c.note}${c.ref ? r(...c.ref) : ""}</small>
+    </div>`;
+}
+function renderConsole(st, m) {
+  const o = OPS[st.id];
+  if (!o) return "";
+  const [lv, head, body] = o.verdict(m);
+  return `
+    <div class="console" id="console">
+      <div class="console-head">
+        <strong>Operate this station</strong>
+        <span>${esc(o.lead)}</span>
+      </div>
+      <div class="console-body">
+        <div class="console-ctl">
+          <small>Your controls</small>
+          ${o.ctl.map(ctlHTML).join("")}
+        </div>
+        <div class="console-out">
+          <small>What happens</small>
+          <div class="outs">
+            ${o.read(m).map(x => `<div class="out" data-s="${x.state}">
+              <small>${esc(x.label)}</small><b>${esc(x.value)}</b>
+              ${x.hint ? `<i>${esc(x.hint)}</i>` : ""}</div>`).join("")}
+          </div>
+          <div class="verdict" data-l="${lv}"><strong>${esc(head)}</strong><span>${esc(body)}</span></div>
+          ${renderCharts(st)}
+        </div>
+      </div>
+      <div class="console-foot">
+        <span>Anything you change here updates the downstream teaching relationships — watch the process-health gauge on the right.</span>
+        <button type="button" id="conReset">Reset this station</button>
+        <button type="button" id="conBreak">Break it</button>
+      </div>
+    </div>`;
+}
+function bindConsole(st) {
+  const o = OPS[st.id];
+  if (!o || !$("console")) return;
+  $("console").querySelectorAll("input[data-ctl]").forEach(el =>
+    el.addEventListener("input", e => { S[e.target.dataset.ctl] = Number(e.target.value); refresh(); }));
+  $("console").querySelectorAll("button[data-seg]").forEach(el =>
+    el.addEventListener("click", e => {
+      const b = e.currentTarget;
+      S[b.dataset.seg] = Number(b.dataset.v); refresh();
+    }));
+  $("conReset").addEventListener("click", () => {
+    o.ctl.forEach(k => S[k] = DEFAULTS[k]); renderSliders(); refresh();
+  });
+  $("conBreak").addEventListener("click", () => {
+    /* push this station's knobs to the edge that fails, so the failure mode is visible */
+    const BREAK = { tC:80, tA:50, speed:80, dryT:60, force:2500, vac:8, cRate:0.5, ageDays:3,
+      solid:75, mixMin:30, mixT:40, gap:280, dryLen:20, rollT:120, knife:0, cutSpd:150, wear:100,
+      vacT:60, sepMode:0, stackAcc:600, webTens:140, drawDepth:10, sealT:150, doseFac:1,
+      fillP:400, soak:1, pressP:1.2, formT:60, vMax:4.4, degP:60, ageSOC:20, ageHiT:25, shipSOC:60 };
+    o.ctl.forEach(k => S[k] = BREAK[k]); renderSliders(); refresh();
+  });
+}
+
+/* ---------------------------------------------------------------------
+   navigation for the new views
+   ------------------------------------------------------------------- */
+function showView(id) {
+  $("overview").hidden = true; $("stationView").hidden = true; $("layerView").hidden = false;
+  const v = VIEWS.find(x => x.id === id) || VIEWS[0];
+  $("crumbTitle").textContent = v.label;
+  $("pillEnv").innerHTML = `<i></i><b>${esc(v.hint)}</b>`;
+  $("pillPos").textContent = "—";
+  ({ anatomy:renderAnatomy, flow:renderFlow, matrix:renderMatrix, refs:renderRefs }[v.id])();
+}
+
+/* reference chips open the reference list at the right entry */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-ref]");
+  if (!b) return;
+  e.preventDefault();
+  go("view:refs");
+  setTimeout(() => {
+    const el = document.getElementById("ref-" + b.dataset.ref);
+    if (el) { el.scrollIntoView({ behavior:"smooth", block:"center" }); el.style.outline = "2px solid var(--primary)";
+      setTimeout(() => el.style.outline = "", 1800); }
+  }, 60);
+});
+
+/* ---------------- boot ---------------- */
+renderSliders();
+renderRail();
+go(null);
+</script>
+</body>
+</html>

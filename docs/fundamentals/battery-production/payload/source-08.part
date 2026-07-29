@@ -1,0 +1,126 @@
+{ id:"degassing", no:"13", phase:"Cell finishing", title:"Degassing", machine:"degassing", routes:"pouch",
+  env:{iso:"Normal factory air", dew:"not controlled", temp:"22 ± 3 °C"}, cost:"€ 10–15 M", takt:"—",
+  purpose:"Remove the gas that formation produced and close the cell to its final dimensions.",
+  inp:"Formed cell with full gas bag", out:"Sealed cell, final size",
+  parts:[
+    ["Pierce under vacuum","VENT","The gas bag is pierced inside a vacuum chamber and the escaping gases are sucked off. The extracted gas is treated — regenerative thermal oxidation, for example — before it reaches the exhaust system."],
+    ["Extraction","TREAT","Larger cells gas strongly on first charge, which is why pressurised carriers push that gas into the bag in the first place."],
+    ["Final seal","CLOSE","The cell is sealed under vacuum, then the gas bag is cut off and disposed of as hazardous waste."],
+    ["Fold and glue","FINISH","Optional: the seal edges are folded and glued to reduce the external dimensions and raise volumetric energy density. Seam widths up to 1 cm."]],
+  params:["Folding and gluing of sealing seams to raise volumetric energy density","Damage-free folding of the edges","Seam widths up to 1 cm","Sealing against moisture and oxygen"],
+  alts:["For smaller cells with low gas generation, some manufacturers do not separate the gas bag at all"],
+  qInf:["Pressing of the cells for degassing","Sealing and folding technology","Suction of gases under vacuum and in a dry atmosphere"],
+  qFeat:["Residual gas inside the cell","Damage-free cell handling"],
+  sop:["Confirm gas treatment is online","Pierce inside the vacuum chamber","Evacuate and hold","Seal the final seam","Cut and dispose of the gas bag as hazardous waste","Fold and glue the seam if specified"] },
+
+{ id:"aging", no:"14", phase:"Cell finishing", title:"Aging", machine:"aging", routes:ALL,
+  env:{iso:"Normal factory air", dew:"not controlled", temp:"HT 30–50 °C · NT ≈22 °C"}, cost:"€ 5–15 M", takt:"up to 3 weeks",
+  purpose:"Hold the cells and watch their open-circuit voltage — the screen that catches internal defects before the customer does.",
+  inp:"Formed, degassed cell", out:"Released or scrapped cell",
+  parts:[
+    ["High-temperature aging","ACCELERATE","Cells first go through HT aging at 30–50 °C, which accelerates any latent defect so it shows up in days rather than months."],
+    ["Normal-temperature aging","OBSERVE","Then NT aging at about 22 °C on shelves or towers, for up to three weeks in total, starting at 80–100% SOC."],
+    ["OCV monitoring","MEASURE","Open-circuit voltage is measured repeatedly through the whole period. Unlike formation, the pouch cells are no longer pressurised here."],
+    ["The decision","JUDGE","Stable OCV is one release indicator, not proof of a defect-free cell. Excessive voltage loss can indicate elevated self-discharge, leakage or an internal defect and should trigger the manufacturer’s investigation and rejection criteria."]],
+  params:["SOC at the start of aging: 80% – 100%","Aging time up to 3 weeks","NT ≈22 °C, HT ≈30 °C – 50 °C"],
+  alts:["Sequence and duration of HT and NT aging vary by manufacturer and chemistry"],
+  qInf:["Orientation of cells","Packing density of the cell good carriers","Ambient temperature"],
+  qFeat:["Capacity","Internal resistance","Self-discharge rate"],
+  sop:["Set the starting SOC","Load HT racks and log the start OCV","Transfer to NT aging on schedule","Measure OCV at each interval","Flag any cell drifting beyond the limit","Release only cells with stable OCV"] },
+
+{ id:"eol", no:"15", phase:"Cell finishing", title:"End-of-line testing", machine:"eol", routes:ALL,
+  env:{iso:"Normal factory air", dew:"not controlled", temp:"22 ± 3 °C"}, cost:"€ 5–8 M", takt:"—",
+  purpose:"Measure what each cell actually is, sort it, and ship it at a safe state of charge.",
+  inp:"Aged cell", out:"Graded, packed cell",
+  parts:[
+    ["EOL test rig","TEST","Cells undergo a defined capacity test with specified charge, rest, discharge and cutoff conditions. The cell is then adjusted to its shipping SOC; pulse, DC-resistance, optical, OCV and leakage tests vary by manufacturer."],
+    ["Grading","SORT","Many manufacturers sort cells into classes by performance data, so that cells built into one pack are matched. Listed as an optional process."],
+    ["Packing","SHIP","Cells are covered in plastic and stacked in cardboard. An example plant target is 10–20% SOC. The applicable transport maximum depends on shipment configuration and mode; for UN 3480 shipped alone by air under PI 965, the file checks a 30% maximum."]],
+  params:["Example plant shipping target: 10%–20% SOC","PI 965 maximum: 30% SOC for UN 3480 shipped alone by air","Illustrative OCV-loss flag: 5 mV/week; actual criteria depend on chemistry, SOC, temperature and test duration"],
+  alts:["Test sequences and durations differ by manufacturer"],
+  qInf:["Cell handling"],
+  qFeat:["Low self-discharge","Low internal resistance","Constant capacity"],
+  sop:["Run the defined capacity test and record the result","Adjust the cell to the specified shipping SOC","Measure DC internal resistance","Run leakage and OCV checks","Assign a grade class","Apply the cell identification code","Verify the applicable transport instruction and pack"] }
+];
+
+/* =====================================================================
+   PROCESS MODEL — an illustrative simulator. One material state flows down the line and
+   every station transforms it, so a setpoint change reaches the cell.
+   ===================================================================== */
+/* Every knob in the plant lives in one state object. The right-hand rail
+   shows the eight headline setpoints; each station console shows its own
+   subset plus the knobs only that machine has. Both write the same S. */
+const CTL = {
+  /* headline — shown in the rail */
+  tC:      { label:"Cathode coat, per side", min:40,  max:80,   step:1,    unit:" µm",    def:65,   good:[40,80],      note:"PEM range 40–80 µm", ref:[1,2] },
+  tA:      { label:"Anode coat, per side",   min:50,  max:100,  step:1,    unit:" µm",    def:80,   good:[50,100],     note:"PEM range 50–100 µm", ref:[1,2] },
+  speed:   { label:"Coating line speed",     min:35,  max:80,   step:1,    unit:" m/min", def:60,   good:[35,80],      note:"PEM range 35–80 m/min", ref:[1] },
+  dryT:    { label:"Dryer peak temperature", min:50,  max:160,  step:1,    unit:" °C",    def:130,  good:[50,160],     note:"PEM zone range 50–160 °C", ref:[1] },
+  force:   { label:"Calender line force",    min:400, max:2500, step:25,   unit:" N/mm",  def:1700, good:[400,2300],   note:"PEM max 2 500 N/mm; above ≈2 300 it squeezes rather than compacts", ref:[1,4] },
+  vac:     { label:"Vacuum drying time",     min:8,   max:48,   step:1,    unit:" h",     def:22,   good:[16,48],      note:"PEM range 8–48 h per batch; below ≈16 h moisture is off target", ref:[1] },
+  cRate:   { label:"Formation first charge", min:0.1, max:0.5,  step:0.05, unit:" C",     def:0.25, good:[0.1,0.35],   note:"PEM range 0.1–0.5 C, stepped up over cycles", ref:[1,7] },
+  ageDays: { label:"Aging period",           min:3,   max:21,   step:1,    unit:" d",     def:14,   good:[10,21],      note:"PEM up to 3 weeks; under ≈10 d the screen stops working", ref:[1] },
+  /* station-local */
+  solid:   { label:"Slurry solid content",   min:40,  max:75,   step:1,    unit:" wt%",   def:58,   good:[50,68],      note:"Less solvent means less to dry — but viscosity climbs fast", ref:[2,8] },
+  mixMin:  { label:"Dispersing time",        min:30,  max:300,  step:10,   unit:" min",   def:120,  good:[60,300],     note:"PEM range 30 min – 5 h", ref:[1] },
+  mixT:    { label:"Mixer jacket temperature",min:20, max:40,   step:1,    unit:" °C",    def:25,   good:[20,40],      note:"PEM range 20–40 °C", ref:[1] },
+  gap:     { label:"Slot-die gap",           min:60,  max:300,  step:1,    unit:" µm",    def:155,  good:[120,200],    note:"Set it to the wet film the recipe needs", ref:[2] },
+  dryLen:  { label:"Dryer length",           min:20,  max:100,  step:5,    unit:" m",     def:60,   good:[20,100],     note:"PEM: dryers up to 100 m", ref:[1] },
+  rollT:   { label:"Calender roll temperature",min:20,max:120,  step:5,    unit:" °C",    def:60,   good:[20,120],     note:"Hot rolls compact more for the same force", ref:[4] },
+  knife:   { label:"Cutting method",         opts:["Rolling knives","Laser"],             def:0,    note:"PEM lists both; laser leaves no burr but adds a heat-affected edge", ref:[1] },
+  cutSpd:  { label:"Cutting speed",          min:80,  max:150,  step:5,    unit:" m/min", def:110,  good:[80,150],     note:"PEM: mechanical 80–150 m/min", ref:[1] },
+  wear:    { label:"Blade wear",             min:0,   max:100,  step:5,    unit:" %",     def:20,   good:[0,70],       note:"A worn knife smears rather than cuts — change it by 70%", ref:[1] },
+  vacT:    { label:"Vacuum drying temperature",min:60,max:150,  step:5,    unit:" °C",    def:120,  good:[60,140],     note:"PEM range 60–150 °C; PVDF softens above ≈140 °C", ref:[1] },
+  sepMode: { label:"Separation method",      opts:["Punching","Laser cutting"],           def:0,    note:"PEM: punching 0.2 s/sheet; laser is contact-free", ref:[1] },
+  stackAcc:{ label:"Positioning tolerance",  min:100, max:600,  step:20,   unit:" µm",    def:200,  good:[100,300],    note:"PEM: stacking accuracy 200–300 µm", ref:[1] },
+  webTens: { label:"Web tension",            min:20,  max:140,  step:5,    unit:" N",     def:60,   good:[40,90],      note:"Too little telescopes the roll, too much tears the foil", ref:[1] },
+  drawDepth:{label:"Pouch draw depth",       min:2,   max:10,   step:0.5,  unit:" mm",    def:6,    good:[2,8],        note:"PEM: deep drawing up to 10 mm; corners thin fastest past 8 mm", ref:[1] },
+  sealT:   { label:"Sealing temperature",    min:150, max:230,  step:5,    unit:" °C",    def:190,  good:[180,200],    note:"The PP sealant layer melts around 165 °C", ref:[1] },
+  doseFac: { label:"Electrolyte dose",       min:1,   max:1.6,  step:0.02, unit:" × pore volume", def:1.15, good:[1.05,1.35], note:"Under-dose and pores stay dry; over-dose and the cell gasses", ref:[1] },
+  fillP:   { label:"Wetting-cycle pressure", min:20, max:400, step:10, unit:" mbar", def:150, good:[50,250], note:"Separate from chamber evacuation; ≈150 mbar is the reference cycling setpoint", ref:[1] },
+  soak:    { label:"Wetting time",           min:1,   max:36,   step:1,    unit:" h",     def:12,   good:[6,36],       note:"Capillary action is slow — this is why cells queue here", ref:[1] },
+  pressP:  { label:"Roll-pressing pressure", min:0.1, max:1.2,  step:0.05, unit:" MPa",   def:0.4,  good:[0.2,0.8],    note:"Pouch route only — pushes electrolyte sideways into dry pores", ref:[1] },
+  formT:   { label:"Formation temperature",  min:15,  max:60,   step:1,    unit:" °C",    def:25,   good:[20,50],      note:"PEM: pre-treatment window 30–50 °C", ref:[1,7] },
+  vMax:    { label:"Upper cut-off voltage",  min:4,   max:4.4,  step:0.05, unit:" V",     def:4.2,  good:[4,4.25],     note:"Reference graphite/NMC teaching limit: oxidation risk rises above about 4.25 V; actual limits depend on materials and protocol", ref:[7] },
+  degP:    { label:"Degassing vacuum",       min:1,   max:60,   step:1,    unit:" mbar",  def:5,    good:[1,10],       note:"Pouch only — gas out, then the final seal", ref:[1] },
+  ageSOC:  { label:"Aging state of charge",  min:20,  max:90,   step:5,    unit:" %",     def:50,   good:[30,80],      note:"PEM range 30–80% SOC", ref:[1] },
+  ageHiT:  { label:"High-temperature stage", min:25,  max:60,   step:1,    unit:" °C",    def:40,   good:[30,50],      note:"PEM range 30–50 °C", ref:[1] },
+  shipSOC: { label:"Final shipping state of charge", min:5, max:60, step:5, unit:" %", def:15, good:[5,30], note:"Example plant target 10%–20%; PI 965 maximum 30% for UN 3480 shipped alone by air", ref:[11,10] }
+};
+const HEAD = ["tC","tA","speed","dryT","force","vac","cRate","ageDays"];
+const DEFAULTS = Object.fromEntries(Object.entries(CTL).map(([k, c]) => [k, c.def]));
+
+/* Reference chemistry for all calculated relationships: graphite negative electrode / NMC positive electrode. */
+const GEOM = {
+  pouch: { name:"Pouch",       area:200,  layers:18, factor:1,     unit:"cm² per sheet · 18 double-sided layers" },
+  cyl:   { name:"Cylindrical", area:1300, layers:1,  factor:1,     unit:"cm² of wound cathode (21700 class)" },
+  prism: { name:"Prismatic",   area:12000,layers:1,  factor:1,     unit:"cm² of wound cathode" }
+};
+
+let S = { ...DEFAULTS };
+let route = "pouch";
+let running = true;
+let current = null;      /* null = overview */
+let hotIndex = 0;
+
+function model() {
+  const g = GEOM[route], pouch = route === "pouch";
+
+  /* --- electrode structure -------------------------------------------- */
+  /* calendering sets porosity: ~50% as dried, down towards 20% at full
+     line force. Heated rolls compact more for the same force. [1][4]      */
+  const por  = clamp(50 - (S.force / 2500) * 30 - (S.rollT - 60) * 0.06, 15, 55);
+  const solidFrac = 1 - por / 100;
+  /* areal capacity, mAh/cm² = thickness × solid fraction × density × specific capacity [2] */
+  const capC = S.tC * 1e-4 * solidFrac * 4.65 * 180;
+  const capA = S.tA * 1e-4 * solidFrac * 2.24 * 350;
+  const np   = capA / capC;
+  const cellAh = capC * g.area * (g.layers > 1 ? 2 * g.layers : 1) / 1000;
+
+  /* --- mixing ---------------------------------------------------------- */
+  const visc = 3000 * Math.exp(0.085 * (S.solid - 58)) * Math.pow(25 / S.mixT, 0.35);
+  const disp = clamp(100 - 40 * Math.exp(-(S.mixMin - 25) / 45));
+
+  /* --- coating --------------------------------------------------------- */
+  const volSolid = (S.solid / 100) * 0.72;            /* wt% → volume fraction */
+  const wetNeed  = S.tC / volSolid;                   /* wet film the recipe needs, µm */
