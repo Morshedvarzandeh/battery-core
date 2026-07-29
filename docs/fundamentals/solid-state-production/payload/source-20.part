@@ -1,0 +1,242 @@
+   ------------------------------------------------------------------- */
+function renderFlow() {
+  const m = model();
+  const live = {
+    foil:   `${S.liTh} µm lithium · N/P ${m.np.toFixed(2)}`,
+    anode:  `bond ${m.lamQ.toFixed(0)}%`,
+    powder: route === "oxide" ? `${m.partSize.toFixed(1)} µm particles` : `dispersion ${m.disp.toFixed(0)}%`,
+    layer:  `±${m.coatErr.toFixed(1)} g/m² · ${m.capC.toFixed(2)} mAh/cm²`,
+    dense:  `${m.layerDens.toFixed(0)}% density`,
+    strip:  `edge quality ${m.edgeQ.toFixed(0)}%`,
+    elem:   `${m.meltRisk > 25 && !S.sepMode ? "layers melting — short risk" : "clean cut"}`,
+    stack:  `${m.contact.toFixed(0)}% contact at ${S.stackF.toFixed(1)} MPa · ${m.vCell.toFixed(1)} V`,
+    sealed: `seal ${m.sealQ.toFixed(0)}% · no filling step`,
+    formed: `${m.rTot.toFixed(0)} Ω·cm² · dendrite margin ${(100 - m.dendrite).toFixed(0)}%`
+  };
+  const byBtn = by => {
+    if (!by) return `<small>STARTS HERE</small>`;
+    const ids = by.split("|").filter(id => (STATIONS.find(s => s.id === id) || {routes:""}).routes.includes(route));
+    if (!ids.length) return `<small>NOT ON THIS ROUTE</small>`;
+    return ids.map(id => {
+      const st = STATIONS.find(s => s.id === id), n = active().indexOf(st) + 1;
+      return `<button data-go="${id}"><small>STATION ${String(n).padStart(2, "0")}</small>${esc(st.title)}</button>`;
+    }).join("");
+  };
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture · 2 of 3</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">One material chain, eleven states</h2>
+      <p class="lede" style="max-width:80ch">Two routes start apart and meet at stacking: metallic lithium down one side, electrolyte and cathode down the
+      other. Which stations you pass through depends entirely on the electrolyte class. The right-hand figures are
+      live — they come from the setpoints you currently have set.${r(3)}</p>
+    </div>
+    <div class="card card-pad">
+      <div class="chain">
+        ${FLOW.map(f => `
+          <div class="chain-row">
+            <div class="chain-by">${byBtn(f.by)}</div>
+            <div class="chain-spine"><i></i></div>
+            <div class="chain-state">
+              <strong>${esc(f.name)}</strong>
+              <em>${esc(f.state)}</em>
+              ${live[f.id] ? `<em style="background:var(--foreground);color:var(--primary);border-color:var(--foreground)">${esc(live[f.id])}</em>` : ""}
+              <span>${esc(f.note)}</span>
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   3 · PROCESS ↔ COMPONENT MATRIX
+   ------------------------------------------------------------------- */
+function cellRole(st, comp) {
+  const made = comp.made.includes(st.id), risk = comp.risk.includes(st.id);
+  if (made && risk) return "both";
+  if (made) return "make";
+  if (risk) return "risk";
+  if ((comp.checks || []).includes(st.id)) return "check";
+  return "";
+}
+function renderMatrix() {
+  const list = active();
+  /* the "what is no longer there" entry belongs in the anatomy view — no
+     station builds it, so as a column it is an empty stripe            */
+  const cols = COMPONENTS.filter(c => c.id !== "absent");
+  const mark = { make:"●", both:"◉", risk:"▲", check:"◆" };
+  const word = { make:"builds or shapes", both:"builds it — and is where it is most easily ruined",
+                 risk:"main risk to", check:"measures or screens" };
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture · 3 of 3</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Which station touches which part of the cell</h2>
+      <p class="lede" style="max-width:80ch">Read a row to see what one machine is responsible for. Read a column to see
+      how many hands a single component passes through before it is finished. Click any mark to jump straight to that
+      station. The table rebuilds when you change the cell format, because the line does.</p>
+    </div>
+    <div class="card card-pad">
+      <div class="mtxwrap">
+        <table class="mtx">
+          <thead><tr><th class="rowh">Station</th>
+            ${cols.map(c => `<th><i style="background:${c.col}"></i>${esc(c.short)}</th>`).join("")}
+          </tr></thead>
+          <tbody>
+            ${list.map((st, i) => `
+              <tr>
+                <th class="rowh"><span style="color:var(--faint);font-weight:900;font-size:9px">${String(i + 1).padStart(2, "0")}</span>
+                  &nbsp;${esc(st.title)}</th>
+                ${cols.map(c => {
+                  const k = cellRole(st, c);
+                  return k ? `<td data-k="${k}"><button data-go="${st.id}" title="${esc(st.title)} — ${esc(c.name)}"
+                        aria-label="${esc(st.title)}, ${esc(c.name)}, ${word[k]}">${mark[k]}</button></td>`
+                    : `<td></td>`;
+                }).join("")}
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+      <div class="legend">
+        <span><b style="background:color-mix(in srgb,var(--primary) 15%,transparent);color:var(--primary)">●</b> builds or shapes this component</span>
+        <span><b style="background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 19%,transparent) 50%,color-mix(in srgb,var(--destructive) 19%,transparent) 50%);color:var(--foreground)">◉</b> builds it — and is where it is most easily ruined</span>
+        <span><b style="background:color-mix(in srgb,var(--destructive) 15%,transparent);color:var(--destructive)">▲</b> where this component is most easily ruined</span>
+        <span><b style="background:color-mix(in srgb,var(--elyte) 15%,transparent);color:var(--elyte)">◆</b> where it is measured or screened</span>
+        <span>blank — the component passes through untouched</span>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--primary)"></i>Reading it down a column</h4>
+        <ul>
+          <li><b>The electrolyte layer passes through more stations than anything else</b> — grinding or mixing, casting or spraying or extruding, then densifying. It is the component the whole route is built around.${r(1,3)}</li>
+          <li><b>Lithium metal has only two stations</b>, extrusion and lamination, and both exist only because lithium cannot be coated or cut like a normal electrode.${r(4)}</li>
+          <li><b>The interface layer has exactly one station.</b> Like the SEI in a lithium-ion cell it cannot be bought, inspected or reworked — but here it forms against a rigid surface, so how well you pressed beforehand largely decides what you get.${r(4)}</li>
+        </ul>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--destructive)"></i>Reading it across a row</h4>
+        <ul>
+          <li><b>Most stations that build a component are also where it is most easily ruined</b> — the ◉ marks. The press that makes the interfaces is the same press that can crack a brittle electrolyte.</li>
+          <li><b>Slitting and separation build nothing.</b> Their rows are risk only. At separation the risk is specific and severe: melt the layers together and you have welded the anode to the cathode.${r(1)}</li>
+          <li><b>Two whole columns are empty compared with a lithium-ion plant</b> — there is no liquid electrolyte and no porous separator, so there is no filling station and no wetting queue.${r(1,2)}</li>
+        </ul>
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   4 · REFERENCES
+   ------------------------------------------------------------------- */
+/* =====================================================================
+   MACHINE OVERVIEW — the whole solid-state line on one screen, and the
+   three production areas it stands in.
+   ===================================================================== */
+
+const HIST = { oee: [], scrap: [], off: [] };
+const HIST_MAX = 72;
+function pushHistory() {
+  const k = kpis(model());
+  HIST.oee.push(k.oee); HIST.scrap.push(100 - k.q); HIST.off.push(k.off);
+  Object.values(HIST).forEach(a => { while (a.length > HIST_MAX) a.shift(); });
+}
+
+function stationLevel(st, m) {
+  const o = OPS[st.id];
+  if (!o) return "ok";
+  try { return o.verdict(m)[0]; } catch (e) { return "ok"; }
+}
+const LEVEL_COL = { ok:"var(--green)", warn:"var(--warning)", bad:"var(--destructive)" };
+
+/* An OEE-shaped summary. Quality is the process-health score; the middle
+   gauge is interfacial contact, because on a solid-state line that — not
+   web speed — is what decides whether the cell performs.                */
+function kpis(m) {
+  const list = active();
+  const lv = list.map(st => stationLevel(st, m));
+  const bad = lv.filter(x => x === "bad").length, warn = lv.filter(x => x === "warn").length;
+  const a = clamp(99 - bad * 9 - warn * 3);
+  const e = clamp(m.contact);
+  const q = clamp(m.yieldPct);
+  return { a, e, q, oee: a * e * q / 10000, bad, warn, off: bad * 2 + warn, list, lv };
+}
+
+function lotId() {
+  const s = JSON.stringify(S) + route;
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  const tag = { oxide:"OX", sulfide:"SU", polymer:"PO", halide:"HA" }[route] || "SS";
+  return tag + String(h % 100000000).padStart(8, "0");
+}
+const gradeOf = y => y >= 96 ? "A" : y >= 92 ? "B" : y >= 86 ? "C" : "REWORK";
+
+function donut(pct, label, size, col) {
+  const r = size / 2 - 5, C0 = 2 * Math.PI * r, off = C0 * (1 - clamp(pct) / 100);
+  return `<div class="dnut" style="width:${size + 4}px">
+    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img"
+         aria-label="${esc(label)} ${pct.toFixed(0)} percent">
+      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none"
+        stroke="color-mix(in srgb,var(--foreground) 9%,transparent)" stroke-width="6"/>
+      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${col}" stroke-width="6"
+        stroke-linecap="round" stroke-dasharray="${C0.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"
+        transform="rotate(-90 ${size / 2} ${size / 2})"/>
+      <text x="${size / 2}" y="${size / 2 + 1}" text-anchor="middle" class="dnutV"
+        style="font-size:${size > 90 ? 21 : 13}px">${pct.toFixed(0)}</text>
+      <text x="${size / 2}" y="${size / 2 + (size > 90 ? 17 : 12)}" text-anchor="middle" class="dnutU">%</text>
+    </svg><small>${esc(label)}</small></div>`;
+}
+
+function spark(arr, col, title, unit, hi) {
+  const W = 230, H = 62, P0 = 4;
+  if (arr.length < 2) return `<div class="trend"><small>${esc(title)}</small>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><text x="${W / 2}" y="${H / 2 + 4}"
+    text-anchor="middle" class="cxTick">move a setpoint to start the trace</text></svg></div>`;
+  const top = Math.max(hi, ...arr) * 1.08 || 1;
+  const step = (W - 2 * P0) / (HIST_MAX - 1), n = arr.length;
+  const pts = arr.map((v, i) => [W - P0 - (n - 1 - i) * step, H - P0 - v / top * (H - 2 * P0)]);
+  const d = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join("");
+  const last = arr[arr.length - 1];
+  return `<div class="trend"><small>${esc(title)}<b>${last.toFixed(1)}${unit}</b></small>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)} trend">
+      ${[0.25, 0.5, 0.75].map(f => `<path d="M${P0} ${(P0 + f * (H - 2 * P0)).toFixed(1)}L${W - P0} ${(P0 + f * (H - 2 * P0)).toFixed(1)}"
+        stroke="color-mix(in srgb,var(--foreground) 7%,transparent)"/>`).join("")}
+      <path d="${d}L${pts[pts.length - 1][0].toFixed(1)} ${H - P0}L${pts[0][0].toFixed(1)} ${H - P0}Z"
+        fill="${col}" opacity=".13"/>
+      <path d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="${pts[pts.length - 1][0].toFixed(1)}" cy="${pts[pts.length - 1][1].toFixed(1)}" r="3" fill="${col}"/>
+    </svg></div>`;
+}
+
+const SHORT = {
+  "Piston extrusion":"Li extrusion", "Mixing & grinding":"Grinding",
+  "Aerosol deposition":"Aerosol dep.", "Atomic layer deposition":"ALD",
+  "Co-extrusion":"Co-extrusion", "Contacting & sealing":"Contact + seal",
+  "Formation & aging":"Formation", "Stacking & pressing":"Stacking",
+  "Isostatic compacting":"Compacting", "Dry coating":"Dry coating"
+};
+const shortTitle = st => SHORT[st.title] || st.title;
+
+/* ---------------- one housing per machine ---------------- */
+function glyph(st, x, w, yb) {
+  const bx = x + w * 0.09, bw = w * 0.82, byT = yb - 52, byB = yb - 2;
+  const cx = bx + bw / 2, cy = (byT + byB) / 2;
+  const R0 = Math.min(13, bw * 0.115);
+  const shell = (cls = "mSteel2") => R(bx, byT, bw, byB - byT, cls, 3);
+  const at = f => bx + bw * f;
+  let g = shell();
+  switch (st.machine) {
+    case "extrusion":
+      g += R(at(.06), cy - 9, bw * .34, 18, "mDark", 2) + P(`M${at(.4)} ${cy - 7}l${bw * .1} 0l0 14l${-bw * .1} 0z`, "mSteel") +
+           ROLLER(at(.66), cy - 8, R0 * .7) + ROLLER(at(.66), cy + 8, R0 * .7) +
+           P(`M${at(.74)} ${cy}L${at(.94)} ${cy}`, "mAn");
+      break;
+    case "lamination":
+      g += REEL(at(.14), byT + 15, R0 * .8, "mAn") + REEL(at(.14), byB - 15, R0 * .8, "mCu") +
+           ROLLER(at(.6), cy - 9, R0 * .85) + ROLLER(at(.6), cy + 9, R0 * .85) +
+           P(`M${at(.68)} ${cy}L${at(.94)} ${cy}`, "mAn");
+      break;
+    case "ballmill":
+      g += C(cx, cy, Math.min(19, bw * .2), "mGlass") +
+           [[-7, -4], [3, -6], [-2, 4], [8, 2], [-9, 5]].map(([a, b]) => C(cx + a, cy + b, 3.2, "mDark")).join("") +
+           P(`M${cx + 20} ${cy - 12}a20 20 0 0 1 5 10`, "mAcc");
+      break;
+    case "mixing":
+      g += R(at(.24), byT + 8, bw * .52, byB - byT - 14, "mGlass", 4) +

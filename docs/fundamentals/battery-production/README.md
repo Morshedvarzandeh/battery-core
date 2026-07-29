@@ -1,8 +1,9 @@
 # Battery Production — CellForge simulator
 
-CellForge is an interactive browser lesson that follows a reference lithium-ion
-cell-production route from incoming electrode materials to a formed, aged, tested,
-and packed cell.
+CellForge is an interactive browser lesson aligned with the February 2026 fifth
+edition of the PEM RWTH Aachen/VDMA process guide. It follows a reference
+lithium-ion cell-production route from incoming electrode materials to a formed,
+aged, tested, and packed cell.
 
 Public URL after merge:
 
@@ -42,9 +43,8 @@ small enough for review while preserving the validated standalone page.
 
 - `index.html` — lightweight loading page;
 - `loader.js` — ordered source-part loader;
-- `payload/source-01.part` through `payload/source-18.part`, with source 04 split
-  into `source-04a.part` and `source-04b.part` — the complete standalone HTML,
-  split only at line boundaries.
+- `payload/source-01.part` through `payload/source-26.part` — the complete
+  standalone HTML, split only at line boundaries.
 
 ## Local preview
 

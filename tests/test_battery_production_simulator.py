@@ -10,11 +10,7 @@ MODULE = ROOT / "docs" / "fundamentals" / "battery-production"
 HTML = MODULE / "index.html"
 LOADER = MODULE / "loader.js"
 PAYLOAD = MODULE / "payload"
-EXPECTED_PARTS = [
-    "source-01.part", "source-02.part", "source-03.part",
-    "source-04a.part", "source-04b.part",
-    *[f"source-{index:02d}.part" for index in range(5, 19)],
-]
+EXPECTED_PARTS = [f"source-{index:02d}.part" for index in range(1, 27)]
 
 
 class _StructureParser(HTMLParser):
@@ -72,6 +68,8 @@ def test_reconstructed_page_has_accessible_structure() -> None:
 def test_production_scope_is_explicit() -> None:
     source = _source()
     assert "Lithium-ion Cell Production Simulator" in source
+    assert "5th ed." in source
+    assert "February 2026" in source
     assert "digital twin" not in source.lower()
     assert "graphite / NMC" in source
     assert "not calibrated plant predictions" in source
@@ -85,6 +83,8 @@ def test_production_routes_and_process_stages_are_present() -> None:
     source = _source()
     for route in ("pouch", "cyl", "prism"):
         assert f'data-route="{route}"' in source
+    for process in ("wet", "dry"):
+        assert f'data-proc="{process}"' in source
     for station in (
         "mixing", "coating", "drying", "calendering", "slitting",
         "vacdry", "formation", "aging", "eol",
@@ -96,8 +96,9 @@ def test_production_routes_and_process_stages_are_present() -> None:
 
 def test_production_scientific_qualifications_are_present() -> None:
     source = _source()
-    assert "Vacuum-chamber evacuation ≈0.01 mbar" in source
-    assert "Wetting-cycle pressure reference ≈150 mbar" in source
+    assert "Working pressure: 0.07 mbar < p < 1 000 mbar" in source
+    assert "Wetting-cycle pressure" in source
+    assert "working pressure of about 150 mbar for filling and wetting" in source
     assert "does not guarantee prevention of thermal runaway" in source
     assert "formation should not be treated as a reliable correction" in source
     assert "Hard-case gas-management and closure sequences vary by design" in source

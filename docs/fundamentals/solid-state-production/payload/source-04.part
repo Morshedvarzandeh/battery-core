@@ -1,0 +1,253 @@
+  .hot:hover .spin,.hot:hover .spinR,.hot:hover .tumble,.hot:hover .orbit,.hot:hover .orbitS,
+  .hot:hover .press,.hot:hover .screw,.hot:hover .bob,.hot:hover .puff,
+  .hot:hover .flowdash{animation:none}
+}
+/* ---- machine overview ---- */
+.hmiHead{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:stretch}
+.hmiOee>small,.hmiCur>small{display:block;font-size:10px;font-weight:600;letter-spacing:.09em;
+  color:var(--muted-foreground);margin-bottom:8px}
+.hmiOeeRow{display:flex;gap:14px;align-items:center}
+.hmiSub{display:flex;gap:6px}
+.dnut{display:flex;flex-direction:column;align-items:center;gap:3px}
+.dnut svg{display:block}
+.dnut small{font-size:10px;color:var(--muted-foreground);white-space:nowrap}
+.dnutV{font-weight:600;fill:var(--foreground)}
+.dnutU{font-size:9px;fill:var(--muted-foreground)}
+.hmiCur{border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 18px;min-width:0}
+.hmiCur>div{display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+  padding:5px 0;border-bottom:1px solid var(--border)}
+.hmiCur>div:last-child{border-bottom:0}
+.hmiCur span{font-size:12px;color:var(--muted-foreground);white-space:nowrap}
+.hmiCur b{font-size:12.5px;font-weight:600;text-align:right}
+.hmiCur b.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:.02em}
+.hmiCur b[data-g="A"]{color:var(--green)}
+.hmiCur b[data-g="B"]{color:var(--primary)}
+.hmiCur b[data-g="C"]{color:var(--warning)}
+.hmiCur b[data-g="REWORK"]{color:var(--destructive)}
+.hmiTrend{display:grid;gap:6px}
+.trend small{display:flex;justify-content:space-between;font-size:10px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted-foreground);margin-bottom:1px}
+.trend small b{font-weight:600;letter-spacing:0;text-transform:none;color:var(--foreground);font-size:11px}
+.trend svg{display:block;width:230px}
+.hmiScroll{overflow-x:auto;margin-top:10px}
+.hmiScroll svg{display:block;min-width:900px}
+.hmiSt{cursor:pointer}
+.hmiHit{fill:transparent;stroke:transparent;stroke-width:1.5}
+.hmiSt:hover .hmiHit,.hmiSt.on .hmiHit{fill:color-mix(in srgb,var(--primary) 8%,transparent);
+  stroke:color-mix(in srgb,var(--primary) 45%,transparent)}
+.hmiSt:focus-visible{outline:none}
+.hmiSt:focus-visible .hmiHit{fill:color-mix(in srgb,var(--primary) 12%,transparent);stroke:var(--primary)}
+.hmiLab{font-size:11px;font-weight:500;fill:var(--foreground)}
+.hmiNo{font-size:10px;font-weight:600;fill:var(--muted-foreground)}
+.hmiPhase{font-size:10px;font-weight:600;letter-spacing:.11em;fill:var(--muted-foreground)}
+.floorT{font-size:12px;font-weight:600;fill:var(--foreground);
+  paint-order:stroke fill;stroke:var(--background);stroke-width:3.5px;stroke-linejoin:round}
+.floorS{font-size:10.5px;fill:var(--muted-foreground);
+  paint-order:stroke fill;stroke:var(--background);stroke-width:3px;stroke-linejoin:round}
+.hmiKey{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted-foreground)}
+.hmiKey span{display:flex;align-items:center;gap:6px}
+.hmiKey i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.cxHead{font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;fill:var(--muted-foreground)}
+.cxLab{font-size:12px;fill:var(--foreground)}
+.cxVal{font-size:11px;font-weight:600;fill:var(--muted-foreground)}
+.cxTick{font-size:10px;fill:var(--muted-foreground)}
+.alarmBar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px;padding:9px 12px;
+  border-radius:9px;background:var(--card);border:1px solid var(--border)}
+.alarmBar[data-ok="1"]{border-color:color-mix(in srgb,var(--green) 34%,transparent)}
+.alarmBar>i{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+.alarmBar>b{font-size:12.5px;font-weight:600;white-space:nowrap}
+.alarmBar>span{font-size:12px;color:var(--muted-foreground)}
+.alarmRows{display:flex;flex-wrap:wrap;gap:7px}
+.alarmRows button{display:flex;align-items:baseline;gap:7px;font:inherit;cursor:pointer;text-align:left;
+  padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--background);
+  color:var(--foreground)}
+.alarmRows button:hover{border-color:var(--primary)}
+.alarmRows em{font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted-foreground)}
+.alarmRows strong{font-size:12px;font-weight:600}
+.alarmRows span{font-size:11.5px;color:var(--muted-foreground)}
+.alarmRows button[data-l="bad"]{border-color:color-mix(in srgb,var(--destructive) 45%,transparent)}
+.alarmRows button[data-l="bad"] em{color:var(--destructive)}
+.alarmRows button[data-l="warn"] em{color:var(--warning)}
+@media (max-width:760px){
+  .hmiScroll svg{min-width:660px}
+  .alarmRows{flex-direction:column;width:100%}
+  .alarmRows button{width:100%}
+}
+@media (max-width:1180px){
+  .hmiHead{grid-template-columns:1fr}
+  .hmiCur{border-left:0;border-right:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    padding:10px 0}
+  .hmiTrend{grid-template-columns:repeat(3,1fr);display:grid}
+  .trend svg{width:100%}
+}
+/* ---- electrolyte comparison ---- */
+.cmpGrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:12px;align-items:start}
+.cmpCard{display:flex;flex-direction:column;gap:6px}
+.cmpCard.on{border-color:color-mix(in srgb,var(--primary) 45%,transparent)}
+.cmpHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cmpHead b{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.cmpHead em{font-style:normal;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--primary)}
+.cmpGo{font:inherit;font-size:11px;color:var(--primary);background:none;border:0;cursor:pointer;padding:0;
+  text-align:right}
+.cmpGo:hover{text-decoration:underline}
+.cmpCard svg{display:block;width:100%;height:auto}
+.axLab{font-size:10.5px;fill:var(--muted-foreground);
+  paint-order:stroke fill;stroke:var(--background);stroke-width:3px;stroke-linejoin:round}
+.cmpP{margin:0;font-size:12px;line-height:1.5;color:var(--muted-foreground);display:flex;gap:7px}
+.cmpP i{font-style:normal;font-weight:700;flex:0 0 auto}
+.cmpTable{display:grid;grid-template-columns:1.5fr repeat(4,1fr);border:1px solid var(--border);
+  border-radius:9px;overflow:hidden}
+.cmpTable>*{padding:7px 10px;margin:0;font-size:12.5px;border-top:1px solid var(--border);
+  border-left:1px solid var(--border);display:flex;align-items:center}
+.cmpTable>.etH{background:var(--card);font-size:10.5px;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--muted-foreground);border-top:0}
+.cmpTable>*:nth-child(5n+1){border-left:0}
+.pips{display:flex;gap:3px}
+.pips u{width:13px;height:6px;border-radius:99px;display:block}
+/* ---- process technologies ---- */
+.ptGrid{display:grid;grid-template-columns:190px minmax(0,1fr);gap:0}
+.ptStep,.ptOpts{padding:9px 12px;border-top:1px solid var(--border)}
+.ptGrid>*:nth-child(-n+2){border-top:0}
+.ptStep b{display:block;font-size:12.5px;font-weight:600}
+.ptStep small{display:block;font-size:10.5px;color:var(--muted-foreground);margin-top:2px}
+.ptOpts{display:flex;flex-wrap:wrap;align-items:flex-start;align-content:flex-start;gap:6px;
+  border-left:1px solid var(--border)}
+.ptChip{font:inherit;font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--border);
+  background:var(--card);color:var(--muted-foreground)}
+.ptChip.deep{border-color:var(--primary);border-width:1.6px;color:var(--foreground)}
+.ptChip.live{background:color-mix(in srgb,var(--primary) 13%,transparent);color:var(--primary);
+  font-weight:600;cursor:pointer}
+button.ptChip.live:hover{background:color-mix(in srgb,var(--primary) 22%,transparent)}
+.ptKey{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;font-size:11.5px;color:var(--muted-foreground)}
+.ptKey span{display:flex;align-items:center;gap:7px}
+@media (max-width:1180px){
+  .cmpGrid{grid-template-columns:1fr 1fr}
+  .cmpTable{grid-template-columns:1.4fr repeat(2,1fr)}
+  .ptGrid{grid-template-columns:1fr}
+  .ptOpts{border-left:0;border-top:0;padding-top:0}
+}
+</style>
+
+<body>
+<h1 class="sr">SolidForge — All-Solid-State Cell Production Simulator</h1>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">SF</div>
+      <div><strong>SolidForge</strong><small>ALL-SOLID-STATE</small></div>
+    </div>
+
+    <button class="tour-btn" id="tourStart"><span>▶</span>Start the guided factory tour</button>
+
+    <div class="route">
+      <small>ELECTROLYTE CLASS — CHANGES THE LINE</small>
+      <div class="route-opts" id="routeOpts" role="group" aria-label="Electrolyte class">
+        <button type="button" data-route="oxide" aria-pressed="false">Oxide</button>
+        <button type="button" data-route="halide" aria-pressed="false">Halide</button>
+        <button type="button" data-route="sulfide" aria-pressed="true">Sulfide</button>
+        <button type="button" data-route="polymer" aria-pressed="false">Polymer</button>
+      </div>
+    </div>
+
+    <div class="route side-layers">
+      <small>THE BIG PICTURE</small>
+      <div id="layerNav" style="display:grid;gap:2px"></div>
+    </div>
+
+    <nav id="nav" aria-label="Production stations"></nav>
+
+    <div class="side-foot">
+      Process data after PEM RWTH Aachen and VDMA, <em>Production of a Solid-State Battery Cell</em>, 3rd ed., February 2026.
+      Training simulation — site SOPs always govern.
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb">PILOT LINE · <span id="crumbRoute">SULFIDE</span><b id="crumbTitle">Factory overview</b></div>
+      <div class="topbar-right">
+        <span class="pill"><b>Anode</b>&nbsp; lithium metal</span>
+        <span class="pill" id="pillEnv"><i></i><b>—</b></span>
+        <span class="pill">Station <b id="pillPos">—</b></span>
+        <button class="runbtn" id="runBtn" aria-pressed="true">⏸ Pause line</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <section id="overview"></section>
+      <section id="stationView" hidden></section>
+      <section id="layerView" hidden></section>
+    </div>
+  </main>
+
+  <aside class="rail" aria-label="Illustrative process model">
+    <div class="rail-head">
+      <div><small>ILLUSTRATIVE PROCESS MODEL</small><strong>Line condition</strong></div>
+      <span class="live" id="liveTag">● RUNNING</span>
+    </div>
+
+    <div class="gauge-wrap">
+      <div class="gauge" id="gauge" style="--v:97"><div><b id="yieldVal">97.4</b><span>% PROCESS<br>HEALTH</span></div></div>
+      <div style="flex:1">
+        <div class="metric"><div><span>Layer uniformity</span><b id="mUniT">99%</b></div><i><b id="mUniB" style="width:99%"></b></i></div>
+        <div class="metric"><div><span>Interface quality</span><b id="mMoiT">98%</b></div><i><b id="mMoiB" style="width:98%"></b></i></div>
+        <div class="metric"><div><span>Risk-control score</span><b id="mSafT">99%</b></div><i><b id="mSafB" style="width:99%"></b></i></div>
+      </div>
+    </div>
+
+    <div class="rail-title"><span>SETPOINT LAB</span><button id="resetBtn">RESET</button></div>
+    <div id="sliders"></div>
+
+    <div class="advice" id="advice" data-level="ok">
+      <strong>Model inside the training window</strong>
+      <span>Move a setpoint and the illustrative downstream relationships recalculate.</span>
+    </div>
+
+    <div class="rail-title" style="margin-top:18px"><span>CELL COMING OFF THE LINE</span></div>
+    <div class="kpi" id="cellKpi" style="grid-template-columns:1fr 1fr"></div>
+  </aside>
+</div>
+
+<section class="tour" id="tour" data-open="0" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-describedby="tourText">
+  <button class="tour-close" id="tourClose" aria-label="Close tour">×</button>
+  <span class="eyebrow" id="tourStep"></span>
+  <h2 id="tourTitle"></h2>
+  <figure class="tour-pic" id="tourPic"></figure>
+  <p id="tourText"></p>
+  <div class="tour-dots" id="tourDots"></div>
+  <nav>
+    <button id="tourBack">Back</button>
+    <button class="next" id="tourNext">Next stop →</button>
+  </nav>
+</section>
+<script>
+/* =====================================================================
+   SolidForge — all-solid-state production simulator
+   Process data after PEM RWTH Aachen and VDMA, "Production of an
+   All-Solid-State Battery Cell". Every parameter range below is taken
+   from that guide; the chain that links them is a teaching model.
+   ===================================================================== */
+
+/* ---------- SVG primitives ---------- */
+const H = (k, x, y, w, h, body) =>
+  `<g class="hot" data-k="${k}" tabindex="0" role="button">${body}` +
+  `<rect class="hit" x="${x}" y="${y}" width="${w}" height="${h}" rx="9"/>` +
+  `<rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="9"/></g>`;
+const T  = (x, y, s, c = "mTxt", a = "start") => `<text class="${c}" x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
+const R  = (x, y, w, h, c = "mSteel", rx = 3) => `<rect class="${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+const C  = (x, y, r, c = "mSteel") => `<circle class="${c}" cx="${x}" cy="${y}" r="${r}"/>`;
+const P  = (d, c = "mLine") => `<path class="${c}" d="${d}"/>`;
+const LEAD = (x1, y1, x2, y2) => `<path class="mLead" d="M${x1} ${y1}L${x2} ${y2}"/>`;
+/* a driven roller: dark rim, light hub, spins while the line runs */
+const ROLL_ = (x, y, r, cls) =>
+  `<g class="${cls}"><circle class="mDark" cx="${x}" cy="${y}" r="${r}"/>` +
+  `<circle class="mSteel2" cx="${x}" cy="${y}" r="${Math.max(2, r * .34)}"/>` +
+  `<rect class="mSteel2" x="${x - 1}" y="${y - r + 2}" width="2" height="${r * .5}" rx="1"/></g>`;
+const ROLLER  = (x, y, r) => ROLL_(x, y, r, "spin");
+const ROLLERR = (x, y, r) => ROLL_(x, y, r, "spinR");
+/* a coil / reel of foil */
+const REEL = (x, y, r, cls) =>
+  `<g class="spin"><circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/>` +
+  `<circle class="${cls}" cx="${x}" cy="${y}" r="${r * .66}" opacity=".55"/>` +

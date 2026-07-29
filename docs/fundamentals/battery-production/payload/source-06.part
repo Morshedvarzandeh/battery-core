@@ -1,115 +1,295 @@
-    ["Buffer tank","HOLD","Stirred and filtered storage keeps the slurry homogeneous while the coater draws from it. Sedimentation here shows up as a streak on the electrode."],
-    ["Release gate","QC","Viscosity, particle size and foreign-object count are checked before the batch is released to coating."]],
-  params:["α: 0°–10°","Mixing time 30 min – 5 h","20 °C – 40 °C","Protective gas, vacuum or clean-room air","Separate mixers for anode and cathode"],
-  alts:["Intensive, planetary and dissolver mixers all in use","Continuous mixing in an extruder, fed straight to coating"],
-  qInf:["Mixing and dispersing sequence","Filter media and filter system","Shear forces","Mixing temperature"],
-  qFeat:["Homogeneity of the slurry","Particle size","Purity — foreign objects","Viscosity"],
-  sop:["Verify material identity and lot against the recipe","Confirm the vessel is clean and dedicated to this polarity","Load the approved dosing sequence","Dry mix, then add solvent and disperse","Sample viscosity and particle size","Release under seal to the buffer tank"] },
+  ${[0, 1, 2, 3, 4].map(i => R(824, 120 + i * 20, 110, 12, i % 2 ? "mAn" : "mCa", 2)).join("")}
+  ${T(812, 242, "Electrode stack · ±200 µm", "mTxtS")}`)}
+${P("M84 176l90 -22", "mWeb")}${ARROW(340, 152)}${ARROW(524, 152)}${ARROW(786, 152)}
+`;
 
-{ id:"coating", no:"02", phase:"Electrode manufacturing", title:"Coating", machine:"coating", routes:ALL,
-  env:{iso:"ISO 7", dew:"semi-dry, +5…−5 °C", temp:"22 ± 2 °C"}, cost:"€ 16–35 M (coating + drying)", takt:"35–80 m/min",
-  purpose:"Meter slurry onto the current-collector foil at a controlled wet-film thickness, one side at a time.",
-  inp:"Bare Cu or Al foil, 5–25 µm", out:"Foil coated on one side",
-  parts:[
-    ["Slurry storage","SUPPLY","A stirred, filtered vessel feeds the die. Any settled solid becomes a visible defect on the web."],
-    ["Precision pump","METER","Flow rate sets coat weight together with web speed. Pump precision is one of the three named quality influences on this station."],
-    ["Slot die","APPLY","The application tool. Slot die is standard; doctor blade and anilox roller are alternatives. Gap between die lip and foil sets wet thickness."],
-    ["Application roll","BACKING","Supports the foil against the die and defines the coating plane. Roll runout prints straight through to thickness."],
-    ["Foil unwind","INFEED","Copper for the anode, aluminium for the cathode, 5–25 µm thick, up to 1 500 mm wide. Purchased, not made in house."],
-    ["Intermittent coating","PATTERN","Coating can be continuous or intermittent. Intermittent leaves bare foil windows that later become the welded tabs — this is the pouch route."],
-    ["Wet-film gauge","MEASURE","Measures wet layer thickness immediately after the die, before any solvent is lost. Dry coating accuracy target is ±2 g/m²."],
-    ["Rewind","OUTFEED","The one-side-coated roll is rewound and returned for a second pass, or fed straight to a second die in a tandem line."]],
-  params:["Dry film per side: anode 50–100 µm, cathode 40–80 µm","Coating speed 35–80 m/min","Coating width up to 1 500 mm","Dry coating accuracy ±2 g/m²"],
-  alts:["Slot die, doctor blade or anilox roller","Simultaneous two-sided coating with opposed dies","Dry coating — active material applied as powder, no solvent"],
-  qInf:["Surface quality and layer-thickness monitoring","Choice of application tool","Precision of the slurry pump"],
-  qFeat:["Coating thickness accuracy along and across the web","Surface quality — blowholes, particles","Adhesion between coating and substrate"],
-  sop:["Scan slurry batch and foil roll IDs","Thread the web through the precision rollers","Set die gap and pump flow for the target coat weight","Start at reduced speed and ramp","Verify wet-film profile across the width","Release the first article before full speed"] },
+M.stacking = () => `
+${H(0, 26, 60, 170, 190, `
+  ${R(48, 82, 126, 100, "mSteel2", 6)}
+  ${R(60, 96, 46, 34, "mCa", 3)}${R(116, 96, 46, 34, "mAn", 3)}${REEL(90, 158, 18, "mSep")}
+  ${T(48, 202, "Input magazines", "mTxt")}${T(48, 216, "anode · cathode · separator", "mTxtS")}`)}
+${H(1, 214, 40, 170, 120, `
+  ${R(238, 58, 122, 34, "mDark", 4)}
+  ${P("M299 92l-26 34M299 92l26 34", "mAcc")}
+  ${T(226, 150, "Position recognition", "mTxtS")}`)}
+${H(2, 214, 168, 170, 110, `
+  ${R(238, 196, 122, 22, "mSteel", 3)}
+  ${R(250, 218, 44, 16, "mCa", 2)}${R(304, 218, 44, 16, "mAn", 2)}
+  ${T(226, 262, "Vacuum gripper transfer", "mTxtS")}`)}
+${H(3, 404, 40, 300, 200, `
+  ${ROLLER(452, 92, 16)}${ROLLER(534, 92, 16)}
+  ${P("M436 108q40 40 80 0t80 0", "mWebS")}
+  ${P("M436 140q40 40 80 0t80 0", "mWebS")}
+  ${P("M436 172q40 40 80 0t80 0", "mWebS")}
+  <path class="mWebS flowdash" stroke="var(--sep)" d="M436 108q40 40 80 0t80 0"/>
+  ${T(432, 62, "Z-folded separator (endless tape)", "mTxtS")}
+  ${T(432, 226, "Anode and cathode enter from left and right", "mTxtS")}`)}
+${H(4, 724, 70, 236, 180, `
+  ${R(748, 92, 190, 118, "mSteel2", 6)}
+  ${[0, 1, 2, 3, 4, 5].map(i => `${R(760, 100 + i * 18, 160, 8, i % 2 ? "mAn" : "mCa", 1)}
+     ${R(760, 109 + i * 18, 160, 4, "mSep", 1)}`).join("")}
+  ${R(930, 96, 10, 40, "mCu", 2)}${R(930, 150, 10, 40, "mAl", 2)}
+  ${T(748, 232, "Stack · up to 120 layers · 1 s/sheet", "mTxtS")}`)}
+`;
 
-{ id:"drying", no:"03", phase:"Electrode manufacturing", title:"Drying", machine:"drying", routes:ALL,
-  env:{iso:"ISO 7", dew:"semi-dry, +5…−5 °C", temp:"22 ± 2 °C"}, cost:"included with coating", takt:"dryer up to 100 m long",
-  purpose:"Evaporate the solvent and bake the coating onto the foil without cracking it or losing adhesion.",
-  inp:"Wet-coated web", out:"Dry electrode web, cooled",
-  parts:[
-    ["Exhaust manifold","EXTRACT","Solvent vapour is highly flammable and is captured for recovery or thermal afterburning. NMP is recovered; water is simply vented."],
-    ["Chamber 1 — preheat","RAMP","The first zone raises the web gently. Too fast here and the surface skins over, trapping solvent underneath."],
-    ["Chamber 2 — main evaporation","EVAPORATE","Bulk solvent leaves here. Air nozzles above and below both heat the web and float it."],
-    ["Chamber 3 — peak","PEAK","The hottest zone, up to 160 °C. Overshoot cracks the coating and can pull binder to the surface."],
-    ["Chamber 4 — finish","LEVEL","Brings residual solvent down to specification and evens the profile before cooling."],
-    ["Web infeed","TENSION","Foil pre-tensioning is called out explicitly: get it wrong and the thin foil tears inside a hot dryer."],
-    ["Cooling rolls","COOL","Chilled rolls bring the web back to room temperature so it can be rewound, or fed directly to the second-side coater in a tandem line."]],
-  params:["Drying speed 35–80 m/min","Dryer length up to 100 m","Zone profile 50 °C – 160 °C","Solvent recovery, thermal afterburning","Foil pre-tensioning to avoid tears"],
-  alts:["Infrared drying added to convection — shorter and more efficient","Laser drying — shortens the dryer dramatically, still in development"],
-  qInf:["Process parameters matched to the electrode design","Choice of foil pretension","Temperature profile"],
-  qFeat:["Adhesion between coating and substrate","Residual humidity","Surface finish — cracks, inclusions"],
-  sop:["Confirm exhaust and LEL monitoring are live","Load the zone temperature profile","Verify web tension setpoint","Start airflow before heat","Track solvent loading through the run","Cool below handling temperature before rewind"] },
+M.winding = () => `
+${H(0, 26, 60, 150, 212, `
+  ${REEL(78, 106, 26, "mCa")}${REEL(78, 174, 26, "mSep")}${REEL(78, 238, 26, "mAn")}
+  ${T(112, 92, "Cathode", "mTxtS")}${T(112, 160, "Separator ×2", "mTxtS")}${T(112, 258, "Anode", "mTxtS")}`)}
+${P("M104 106q140 20 220 60", "mWebA")}
+${P("M104 174q120 6 220 22", "mWebS")}
+${P("M104 238q140 -20 220 -46", "mWeb")}
+<path class="mWebA flowdash" stroke="var(--anode)" d="M104 106q140 20 220 60"/>
+${H(1, 300, 60, 220, 214, `
+  ${C(410, 172, 62, "mSteel2")}
+  <g class="spin">${C(410, 172, 50, "mAn")}${C(410, 172, 38, "mSep")}${C(410, 172, 26, "mCa")}</g>
+  ${R(404, 100, 12, 148, "mDark", 3)}
+  ${T(330, 90, "Centre pin / flat mandrel", "mTxtS")}
+  ${T(330, 258, "Jelly roll forms here", "mTxt")}`)}
+${H(2, 546, 96, 180, 164, `
+  ${R(570, 120, 132, 100, "mSteel2", 6)}
+  ${P("M578 128q30 60 60 0t56 0", "mLine")}
+  ${R(626, 112, 20, 16, "mAcc", 2)}
+  ${T(566, 244, "Adhesive tape fixes the last turn", "mTxtS")}`)}
+${H(3, 756, 70, 200, 200, `
+  ${R(806, 96, 92, 150, "mSteel", 8)}
+  ${C(852, 120, 30, "mAn")}${C(852, 120, 18, "mSep")}
+  ${R(846, 82, 12, 20, "mAl", 2)}
+  ${T(786, 264, "Jelly roll · 30 cells/min (cyl)", "mTxtS")}`)}
+${ARROW(536, 172)}${ARROW(736, 172)}
+`;
 
-{ id:"calendering", no:"04", phase:"Electrode manufacturing", title:"Calendering", machine:"calendering", routes:ALL,
-  env:{iso:"ISO 7", dew:"semi-dry, +5…−5 °C", temp:"22 ± 2 °C"}, cost:"€ 5–10 M", takt:"60–100 m/min",
-  purpose:"Compress the porous coating to a defined thickness, density and porosity — this is where energy density is set.",
-  inp:"Dry electrode, ≈50% porosity", out:"Compacted electrode, 20–40% porosity",
-  parts:[
-    ["Unwind","INFEED","The dried mother roll enters under controlled tension and edge guidance."],
-    ["Static discharge","NEUTRALISE","The web is statically discharged first. Charged foil can attract particles that later damage or pierce the separator."],
-    ["Clean + suction","CLEAN","Brushes or air flow plus extraction. Roller cleanliness is called out as crucial — a particle rolled into the coating is a latent short circuit."],
-    ["Roller pair","COMPACT","Top and bottom rollers apply a precisely defined line pressure, up to 2 500 N/mm. Rollers can be heated to 50–250 °C to make the coating more ductile."],
-    ["Thickness gauge","MEASURE","Closes the loop on final thickness. Line pressure sets porosity, and porosity sets how well the electrode later wets with electrolyte."],
-    ["Clean + suction","CLEAN","A second cleaning stage after the nip removes anything the compaction shook loose."],
-    ["Rewind","OUTFEED","Roll-to-roll: the calendered web is wound back up for slitting."]],
-  params:["Line pressure up to 2 500 N/mm","Speed 60–100 m/min","Porosity reduced from ≈50% to 20–40%","Roller preheating 50 °C – 250 °C"],
-  alts:["Hot rollers — water or oil heated, to set ductility precisely"],
-  qInf:["Line pressure","Roller material and diameter","Surface accuracy and concentricity of the rollers","Roller temperature"],
-  qFeat:["Defined porosity","Surface texture","Adhesion between coating and substrate"],
-  sop:["Inspect roller surfaces for damage and debris","Confirm static neutralisation is active","Set gap and line pressure for the target porosity","Run a leader and measure","Verify the thickness profile across the width","Rewind under controlled tension"] },
+M.packPouch = () => `
+${H(0, 26, 40, 210, 230, `
+  ${R(52, 62, 158, 60, "mDark", 4)}${P("M131 122l0 26", "mLine")}
+  ${R(70, 148, 122, 80, "mSteel2", 6)}${R(94, 158, 74, 60, "mGlass", 4)}
+  ${T(40, 250, "Deep drawing of the pouch foil", "mTxt")}${T(40, 264, "up to 6 mm draw depth", "mTxtS")}`)}
+${H(1, 258, 40, 210, 230, `
+  ${R(288, 120, 150, 90, "mSteel2", 5)}
+  ${[0, 1, 2, 3, 4].map(i => R(298, 130 + i * 16, 130, 8, i % 2 ? "mAn" : "mCa", 1)).join("")}
+  ${R(430, 132, 26, 12, "mCu", 2)}${R(430, 176, 26, 12, "mAl", 2)}
+  ${R(346, 62, 34, 46, "mDark", 3)}${P("M363 108l0 14", "mAcc")}
+  ${T(268, 250, "Ultrasonic tab welding", "mTxtS")}`)}
+${H(2, 490, 40, 210, 230, `
+  ${P("M516 128q22 -22 44 0l0 84q-22 22 -44 0z", "mSteel2")}
+  ${P("M636 128q22 -22 44 0l0 84q-22 22 -44 0z", "mSteel2")}
+  ${[0, 1, 2, 3, 4].map(i => R(566, 138 + i * 16, 66, 8, i % 2 ? "mAn" : "mCa", 1)).join("")}
+  ${T(500, 250, "Stack inserted into the deep-drawn foil", "mTxtS")}`)}
+${H(3, 722, 40, 236, 230, `
+  ${R(756, 120, 150, 92, "mSteel2", 6)}
+  ${[0, 1, 2, 3, 4].map(i => R(768, 130 + i * 16, 126, 8, i % 2 ? "mAn" : "mCa", 1)).join("")}
+  ${R(748, 116, 10, 100, "mAcc", 2)}${R(904, 116, 10, 100, "mAcc", 2)}
+  ${P("M760 108l0 -22M898 108l0 -22", "mLine")}${ARROW(756, 96, 1)}${ARROW(894, 96, 1)}
+  ${T(734, 250, "Three sides sealed — filling side stays open", "mTxtS")}`)}
+${ARROW(244, 150)}${ARROW(476, 150)}${ARROW(708, 150)}
+`;
 
-{ id:"slitting", no:"05", phase:"Electrode manufacturing", title:"Slitting", machine:"slitting", routes:ALL,
-  env:{iso:"ISO 7 – ISO 8", dew:"semi-dry, +5…−5 °C", temp:"22 ± 2 °C"}, cost:"€ 3–8 M", takt:"80–150 m/min",
-  purpose:"Cut the wide mother roll into daughter rolls of the exact width the cell design needs — without leaving a burr.",
-  inp:"Calendered mother roll, up to 1 500 mm", out:"Daughter rolls, 60–300 mm",
-  parts:[
-    ["Mother roll","INFEED","The full-width calendered roll, fed in by manual transport from the calender."],
-    ["Coated web","MATERIAL","Intermittent coating for the pouch route, continuous coating for prismatic and cylindrical. The cut lines fall in the bare foil."],
-    ["Rolling knives + suction","CUT","Rolling knives are standard. Cut quality and coil cleanliness are the two main quality criteria — a burr on the edge can pierce the separator and short the finished cell."],
-    ["Separated strips","SEPARATE","The web leaves as parallel strips, edge trim extracted away."],
-    ["Daughter rolls","OUTFEED","Rewound individually, 60–300 mm wide depending on cell design, cleaned by suction and brushes."]],
-  params:["Cutting speed 80–150 m/min","Suction for the separated edge strips","Width tolerance ±150 µm to ±250 µm","Burr-free cutting"],
-  alts:["Laser slitting — more flexible, but risks a heat-affected zone and more dust contamination"],
-  qInf:["Finish of the cutting blades","Parameters matched to coating thickness","Extraction of dust and cutting waste"],
-  qFeat:["Edge geometry — cutting burr","Thermal and mechanical stress at the edge","Particle contamination during cutting"],
-  sop:["Check knife condition and replace on schedule","Set slit positions against the coating pattern","Confirm extraction at every knife","Run and inspect the first edges under magnification","Measure width tolerance","Label and seal each daughter roll"] },
+M.packHard = () => `
+${H(0, 26, 50, 200, 220, `
+  ${R(70, 84, 96, 140, "mSteel", 8)}
+  ${C(118, 120, 30, "mAn")}${C(118, 120, 18, "mSep")}
+  ${R(112, 66, 12, 22, "mAl", 2)}
+  ${T(38, 246, "Jelly roll incl. contact terminals", "mTxtS")}`)}
+${H(1, 246, 50, 190, 220, `
+  ${R(282, 88, 118, 140, "mSteel2", 6)}
+  ${R(292, 98, 98, 26, "mEl", 3)}
+  ${T(258, 246, "Insulator foil protects on insertion", "mTxtS")}`)}
+${H(2, 456, 50, 200, 220, `
+  ${R(496, 96, 116, 132, "mSteel", 6)}
+  ${R(496, 82, 116, 18, "mDark", 3)}
+  ${R(516, 60, 18, 24, "mAl", 2)}${R(576, 60, 18, 24, "mCu", 2)}
+  <g class="bob">${R(536, 34, 40, 22, "mDark", 3)}${P("M556 56l0 6", "mHot")}</g>
+  ${T(464, 250, "Laser welding of the lid", "mTxtS")}`)}
+${H(3, 676, 50, 280, 220, `
+  ${R(706, 76, 66, 170, "mSteel", 10)}
+  ${C(739, 118, 24, "mAn")}${C(739, 118, 13, "mSep")}
+  ${R(732, 62, 14, 18, "mAl", 2)}
+  ${R(830, 96, 96, 130, "mSteel", 6)}${R(830, 82, 96, 18, "mDark", 3)}
+  ${T(690, 264, "Cylindrical can (left) · prismatic can (right)", "mTxtS")}`)}
+${ARROW(234, 158)}${ARROW(444, 158)}${ARROW(664, 158)}
+`;
 
-{ id:"vacdry", no:"06", phase:"Electrode manufacturing", title:"Vacuum drying", machine:"vacdry", routes:ALL,
-  env:{iso:"ISO 7 – ISO 8", dew:"dry, 0…−30 °C", temp:"22 ± 2 °C"}, cost:"€ 6–12 M", takt:"12–30 h per batch",
-  purpose:"Pull the last residual moisture and solvent out of the coils before they enter the dry room.",
-  inp:"Daughter rolls from slitting", out:"Coils at low residual moisture",
-  parts:[
-    ["Vacuum oven","DRY","Daughter rolls on a goods carrier are pushed into the oven. 12–30 h at 60–150 °C under 0.07–1 000 mbar. Low pressure lets moisture evaporate at low temperature, so the binder is not damaged."],
-    ["Vacuum pump + inert gas","EVACUATE","Ovens can be run under inert gas to prevent corrosion of the foils. Many plants use the oven as an air lock into the dry room."],
-    ["Loaded shelves","BATCH","Section view: coils sit on shelves with clearance for gas flow. Constant heat supply and stable vacuum are the named quality influences."]],
-  params:["0.07 mbar < p < 1 000 mbar","Drying time 12–30 h per batch","60 °C – 150 °C","Inert gas supply"],
-  alts:["Continuous dryers — the web runs through a long facility instead of batch ovens","Infrared drying as a supplement"],
-  qInf:["Constant heat supply and stable vacuum","Longer resting only possible in the dry room","Inert gas to prevent corrosion"],
-  qFeat:["Surface condition — cracks","Residual moisture: none wanted"],
-  sop:["Load coils with flow clearance between them","Close and evacuate to setpoint","Hold temperature and pressure for the recipe time","Break vacuum with inert gas","Transfer directly to the dry room or vacuum pack","Log the batch against the coil IDs"] },
+M.fillPouch = () => `
+${H(0, 26, 40, 280, 230, `
+  ${R(52, 66, 230, 190, "mGlass", 8)}
+  ${T(60, 58, "Evacuated chamber · ≈150 mbar", "mTxtS")}
+  ${R(140, 82, 12, 54, "mDark", 2)}${P("M146 136l0 20", "mAcc")}
+  ${T(160, 100, "Dosing needle", "mTxtS")}
+  ${R(96, 156, 140, 84, "mCu", 4)}
+  ${[0, 1, 2, 3].map(i => R(108, 164 + i * 18, 116, 10, i % 2 ? "mAn" : "mCa", 1)).join("")}
+  <g class="bob">${C(146, 152, 5, "mEl")}</g>`)}
+${H(1, 330, 40, 250, 230, `
+  ${R(356, 96, 200, 120, "mSteel2", 8)}
+  ${[0, 1, 2, 3, 4].map(i => R(372, 106 + i * 22, 168, 14, "mEl", 2)).join("")}
+  ${T(340, 88, "Top view (section A) — wetting by pressure cycling", "mTxtS")}
+  ${T(340, 250, "Evacuate → fill → pressurise → repeat", "mTxtS")}`)}
+${H(2, 604, 40, 356, 230, `
+  ${R(636, 96, 176, 130, "mSteel2", 6)}
+  ${[0, 1, 2, 3, 4].map(i => R(650, 106 + i * 22, 148, 14, i % 2 ? "mAn" : "mCa", 1)).join("")}
+  ${R(626, 116, 12, 40, "mAl", 2)}
+  ${R(812, 96, 88, 130, "mGlass", 6)}
+  ${T(820, 168, "gas bag", "mTxtS")}
+  ${T(614, 250, "Output: sealed under vacuum, gas bag attached", "mTxtS")}`)}
+${ARROW(314, 152)}${ARROW(588, 152)}
+`;
 
-{ id:"separation", no:"07", phase:"Cell assembly", title:"Separation", machine:"separation", routes:"pouch",
-  env:{iso:"min. ISO 7", dew:"dry, −25…−35 °C", temp:"22 ± 2 °C"}, cost:"€ 5–10 M", takt:"≈0.2 s per sheet",
-  purpose:"Cut individual anode and cathode sheets out of the daughter rolls — the pouch route only.",
-  inp:"Daughter rolls", out:"Single electrode sheets",
-  parts:[
-    ["Daughter roll","INFEED","Dried coils are unwound and fed to the separation tool."],
-    ["Intermittent-coated web","MATERIAL","The blank edge left by intermittent coating becomes the welding area for the cell tab. Cut position is referenced to the coating pattern, not the foil edge."],
-    ["Punching unit","CUT","A shear cut in a continuous process, about 0.2 s per sheet. Tolerance ±200 µm in width and length. Punch wear directly degrades edge quality."],
-    ["Separated sheets","SORT","Anode and cathode sheets are stored in magazines or handed straight to stacking."],
-    ["Electrode stack","OUTPUT","Sheets ready for stacking. Cutting dust is extracted at the tool — it must not travel with the sheet."]],
-  params:["≈0.2 s per sheet","Tolerance ±200 µm in width and length","Punching tool with very good cutting edge quality"],
-  alts:["Laser ablation to expose the tab area at chosen points","Laser cutting instead of a punching tool"],
-  qInf:["Heat-affected zone and suction of evaporated material when laser cutting","Tool finish","Cutting speed"],
-  qFeat:["Cutting edge geometry — smearing of active material over the edge","Thermal and mechanical stress during cutting"],
-  sop:["Confirm dry-room dew point before opening a coil","Reference the cut to the coating pattern","Check the first sheets for burr and smear","Verify sheet dimensions against tolerance","Confirm dust extraction at the tool","Transfer magazines without stacking damage"] },
+M.fillHard = () => `
+${H(0, 26, 40, 250, 230, `
+  ${R(70, 96, 150, 140, "mSteel", 6)}${R(70, 82, 150, 18, "mDark", 3)}
+  ${R(136, 44, 16, 40, "mAcc", 2)}${T(160, 62, "Fill valve", "mTxtS")}
+  <g class="bob">${C(144, 92, 5, "mEl")}</g>
+  ${T(38, 254, "Prismatic can — fill through the valve", "mTxtS")}`)}
+${H(1, 300, 40, 220, 230, `
+  ${R(376, 96, 68, 148, "mSteel", 10)}
+  ${R(396, 40, 12, 52, "mDark", 2)}
+  ${P("M402 92l0 12", "mAcc")}
+  ${T(430, 70, "Dosing needle", "mTxtS")}
+  ${T(312, 262, "Cylindrical can — fill through the open end", "mTxtS")}`)}
+${H(2, 544, 40, 200, 230, `
+  ${R(586, 96, 118, 132, "mSteel", 6)}${R(586, 82, 118, 18, "mDark", 3)}
+  <g class="bob">${R(616, 40, 58, 24, "mDark", 3)}${P("M645 64l0 16", "mHot")}</g>
+  ${T(552, 252, "Valve laser-sealed", "mTxtS")}`)}
+${H(3, 766, 40, 200, 230, `
+  ${R(816, 96, 68, 140, "mSteel", 10)}
+  ${P("M812 108q38 -18 76 0", "mAcc")}
+  <g class="bob">${R(806, 56, 88, 20, "mDark", 3)}</g>
+  ${T(776, 254, "Beading and crimping", "mTxtS")}`)}
+${ARROW(288, 158)}${ARROW(530, 158)}${ARROW(752, 158)}
+`;
 
-{ id:"stacking", no:"08", phase:"Cell assembly", title:"Stacking", machine:"stacking", routes:"pouch",
-  env:{iso:"min. ISO 7", dew:"dry, −40…−50 °C", temp:"22 ± 2 °C"}, cost:"€ 18–27 M", takt:"≈1 s per sheet",
-  purpose:"Build the repeating anode / separator / cathode / separator stack that becomes the cell.",
-  inp:"Electrode sheets + separator tape", out:"Fixed stack, up to 120 layers",
-  parts:[
-    ["Input magazines","FEED","Anode sheets, cathode sheets and the separator reel. Separator arrives as an endless tape."],
+M.rollpress = () => `
+${H(0, 26, 70, 200, 180, `
+  ${R(52, 150, 160, 26, "mSteel", 4)}
+  ${R(76, 108, 112, 44, "mCu", 4)}
+  ${T(38, 238, "Pouch cell in its good carrier", "mTxtS")}`)}
+${H(1, 268, 28, 300, 264, `
+  ${R(300, 56, 44, 60, "mDark", 4)}${R(464, 56, 44, 60, "mDark", 4)}
+  ${P("M322 116l0 24M486 116l0 24", "mAcc")}
+  ${T(288, 44, "Pressure cylinders", "mTxtS")}
+  ${ROLLER(360, 168, 30)}${ROLLER(448, 168, 30)}
+  ${R(268, 160, 92, 16, "mCu", 2)}${R(448, 160, 110, 16, "mCu", 2)}
+  ${T(292, 250, "Servo motor guides the cell through the nip", "mTxtS")}`)}
+${H(2, 604, 60, 180, 202, `
+  ${C(694, 156, 62, "mGlass")}
+  ${ROLLER(668, 138, 20)}${ROLLER(720, 138, 20)}
+  ${R(640, 172, 108, 12, "mCu", 2)}
+  ${T(614, 250, "Cleaning rollers keep the nip clean", "mTxtS")}`)}
+${H(3, 806, 70, 160, 192, `
+  ${R(836, 118, 108, 70, "mCu", 4)}
+  ${[0, 1, 2].map(i => R(848, 128 + i * 20, 84, 12, "mEl", 1)).join("")}
+  ${T(806, 236, "Electrolyte into every pore", "mTxtS")}
+  ${T(806, 250, "soaking time", "mTxtS")}`)}
+${ARROW(246, 168)}${ARROW(586, 168)}${ARROW(790, 168)}
+`;
+
+M.formation = () => `
+${H(0, 26, 40, 330, 256, `
+  ${R(52, 58, 286, 204, "mSteel2", 8)}
+  ${R(52, 58, 286, 12, "mDark", 3)}${R(52, 250, 286, 12, "mDark", 3)}
+  ${[0, 1, 2, 3].map(r => `
+    ${R(72, 84 + r * 42, 246, 26, "mCu", 3)}
+    ${[0, 1, 2, 3, 4, 5].map(c => R(84 + c * 40, 90 + r * 42, 8, 14, "mAcc", 1)).join("")}`).join("")}
+  ${T(60, 282, "Formation rack — spring-loaded contact pins", "mTxtS")}`)}
+${H(1, 378, 40, 200, 240, `
+  ${R(402, 62, 152, 152, "mDark", 6)}
+  ${P("M418 196l0 -110", "mLine")}${P("M418 196l120 0", "mLine")}
+  ${P("M418 196l100 -104", "mAcc")}${P("M418 196l112 -66", "mEl")}${P("M418 196l90 -118", "mHot")}
+  ${T(404, 236, "Charge / discharge with rising C-rate", "mTxtS")}
+  ${T(404, 250, "0.1–0.5 C · 20–80% SOC · up to 24 h", "mTxtS")}`)}
+${H(2, 600, 40, 180, 240, `
+  ${R(624, 74, 136, 128, "mSteel2", 6)}
+  ${[0, 1].map(r => [0, 1, 2].map(c =>
+    `${R(636 + c * 44, 86 + r * 62, 34, 48, "mCu", 2)}${R(646 + c * 44, 80 + r * 62, 14, 8, "mAcc", 1)}`).join("")).join("")}
+  ${T(608, 226, "Top view — product carrier", "mTxtS")}
+  ${T(608, 240, "cells contacted, lightly pressurised", "mTxtS")}`)}
+${H(3, 800, 40, 160, 240, `
+  ${R(828, 100, 96, 110, "mCu", 4)}
+  ${R(836, 74, 80, 30, "mGlass", 4)}
+  ${T(846, 94, "gas", "mTxtS")}
+  ${T(806, 236, "SEI forms — gas fills the bag", "mTxtS")}`)}
+${ARROW(364, 158)}${ARROW(586, 158)}${ARROW(786, 158)}
+`;
+
+M.degassing = () => `
+${H(0, 26, 40, 250, 240, `
+  ${R(52, 66, 202, 190, "mGlass", 8)}
+  ${T(60, 58, "Vacuum chamber", "mTxtS")}
+  ${R(88, 130, 96, 106, "mCu", 4)}
+  ${R(184, 118, 56, 54, "mGlass", 4)}
+  <g class="bob">${R(206, 78, 8, 42, "mDark", 2)}${P("M210 120l0 8", "mHot")}</g>
+  ${T(60, 274, "Gas bag pierced under vacuum", "mTxtS")}`)}
+${H(1, 300, 40, 210, 240, `
+  ${R(330, 130, 96, 106, "mCu", 4)}
+  ${R(426, 118, 56, 54, "mGlass", 4)}
+  ${[0, 1, 2, 3, 4, 5].map(i => `<circle class="mEl puff" cx="${438 + (i % 3) * 18}" cy="${128 + Math.floor(i / 3) * 22}" r="4" style="animation-delay:${i * 180}ms"/>`).join("")}
+  ${P("M426 108l0 -20", "mLine")}${ARROW(426, 82, 1)}
+  ${T(310, 274, "Gases sucked off and treated", "mTxtS")}`)}
+${H(2, 534, 40, 200, 240, `
+  ${R(566, 130, 96, 106, "mCu", 4)}
+  ${R(658, 148, 42, 12, "mAcc", 2)}
+  ${P("M662 140l0 -14", "mLine")}
+  ${T(544, 274, "Seam sealed · up to 10 mm", "mTxtS")}`)}
+${H(3, 756, 40, 210, 240, `
+  ${R(788, 130, 96, 106, "mCu", 4)}
+  ${P("M884 148q22 -8 22 16t-22 16", "mCu")}
+  ${R(898, 122, 18, 60, "mDark", 3)}
+  ${T(766, 274, "Seam folded and glued to save volume", "mTxtS")}`)}
+${ARROW(286, 168)}${ARROW(518, 168)}${ARROW(742, 168)}
+`;
+
+M.aging = () => `
+${H(0, 26, 40, 420, 134, `
+  ${R(52, 56, 372, 88, "mDark", 6)}
+  ${[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4, 5, 6, 7].map(c =>
+    R(66 + c * 45, 64 + r * 20, 36, 14, "mEl", 2)).join("")).join("")}
+  ${R(28, 62, 14, 76, "mHot", 3)}
+  ${T(60, 162, "High-temperature aging · 30–50 °C", "mTxtS")}`)}
+${H(1, 26, 176, 420, 132, `
+  ${R(52, 192, 372, 88, "mSteel2", 6)}
+  ${[0, 1, 2, 3].map(r => [0, 1, 2, 3, 4, 5, 6, 7].map(c =>
+    R(66 + c * 45, 200 + r * 20, 36, 14, "mEl", 2)).join("")).join("")}
+  ${C(36, 236, 12, "mGlass")}
+  ${T(60, 296, "Normal-temperature aging · ≈22 °C · up to 3 weeks", "mTxtS")}`)}
+${H(2, 476, 60, 220, 200, `
+  ${P("M446 100q40 0 40 30t40 30", "mLine")}${ARROW(516, 160)}
+  ${R(540, 96, 130, 130, "mSteel2", 6)}
+  ${P("M556 200l0 -80l28 46l30 -66l28 100", "mAcc")}
+  ${T(486, 254, "OCV logged repeatedly", "mTxtS")}`)}
+${H(3, 726, 60, 236, 200, `
+  ${R(756, 96, 176, 130, "mGlass", 6)}
+  ${T(770, 130, "Example ΔOCV within limit", "mTxt")}
+  ${T(770, 156, "→ continue release checks", "mTxtS")}
+  ${T(770, 186, "Example ΔOCV above limit", "mTxt")}
+  ${T(770, 210, "→ investigate / reject per SOP", "mTxtS")}
+  ${T(736, 254, "The self-discharge screen", "mTxtS")}`)}
+`;
+
+M.eol = () => `
+${H(0, 26, 40, 290, 240, `
+  ${R(52, 96, 116, 140, "mCu", 5)}
+  ${R(180, 76, 122, 160, "mSteel2", 6)}${R(190, 88, 102, 84, "mDark", 3)}
+  ${P("M196 152l16 -40l20 24l18 -50l22 66", "mAcc")}
+  ${P("M168 128l12 0M168 168l12 0", "mHot")}
+  ${T(36, 264, "EOL rig — controlled capacity test, then set shipping SOC", "mTxtS")}`)}
+${H(1, 336, 40, 320, 240, `
+  ${[0, 1, 2].map(c => `
+    ${R(360 + c * 100, 110, 78, 110, "mSteel2", 5)}
+    ${R(370 + c * 100, 122, 58, 16, "mDark", 2)}
+    ${T(399 + c * 100, 178, "Class " + (c + 1), "mTxtS onpanel", "middle")}`).join("")}
+  ${T(346, 100, "Grading — sorted by capacity and resistance", "mTxtS")}
+  ${T(346, 264, "Optional: some makers ship ungraded", "mTxtS")}`)}
+${H(2, 676, 40, 286, 240, `
+  ${R(716, 96, 200, 140, "mSteel", 8)}
+  ${[0, 1, 2, 3].map(c => R(732 + c * 46, 112, 34, 50, "mEl", 3)).join("")}
+  ${R(732, 176, 168, 44, "mSteel2", 4)}
+  ${T(686, 264, "Example plant target 10–20% SOC · air limit may be 30%", "mTxtS")}`)}
+${ARROW(322, 158)}${ARROW(664, 158)}
+`;
+</script>
+<script>
+/* =====================================================================
+   STATION MASTER DATA
+   Parameters, environment, costs and quality criteria are taken from the
+   PEM RWTH Aachen process guide, one entry per station page.
+   `parts` indices line up with the hotspot data-k values in the machine.
+   ===================================================================== */

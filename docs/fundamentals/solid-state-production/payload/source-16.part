@@ -1,0 +1,197 @@
+    { x:"aldSpd", title:"Web speed is the thickness control", unit:" nm", dp:1, lo:0,
+      series:[{ y:m => m.aldNm, label:"Film thickness", col:"var(--primary)" }] },
+    { x:"aldT", title:"Outside the window it stops being self-limiting", unit:"%", good:[88,100], goodLabel:"discrete", dp:0,
+      series:[{ y:m => m.aldQ, label:"Coating quality", col:"var(--elyte)" }] }],
+  compacting: [
+    { x:"compP", title:"Pressure closes the porosity, with diminishing returns", unit:"%", good:[82,100], goodLabel:"densified", dp:0,
+      series:[{ y:m => m.compDens, label:"Relative density", col:"var(--primary)" }] },
+    { x:"compP", title:"…and density is interfacial contact", unit:" Ω·cm²", limit:40, limitLabel:"target", lo:0, dp:0,
+      series:[{ y:m => m.rInt, label:"Interfacial resistance", col:"var(--destructive)" }] },
+    { x:"compT", title:"Heat does the same work as pressure", unit:"%", good:[82,100], goodLabel:"densified", dp:0,
+      series:[{ y:m => m.compDens, label:"Relative density", col:"var(--sep)" }] }],
+
+  extrusion: [
+    { x:"liTh", title:"Foil thickness is lithium you may never use", unit:"", good:[1.05,3], goodLabel:"useful N/P band", dp:2, lo:0.4,
+      series:[{ y:m => m.np, label:"N/P ratio", col:"var(--primary)" }] },
+    { x:"pistF", title:"Force has a window, not a direction", unit:"%", good:[90,100], goodLabel:"in specification", lo:60, hi:100, dp:0,
+      series:[{ y:m => m.foilQ, label:"Foil quality index", col:"var(--elyte)" }] }],
+  lamination: [
+    { x:"lamP", title:"Pressure builds the bond, then stops helping", unit:"%", good:[88,100], goodLabel:"bond holds", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.lamQ, label:"Bond index", col:"var(--primary)" }] },
+    { x:"lamT", title:"Heat does the other half", unit:"%", good:[88,100], goodLabel:"bond holds", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.lamQ, label:"Bond index", col:"var(--elyte)" }] }],
+  ballmill: [
+    { x:"grindH", title:"Grinding has diminishing returns", unit:" µm", limit:4, limitLabel:"4 µm target", lo:0, dp:1,
+      series:[{ y:m => m.partSize, label:"Average particle size", col:"var(--primary)" }] },
+    { x:"grindD", title:"Big balls break coarse, small balls finish fine", unit:" µm", limit:4, limitLabel:"4 µm target", lo:0, dp:1,
+      series:[{ y:m => m.partSize, label:"Average particle size", col:"var(--elyte)" }] }],
+  mixing: [
+    { x:"mixMin", title:"Time breaks the agglomerates", unit:"%", good:[90,100], goodLabel:"released", lo:50, hi:100, dp:0,
+      series:[{ y:m => m.disp, label:"Dispersion index", col:"var(--primary)" }] },
+    { x:"agit", title:"So does speed — until it abrades", unit:"%", good:[95,99.4], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Predicted yield", col:"var(--elyte)" }] }],
+  compounding: [
+    { x:"cylT", title:"Warm enough to flow, not hot enough to break", unit:"%", good:[90,100], goodLabel:"homogeneous", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.disp, label:"Melt homogeneity", col:"var(--primary)" }] },
+    { x:"shear", title:"Shear energy has the same shape", unit:"%", good:[95,99.4], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Predicted yield", col:"var(--elyte)" }] }],
+  tape: [
+    { x:"dryT", title:"Cool enough to keep, hot enough to leave", unit:"%", good:[95,99.4], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--warning)" }] },
+    { x:"gapH", title:"The gap has one right answer", unit:" g/m²", limit:2, limitLabel:"±2 g/m²", lo:0, dp:1,
+      series:[{ y:m => m.coatErr, label:"Thickness scatter", col:"var(--primary)" }] },
+    { x:"cathTh", title:"Catholyte thickness is cell capacity", unit:" Ah", dp:1,
+      series:[{ y:m => m.cellAh, label:"Cell capacity", col:"var(--elyte)" }] }],
+  aerosol: [
+    { x:"jetV", title:"Fast enough to deform on impact", unit:"%", good:[88,100], goodLabel:"dense layer", lo:50, hi:100, dp:0,
+      series:[{ y:m => m.layerDens, label:"Layer density", col:"var(--primary)" }] },
+    { x:"sseTh", title:"Thin layer, low resistance — up to a point", unit:" Ω·cm²", limit:60, limitLabel:"60 Ω·cm²", lo:0, dp:0,
+      series:[{ y:m => m.rTot, label:"Total resistance", col:"var(--elyte)" }] }],
+  coex: [
+    { x:"meltDT", title:"Two materials, one tool, two temperatures", unit:"%", good:[95,99.4], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Predicted yield", col:"var(--primary)" }] },
+    { x:"cathTh", title:"Catholyte thickness is cell capacity", unit:" Ah", dp:1,
+      series:[{ y:m => m.cellAh, label:"Cell capacity", col:"var(--elyte)" }] }],
+  calender: [
+    { x:"calP", title:"Pressure densifies the composite", unit:"%", good:[88,100], goodLabel:"dense enough", lo:50, hi:100, dp:0,
+      series:[{ y:m => m.layerDens, label:"Layer density", col:"var(--primary)" }] },
+    { x:"sseTh", title:"And thickness sets the bulk resistance", unit:" Ω·cm²", limit:60, limitLabel:"60 Ω·cm²", lo:0, dp:0,
+      series:[{ y:m => m.rTot, label:"Total resistance", col:"var(--elyte)" }] }],
+  slitting: [
+    { x:"laserP", title:"Too little will not cut, too much melts it shut", unit:"%", good:[82,100], goodLabel:"clean edge", lo:0, hi:100, dp:0,
+      series:[{ y:m => m.edgeQ, label:"Edge quality", col:"var(--primary)" }] },
+    { x:"cutSpd", title:"Speed and power set the same number", unit:"%", good:[82,100], goodLabel:"clean edge", lo:0, hi:100, dp:0,
+      series:[{ y:m => m.edgeQ, label:"Edge quality", col:"var(--elyte)" }] }],
+  separation: [
+    { x:"laserP", title:"The energy that makes a short", unit:"%", limit:25, limitLabel:"25% — layers connect", lo:0, dp:0,
+      series:[{ y:m => m.meltSep, label:"Layers melted together", col:"var(--primary)" }] },
+    { x:"cutSpd", title:"Edge quality across the speed range", unit:"%", good:[82,100], goodLabel:"clean edge", lo:0, hi:100, dp:0,
+      series:[{ y:m => m.edgeSep, label:"Edge quality", col:"var(--elyte)" }] }],
+  sintering: [
+    { x:"sintT", title:"Sintering has a band, not a direction", unit:"%", good:[88,100], goodLabel:"dense enough", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.layerDens, label:"Layer density", col:"var(--primary)" }] },
+    { x:"sintT", title:"…and the interface follows it", unit:" Ω·cm²", limit:40, limitLabel:"40 Ω·cm²", lo:0, dp:0,
+      series:[{ y:m => m.rInt, label:"Interfacial resistance", col:"var(--elyte)" }] }],
+  stacking: [
+    { x:"stackF", title:"Pressure is how a solid cell makes contact", unit:"%", good:[75,100], goodLabel:"in contact", lo:20, hi:100, dp:0,
+      series:[{ y:m => m.contact, label:"Interface contact", col:"var(--primary)" }] },
+    { x:"layers", title:"Series stacking multiplies the voltage", unit:" V", dp:1,
+      series:[{ y:m => m.vCell, label:"Stack voltage", col:"var(--elyte)" }] }],
+  contacting: [
+    { x:"sealT", title:"The seal has one narrow window", unit:"%", good:[92,100], goodLabel:"sound seal", lo:30, hi:100, dp:0,
+      series:[{ y:m => m.sealQ, label:"Seal quality", col:"var(--primary)" }] },
+    { x:"weldP", title:"Weld energy, the same shape", unit:"%", good:[90,100], goodLabel:"sound weld", lo:30, hi:100, dp:0,
+      series:[{ y:m => m.weldQ, label:"Weld quality", col:"var(--elyte)" }] }],
+  formation: [
+    { x:"cRate", title:"The first cycle decides the interface", unit:"%", good:[88,100], goodLabel:"good interface", lo:20, hi:100, dp:0,
+      series:[{ y:m => m.interQ, label:"Interface layer quality", col:"var(--primary)" }] },
+    { x:"cRate", title:"…and how close you run to dendrites", unit:"%", limit:100, limitLabel:"100% — lithium grows through", lo:0, dp:0,
+      series:[{ y:m => m.dendrite, label:"Dendrite index", col:"var(--destructive)" }] }]
+};
+const CUSTOM = { stacking:pressureChart, formation:pressureChart, calender:resistanceChart,
+                 sintering:resistanceChart, aerosol:resistanceChart };
+
+function renderCharts(st) {
+  const list = (CHARTS[st.id] || []).map(chartSVG);
+  if (CUSTOM[st.id]) list.unshift(CUSTOM[st.id]());
+  if (!list.length) return "";
+  return `<div class="charts">${list.join("")}</div>`;
+}
+
+/* --- the process window bar under every control -------------------------
+   answers the plain question "am I allowed to set it here?" before any
+   of the physics gets a chance to answer it for you.                     */
+function windowBar(k) {
+  const c = CTL[k];
+  if (c.opts || !c.good) return "";
+  const p = v => Math.max(1.6, Math.min(98.4, (v - c.min) / (c.max - c.min) * 100)).toFixed(1);
+  const inside = S[k] >= c.good[0] && S[k] <= c.good[1];
+  const full = c.good[0] <= c.min && c.good[1] >= c.max;
+  if (full && S[k] >= c.good[0] && S[k] <= c.good[1]) return "";   /* nothing to warn about */
+  const dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+  return `<div class="winbar" title="Recommended window ${c.good[0]}–${c.good[1]}${c.unit || ""}">
+      <i style="left:${p(c.good[0])}%;width:${(p(c.good[1]) - p(c.good[0])).toFixed(1)}%"></i>
+      <b data-in="${inside}" style="left:${p(S[k])}%"></b>
+    </div>
+    <small class="winmsg" data-in="${inside}">${inside
+      ? (full ? "whole range is inside the recommended window"
+              : `inside the recommended window, ${c.good[0].toFixed(dec)}–${c.good[1].toFixed(dec)}${c.unit || ""}`)
+      : `outside the recommended window of ${c.good[0].toFixed(dec)}–${c.good[1].toFixed(dec)}${c.unit || ""} — expect trouble`}</small>`;
+}
+</script><script>
+/* =====================================================================
+   RENDERING + INTERACTION
+   ===================================================================== */
+
+/* ---------------- sidebar ---------------- */
+function renderNav() {
+  renderLayerNav();
+  const list = active();
+  $("nav").innerHTML = PHASES.map(([p, col]) => {
+    const items = list.filter(s => s.phase === p);
+    if (!items.length) return "";
+    return `<div class="phase"><div class="phase-title"><i style="background:${col}"></i>${p}</div>` +
+      items.map(s => {
+        const n = list.indexOf(s) + 1;
+        return `<button class="stage-btn" data-go="${s.id}" aria-current="${current === s.id}">
+          <b>${String(n).padStart(2, "0")}</b><em>${esc(s.title)}</em>
+          <i style="background:${col}"></i></button>`;
+      }).join("") + `</div>`;
+  }).join("");
+}
+
+/* ---------------- overview ---------------- */
+const WORD = {12:"Twelve", 13:"Thirteen", 14:"Fourteen", 15:"Fifteen"};
+function renderOverview() {
+  const m = model(), list = active(), g = GEOM[route];
+  $("overview").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">All-solid-state simulator · ${g.name.toLowerCase()} route</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Walk the line from lithium ingot to sealed cell</h2>
+      <p class="lede" style="max-width:80ch">${WORD[list.length] || list.length} stations for this electrolyte class, drawn as the machines
+      you would stand next to. Pick any station to open its machine, hover any part to learn what it does, and use the
+      setpoint lab on the right — every change flows through the teaching relationships shown below.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--primary)"></i>This route</h4>
+        <p class="lede"><b>${esc(g.name)} solid electrolyte · lithium metal anode.</b> ${esc(g.sse)}.
+        ${esc(g.note)} Stack pressure requirement: ${esc(g.press)}.</p>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--elyte)"></i>Model scope</h4>
+        <p class="lede">The process sequence, parameter ranges, atmospheres, quality features and technology alternatives
+        come from the guide${r(1)}. The numbers this simulator computes from them — resistance, contact, dendrite
+        margin, energy — are illustrative teaching relationships, not calibrated plant predictions. No generally
+        applicable process chain for solid-state cells exists yet${r(1,3)}.</p>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <span class="eyebrow">The line</span>
+      <div class="map" style="margin-top:10px">
+        ${PHASES.map(([p, col]) => {
+          const items = list.filter(s => s.phase === p);
+          if (!items.length) return "";
+          return `<div><div style="font-size:9px;font-weight:900;letter-spacing:.13em;color:var(--faint);margin-bottom:6px">
+            <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${col};margin-right:6px"></span>${p.toUpperCase()}</div>
+            <div class="map-row">${items.map(s => {
+              const n = list.indexOf(s) + 1;
+              return `<button class="map-node" data-go="${s.id}">
+                <b>${String(n).padStart(2, "0")}</b><strong>${esc(s.title)}</strong>
+                <small>${esc(s.env.iso)}${s.env.dew !== "—" ? " · " + esc(s.env.dew) : ""}</small>
+                <i style="background:${col}"></i></button>`;
+            }).join("")}</div></div>`;
+        }).join("")}
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <span class="eyebrow">The cell this line would produce</span>
+      <div class="kpi" style="margin-top:10px">
+        <div><small>Elementary cell capacity</small><b>${m.cellAh.toFixed(1)} Ah</b><span>200 cm², ${S.cathTh} µm catholyte</span></div>
+        <div><small>Stack voltage</small><b>${m.vCell.toFixed(1)} V</b><span>${S.layers} elementary cells in series</span></div>
+        <div><small>Stack energy</small><b>${(m.cellWh / 1000).toFixed(2)} kWh</b><span>capacity × series voltage</span></div>
+        <div><small>Area-specific resistance</small><b>${m.rTot.toFixed(0)}</b><span>Ω·cm², interfaces plus bulk</span></div>
+        <div><small>Interface contact</small><b>${m.contact.toFixed(0)}%</b><span>set by stack pressure and density</span></div>

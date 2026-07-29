@@ -1,3 +1,48 @@
+        <div><small>Dendrite margin</small><b>${(100 - m.dendrite).toFixed(0)}%</b><span>headroom to the critical current</span></div>
+        <div><small>N/P ratio</small><b>${m.np.toFixed(2)}</b><span>lithium ÷ catholyte capacity</span></div>
+        <div><small>Process-health score</small><b>${m.yieldPct.toFixed(1)}%</b><span>teaching score, not a yield prediction</span></div>
+      </div>
+      <div class="srcline">Material properties and limits follow ${
+        [1,2,8].map(n => `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--primary)"></i>How to read this simulator</h4>
+        <ul>
+          <li><b>The electrolyte class is not a variant — it is a different plant.</b> Switch it in the sidebar and stations appear and disappear: oxide sinters, sulfide and polymer calender and press.${r(1)}</li>
+          <li><b>Every station is a real machine.</b> The schematics follow the guide figures — piston extruder, ball mill, planetary mixer, twin-screw compounder, slot nozzle, aerosol chamber, sintering furnace, gripper and press.</li>
+          <li><b>Hover or tab any part</b> of a machine to get its job, its parameters and why it matters.</li>
+          <li><b>Start with the big picture.</b> <button type="button" data-go="view:anatomy" style="color:var(--primary);font-weight:600;text-decoration:underline">Cell anatomy</button> shows what you are building and who builds each layer; <button type="button" data-go="view:flow" style="color:var(--primary);font-weight:600;text-decoration:underline">material flow</button> follows the two routes that meet at stacking; <button type="button" data-go="view:matrix" style="color:var(--primary);font-weight:600;text-decoration:underline">process ↔ component</button> maps every station onto every part of the cell.</li>
+        </ul>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--destructive)"></i>What is different from a lithium-ion line</h4>
+        <ul>
+          <li><b>Interfaces replace wetting.</b> There is no liquid to soak into pores, so every interface has to be made mechanically — by pressure, heat, or sintering. Contact is a process variable here, not a consequence.${r(4,5)}</li>
+          <li><b>Lithium metal is not a coating.</b> It is extruded and laminated, it cannot be cut mechanically, and until it is passivated the whole line needs an inert-gas atmosphere rather than a dry room.${r(1,9)}</li>
+          <li><b>Two stations disappear.</b> No electrolyte filling and no separator placement — and with them the dry room at −50 °C and the wetting queue.${r(1,2)}</li>
+          <li><b>Dendrites are a process limit, not just a chemistry one.</b> The current a cell survives rises with stack pressure, and the published critical value has no standard measurement protocol.${r(6,12)}</li>
+        </ul>
+      </div>
+    </div>`;
+}
+
+/* ---------------- station ---------------- */
+function renderStation(st) {
+  const list = active(), n = list.indexOf(st) + 1, m = model(), col = phaseColor(st.phase);
+  $("stationView").innerHTML = `
+    <div class="machine ${running ? "is-run" : ""}" id="machineWrap">
+      <div class="machine-head">
+        <h3>${String(n).padStart(2, "0")} · ${esc(st.title)}</h3>
+        <div class="tag">
+          <span>${esc(st.env.iso)}</span>
+          ${st.env.dew !== "—" ? `<span>Dew point ${esc(st.env.dew)}</span>` : ""}
+          <span>${esc(st.env.temp)}</span>
+          <span>${esc(st.takt)}</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 980 318" role="img" aria-label="${esc(st.title)} machine schematic"
            style="${machineStyle(st, m)}">${M[st.machine]()}</svg>
       <div class="readout" id="readout"></div>
     </div>
@@ -29,9 +74,9 @@
       <div class="card card-pad block">
         <h4><i style="background:var(--jelly)"></i>Technology alternatives</h4>
         <ul>${st.alts.map(p => `<li>${p}</li>`).join("")}</ul>
-        ${(st.innov || []).length ? `
-        <h4 style="margin-top:14px"><i style="background:var(--primary)"></i>Innovations &amp; trends${r(1)}</h4>
-        <ul>${st.innov.map(p => `<li>${p}</li>`).join("")}</ul>` : ""}
+        ${(st.chall || []).length ? `
+        <h4 style="margin-top:14px"><i style="background:var(--destructive)"></i>Challenges${r(1)}</h4>
+        <ul>${st.chall.map(p => `<li>${p}</li>`).join("")}</ul>` : ""}
       </div>
     </div>
 
@@ -45,8 +90,6 @@
         <ul>${st.qFeat.map(p => `<li>${p}</li>`).join("")}</ul>
       </div>
     </div>
-
-    ${st.id === "drycoat" ? dryVsWet() : ""}
 
     ${renderConsole(st, m)}
 
@@ -62,46 +105,6 @@
   setHot(st, 0);
 }
 
-/* the wet chain against the dry chain, and what the change is worth [1][16] */
-const SAVING = [
-  { k:"CapEx",             v:35, note:"no dryer, no solvent-recovery plant" },
-  { k:"Energy consumption",v:45, note:"drying is the single largest energy demand on a wet line" },
-  { k:"Space",             v:55, note:"a 100 m dryer disappears" },
-  { k:"Emissions",         v:70, note:"no NMP to burn off or recover" }
-];
-function dryVsWet() {
-  const chain = (t, steps, on) => `
-    <div class="pchain ${on ? "on" : ""}">
-      <small>${t}</small>
-      <div>${steps.map(x => `<i>${esc(x)}</i>`).join(`<b>→</b>`)}</div>
-    </div>`;
-  return `
-    <div class="card card-pad block">
-      <h4><i style="background:var(--primary)"></i>Why this station replaces four${r(1)}</h4>
-      <p class="lede" style="max-width:86ch;margin-bottom:12px">Taking the solvent out does not just delete the dryer.
-      The multi-stage wet dispersion becomes a single, often continuous dry mix; and because the coating nip already
-      compacts the film, the calender that normally follows is usually not needed either.</p>
-      ${chain("Wet processing", ["Dry mixing", "Disperse", "Coating", "Drying", "Calendering"], proc === "wet")}
-      ${chain("Dry processing", ["Dry mixing / fibrillation", "Coating"], proc === "dry")}
-      <div class="savRow">
-        ${SAVING.map(x => `<div class="sav">
-          <b>−${x.v}%</b><span>${esc(x.k)}</span>
-          <div class="savBar"><i style="width:${x.v}%"></i></div>
-          <em>${esc(x.note)}</em></div>`).join("")}
-      </div>
-      <div class="grid2" style="margin-top:12px">
-        <div><h4><i style="background:var(--green)"></i>Benefits</h4>
-          <ul><li>Lower investment costs</li><li>Lower energy costs</li><li>Less space required</li><li>Reduced process time</li></ul></div>
-        <div><h4><i style="background:var(--destructive)"></i>Challenges</h4>
-          <ul><li>Material restrictions</li><li>Technical purity and dust generation</li><li>Limited industrial experience</li><li>Lower adhesion</li></ul></div>
-      </div>
-      <p class="lede" style="margin-top:12px;font-size:12px;opacity:.85">The four figures are the guide's own comparison
-      against a wet coating line. Independent life-cycle work broadly agrees on the energy number at the manufacturing
-      stage — around 41% less — but the saving shrinks to a few percent once the whole cradle-to-grave life cycle is
-      counted, because cell production is only part of it.${r(16)}</p>
-    </div>`;
-}
-
 /* which parts of the finished cell this station is responsible for */
 function madeHTML(st) {
   const makes  = COMPONENTS.filter(c => c.made.includes(st.id));
@@ -110,7 +113,7 @@ function madeHTML(st) {
                    && !c.made.includes(st.id) && !c.risk.includes(st.id));
   const TITLE = { make:"Built or shaped here", risk:"Most easily ruined here", check:"Measured or screened here" };
   const SUF   = { make:"", risk:" ▲", check:" ◆" };
-  const chip = (c, kind) => `<button type="button" class="chipc" data-goview="${c.id}" title="${TITLE[kind]}">
+  const chip = (c, kind) => `<button class="chipc" data-goview="${c.id}" title="${TITLE[kind]}">
       <i style="background:${c.col}"></i>${esc(c.short)}${SUF[kind]}</button>`;
   if (!makes.length && !risks.length && !checks.length) return "";
   const label = makes.length ? "PART OF THE CELL THIS STATION IS RESPONSIBLE FOR"
@@ -147,7 +150,7 @@ function setHot(st, k) {
 
 /* ---------------- rail ---------------- */
 function renderSliders() {
-  $("sliders").innerHTML = HEAD().map(k => {
+  $("sliders").innerHTML = HEAD.map(k => {
     const c = CTL[k], dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
     return `<div class="slider" id="sw-${k}" data-in="${inWindow(k)}">
       <label for="sl-${k}">${c.label}<b id="v-${k}">${S[k].toFixed(dec)}${c.unit}</b></label>
@@ -157,14 +160,14 @@ function renderSliders() {
       <small>${c.note}</small>
     </div>`;
   }).join("");
-  HEAD().forEach(k => $("sl-" + k).addEventListener("input", e => {
+  HEAD.forEach(k => $("sl-" + k).addEventListener("input", e => {
     S[k] = Number(e.target.value);
     refresh();
   }));
 }
 /* keep the rail in step when a station console moves a headline setpoint */
 function syncSliders() {
-  HEAD().forEach(k => {
+  HEAD.forEach(k => {
     const c = CTL[k], dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
     const inp = $("sl-" + k), lab = $("v-" + k), wb = $("wb-" + k), wrap = $("sw-" + k);
     if (inp) inp.value = S[k];
@@ -179,17 +182,17 @@ function renderRail() {
   $("yieldVal").textContent = m.yieldPct.toFixed(1);
   const set = (t, b, v) => { $(t).textContent = Math.round(v) + "%"; $(b).style.width = clamp(v) + "%"; };
   set("mUniT", "mUniB", m.uniformity);
-  set("mMoiT", "mMoiB", m.moisture);
+  set("mMoiT", "mMoiB", m.interfaces);
   set("mSafT", "mSafB", m.safety);
   const a = $("advice");
   a.dataset.level = m.level;
   a.innerHTML = `<strong>${esc(m.head)}</strong><span>${m.body}</span>`;
   const g = GEOM[route];
   $("cellKpi").innerHTML = `
-    <div><small>Capacity</small><b>${m.cellAh.toFixed(1)}</b><span>Ah · ${g.name.toLowerCase()}</span></div>
-    <div><small>Porosity</small><b>${m.por.toFixed(0)}%</b><span>after calendering</span></div>
-    <div><small>Moisture</small><b>${m.ppm.toFixed(0)}</b><span>ppm into the dry room</span></div>
-    <div><small>Output</small><b>${m.gwh.toFixed(1)}</b><span>GWh/a, this line</span></div>`;
+    <div><small>Capacity</small><b>${m.cellAh.toFixed(1)}</b><span>Ah · elementary cell</span></div>
+    <div><small>Resistance</small><b>${m.rTot.toFixed(0)}</b><span>Ω·cm², total</span></div>
+    <div><small>Contact</small><b>${m.contact.toFixed(0)}%</b><span>at ${S.stackF.toFixed(1)} MPa</span></div>
+    <div><small>Stack</small><b>${m.vCell.toFixed(1)} V</b><span>${S.layers} cells in series</span></div>`;
 }
 
 /* ---------------- navigation ---------------- */
@@ -221,8 +224,8 @@ function go(id) {
 }
 function refresh() {
   renderRail();
-  syncSliders();
   pushHistory();
+  syncSliders();
   if (typeof current === "string" && current.startsWith("view:")) { showView(current.slice(5)); return; }
   if (current) { const st = STATIONS.find(s => s.id === current); if (st) { renderStation(st); setHot(st, hotIndex); } }
   else renderOverview();
@@ -230,13 +233,6 @@ function refresh() {
 document.addEventListener("click", e => {
   const v = e.target.closest("[data-goview]");
   if (v) { layerPick = v.dataset.goview; go("view:anatomy"); return; }
-  const np = e.target.closest("[data-newgo]");
-  if (np) {
-    const want = np.dataset.newgo.split(":")[1];
-    if (want !== proc) $("procOpts").querySelector(`[data-proc="${want}"]`).click();
-    go("drycoat");
-    return;
-  }
   const b = e.target.closest("[data-go]");
   if (b) go(b.dataset.go);
 });
@@ -254,20 +250,6 @@ $("routeOpts").addEventListener("click", e => {
   go(current);
 });
 
-/* electrode route switch — wet slurry line vs solvent-free dry line */
-$("procOpts").addEventListener("click", e => {
-  const b = e.target.closest("[data-proc]");
-  if (!b) return;
-  proc = b.dataset.proc;
-  document.querySelectorAll("#procOpts button").forEach(x =>
-    x.setAttribute("aria-pressed", x.dataset.proc === proc));
-  $("crumbProc").textContent = proc === "dry" ? "DRY" : "WET";
-  renderSliders();   /* the rail itself changes with the route */
-  const st = typeof current === "string" && !current.startsWith("view:") ? STATIONS.find(s => s.id === current) : null;
-  if (st && st.proc && st.proc !== proc) current = null;
-  go(current);
-});
-
 /* run / pause */
 $("runBtn").addEventListener("click", () => {
   running = !running;
@@ -282,11 +264,3 @@ $("resetBtn").addEventListener("click", () => { S = { ...DEFAULTS }; renderSlide
 function machineStyle(st, m) {
   const o = OPS[st.id];
   return o && o.viz ? Object.entries(o.viz(m)).map(([k, v]) =>
-    `--${k}:${typeof v === "number" ? v.toFixed(1) : v}`).join(";") : "";
-}
-
-/* ---------------- guided tour ---------------- */
-/* =====================================================================
-   TOUR ILLUSTRATIONS
-   One small drawing per stop, made to carry the point of that stop —
-   not a copy of the machine already on screen behind the panel.

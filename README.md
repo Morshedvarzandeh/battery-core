@@ -10,6 +10,10 @@
 ·
 [Open the Battery Production simulator](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/)
 ·
+[Open the Solid-State Production simulator](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/)
+·
+[Run the Battery Aging notebook in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb)
+·
 [Open the Battery Materials Lab](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)
 ·
 [Run the C-rate notebook in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)
@@ -28,10 +32,12 @@ with explicit assumptions and validation.
 1. **[Part 01 — Cell anatomy and charge/discharge paths](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)** — inspect the named components and conceptual current paths.
 2. **[Part 01B — Lithium-ion cell architecture](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)** — move from the five-layer stack to porous electrodes, pore electrolyte, molecules, ions, and transport paths.
 3. **[Part 02 — Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)** — connect capacity, current, C-rate, and ideal duration through tested calculations.
-4. **[Part 03 — Battery production](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/)** — follow a reference graphite/NMC route from slurry preparation to formation, aging, grading, and packing.
+4. **[Part 03 — Lithium-ion battery production](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/)** — follow a reference graphite/NMC route from slurry preparation to formation, aging, grading, and packing.
+5. **[Part 03B — All-solid-state cell production](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/)** — compare oxide, halide, sulfide, and polymer electrolyte routes and the production steps they add, change, or remove.
+6. **[Part 04 — Battery aging](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb)** — connect degradation mechanisms to capacity loss, impedance rise, self-discharge, temperature, and cycling conditions through explicitly illustrative models.
 
-Part 03 closes Chapter 1 by connecting cell components and ratings to the process
-steps that create, assemble, activate, and screen a finished cell.
+Part 04 closes Chapter 1 by connecting the cell structures, ratings, and
+production routes to the degradation mechanisms that change cells in service.
 
 ### Chapter 2 — Equivalent Circuit Models
 
@@ -66,6 +72,14 @@ To open the browser modules locally, run:
 ```bash
 python -m http.server 8000 -d docs
 ```
+
+### Part 03B — All-Solid-State Cell Production
+
+The **[SolidForge production simulator](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/)** compares oxide, halide, sulfide, and polymer electrolyte routes. Its parameter relationships are explicitly illustrative and do not establish process capability, product safety, or release criteria. Its source and limitations are documented in [`docs/fundamentals/solid-state-production/`](docs/fundamentals/solid-state-production/).
+
+### Part 04 — Battery Aging
+
+The **[battery aging notebook](notebooks/fundamentals/04_battery_aging.ipynb)** uses self-contained interactive panels and standard-library Python teaching models to connect degradation mechanisms with capacity, impedance, self-discharge, temperature, and cycling conditions. The models show qualitative trends and rough relative effects; they are not state-of-health estimators or cell-specific lifetime predictions.
 
 ### Supplementary interactive lab — Battery materials
 

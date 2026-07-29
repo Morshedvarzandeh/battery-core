@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
-<meta name="description" content="CellForge — interactive lithium-ion cell production simulator for a reference graphite/NMC process route.">
-<title>CellForge · Lithium-ion Cell Production Simulator</title>
+<meta name="description" content="SolidForge — interactive all-solid-state battery cell production simulator, after the PEM RWTH Aachen and VDMA process guide, 3rd edition.">
+<title>SolidForge · All-Solid-State Cell Production Simulator</title>
 <style>
 /* =====================================================================
    Shared design system — the same tokens as the electrode-potentials
-   table page, so every file in this set looks like one product.
+   table page and the lithium-ion simulator, so the whole set is one product.
    ===================================================================== */
 :root{
   color-scheme: light;
@@ -59,8 +59,9 @@
   --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
   --shadow-lg: 0 18px 46px light-dark(rgb(26 28 31 / 16%), rgb(0 0 0 / 55%));
 
-  /* materials — a colour always means the same substance, and the same
-     substance is the same colour on the cell-architecture page */
+  /* materials — a colour keeps its function across every file in the set:
+     grey-blue is the negative electrode, green the positive, pale the ion
+     conductor between them, copper and aluminium the current collectors */
   --copper: light-dark(#c07f42, #b87333);
   --alu:    light-dark(#b9c8d1, #a8bbc5);
   --anode:  light-dark(#6b7d86, #46565e);
@@ -104,7 +105,7 @@ h3{font-size:var(--font-size-h3);font-weight:var(--font-weight-medium);line-heig
   border:1px solid var(--border)}
 .route small{display:block;color:var(--faint);font-size:10px;font-weight:var(--font-weight-medium);
   margin-bottom:6px}
-.route-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.route-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}
 .route-opts button{min-height:26px;padding:5px 2px;border-radius:var(--radius-sm);background:transparent;
   color:var(--muted-foreground);font-size:var(--font-size-small);font-weight:var(--font-weight-medium);
   border:1px solid var(--input)}
@@ -128,8 +129,6 @@ h3{font-size:var(--font-size-h3);font-weight:var(--font-weight-medium);line-heig
 
 /* ---------------- main ---------------- */
 .main{min-width:0;display:flex;flex-direction:column}
-/* grid items default to a min-content floor, which lets a wide table or
-   schematic push the whole page sideways instead of scrolling inside itself */
 .content>*{min-width:0}
 .topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--background) 88%,transparent);
   backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 22px;

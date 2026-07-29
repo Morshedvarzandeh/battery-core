@@ -1,0 +1,139 @@
+  lamP:    { label:"Lamination line pressure", min:100, max:2500, step:50,   unit:" N/mm",  def:1300, good:[300,2000],  note:"2nd ed. limit below 2 500 N/mm", ref:[15] },
+  lamT:    { label:"Roller tempering",         min:20,  max:140,  step:5,    unit:" °C",    def:70,   good:[40,120],    note:"Tempering the rollers raises the adhesive force", ref:[1] },
+  grindH:  { label:"Grinding time",            min:1,   max:10,   step:0.5,  unit:" h",     def:5,    good:[3,10],      note:"Guide range 1–10 h", ref:[1] },
+  grindD:  { label:"Grinding ball diameter",   min:1,   max:10,   step:0.5,  unit:" mm",    def:4,    good:[1,10],      note:"Guide range 1–10 mm ceramic media", ref:[1] },
+  grindRPM:{ label:"Grinding speed",           min:100, max:900,  step:25,   unit:" min⁻¹", def:500,  good:[300,700],   note:"Guide: approx. 500 min⁻¹", ref:[1] },
+  mixMin:  { label:"Mixing time",              min:6,   max:60,   step:2,    unit:" min",   def:30,   good:[15,60],     note:"Guide range 0.1–1 h", ref:[1] },
+  agit:    { label:"Agitator speed",           min:100, max:10000,step:100,  unit:" min⁻¹", def:3000, good:[800,8000],  note:"Guide range 100–10 000 min⁻¹", ref:[1] },
+  mixT:    { label:"Mixing temperature",       min:20,  max:60,   step:1,    unit:" °C",    def:40,   good:[20,50],     note:"Guide range RT–50 °C", ref:[1] },
+  cylT:    { label:"Extruder cylinder temperature",min:20,max:120,step:5,    unit:" °C",    def:80,   good:[20,100],    note:"Guide range 20–100 °C", ref:[1] },
+  shear:   { label:"Shear energy",             min:10,  max:100,  step:5,    unit:" %",     def:55,   good:[30,85],     note:"Too little leaves agglomerates, too much degrades the polymer", ref:[1] },
+  bandSpd: { label:"Band speed",               min:25,  max:100,  step:5,    unit:" m/min", def:55,   good:[25,100],    note:"2nd ed. range 25–100 m·min⁻¹", ref:[15] },
+  gapH:    { label:"Slot nozzle gap height",   min:20,  max:400,  step:5,    unit:" µm",    def:215,  good:[120,320],    note:"Set it to the wet film the recipe needs", ref:[1] },
+  dryT:    { label:"Dryer zone temperature",   min:50,  max:160,  step:5,    unit:" °C",    def:120,  good:[50,160],    note:"2nd ed. range 50–160 °C", ref:[15] },
+  jetV:    { label:"Aerosol jet velocity",     min:100, max:1000, step:25,   unit:" m/s",   def:500,  good:[300,900],   note:"2nd ed. range 100–1 000 m·s⁻¹", ref:[15] },
+  chamP:   { label:"Chamber pressure",         min:0.001,max:1,   step:0.001,unit:" bar",   def:0.05, good:[0.001,0.3], note:"2nd ed. range 0.001–1 bar", ref:[15] },
+  depRate: { label:"Coating rate",             min:500, max:10000,step:250,  unit:" µm/h",  def:3000, good:[1000,8000], note:"2nd ed. limit under 10 000 µm·h⁻¹", ref:[15] },
+  extP:    { label:"Extrusion pressure",       min:10,  max:200,  step:5,    unit:" bar",   def:90,   good:[40,160],    note:"Both melts are fed under high pressure through separate channels", ref:[1] },
+  meltDT:  { label:"Melt temperature difference",min:0, max:60,   step:2,    unit:" K",     def:14,   good:[0,25],      note:"The two materials want different temperatures — that is the challenge here", ref:[1] },
+  calP:    { label:"Calender line pressure",   min:100, max:2500, step:50,   unit:" N/mm",  def:1400, good:[400,2200],  note:"2nd ed. limit below 2 500 N/mm", ref:[15,4] },
+  calT:    { label:"Calender temperature",     min:20,  max:160,  step:5,    unit:" °C",    def:80,   good:[40,140],    note:"Tempering is what makes brittle layers survive the nip", ref:[1] },
+  cutMode: { label:"Slitting method",          opts:["Laser","Rolling knife"],                        def:0, note:"Laser is contactless; the knife can deflect and delaminate the composite", ref:[1] },
+  laserP:  { label:"Laser power",              min:100, max:4000, step:50,   unit:" W",     def:900,  good:[300,2500],  note:"Too little will not cut, too much melts the layers together", ref:[1] },
+  cutSpd:  { label:"Cutting speed",            min:10,  max:200,  step:5,    unit:" m/min", def:80,   good:[30,160],    note:"Speed and power together set the energy the composite absorbs", ref:[1] },
+  sepMode: { label:"Separation method",        opts:["Laser cut","Punching"],                         def:0, note:"Both are listed; the laser must not melt the layers together", ref:[1] },
+  sintT:   { label:"Sintering temperature",    min:500, max:1500, step:25,   unit:" °C",    def:1100, good:[900,1450],  note:"3rd edition range 500–1 500 °C; the 2nd edition quoted up to 2 000 °C", ref:[1,15] },
+  sintH:   { label:"Sintering time",           min:1,   max:12,   step:0.5,  unit:" h",     def:4,    good:[2,10],      note:"Guide: usually several hours", ref:[1] },
+  dcT:     { label:"Dry-coating roll temperature",min:20,max:200,step:5,   unit:" °C",    def:110,  good:[60,200],    note:"Guide range RT–200 °C; warmer rolls soften the binder and the film knits", ref:[1] },
+  dcFib:   { label:"Binder fibrillation",      min:20,  max:100,  step:5,    unit:" %",     def:70,   good:[55,95],     note:"Too little and the powder never becomes a film; too much and it agglomerates", ref:[1] },
+  aldSpd:  { label:"ALD web speed",            min:5,   max:40,   step:1,    unit:" m/min", def:20,   good:[8,35],      note:"Guide: about 1 nm at 30 m/min, about 10 nm at 10 m/min — slower is thicker", ref:[1] },
+  aldT:    { label:"ALD temperature",          min:80,  max:300,  step:5,    unit:" °C",    def:180,  good:[100,250],   note:"Guide range 100–250 °C; outside it the precursor stops behaving self-limitingly", ref:[1] },
+  compP:   { label:"Compacting pressure",      min:5,   max:600,  step:5,    unit:" MPa",   def:180,  good:[40,500],    note:"Guide range 5–600 MPa", ref:[1] },
+  compT:   { label:"Compacting temperature",   min:20,  max:2000, step:20,   unit:" °C",    def:160,  good:[20,1400],   note:"Guide range RT–2 000 °C — cold isostatic at the bottom, hot pressing at the top", ref:[1] },
+  compH:   { label:"Holding time",             min:0.02,max:6,    step:0.02, unit:" h",     def:0.5,  good:[0.05,4],    note:"Guide: seconds to hours, depending on the process", ref:[1] },
+  stackAcc:{ label:"Positioning accuracy",     min:50,  max:600,  step:10,   unit:" µm",    def:180,  good:[50,300],    note:"Guide limit under 300 µm", ref:[1] },
+  stackSpd:{ label:"Stacking speed",           min:0.3, max:4,    step:0.1,  unit:" s/sheet",def:0.8, good:[0.3,1],     note:"Guide: under 1 s per sheet", ref:[1] },
+  weldP:   { label:"Welding laser power",      min:200, max:4000, step:100,  unit:" W",     def:1600, good:[600,3200],  note:"2nd ed. limit under 4 000 W; the 3rd edition names pulse frequency and laser power without values", ref:[15] },
+  sealT:   { label:"Sealing temperature",      min:140, max:230,  step:5,    unit:" °C",    def:190,  good:[175,205],   note:"Impulse or contact seals close the package completely", ref:[1] },
+  drawD:   { label:"Pouch draw depth",         min:2,   max:14,   step:0.5,  unit:" mm",    def:7,    good:[2,10],      note:"2nd ed. limit under 10 mm; the 3rd edition names deep-draw depth without a value", ref:[15] },
+  ageSOC:  { label:"State of charge at aging", min:10,  max:100,  step:5,    unit:" %",     def:50,   good:[20,80],     note:"A named parameter — the SOC the cell is held at", ref:[1] },
+  ageT:    { label:"Aging temperature",        min:20,  max:80,   step:1,    unit:" °C",    def:45,   good:[25,60],     note:"Procedures vary with the manufacturer, the cell chemistry and the cell structure", ref:[1] }
+};
+const HEAD = ["liTh","cathTh","sseTh","stackF","layers","cRate","ageDays","cellT"];
+const DEFAULTS = Object.fromEntries(Object.entries(CTL).map(([k, c]) => [k, c.def]));
+
+/* the three electrolyte classes are the routes — they change the line */
+const GEOM = {
+  oxide:   { name:"Oxide-based",   sse:"Oxide ceramic electrolyte, LLZO or LATP class",
+             cond:0.35, dens:5.1, unit:"sintered ceramic electrolyte", press:"low — sintered, not pressed",
+             note:"A broad electrochemical stability window and low atmospheric requirements, but manufactured by sintering at high temperature over long periods, and brittle enough to be difficult to handle mechanically." },
+  sulfide: { name:"Sulfide-based", sse:"Sulfide electrolyte, Li₁₀GeP₂S₁₂ class",
+             cond:1.0, dens:1.9, unit:"ductile sulfide electrolyte", press:"high — pressed to contact",
+             note:"High ionic conductivity and deformability. Limited stability against the lithium anode and the cathode, and reactive in normal air — H₂S." },
+  halide:  { name:"Halide-based",  sse:"Chloride or fluoride halide electrolyte",
+             cond:0.9, dens:2.9, unit:"ductile halide electrolyte", press:"moderate — pressed to contact",
+             note:"High-voltage stability, ionic conductivity and good processability. Handling atmosphere, stability against lithium metal and suitability as a separator all depend on the specific halide chemistry." },
+  polymer: { name:"Polymer-based", sse:"Polymer electrolyte, PEO–LiTFSI class",
+             cond:0.22, dens:1.2, unit:"deformable polymer electrolyte", press:"moderate — laminated warm",
+             note:"Highly deformable, which favours interfacial contact. Low conductivity at room temperature and a limited electrochemical window." }
+};
+
+let S = { ...DEFAULTS };
+let route = "sulfide";
+let running = true;
+let current = null;      /* null = overview */
+let hotIndex = 0;
+
+/* =====================================================================
+   PROCESS MODEL — a teaching model of the solid-state route. It links
+   the guide's parameters to the outcomes the guide names as
+   quality features. It is not a calibrated plant prediction.
+   ===================================================================== */
+function model() {
+  const g = GEOM[route];
+  const oxide = route === "oxide", sulf = route === "sulfide", poly = route === "polymer",
+        hal = route === "halide";
+  /* halides are ductile like sulfides — they densify under pressure rather
+     than in a furnace — so they follow the sulfide branch here. [1] */
+  const ductile = sulf || hal;
+
+  /* --- powder and melt preparation -------------------------------------- */
+  const partSize = (oxide || hal)
+    ? clamp(14 * Math.exp(-(S.grindH - 1) / 4.2) * Math.pow(S.grindD / 4, 0.55) * Math.pow(500 / S.grindRPM, 0.5), 0.2, 40)
+    : 3.2;                                    /* µm — the ground classes only */
+  const disp = poly
+    ? clamp(100 - 45 * Math.exp(-(S.shear - 5) / 26) - Math.max(0, S.shear - 85) * 1.4
+            - 22 * Math.exp(-(S.mixMin - 4) / 18))
+    : clamp(100 - 42 * Math.exp(-(S.mixMin - 4) / 16) - Math.max(0, 3000 - S.agit) * 0.004
+            - Math.max(0, S.agit - 8000) * 0.003
+            - Math.max(0, 34 - S.mixT) * 0.7 - Math.max(0, S.mixT - 50) * 1.1);
+  const polyDeg = poly ? Math.max(0, S.cylT - 100) * 1.6 + Math.max(0, S.shear - 85) * 1.1 : 0;
+
+  /* --- the electrolyte layer -------------------------------------------- */
+  /* aerosol / casting / co-extrusion all end in a layer of a given density */
+  const layerDens = oxide
+    ? clamp(72 + (S.jetV - 100) * 0.022 - Math.max(0, S.depRate - 6000) * 0.002
+            - Math.max(0, S.chamP - 0.05) * 9 + (S.sintT - 500) * 0.012 + S.sintH * 0.9, 40, 100)
+    : ductile
+    ? clamp(70 + (S.calP / 2500) * 26 + (S.calT - 20) * 0.06, 40, 100)
+    : clamp(68 + (S.calP / 2500) * 22 + (S.calT - 20) * 0.08 - polyDeg * 0.3, 40, 100);
+  const grainOK = oxide ? (S.sintT <= 1450 && S.sintT >= 900) : true;
+
+  /* --- dry coating: a fibrillated binder is what makes a free-standing film --- */
+  const fibril = clamp(S.dcFib);
+  const dryFilmQ = clamp(96 + (S.dcT - 20) * 0.035 - Math.max(0, 60 - fibril) * 1.3
+                     - Math.max(0, fibril - 95) * 1.7 - Math.max(0, S.dcT - 200) * 0.6);
+
+  /* --- ALD: thickness follows web speed, ~1 nm at 30 m/min, ~10 nm at 10 m/min --- */
+  const aldNm = clamp(300 / S.aldSpd - 9, 0.4, 60);
+  const aldOK = S.aldT >= 100 && S.aldT <= 250;
+  const aldQ  = clamp(100 - (aldOK ? 0 : 34) - Math.max(0, aldNm - 22) * 1.4
+                     - Math.max(0, 0.8 - aldNm) * 40);
+
+  /* --- compacting: pressure, heat and time close the porosity --- */
+  const compDens = clamp(52 + 34 * (1 - Math.exp(-S.compP / 150))
+                     + (Math.min(S.compT, 1400) - 20) * 0.011 + Math.log10(S.compH * 60 + 1) * 5, 40, 100);
+
+  /* --- interfacial resistance, the central quantity of a solid cell ------ */
+  const contact = clamp(38 + 46 * (1 - Math.exp(-S.stackF / (oxide ? 26 : 7)))
+                     + (layerDens - 70) * 0.55 + (poly ? (S.calT - 20) * 0.09 : 0)
+                     + (compDens - 70) * 0.30, 0, 100);
+  const rInt = clamp(6 + 240 * Math.exp(-contact / 22) + Math.max(0, partSize - 6) * 3.5
+                   + (oxide && !grainOK ? 40 : 0), 4, 400);   /* Ω·cm² */
+  const rBulk = S.sseTh * 1e-4 / (g.cond * 1e-3);             /* Ω·cm², thickness ÷ conductivity */
+  const rTot = rInt + rBulk + 4;
+
+  /* --- capacity, voltage and energy ------------------------------------- */
+  const capC = S.cathTh * 1e-4 * (layerDens / 100) * 3.4 * 165;   /* mAh/cm² from the catholyte */
+  const capA = S.liTh * 1e-4 * 0.534 * 3860;                      /* mAh/cm² of lithium metal */
+  const np = capA / capC;
+  const vCell = 3.8 * S.layers;                                   /* bipolar series */
+  const areaCm2 = 200;
+  const cellAh = capC * areaCm2 / 1000;
+  const cellWh = cellAh * vCell;
+  /* stack thickness per repeat unit, µm → volumetric energy */
+  const unitTh = S.liTh + S.sseTh + S.cathTh + 14;
+  const wgrav = clamp(180 + (capC * 46) - S.sseTh * 1.1 - Math.max(0, S.liTh - capC / 0.206) * 1.4, 90, 520);
+  const wvol = clamp(cellWh * 1000 / (areaCm2 * unitTh * S.layers * 1e-4) * 0.62, 100, 1400);
+
+  /* --- lithium plating and dendrites ------------------------------------- */

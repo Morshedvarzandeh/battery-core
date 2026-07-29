@@ -3,6 +3,22 @@
 This log records modeling decisions and lessons so that the reasoning behind
 the code remains visible as the project grows.
 
+## 2026-07-29 — Chapter 1 integration review
+
+- Process-guide ranges and scientific literature can support an educational
+  process sequence without turning illustrative scores into factory predictions.
+- Solid-state production is not one route: electrolyte class changes the
+  material preparation, densification, atmosphere, interface, and finishing
+  requirements.
+- Replacing liquid electrolyte and a separate porous separator removes filling
+  and wetting from the reference route, but it does not remove dendrite,
+  internal-short, moisture, toxicity, solvent, or fire risk.
+- Aging mechanisms can be organized around capacity, impedance, and
+  self-discharge for teaching, but those three outputs are not an exhaustive
+  diagnostic model.
+- Apparent short-term capacity recovery does not reverse degradation, and deep
+  discharge should not be presented as a general cell-rejuvenation method.
+
 ## 2026-07-27 — Fick's first law
 
 - A constitutive law can be implemented without choosing a mesh, time

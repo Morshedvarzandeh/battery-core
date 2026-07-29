@@ -1,9 +1,3 @@
-.chart figcaption span{display:block;font-size:var(--font-size-small);color:var(--muted-foreground);margin-top:1px}
-.chart svg{display:block;width:100%;height:auto}
-.chart text{font-family:inherit}
-.cAx{font-size:9px;fill:var(--faint)}
-.cLab{font-size:9px;font-weight:500;fill:var(--muted-foreground)}
-.cNow{font-size:9.5px;font-weight:600;fill:var(--foreground)}
 .cVal{font-size:10.5px;font-weight:600;fill:var(--foreground)}
 .chart-note{font-size:var(--font-size-small);line-height:1.55;color:var(--muted-foreground);margin:2px 2px 4px;
   padding-left:8px;border-left:3px solid var(--green)}
@@ -39,89 +33,6 @@
 .anat p b{color:var(--foreground);font-weight:var(--font-weight-medium)}
 
 /* ---------------- material flow ---------------- */
-/* ---- machine overview ---- */
-.hmiHead{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:stretch}
-.hmiOee>small,.hmiCur>small{display:block;font-size:10px;font-weight:600;letter-spacing:.09em;
-  color:var(--muted-foreground);margin-bottom:8px}
-.hmiOeeRow{display:flex;gap:14px;align-items:center}
-.hmiSub{display:flex;gap:6px}
-.dnut{display:flex;flex-direction:column;align-items:center;gap:3px}
-.dnut svg{display:block}
-.dnut small{font-size:10px;color:var(--muted-foreground);white-space:nowrap}
-.dnutV{font-weight:600;fill:var(--foreground)}
-.dnutU{font-size:9px;fill:var(--muted-foreground)}
-.hmiCur{border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 18px;min-width:0}
-.hmiCur>div{display:flex;justify-content:space-between;gap:14px;align-items:baseline;
-  padding:5px 0;border-bottom:1px solid var(--border)}
-.hmiCur>div:last-child{border-bottom:0}
-.hmiCur span{font-size:12px;color:var(--muted-foreground);white-space:nowrap}
-.hmiCur b{font-size:12.5px;font-weight:600;text-align:right}
-.hmiCur b.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;letter-spacing:.02em}
-.hmiCur b[data-g="A"]{color:var(--green)}
-.hmiCur b[data-g="B"]{color:var(--primary)}
-.hmiCur b[data-g="C"]{color:var(--warning)}
-.hmiCur b[data-g="REWORK"]{color:var(--destructive)}
-.hmiTrend{display:grid;gap:6px}
-.trend small{display:flex;justify-content:space-between;font-size:10px;font-weight:600;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--muted-foreground);margin-bottom:1px}
-.trend small b{font-weight:600;letter-spacing:0;text-transform:none;color:var(--foreground);font-size:11px}
-.trend svg{display:block;width:230px}
-.hmiScroll{overflow-x:auto;margin-top:10px}
-.hmiScroll svg{display:block;min-width:900px}
-.hmiSt{cursor:pointer}
-.hmiHit{fill:transparent;stroke:transparent;stroke-width:1.5}
-.hmiSt:hover .hmiHit,.hmiSt.on .hmiHit{fill:color-mix(in srgb,var(--primary) 8%,transparent);
-  stroke:color-mix(in srgb,var(--primary) 45%,transparent)}
-.hmiSt:focus-visible{outline:none}
-.hmiSt:focus-visible .hmiHit{fill:color-mix(in srgb,var(--primary) 12%,transparent);stroke:var(--primary)}
-.hmiLab{font-size:11px;font-weight:500;fill:var(--foreground)}
-.hmiNo{font-size:10px;font-weight:600;fill:var(--muted-foreground)}
-.hmiPhase{font-size:10px;font-weight:600;letter-spacing:.11em;fill:var(--muted-foreground)}
-.floorT{font-size:12px;font-weight:600;fill:var(--foreground);
-  paint-order:stroke fill;stroke:var(--background);stroke-width:3.5px;stroke-linejoin:round}
-.floorS{font-size:10.5px;fill:var(--muted-foreground);
-  paint-order:stroke fill;stroke:var(--background);stroke-width:3px;stroke-linejoin:round}
-.alarmBar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px;padding:9px 12px;
-  border-radius:9px;background:var(--card);border:1px solid var(--border)}
-.alarmBar[data-ok="1"]{border-color:color-mix(in srgb,var(--green) 34%,transparent)}
-.alarmBar>i{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
-.alarmBar>b{font-size:12.5px;font-weight:600;white-space:nowrap}
-.alarmBar>span{font-size:12px;color:var(--muted-foreground)}
-.alarmRows{display:flex;flex-wrap:wrap;gap:7px}
-.alarmRows button{display:flex;align-items:baseline;gap:7px;font:inherit;cursor:pointer;text-align:left;
-  padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--background);
-  color:var(--foreground)}
-.alarmRows button:hover{border-color:var(--primary)}
-.alarmRows em{font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted-foreground)}
-.alarmRows strong{font-size:12px;font-weight:600}
-.alarmRows span{font-size:11.5px;color:var(--muted-foreground)}
-.alarmRows button[data-l="bad"]{border-color:color-mix(in srgb,var(--destructive) 45%,transparent)}
-.alarmRows button[data-l="bad"] em{color:var(--destructive)}
-.alarmRows button[data-l="warn"] em{color:var(--warning)}
-.hmiKey{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted-foreground)}
-.hmiKey span{display:flex;align-items:center;gap:6px}
-.hmiKey i{width:9px;height:9px;border-radius:50%;display:inline-block}
-@media (max-width:760px){
-  .hmiScroll svg{min-width:660px}
-  .alarmRows{flex-direction:column;width:100%}
-  .alarmRows button{width:100%}
-}
-@media (max-width:1180px){
-  .hmiHead{grid-template-columns:1fr}
-  .hmiCur{border-left:0;border-right:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-    padding:10px 0}
-  .hmiTrend{grid-template-columns:repeat(3,1fr);display:grid}
-  .trend svg{width:100%}
-}
-.newRow{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-.newCard{display:flex;flex-direction:column;gap:5px;text-align:left;font:inherit;cursor:pointer;
-  background:var(--card);border:1px solid transparent;border-radius:10px;padding:11px 12px;color:var(--foreground)}
-.newCard:hover{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 6%,transparent)}
-.newCard b{font-size:13px;font-weight:600;letter-spacing:-.01em}
-.newCard span{font-size:12px;line-height:1.5;color:var(--muted-foreground)}
-.newCard u{text-decoration:none;font-size:11.5px;font-weight:600;color:var(--primary);margin-top:auto;padding-top:4px}
-@media (max-width:1180px){.newRow{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:700px){.newRow{grid-template-columns:1fr}}
 .chain{display:grid;gap:0}
 .chain-row{display:grid;grid-template-columns:140px 22px minmax(0,1fr);align-items:stretch}
 .chain-by{padding:12px 10px 12px 0;text-align:right}
@@ -198,3 +109,86 @@
 .mSteel{fill:light-dark(#e4e9ec,#3a4247);stroke:light-dark(#a9b6bd,#5d686e);stroke-width:1.5}
 .mSteel2{fill:light-dark(#f0f3f5,#454e54);stroke:light-dark(#b6c2c8,#6a757b);stroke-width:1.5}
 .mDark{fill:light-dark(#3f4a51,#8b979e);stroke:light-dark(#2c353a,#a7b2b8);stroke-width:1.5}
+.mGlass{fill:light-dark(#dceaf4,#2c3b45);stroke:light-dark(#93b6ca,#5a7180);stroke-width:1.5}
+.mHot{fill:var(--hot);stroke:light-dark(#a63d1f,#f0a184);stroke-width:1.5}
+.mHotSoft{fill:light-dark(#f0a184,#8a4229);stroke:light-dark(#c9714f,#c9714f);stroke-width:1.2}
+.mCu{fill:var(--copper);stroke:light-dark(#8a5323,#d99a5f);stroke-width:1.2}
+.mAl{fill:var(--alu);stroke:light-dark(#8b9ba5,#c7d4db);stroke-width:1.2}
+.mAn{fill:var(--anode);stroke:light-dark(#4d5c64,#7d8e97);stroke-width:1.2}
+.mCa{fill:var(--cathode);stroke:light-dark(#3f7f68,#7cc0a8);stroke-width:1.2}
+.mSep{fill:var(--sep);stroke:light-dark(#b8b183,#a49d76);stroke-width:1.2}
+.mEl{fill:var(--elyte);stroke:light-dark(#2b6485,#7ab6d6);stroke-width:1.2}
+.mAcc{fill:var(--primary);stroke:light-dark(#1f7fd6,#a9d5ff);stroke-width:1.2}
+.mLine{stroke:light-dark(#8b979e,#7d888e);stroke-width:1.4;fill:none}
+.mPipe{stroke:var(--elyte);stroke-width:5;fill:none;stroke-linecap:round}
+.mWeb{stroke:var(--copper);stroke-width:4;fill:none;stroke-linecap:round}
+.mWebA{stroke:var(--anode);stroke-width:5;fill:none;stroke-linecap:round}
+.mWebC{stroke:var(--copper);stroke-width:5;fill:none;stroke-linecap:round}
+.mLnAl{stroke:var(--alu);stroke-width:7;fill:none;stroke-linecap:round}
+.mLnCa{stroke:var(--cathode);stroke-width:5;fill:none;stroke-linecap:round}
+.mLnSep{stroke:var(--sep);stroke-width:5;fill:none;stroke-linecap:round}
+.mLnHot{stroke:var(--hot);stroke-width:4;fill:none;stroke-linecap:round}
+.mWebL{stroke:light-dark(#8e9aa2,#9fabb3);stroke-width:5;fill:none;stroke-linecap:round}
+.mWebS{stroke:var(--sep);stroke-width:3.5;fill:none;stroke-linecap:round}
+.mTxt{fill:var(--foreground);font-size:11px;font-weight:600}
+.mTxtS{fill:var(--muted-foreground);font-size:9.5px;font-weight:500}
+.mTxtW{fill:#fff;font-size:10px;font-weight:700}
+/* halo: lines, webs and selection rings duck behind every label */
+.mTxt,.mTxtS{paint-order:stroke fill;stroke:var(--background);stroke-width:3.2;
+  stroke-linejoin:round;stroke-linecap:round}
+.mTxt.onpanel,.mTxtS.onpanel{stroke:none}
+.mLead{stroke:light-dark(#9aa6ac,#77838a);stroke-width:1;fill:none}
+.mArrow{fill:var(--primary)}
+/* ---------------- motion ----------------
+   Every moving part moves the way the real one does: the two rollers of a
+   nip turn against each other, a mill charge rises with the shell and then
+   avalanches, a stirred charge is carried round the tool, a press
+   reciprocates. Hovering a part runs its own motion even with the line
+   held, so you can watch one mechanism at a time.                        */
+.spin,.spinR{transform-box:fill-box;transform-origin:center}
+.tumble,.orbit,.orbitS{transform-box:view-box}
+.is-run .spin {animation:mspin  2.6s linear infinite}
+.is-run .spinR{animation:mspinR 2.6s linear infinite}
+.is-run .flowdash{animation:mdash 1.1s linear infinite}
+.is-run .puff{animation:mpuff 2.2s ease-in-out infinite}
+.is-run .bob{animation:mbob 2.4s ease-in-out infinite}
+.is-run .tumble{animation:mtumble 3.6s cubic-bezier(.34,0,.16,1) infinite}
+.is-run .orbit {animation:morbit 4.4s linear infinite}
+.is-run .orbitS{animation:morbit 7.6s linear infinite}
+.is-run .press{animation:mpress 2.4s cubic-bezier(.4,0,.3,1) infinite}
+.is-run .screw{animation:mscrew 1.4s linear infinite}
+.flowdash{stroke-dasharray:9 7}
+@keyframes mspin{to{transform:rotate(360deg)}}
+@keyframes mspinR{to{transform:rotate(-360deg)}}
+@keyframes mdash{to{stroke-dashoffset:-32}}
+@keyframes mpuff{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:.75;transform:translateY(-7px)}}
+@keyframes mbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+/* the charge is lifted by the shell, then lets go and falls back */
+@keyframes mtumble{0%{transform:rotate(0deg)}64%{transform:rotate(18deg)}
+  72%{transform:rotate(20deg)}100%{transform:rotate(0deg)}}
+@keyframes morbit{to{transform:rotate(360deg)}}
+@keyframes mpress{0%,100%{transform:translateY(0)}44%{transform:translateY(9px)}
+  60%{transform:translateY(9px)}}
+@keyframes mscrew{to{transform:translateX(11px)}}
+/* hovering or tabbing to a part shows that part moving, line running or not */
+.hot:hover .spin,  .hot:focus-visible .spin  {animation:mspin  1.9s linear infinite}
+.hot:hover .spinR, .hot:focus-visible .spinR {animation:mspinR 1.9s linear infinite}
+.hot:hover .tumble,.hot:focus-visible .tumble{animation:mtumble 2.6s cubic-bezier(.34,0,.16,1) infinite}
+/* a mill or mixer charge is one body — it moves whenever the machine does,
+   not only when the pointer is over the half of it you happen to be on   */
+.machine:has(.hot:hover) .tumble,.machine:has(.hot:focus-visible) .tumble{
+  animation:mtumble 2.6s cubic-bezier(.34,0,.16,1) infinite}
+.machine:has(.hot:hover) .orbit,.machine:has(.hot:focus-visible) .orbit{
+  animation:morbit 3.2s linear infinite}
+.machine:has(.hot:hover) .orbitS,.machine:has(.hot:focus-visible) .orbitS{
+  animation:morbit 5.4s linear infinite}
+.hot:hover .orbit, .hot:focus-visible .orbit {animation:morbit 3.2s linear infinite}
+.hot:hover .orbitS,.hot:focus-visible .orbitS{animation:morbit 5.4s linear infinite}
+.hot:hover .press, .hot:focus-visible .press {animation:mpress 1.7s cubic-bezier(.4,0,.3,1) infinite}
+.hot:hover .screw, .hot:focus-visible .screw {animation:mscrew 1s linear infinite}
+.hot:hover .bob,   .hot:focus-visible .bob   {animation:mbob 1.7s ease-in-out infinite}
+.hot:hover .puff,  .hot:focus-visible .puff  {animation:mpuff 1.5s ease-in-out infinite}
+.hot:hover .flowdash,.hot:focus-visible .flowdash{animation:mdash .75s linear infinite}
+@media (prefers-reduced-motion:reduce){
+  .is-run .spin,.is-run .spinR,.is-run .flowdash,.is-run .puff,.is-run .bob,
+  .is-run .tumble,.is-run .orbit,.is-run .orbitS,.is-run .press,.is-run .screw,

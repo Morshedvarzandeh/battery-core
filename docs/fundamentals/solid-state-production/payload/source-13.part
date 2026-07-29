@@ -1,0 +1,176 @@
+    V("Roll temperature", S.dcT + " °C", ok(S.dcT, 20, 200), "guide range RT–200 °C"),
+    V("Solvent to remove", "none", "ok", "no drying section behind this machine")],
+  verdict:m => m.fibril < 55 ? ["bad", "No self-supporting film",
+      `Shear at ${S.dcFib}%. Without a fibre network the blend leaves the nip as powder, and there is nothing to laminate or stack.`]
+    : m.dryFilmQ < 80 ? ["bad", "Film outside its window",
+      "Layer thickness and position are the two challenges the guide names for this process, and both are drifting."]
+    : m.fibril > 95 ? ["warn", "Over-sheared",
+      "Past about 95% the mix agglomerates instead of knitting, and the structure stops being homogeneous."]
+    : ["ok", "Dry film formed",
+      `Film quality ${m.dryFilmQ.toFixed(0)}% at ${S.dcT} °C, with no solvent anywhere in the step.`],
+  viz:m => ({ fill: clamp(m.dryFilmQ) })
+},
+
+ald: {
+  lead:"You are at the atomic layer deposition line. Thickness is not set by a gap here — it is set by how many self-limiting cycles the web sees, which means by how fast it moves.",
+  ctl:["aldSpd","aldT"],
+  read:m => [
+    V("Film thickness", m.aldNm.toFixed(1) + " nm", m.aldNm >= 0.8 && m.aldNm <= 22 ? "ok" : "warn", "≈1 nm at 30 m/min, ≈10 nm at 10 m/min"),
+    V("Process temperature", S.aldT + " °C", m.aldOK ? "ok" : "bad", "guide window 100–250 °C"),
+    V("Coating quality", m.aldQ.toFixed(0) + "%", m.aldQ >= 88 ? "ok" : m.aldQ >= 75 ? "warn" : "bad"),
+    V("Interface quality", m.interQ.toFixed(0) + "%", m.interQ >= 85 ? "ok" : "warn", "what this layer exists to protect")],
+  verdict:m => !m.aldOK ? ["bad", "Outside the temperature window",
+      `${S.aldT} °C against a 100–250 °C window. Outside it the precursor stops reacting only with the surface, and the layer is no longer discrete.`]
+    : m.aldNm < 0.8 ? ["warn", "Barely a monolayer",
+      "The web is moving too fast to build a continuous film. Slow it down or accept that the interface is unprotected."]
+    : m.aldNm > 22 ? ["warn", "Thicker than the process is for",
+      "ALD is slow by nature. At this thickness a coating process would be faster and this machine is the bottleneck."]
+    : ["ok", "Interface layer grown",
+      `${m.aldNm.toFixed(1)} nm at ${S.aldSpd} m/min and ${S.aldT} °C — discrete, and no vacuum needed.`],
+  viz:m => ({ fill: clamp(m.aldQ) })
+},
+
+compacting: {
+  lead:"You are at the press. The stack arrives as a pile of layers with a resistance at every interface — pressure, heat and time are the only things that close them.",
+  ctl:["compP","compT","compH"],
+  read:m => [
+    V("Relative density", m.compDens.toFixed(0) + "%", m.compDens >= 82 ? "ok" : m.compDens >= 70 ? "warn" : "bad", "porosity closed"),
+    V("Pressure", S.compP + " MPa", ok(S.compP, 5, 600), "guide range 5–600 MPa"),
+    V("Temperature", S.compT + " °C", ok(S.compT, 20, 2000), "guide range RT–2 000 °C"),
+    V("Interfacial contact", m.contact.toFixed(0) + "%", m.contact >= 70 ? "ok" : "warn", "the quantity the whole cell depends on"),
+    V("Interfacial resistance", m.rInt.toFixed(0) + " Ω·cm²", m.rInt <= 40 ? "ok" : m.rInt <= 90 ? "warn" : "bad")],
+  verdict:m => m.compDens < 70 ? ["bad", "Stack not densified",
+      `Relative density ${m.compDens.toFixed(0)}%. The layers are touching in places and not in others, which is exactly the condition that puts a short where the thin spots are.`]
+    : m.compDens < 82 ? ["warn", "Under-compacted",
+      "Porosity is still open between the layers. Raise the pressure, the temperature, or simply hold it longer."]
+    : ["ok", "Stack densified",
+      `Relative density ${m.compDens.toFixed(0)}% at ${S.compP} MPa and ${S.compT} °C, held ${S.compH < 1 ? (S.compH * 60).toFixed(0) + " min" : S.compH.toFixed(1) + " h"}. Contact is ${m.contact.toFixed(0)}%.`],
+  viz:m => ({ fill: clamp(m.compDens) })
+},
+
+
+extrusion: {
+  lead:"You are at the lithium extruder. A billet of metallic lithium goes in; a foil of controlled thickness comes out, optionally with a protective skin.",
+  ctl:["liTh","pistF","extT","passiv"],
+  read:m => [
+    V("Foil thickness", S.liTh + " µm", band(S.liTh, 30, 80, 15), "sets how much lithium the cell carries"),
+    V("Foil quality index", m.foilQ.toFixed(0) + "%", m.foilQ >= 90 ? "ok" : m.foilQ >= 78 ? "warn" : "bad", "homogeneity and surface roughness"),
+    V("Anode areal capacity", m.capA.toFixed(1) + " mAh/cm²", "ok", "lithium metal, 3 860 mAh/g"),
+    V("N/P ratio", m.np.toFixed(2), m.np >= 1.05 ? (m.np > 3 ? "warn" : "ok") : "bad", "lithium ÷ catholyte capacity"),
+    V("Downstream atmosphere", S.passiv ? "dry room" : "inert gas throughout", S.passiv ? "ok" : "warn"),
+    V("Piston force", fmt(S.pistF) + " kN", ok(S.pistF, 1000, 10000), "2nd ed. range 1 000–10 000 kN")],
+  verdict:m => m.np < 1 ? ["bad", "Not enough lithium in the foil",
+      `N/P ${m.np.toFixed(2)}. The catholyte will ask for more lithium than the anode contains. Thicken the foil or thin the catholyte.`]
+    : m.foilQ < 78 ? ["bad", "Foil quality out of specification",
+      "Temperature and piston force are away from the window. The guide grades foil thickness, film width, homogeneity and surface roughness — all four come from this nip."]
+    : m.np > 3 ? ["warn", "Carrying a lot of dead lithium",
+      `N/P ${m.np.toFixed(2)}. Safe, but lithium is the most expensive material in the cell and most of this never cycles.`]
+    : !S.passiv ? ["warn", "Running without passivation",
+      "The foil is bare metallic lithium. Every station downstream now has to be an inert-gas enclosure rather than a dry room."]
+    : ["ok", "Foil released to lamination",
+      `${S.liTh} µm at ${m.foilQ.toFixed(0)}% quality, passivated, N/P ${m.np.toFixed(2)}.`],
+  viz:m => ({ th: clamp(S.liTh / 120 * 100) })
+},
+
+lamination: {
+  lead:"You are at the laminator. Two foils meet and must leave as one. Heat and pressure both feed the bond.",
+  ctl:["lamP","lamT","liTh"],
+  read:m => [
+    V("Bond index", m.lamQ.toFixed(0) + "%", m.lamQ >= 88 ? "ok" : m.lamQ >= 78 ? "warn" : "bad", "adhesion between the layers"),
+    V("Line pressure", fmt(S.lamP) + " N/mm", S.lamP <= 2500 ? "ok" : "bad", "2nd ed. limit below 2 500 N/mm"),
+    V("Roller tempering", S.lamT + " °C", band(S.lamT, 40, 120, 20), "tempering raises the adhesive force"),
+    V("Composite thickness", (S.liTh + 12) + " µm", "ok", "lithium plus collector"),
+    V("Cutting", "no mechanical cutting", "warn", "unsuitable for lithium — the web stays continuous")],
+  verdict:m => S.lamP > 2200 ? ["bad", "Pressure above the useful band",
+      "The 2nd edition caps line pressure below 2 500 N/mm, and metallic lithium is soft — beyond about 2 200 N/mm you are smearing it, not bonding it."]
+    : m.lamQ < 78 ? ["bad", "Bond will not hold",
+      "Adhesion between the layers is the whole output of this station. Raise the line pressure, or temper the rollers — heat is doing half the work here."]
+    : m.lamQ < 88 ? ["warn", "Bond marginal",
+      "It will survive slitting but may delaminate at the cut. Add tempering before you add pressure."]
+    : ["ok", "Negative electrode laminated",
+      `Bond index ${m.lamQ.toFixed(0)}% at ${fmt(S.lamP)} N/mm and ${S.lamT} °C.`],
+  viz:m => ({ bond: m.lamQ })
+},
+
+ballmill: {
+  lead:"You are at the ball mill. Dry grinding, no liquid, for as long as the target particle size takes.",
+  ctl:["grindH","grindD","grindRPM"],
+  read:m => [
+    V("Average particle size", m.partSize.toFixed(1) + " µm", m.partSize <= 4 ? "ok" : m.partSize <= 6 ? "warn" : "bad", "the guide's first quality feature"),
+    V("Grinding time", S.grindH.toFixed(1) + " h", ok(S.grindH, 1, 10), "guide range 1–10 h"),
+    V("Media diameter", S.grindD.toFixed(1) + " mm", ok(S.grindD, 1, 10), "large balls break coarse, small balls finish fine"),
+    V("Drum speed", S.grindRPM + " min⁻¹", band(S.grindRPM, 300, 700, 150), "guide: approx. 500 min⁻¹"),
+    V("Media abrasion", S.grindRPM > 700 || S.grindH > 8 ? "elevated" : "low", S.grindRPM > 700 || S.grindH > 8 ? "warn" : "ok", "the named challenge here"),
+    V("Atmosphere", "clean room or none", "ok", "the least demanding station in the plant")],
+  verdict:m => m.partSize > 6 ? ["bad", "Powder still too coarse",
+      `${m.partSize.toFixed(1)} µm. Coarse oxide powder sinters unevenly and leaves a rough, resistive interface that no downstream station can repair.`]
+    : (S.grindRPM > 700 || S.grindH > 8) ? ["warn", "Grinding hard on the media",
+      "Abrasion of the grinding media is the challenge the guide names. Ceramic debris ends up in the electrolyte layer."]
+    : ["ok", "Powder ready to calcine",
+      `${m.partSize.toFixed(1)} µm after ${S.grindH.toFixed(1)} h. Calcination follows, to set the powder properties and limit shrinkage during sintering.`],
+  viz:m => ({ size: clamp(100 - m.partSize * 6) })
+},
+
+mixing: {
+  lead:"You are at the planetary mixer. The same machine blends gently and disperses at high shear — the speed dial decides which.",
+  ctl:["mixMin","agit","mixT"],
+  read:m => [
+    V("Dispersion index", m.disp.toFixed(0) + "%", m.disp >= 90 ? "ok" : m.disp >= 82 ? "warn" : "bad", "agglomerates broken up"),
+    V("Mixing time", S.mixMin + " min", ok(S.mixMin, 6, 60), "guide range 0.1–1 h"),
+    V("Agitator speed", fmt(S.agit) + " min⁻¹", ok(S.agit, 100, 10000), "guide range 100–10 000 rpm"),
+    V("Temperature", S.mixT + " °C", band(S.mixT, 20, 50, 8), "guide range RT–50 °C"),
+    V("Solvent choice", route === "sulfide" ? "severely limited" : "normal", route === "sulfide" ? "warn" : "ok", "sulfides react with polar solvents and moisture"),
+    V("Abrasion risk", S.agit > 8000 ? "elevated" : "low", S.agit > 8000 ? "warn" : "ok")],
+  verdict:m => m.disp < 82 ? ["bad", "Mixture not homogeneous",
+      `Dispersion ${m.disp.toFixed(0)}%. Agglomerates survive into the layer and print through as thickness scatter at the caster.`]
+    : S.agit > 8000 ? ["warn", "Shear high enough to abrade",
+      "Abrasion, sedimentation and separation are all listed as challenges here. More speed is not always more mixing."]
+    : ["ok", "Batch released to coating",
+      `Dispersion ${m.disp.toFixed(0)}% after ${S.mixMin} min at ${fmt(S.agit)} min⁻¹.`],
+  viz:m => ({ disp: m.disp })
+},
+
+compounding: {
+  lead:"You are at the twin-screw compounder. Cathode melt and electrolyte melt are made separately, then handed to the co-extruder.",
+  ctl:["cylT","shear","mixMin"],
+  read:m => [
+    V("Melt homogeneity", m.disp.toFixed(0) + "%", m.disp >= 90 ? "ok" : m.disp >= 82 ? "warn" : "bad"),
+    V("Cylinder temperature", S.cylT + " °C", band(S.cylT, 20, 100, 15), "guide range 20–100 °C"),
+    V("Shear energy", S.shear + "%", band(S.shear, 30, 85, 10), "the setpoint that turns a mixture into a melt"),
+    V("Polymer degradation", m.polyDeg > 12 ? "significant" : m.polyDeg > 0 ? "some" : "none", m.polyDeg > 12 ? "bad" : m.polyDeg > 0 ? "warn" : "ok"),
+    V("Interfacial resistance benefit", "electrolyte particles in the cathode melt", "ok", "this is what lowers it"),
+    V("Cycle", "under 1 h", "ok")],
+  verdict:m => m.polyDeg > 12 ? ["bad", "Cooking the polymer",
+      `Cylinder at ${S.cylT} °C with ${S.shear}% shear. Above the window the polymer chains break down and the electrolyte loses conductivity before it ever reaches a cell.`]
+    : m.disp < 82 ? ["warn", "Melt not homogeneous",
+      "Inclusions, agglomerates, concentration gradients and pores are the four challenges listed here. More shear, or longer."]
+    : ["ok", "Both melts ready",
+      `Homogeneity ${m.disp.toFixed(0)}% at ${S.cylT} °C. Electrolyte particles are in the cathode melt, which is what reduces the interfacial resistance later.`],
+  viz:m => ({ melt: m.disp })
+},
+
+tape: {
+  lead:"You are at the tape caster. Slurry through a slot die onto the substrate, then the solvent has to leave.",
+  ctl:["gapH","bandSpd","dryT","cathTh"],
+  read:m => [
+    V("Wet film the recipe needs", m.wetNeed.toFixed(0) + " µm", "ok", "dry thickness ÷ solids by volume"),
+    V("Gap error", (S.gapH - m.wetNeed).toFixed(0) + " µm", Math.abs(S.gapH - m.wetNeed) < 20 ? "ok" : Math.abs(S.gapH - m.wetNeed) < 50 ? "warn" : "bad"),
+    V("Thickness scatter", "±" + m.coatErr.toFixed(1) + " g/m²", m.coatErr <= 2 ? "ok" : m.coatErr <= 3 ? "warn" : "bad", "accuracy along and across the web"),
+    V("Band speed", S.bandSpd + " m/min", ok(S.bandSpd, 25, 100), "2nd ed. range 25–100 m·min⁻¹"),
+    V("Residual solvent", m.solvRes > 40 ? "high" : m.solvRes > 0 ? "some" : "driven off", m.solvRes > 40 ? "bad" : m.solvRes > 0 ? "warn" : "ok", `dryer at ${S.dryT} °C`),
+    V("Catholyte areal capacity", m.capC.toFixed(2) + " mAh/cm²", "ok", "sets the cell's capacity")],
+  verdict:m => m.coatErr > 3 ? ["bad", "Layer thickness out of specification",
+      `±${m.coatErr.toFixed(1)} g/m². Set the gap to ${m.wetNeed.toFixed(0)} µm and slow the band. Thickness accuracy is the headline quality feature of this station.`]
+    : m.coatErr > 2 ? ["warn", "Thickness drifting",
+      "Layer thickness variation from changing production conditions is the named challenge here. It becomes capacity variation later."]
+    : ["ok", "Coating on target",
+      `±${m.coatErr.toFixed(1)} g/m² at ${S.bandSpd} m/min, laying down ${m.capC.toFixed(2)} mAh/cm².`],
+  viz:m => ({ coat: clamp(S.cathTh / 160 * 100) })
+},
+
+aerosol: {
+  lead:"You are at the aerosol deposition chamber. Powder is fired at the substrate fast enough that it deforms and sticks — no melting, no sintering needed for this layer.",
+  ctl:["jetV","depRate","chamP","sseTh"],
+  read:m => [
+    V("Jet velocity", S.jetV + " m/s", ok(S.jetV, 100, 1000), "2nd ed. range 100–1 000 m·s⁻¹"),
+    V("Layer density", m.layerDens.toFixed(0) + "%", m.layerDens >= 88 ? "ok" : m.layerDens >= 78 ? "warn" : "bad", "particles deform on impact"),

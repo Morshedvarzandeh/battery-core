@@ -11,8 +11,7 @@
     "payload/source-17.part", "payload/source-18.part",
     "payload/source-19.part", "payload/source-20.part",
     "payload/source-21.part", "payload/source-22.part",
-    "payload/source-23.part", "payload/source-24.part",
-    "payload/source-25.part", "payload/source-26.part",
+    "payload/source-23.part",
   ];
   const status = document.getElementById("load-status");
 
