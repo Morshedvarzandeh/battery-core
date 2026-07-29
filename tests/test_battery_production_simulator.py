@@ -13,7 +13,7 @@ MODULE = ROOT / "docs" / "fundamentals" / "battery-production"
 HTML = MODULE / "index.html"
 LOADER = MODULE / "loader.js"
 PAYLOAD = MODULE / "payload"
-DELTA = PAYLOAD / "review-2026.delta"
+DELTA_PARTS = [PAYLOAD / f"review-2026-s{index:02d}.delta" for index in range(1, 9)]
 EXPECTED_PARTS = [
     "source-01.part", "source-02.part", "source-03.part",
     "source-04a.part", "source-04b.part",
@@ -55,14 +55,15 @@ def _apply_delta(source: str, operations: list[list[object]]) -> str:
 
 def _source() -> str:
     original = "".join(path.read_text(encoding="utf-8") for path in _parts())
-    operations = json.loads(gzip.decompress(base64.b64decode(DELTA.read_text(encoding="utf-8"))))
+    packed_delta = "".join(path.read_text(encoding="utf-8") for path in DELTA_PARTS)
+    operations = json.loads(gzip.decompress(base64.b64decode(packed_delta)))
     return _apply_delta(original, operations)
 
 
 def test_production_loader_and_payload_exist() -> None:
     assert HTML.is_file()
     assert LOADER.is_file()
-    assert DELTA.is_file()
+    assert all(path.is_file() for path in DELTA_PARTS)
     parts = _parts()
     assert all(path.is_file() for path in parts)
     html = HTML.read_text(encoding="utf-8")
@@ -70,7 +71,8 @@ def test_production_loader_and_payload_exist() -> None:
     assert 'src="loader.js"' in html
     for path in parts:
         assert f"payload/{path.name}" in loader
-    assert "payload/review-2026.delta" in loader
+    for path in DELTA_PARTS:
+        assert f"payload/{path.name}" in loader
     assert "applyLineDelta" in loader
     assert "DecompressionStream" in loader
 
