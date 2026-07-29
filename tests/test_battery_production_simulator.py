@@ -19,6 +19,9 @@ EXPECTED_PARTS = [
     "source-04a.part", "source-04b.part",
     *[f"source-{index:02d}.part" for index in range(5, 19)],
 ]
+EXISTING_REVIEW_HEADING = (
+    '<h1 class="sr">CellForge — Lithium-ion Cell Production Simulator</h1>\n'
+)
 
 
 class _StructureParser(HTMLParser):
@@ -55,6 +58,7 @@ def _apply_delta(source: str, operations: list[list[object]]) -> str:
 
 def _source() -> str:
     original = "".join(path.read_text(encoding="utf-8") for path in _parts())
+    original = original.replace(EXISTING_REVIEW_HEADING, "", 1)
     packed_delta = "".join(path.read_text(encoding="utf-8") for path in DELTA_PARTS)
     operations = json.loads(gzip.decompress(base64.b64decode(packed_delta)))
     return _apply_delta(original, operations)
@@ -73,6 +77,7 @@ def test_production_loader_and_payload_exist() -> None:
         assert f"payload/{path.name}" in loader
     for path in DELTA_PARTS:
         assert f"payload/{path.name}" in loader
+    assert "normalizeReviewBase" in loader
     assert "applyLineDelta" in loader
     assert "DecompressionStream" in loader
 
