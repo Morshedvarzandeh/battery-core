@@ -1,5 +1,7 @@
 """Core, solver-independent equations for battery modeling."""
 
+from importlib.metadata import PackageNotFoundError, version
+
 from battery_core.capacity import (
     c_rate_from_current,
     current_from_c_rate,
@@ -13,4 +15,8 @@ __all__ = [
     "ficks_first_law_flux",
     "ideal_duration_hours",
 ]
-__version__ = "0.1.0"
+
+try:
+    __version__ = version("battery-core")
+except PackageNotFoundError:  # pragma: no cover - package not installed
+    __version__ = "0.0.0"

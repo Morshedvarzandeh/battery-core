@@ -107,7 +107,7 @@ pytest
 ```python
 from battery_core import current_from_c_rate, ideal_duration_hours
 
-current_a = current_from_c_rate(20.0, 10.0)
+current_a = current_from_c_rate(nominal_capacity_ah=20.0, c_rate=10.0)
 duration_minutes = ideal_duration_hours(10.0) * 60.0
 
 print(current_a)          # 200.0
