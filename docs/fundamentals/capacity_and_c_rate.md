@@ -84,18 +84,49 @@ voltage-cutoff time requires a cell model and validated parameters.
 ```python
 from battery_core import current_from_c_rate, ideal_duration_hours
 
-current_a = current_from_c_rate(20.0, 10.0)
+current_a = current_from_c_rate(nominal_capacity_ah=20.0, c_rate=10.0)
 duration_min = ideal_duration_hours(10.0) * 60.0
 
 print(current_a)     # 200.0
 print(duration_min)  # 6.0
 ```
 
+The inverse converts a measured current back to a C-rate:
+
+```python
+from battery_core import c_rate_from_current
+
+rate = c_rate_from_current(current_a=15.0, nominal_capacity_ah=3.2)
+
+print(rate)  # 4.6875
+```
+
+### Arguments are keyword-only
+
+`current_from_c_rate` and `c_rate_from_current` accept keyword arguments only.
+Capacity is the first parameter of one and the second of the other, so a
+transposed positional call would return a plausible but wrong number without
+any error. Requiring names makes that mistake impossible:
+
+```python
+c_rate_from_current(20.0, 40.0)                               # TypeError
+c_rate_from_current(current_a=40.0, nominal_capacity_ah=20.0) # 2.0
+```
+
+`ideal_duration_hours(c_rate)` takes its single argument positionally; with one
+parameter there is nothing to transpose.
+
 ## Assumptions and limitations
 
 - Current is treated as a positive magnitude; charge/discharge sign conventions
   belong to a later current-sign module.
-- Capacity, current, and C-rate must be finite and positive.
+- All inputs must be finite and real-numeric. A non-numeric input, such as the
+  string `"20"`, raises `TypeError` rather than being parsed silently.
+- Nominal capacity must be strictly positive.
+- Current and C-rate must be non-negative. Zero is accepted because it is
+  physical: it represents a rest step.
+- `ideal_duration_hours` is the exception and still requires a strictly
+  positive C-rate, because the duration `1 / 0` is undefined.
 - No voltage, energy, heat, aging, kinetics, or rate-dependent capacity is
   calculated.
 - The functions accept NumPy-compatible arrays for comparisons and plots.

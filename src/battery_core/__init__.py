@@ -1,5 +1,8 @@
 """Core, solver-independent equations for battery modeling."""
 
+from importlib.metadata import PackageNotFoundError, version
+
+from battery_core.aging import arrhenius_factor, parabolic_film_thickness
 from battery_core.capacity import (
     c_rate_from_current,
     current_from_c_rate,
@@ -8,9 +11,15 @@ from battery_core.capacity import (
 from battery_core.diffusion import ficks_first_law_flux
 
 __all__ = [
+    "arrhenius_factor",
     "c_rate_from_current",
     "current_from_c_rate",
     "ficks_first_law_flux",
     "ideal_duration_hours",
+    "parabolic_film_thickness",
 ]
-__version__ = "0.1.0"
+
+try:
+    __version__ = version("battery-core")
+except PackageNotFoundError:  # pragma: no cover - package not installed
+    __version__ = "0.0.0"

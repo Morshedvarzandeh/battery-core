@@ -1,9 +1,8 @@
 """Static checks for the SolidForge production learning simulator."""
 
+import re
 from html.parser import HTMLParser
 from pathlib import Path
-import re
-
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE = ROOT / "docs" / "fundamentals" / "solid-state-production"

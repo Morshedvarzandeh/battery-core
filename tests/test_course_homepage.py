@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 HOMEPAGE = ROOT / "docs" / "index.html"
 CHAPTER_GUIDE = ROOT / "docs" / "chapter-1" / "index.html"

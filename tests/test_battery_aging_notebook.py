@@ -1,12 +1,11 @@
 """Structural checks for the Chapter 1 battery-aging notebook."""
 
-from pathlib import Path
 import ast
 import base64
 import json
 import re
 import zlib
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "notebooks" / "fundamentals" / "04_battery_aging.ipynb"
@@ -62,7 +61,10 @@ def test_aging_notebook_keeps_models_and_claims_qualified() -> None:
     assert "state-of-health estimator" in source
     assert "simplified outputs used by the teaching model" in source
     assert "cell- and duty-specific" in source
-    assert "deep discharge should not be used as a general rejuvenation method" in source
+    assert (
+        "deep discharge should not be used as a general rejuvenation method"
+        in source
+    )
     assert "it is not guaranteed to appear first" in source
     assert "warning signal rather than proof of one specific mechanism" in source
     assert "Nothing else" not in source

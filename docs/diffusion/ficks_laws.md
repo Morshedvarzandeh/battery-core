@@ -30,15 +30,22 @@ species' molar mass converts it to mass flux without changing its direction.
 
 The implemented equation assumes:
 
-- a scalar, concentration-independent diffusion coefficient at each call;
+- a concentration-independent diffusion coefficient at each call;
 - an isotropic medium, represented here in one spatial dimension;
 - a continuum description with a locally defined concentration gradient;
 - diffusion driven only by the concentration gradient; and
 - SI-unit inputs, because numeric values do not carry runtime unit metadata.
 
-The function accepts multiple precomputed gradient values for convenient
-vectorized evaluation. It does not compute those gradients and makes no choice
-of mesh or numerical solver.
+The diffusion coefficient may be a scalar or an array. An array describes a
+spatially varying medium, with one coefficient per position, and it broadcasts
+against the gradient under the usual NumPy rules. Every coefficient must be
+finite and non-negative. The coefficient is still held constant with respect to
+concentration within a single call; supplying an array varies it in space, not
+with the local concentration.
+
+The function likewise accepts multiple precomputed gradient values for
+convenient vectorized evaluation. It does not compute those gradients and makes
+no choice of mesh or numerical solver.
 
 ## Limitations
 

@@ -1,9 +1,8 @@
 """Static checks for the Lithium-ion Cell Architecture tutorial."""
 
+import re
 from html.parser import HTMLParser
 from pathlib import Path
-import re
-
 
 ROOT = Path(__file__).resolve().parents[1]
 TUTORIAL = ROOT / "docs" / "fundamentals" / "lithium-ion-cell-architecture"

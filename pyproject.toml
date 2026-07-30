@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "battery-core"
-version = "0.1.0"
+version = "0.3.0"
 description = "Small, well-documented building blocks for battery physics models"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,7 +23,8 @@ classifiers = [
 dependencies = ["numpy>=1.23"]
 
 [project.optional-dependencies]
-test = ["pytest>=7"]
+test = ["pytest>=7", "tomli>=2; python_version < '3.11'"]
+lint = ["mypy>=1.11", "ruff>=0.6"]
 notebook = [
     "jupyterlab>=4.2,<5",
     "matplotlib>=3.8,<4",
@@ -40,3 +41,30 @@ where = ["src"]
 [tool.pytest.ini_options]
 addopts = "-ra"
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Teaching notebooks use the symbols of the physics they explain: `T_C` for a
+# Celsius temperature and `Ea` for an activation energy read correctly to a
+# battery engineer, and degree, approximation, and multiplication signs belong
+# in the prose. Prose line length is not enforced in narrative cells.
+"notebooks/**/*.ipynb" = ["E501", "N803", "N806", "RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+# No python_version is pinned on purpose. mypy reads the type stubs of the
+# NumPy actually installed, and recent NumPy ships stubs written in syntax its
+# own minimum Python allows. Pinning an older target makes mypy reject those
+# stubs and abort before it checks this project at all. Letting mypy follow the
+# running interpreter keeps the target and the stubs consistent.
+#
+# The 3.10 floor is still enforced: ruff's target-version rejects newer syntax,
+# and the pytest matrix runs the suite on 3.10 itself.
+files = ["src"]
+strict = true
