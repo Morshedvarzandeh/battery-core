@@ -108,11 +108,46 @@ def test_invalid_current_is_rejected(bad_value: float) -> None:
         c_rate_from_current(current_a=bad_value, nominal_capacity_ah=20.0)
 
 
+def test_broadcasting_current_and_capacity() -> None:
+    currents = np.array([5.0, 20.0, 80.0])
+    capacities = np.array([10.0, 20.0, 40.0])
+    np.testing.assert_allclose(
+        c_rate_from_current(current_a=currents, nominal_capacity_ah=capacities),
+        np.array([0.5, 1.0, 2.0]),
+    )
+
+
 @pytest.mark.parametrize("bad_value", ["20", "fast", [1.0, "2.0"]])
 def test_non_numeric_input_raises_type_error(bad_value: object) -> None:
     """A numeric-looking string must be rejected, not silently parsed."""
     with pytest.raises(TypeError):
         current_from_c_rate(nominal_capacity_ah=bad_value, c_rate=1.0)
+    with pytest.raises(TypeError):
+        current_from_c_rate(nominal_capacity_ah=20.0, c_rate=bad_value)
+    with pytest.raises(TypeError):
+        c_rate_from_current(current_a=bad_value, nominal_capacity_ah=20.0)
+    with pytest.raises(TypeError):
+        c_rate_from_current(current_a=20.0, nominal_capacity_ah=bad_value)
+    with pytest.raises(TypeError):
+        ideal_duration_hours(bad_value)
+
+
+@pytest.mark.parametrize(
+    ("function", "kwargs"),
+    [
+        (current_from_c_rate, {"nominal_capacity_ah": 20.0, "c_rate": 2.0}),
+        (c_rate_from_current, {"current_a": 40.0, "nominal_capacity_ah": 20.0}),
+    ],
+)
+def test_scalar_inputs_return_a_real_float(function: object, kwargs: dict) -> None:
+    """The documented scalar contract is a float, not a 0-d array."""
+    result = function(**kwargs)  # type: ignore[operator]
+    assert isinstance(result, float)
+    assert not isinstance(result, np.ndarray)
+
+
+def test_ideal_duration_returns_a_real_float() -> None:
+    assert isinstance(ideal_duration_hours(2.0), float)
 
 
 def test_positional_call_raises_type_error() -> None:

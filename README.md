@@ -100,6 +100,14 @@ python -m pip install -e '.[test]'
 pytest
 ```
 
+To run the linter and type checker as well:
+
+```bash
+python -m pip install -e '.[test,lint]'
+ruff check .
+mypy
+```
+
 ## Quick start
 
 ### Capacity and C-rate
@@ -123,6 +131,16 @@ flux = ficks_first_law_flux(1.0e-14, 2.0e6)
 print(flux)  # -2e-08 mol/(m^2 s)
 ```
 
+The diffusion coefficient may also be an array, which describes a spatially
+varying medium and broadcasts against the gradient:
+
+```python
+import numpy as np
+
+flux = ficks_first_law_flux(np.array([1.0e-14, 2.0e-14]), 2.0e6)
+print(flux)  # [-2.e-08 -4.e-08]
+```
+
 See [`docs/diffusion/ficks_laws.md`](docs/diffusion/ficks_laws.md) for assumptions and the sign convention.
 
 ## Contributing
@@ -130,6 +148,9 @@ See [`docs/diffusion/ficks_laws.md`](docs/diffusion/ficks_laws.md) for assumptio
 Contributions are welcome. Keep physics independent of solver choices, add tests
 for new behavior, document units and assumptions, and run `pytest` before opening
 a pull request.
+
+See [`CHANGELOG.md`](CHANGELOG.md) for released changes, including the
+keyword-only capacity API introduced in 0.2.0.
 
 ## License
 

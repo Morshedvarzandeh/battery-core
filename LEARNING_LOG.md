@@ -27,5 +27,32 @@ the code remains visible as the project grows.
 - A 20 Ah example is useful for arithmetic, but the nameplate value must not be
   treated as rate-independent usable capacity.
 
+## 2026-07-30 — Validating inputs at the physics boundary
+
+- An argument order that is safe to transpose is a silent-error hazard, not a
+  style question. Nominal capacity sits first in `current_from_c_rate` and
+  second in `c_rate_from_current`, so a swapped positional call returned a
+  plausible number instead of failing. Making both functions keyword-only is
+  worth a breaking change, because the wrong answer was indistinguishable from
+  the right one.
+- Coercing input with `np.asarray(value, dtype=np.float64)` quietly parses the
+  string `"20"` into `20.0`. A physics boundary should reject what is not a
+  number rather than guess at it.
+- Two failure classes deserve two exception types: `TypeError` when the input
+  is not numeric, `ValueError` when it is numeric but outside its physical
+  domain. Keeping them distinct lets a caller tell a programming mistake from a
+  domain violation.
+- Zero is not automatically an invalid input. A rest step is a real operating
+  condition, so a zero current and a zero C-rate must be accepted. The
+  exception is `1 / C-rate`, where zero is undefined rather than unphysical.
+  Validation limits belong to each quantity's physics, not to a shared habit of
+  rejecting non-positive numbers.
+- A scalar-only guard such as `if not np.isfinite(x)` fails twice on arrays: it
+  raises an ambiguity error for many elements and silently skips the check for
+  one element. Validation written for scalars does not generalize by accident.
+- Sharing the validators in one module keeps the convention consistent, but the
+  helpers still need their own direct tests. Reaching them only through calling
+  code leaves branches such as complex-dtype rejection unexercised.
+
 Future entries may discuss voltage, energy, equivalent-circuit behavior, and
 numerical diffusion solvers. SPM, SPMe, and DFN models remain deferred.

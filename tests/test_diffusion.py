@@ -73,6 +73,26 @@ def test_array_diffusivity_broadcasts_against_array_gradient() -> None:
     np.testing.assert_allclose(flux, np.array([1.0, 0.0, -3.0]))
 
 
+def test_scalar_inputs_return_a_real_float() -> None:
+    """The documented scalar contract is a float, not a 0-d array."""
+    result = ficks_first_law_flux(1.0e-14, 2.0e6)
+    assert isinstance(result, float)
+    assert not isinstance(result, np.ndarray)
+
+
+def test_positional_call_is_supported() -> None:
+    """Unlike the capacity API, this signature stays positional by design."""
+    assert ficks_first_law_flux(2.0, 3.0) == pytest.approx(-6.0)
+    assert ficks_first_law_flux(
+        diffusivity=2.0, concentration_gradient=3.0
+    ) == pytest.approx(-6.0)
+
+
+def test_zero_diffusivity_gives_zero_flux() -> None:
+    """Zero is a permitted coefficient: a medium that does not diffuse."""
+    assert ficks_first_law_flux(0.0, 2.0e6) == 0.0
+
+
 def test_mass_flux_direction_and_sign_convention() -> None:
     """Molar and mass flux point down the concentration gradient."""
     gradients = np.array([-3.0, 0.0, 3.0])
