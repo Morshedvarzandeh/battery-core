@@ -1,3 +1,13 @@
+/* shared helpers — defined first so every later block can use them */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
+const PHASES = [
+  ["Electrode manufacturing", "var(--warning)"],
+  ["Cell assembly",           "var(--elyte)"],
+  ["Cell finishing",          "var(--green)"]
+];
+const phaseColor = p => (PHASES.find(x => x[0] === p) || [, "var(--primary)"])[1];
+let proc = "wet";   /* "wet" = slurry coating + drying + calendering; "dry" = solvent-free */
 const active = () => STATIONS.filter(s => s.routes.includes(route) && (!s.proc || s.proc === proc));
 const clamp = (v, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, v));
 const fmt = n => n >= 1000 ? Math.round(n).toLocaleString("en-US") : n.toFixed(n < 10 ? 2 : 1);
@@ -94,8 +104,3 @@ const STATIONS = [
   alts:["Electrostatic powder coating","Hot press / extrusion process"],
   innov:["Fluorine-free thermoplastic binders"],
   qInf:["Fibrillation degree of the binder","Line pressure and roll temperature","Speed ratio between the rolls","Primer on the current collector"],
-  qFeat:["Layer thickness accuracy and homogeneity","Surface quality — voids, particles","Adhesion between coating and substrate","Surface condition — cracks","Constant weight per unit area"],
-  sop:["Confirm the dry mix has been fibrillated, not merely blended","Warm the rolls to the setpoint before threading","Set line pressure and the roll speed ratio","Thread the primed foil and set pre-tension","Run to first article and weigh the coupon","Release only when both faces match on areal weight"] },
-
-{ id:"calendering", no:"04", phase:"Electrode manufacturing", title:"Calendering", machine:"calendering", routes:ALL, proc:"wet",
-  env:{iso:"ISO 7", dew:"semi-dry, +5…−5 °C", temp:"22 ± 2 °C"}, cost:"€ 10–15 M (calendering and slitting)", takt:"60–100 m/min",

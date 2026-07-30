@@ -1,3 +1,62 @@
+  /* a = back corner, c = front corner */
+  const prism = (x0, y0, w, d, z) => ({
+    a: iso(x0, y0, 0), b: iso(x0 + w, y0, 0), c: iso(x0 + w, y0 + d, 0), d: iso(x0, y0 + d, 0),
+    A: iso(x0, y0, z), B: iso(x0 + w, y0, z), C: iso(x0 + w, y0 + d, z), D: iso(x0, y0 + d, z)
+  });
+  /* the two walls that meet at the front corner, then the roof */
+  const solid = (p, col, o1, o2, o3) =>
+    face([p.b, p.c, p.C, p.B], col, o1) + face([p.c, p.d, p.D, p.C], col, o2) +
+    face([p.A, p.B, p.C, p.D], col, o3);
+
+  const machinesOf = hall => k.list.filter(s => hall.ids.includes(s.id));
+
+  /* 1 · every floor slab first — all at ground level, so no occlusion */
+  let floors = "";
+  HALLS.forEach(hall => {
+    const p = prism(hall.x0, hall.y0, hall.w, D, 0);
+    floors += face([p.a, p.b, p.c, p.d], "color-mix(in srgb,var(--foreground) 8%,transparent)", 1);
+  });
+
+  /* 2 · material walking hall to hall, painted on the ground */
+  const edge = (fx, fy, tx, ty, dash) => {
+    const a = iso(fx, fy, 0), b = iso(tx, ty, 0);
+    return `<path d="M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}"
+      stroke="var(--primary)" stroke-width="2.6" opacity=".85" stroke-linecap="round"
+      ${dash ? 'stroke-dasharray="7 5"' : ""}/>
+      <circle cx="${b[0].toFixed(1)}" cy="${b[1].toFixed(1)}" r="3.6" fill="var(--primary)"/>`;
+  };
+  const H = Object.fromEntries(HALLS.map(h => [h.n, h]));
+  const flows =
+    edge(H[1].x0 + H[1].w + 3, H[1].y0 + D / 2, H[2].x0 - 3, H[2].y0 + D / 2, 0) +
+    edge(H[2].x0 + 34, H[2].y0 + D + 3, H[3].x0 + H[3].w - 34, H[3].y0 - 3, 1) +
+    edge(H[3].x0 + H[3].w + 3, H[3].y0 + D / 2, H[4].x0 - 3, H[4].y0 + D / 2, 0);
+
+  /* 3 · halls back to front; within a hall, machines back to front too */
+  let bodies = "", labels = "";
+  [...HALLS].sort((a, b) => (a.x0 + a.y0) - (b.x0 + b.y0)).forEach(hall => {
+    const on = machinesOf(hall), col = phaseColor(hall.ph);
+    const cols = Math.max(1, Math.min(on.length, Math.round(hall.w / 66)));
+    const rowsN = Math.ceil(on.length / cols);
+    const spanX = hall.w - 52, spanY = D - 56;
+    const placed = on.map((st, q) => {
+      const rr = Math.floor(q / cols), cc = q % cols;
+      return { st,
+        mx: hall.x0 + 26 + (cols === 1 ? spanX / 2 : cc * spanX / (cols - 1)) - 13,
+        my: hall.y0 + 28 + (rowsN === 1 ? spanY / 2 : rr * spanY / (rowsN - 1)) };
+    }).sort((a, b) => (a.mx + a.my) - (b.mx + b.my));
+
+    placed.forEach(({ st, mx, my }) => {
+      const q4 = prism(mx, my, 26, 26, 22), lv = stationLevel(st, m);
+      const mid = [(q4.A[0] + q4.C[0]) / 2, (q4.A[1] + q4.C[1]) / 2];
+      bodies += `<g class="hmiSt" data-go="${st.id}" tabindex="0" role="button"
+          aria-label="${esc(st.title)} in ${esc(hall.t)}">
+        ${solid(q4, col, .58, .42, .85)}
+        <circle cx="${mid[0].toFixed(1)}" cy="${mid[1].toFixed(1)}" r="3.8" fill="${LEVEL_COL[lv]}"
+          stroke="var(--background)" stroke-width="1.3"/>
+        <title>${esc(st.title)}</title></g>`;
+    });
+
+    /* the shell over them, translucent, so the hall reads as a building */
     const p = prism(hall.x0, hall.y0, hall.w, D, hall.h);
     bodies += solid(p, col, .14, .1, .2);
     const lab = iso(hall.x0 + hall.w / 2, hall.y0 + D / 2, hall.h);
@@ -210,52 +269,3 @@ function bindConsole(st) {
   $("console").querySelectorAll("button[data-seg]").forEach(el =>
     el.addEventListener("click", e => {
       const b = e.currentTarget;
-      S[b.dataset.seg] = Number(b.dataset.v); refresh();
-    }));
-  $("conReset").addEventListener("click", () => {
-    ctlsOf(o).forEach(k => S[k] = DEFAULTS[k]); renderSliders(); refresh();
-  });
-  $("conBreak").addEventListener("click", () => {
-    /* push this station's knobs to the edge that fails, so the failure mode is visible */
-    const BREAK = { tC:80, tA:50, speed:80, dryT:60, force:2500, vac:8, cRate:0.5, ageDays:3,
-      solid:75, mixMin:30, mixT:40, gap:280, dryLen:20, rollT:120, knife:0, cutSpd:150, wear:100,
-      vacT:60, sepMode:0, stackAcc:600, webTens:140, drawDepth:10, sealT:150, doseFac:1,
-      fillP:400, soak:1, pressP:1.2, preT:60, formT:60, vMax:4.4, degP:60, ageSOC:20, ageHiT:25, shipSOC:60,
-      dcLine:150, dcRollT:50, dcFib:20, dmTime:5, dmT:70, dcPrimer:1 };
-    ctlsOf(o).forEach(k => S[k] = BREAK[k]); renderSliders(); refresh();
-  });
-}
-
-/* ---------------------------------------------------------------------
-   navigation for the new views
-   ------------------------------------------------------------------- */
-function showView(id) {
-  $("overview").hidden = true; $("stationView").hidden = true; $("layerView").hidden = false;
-  const v = VIEWS.find(x => x.id === id) || VIEWS[0];
-  $("crumbTitle").textContent = v.label;
-  $("pillEnv").innerHTML = `<i></i><b>${esc(v.hint)}</b>`;
-  $("pillPos").textContent = "—";
-  ({ machine:renderMachineOverview, anatomy:renderAnatomy, flow:renderFlow, matrix:renderMatrix,
-     radar:renderRadar, factory:renderFactory, refs:renderRefs }[v.id])();
-}
-
-/* reference chips open the reference list at the right entry */
-document.addEventListener("click", e => {
-  const b = e.target.closest("[data-ref]");
-  if (!b) return;
-  e.preventDefault();
-  go("view:refs");
-  setTimeout(() => {
-    const el = document.getElementById("ref-" + b.dataset.ref);
-    if (el) { el.scrollIntoView({ behavior:"smooth", block:"center" }); el.style.outline = "2px solid var(--primary)";
-      setTimeout(() => el.style.outline = "", 1800); }
-  }, 60);
-});
-
-/* ---------------- boot ---------------- */
-renderSliders();
-renderRail();
-go(null);
-</script>
-</body>
-</html>

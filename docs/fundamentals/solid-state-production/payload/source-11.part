@@ -1,3 +1,13 @@
+  const jArea = S.cRate * capC;                                   /* mA/cm² during formation */
+  const jCrit = (oxide ? 1.1 : sulf ? 0.9 : hal ? 0.8 : 0.45) * (1 + S.stackF / 14)
+              * (1 + Math.max(0, S.cellT - 25) / 90) * (S.sseTh / 25) ** 0.25;
+  const dendrite = clamp((jArea / jCrit) * 55, 0, 140);           /* >100 = through-growth */
+
+  /* --- drying, on the routes that cast a slurry ---------------------------- */
+  const solvRes = (oxide || ductile) ? Math.max(0, 108 - S.dryT) * 3.4 + Math.max(0, S.dryT - 150) * 2.0 : 0;
+
+  /* --- cutting and handling ---------------------------------------------- */
+  const lineE = S.laserP / Math.max(1, S.cutSpd) * 0.06;          /* J/mm proxy */
   const meltRisk = S.cutMode ? 0 : clamp((lineE - 1.1) * 55, 0, 100);
   const delam = S.cutMode ? clamp((S.cutSpd - 60) * 0.7 + 18, 0, 100) : clamp((1.1 - lineE) * 45, 0, 100);
   const edgeQ = clamp(100 - meltRisk * 0.75 - delam * 0.45);
@@ -66,7 +76,7 @@
   flag(!S.passiv, "warn", "Lithium foil is not passivated",
     "Without a passivation layer the whole downstream line has to stay under inert gas rather than in a dry room. That is a large facility cost.");
   flag(contact < 60, "warn", "Interfaces are not properly in contact",
-    `Contact index ${contact.toFixed(0)}%. A solid cell has no liquid to wet its pores — pressure and density are the only ways to make the interface.`);
+    `Contact index ${contact.toFixed(0)}%. A solid cell has no liquid to wet its pores, so pressure and density are key controls on the interface.`);
   flag(oxide && !grainOK, "warn", "Sintering outside the useful band",
     `${S.sintT} °C. Too low and the particles do not grow together; too high and grains coarsen and the materials fight each other.`);
   flag(solvRes > 40, "warn", "Solvent not fully driven off",
@@ -106,7 +116,7 @@
 const REFS = [
   { n:1, tag:"PEM/VDMA 2026", txt:"Heimes, H. H.; Kampker, A.; Born, H.; Plumeyer, J. F.; Kim, D.; Smulka, M.; Michaelis, S.; Rothhagen, B. <em>Production of a Solid-State Battery Cell</em>, 3rd ed.; PEM of RWTH Aachen University &amp; VDMA: Aachen, February 2026. ISBN 978-3-947920-75-4.",
     use:"Every process step, parameter range, atmosphere, quality feature, challenge, technology alternative and LIB-transferability rating in this simulator.",
-    url:"https://www.pem.rwth-aachen.de/" },
+    url:"https://www.vdma.eu/en/battery-production-equipment" },
   { n:2, tag:"Nat. Energy 2016", txt:"Janek, J.; Zeier, W. G. A solid future for battery development. <em>Nat. Energy</em> <b>2016</b>, <em>1</em> (9), 16141.",
     use:"Why a solid electrolyte changes the cell design at all: bipolar stacking, the loss of the porous separator, the interface problem.",
     url:"https://doi.org/10.1038/nenergy.2016.141" },
@@ -140,8 +150,3 @@ const REFS = [
   { n:12, tag:"Commun. Chem. 2023", txt:"Klimpel, M.; Zhang, H.; Kovalenko, M. V.; Kravchyk, K. V. Standardizing critical current density measurements in lithium garnets. <em>Commun. Chem.</em> <b>2023</b>, <em>6</em>, 192.",
     use:"Critical current density in garnet is commonly quoted near 0.3–1 mA/cm², but there is no standard protocol — reported values vary widely.",
     url:"https://doi.org/10.1038/s42004-023-01002-4" },
-  { n:13, tag:"Front. Mater. 2020", txt:"Wang, L.; Li, J.; Lu, G.; Li, W.; Tao, Q.; Shi, C.; Jin, H.; Chen, G.; Wang, S. Fundamentals of Electrolytes for Solid-State Batteries: Challenges and Perspectives. <em>Front. Mater.</em> <b>2020</b>, <em>7</em>, 111.",
-    use:"Polymer electrolyte conductivity at room temperature, and why PEO-based systems want to run warm.",
-    url:"https://doi.org/10.3389/fmats.2020.00111" },
-  { n:15, tag:"PEM/VDMA 2023", txt:"Heimes, H. H.; Kampker, A.; Plumeyer, J. F.; Scheibe, A.; Wennemar, S.; Michaelis, S.; Schütrumpf, J. <em>Production of an All-Solid-State Battery Cell</em>, 2nd ed.; PEM of RWTH Aachen University &amp; VDMA: Frankfurt am Main, January 2023. ISBN 978-3-947920-29-7.",
-    use:"The stations the 3rd edition no longer describes in detail — lamination, tape casting, aerosol deposition, co-extrusion, calendering, slitting and separation — together with their parameter ranges. Where a figure comes from this edition rather than the current one, it is labelled 2nd ed.",

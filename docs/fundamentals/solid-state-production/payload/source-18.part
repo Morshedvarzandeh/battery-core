@@ -1,3 +1,44 @@
+    `--${k}:${typeof v === "number" ? v.toFixed(1) : v}`).join(";") : "";
+}
+
+/* ---------------- guided tour ---------------- */
+/* =====================================================================
+   TOUR ILLUSTRATIONS
+   One small drawing per stop, made to carry the point of that stop.
+   Same primitives and the same material palette as the station
+   schematics, so a colour always means the same thing.
+   ===================================================================== */
+const PIC_W = 372, PIC_H = 132;
+/* a little headroom above y=13 so ascenders in the top caption are not clipped */
+const pic = body => `<svg viewBox="0 2 ${PIC_W} ${PIC_H - 2}" role="img" aria-hidden="true">${body}</svg>`;
+const pArrow = (x, y) => `<path class="mArrow" d="M${x} ${y}l10 0l-3 -3.5l7 3.5l-7 3.5l3 -3.5z"/>`;
+
+const TOURPIC = {
+
+/* the line, one block per station, coloured by phase */
+line: () => pic(`
+  ${[...Array(13)].map((_, i) => {
+    const col = i < 8 ? "var(--warning)" : i < 12 ? "var(--elyte)" : "var(--green)";
+    return `<rect x="${18 + i * 27}" y="${40 - (i % 3) * 3}" width="20" height="${44 + (i % 3) * 3}"
+      rx="3" fill="${col}" opacity="${0.35 + i * 0.045}"/>`;
+  }).join("")}
+  ${T(18, 104, "electrode & electrolyte", "mTxtS")}
+  ${T(226, 104, "assembly", "mTxtS")}
+  ${T(310, 104, "finishing", "mTxtS")}
+  <circle cx="22" cy="118" r="3.5" fill="var(--warning)"/>
+  <circle cx="230" cy="118" r="3.5" fill="var(--elyte)"/>
+  <circle cx="314" cy="118" r="3.5" fill="var(--green)"/>
+  ${T(18, 32, "12 to 15 stations — the electrolyte class decides", "mTxtS")}`),
+
+/* the elementary cell and the series stack */
+cell: () => pic(`
+  ${[["var(--copper)", 7, "collector"], ["var(--anode)", 20, "lithium metal"],
+     ["var(--sep)", 12, "solid electrolyte"], ["var(--cathode)", 22, "catholyte"],
+     ["var(--alu)", 7, "collector"]]
+    .reduce((acc, [c, h, n]) => {
+      const y = acc.y;
+      acc.s += `<rect x="22" y="${y}" width="140" height="${h}" rx="1.5" fill="${c}"/>` +
+               T(170, y + h / 2 + 3.5, n, "mTxtS");
       acc.y = y + h + 4;
       return acc;
     }, { y: 24, s: "" }).s}
@@ -31,10 +72,10 @@ lithium: () => pic(`
   ${T(150, 78, "372 mAh/g", "mTxt")}
   ${T(250, 46, "about ten times", "mTxt")}
   ${T(250, 62, "the capacity per gram —", "mTxtS")}
-  ${T(250, 76, "and only usable because", "mTxtS")}
-  ${T(250, 90, "a solid electrolyte can", "mTxtS")}
-  ${T(250, 104, "resist the dendrites", "mTxtS")}
-  ${T(250, 118, "a liquid cannot.", "mTxtS")}`),
+  ${T(250, 76, "a solid electrolyte may", "mTxtS")}
+  ${T(250, 90, "help suppress penetration,", "mTxtS")}
+  ${T(250, 104, "but does not eliminate", "mTxtS")}
+  ${T(250, 118, "lithium-growth risk.", "mTxtS")}`),
 
 /* two foils becoming one */
 laminate: () => pic(`
@@ -116,7 +157,7 @@ press: () => pic(`
   <path d="M212 104C246 82 290 58 352 44" fill="none" stroke="var(--primary)" stroke-width="2.4"/>
   ${T(212, 28, "current the cell survives", "mTxtS")}
   ${T(212, 124, "0", "mTxtS")}${T(352, 124, "40 MPa", "mTxtS", "end")}
-  ${T(232, 68, "pressure is", "mTxt")}${T(232, 82, "the only tool", "mTxt")}`),
+  ${T(232, 68, "pressure is", "mTxt")}${T(232, 82, "one key tool here", "mTxt")}`),
 
 /* the station that is not there */
 nofill: () => pic(`
@@ -170,7 +211,7 @@ const TOUR = [
   { id:null, pic:"line", t:"Welcome to the solid-state pilot line",
     d:"The guide's process chain for a solid-state cell. Which stations exist depends on the electrolyte you choose, so the sidebar switch does not change a format — it changes the line. This tour walks the sulfide route; switch to oxide afterwards and watch four stations appear and disappear." },
   { id:"view:anatomy", pic:"cell", t:"First — what you are actually building",
-    d:"An elementary cell is collector, lithium metal, solid electrolyte, catholyte, collector. No liquid, no porous separator. Because there is no liquid to short between them, the elementary cells can be stacked in series inside one pouch." },
+    d:"An elementary cell is collector, lithium metal, solid electrolyte, catholyte, collector. No liquid and no separate porous separator. The architecture can support bipolar series stacking inside one pouch, but layer isolation and defect control remain essential." },
   { id:"view:flow", pic:"routes", t:"Four classes, four different plants",
     d:"Oxide is hard and has to be sintered. Sulfide is conductive and soft, so it is pressed. Polymer is deformable and wants to be warm. That single material choice decides which machines you buy — this is the central message of the guide." },
   { id:"view:machine", pic:"line", t:"The line on one screen",
@@ -178,20 +219,7 @@ const TOUR = [
   { id:"view:compare", pic:"routes", t:"And why the line looks like this",
     d:"There is no standard process sequence for a solid-state cell, because there is no standard electrolyte. Four classes, seven properties, and every one of them is good at something and bad at something else. Oxides are stable but must be sintered; sulfides conduct best but react with air; halides are the newcomer in this edition, strong on voltage stability and processability but weak as a separator; polymers deform beautifully and conduct badly at room temperature. Pick one in the sidebar and the line rebuilds around it." },
   { id:"extrusion", pic:"lithium", t:"It starts with a lithium ingot",
-    d:"Not a coating line — an extruder. Lithium metal is pressed through a slot nozzle into a foil and calendered to thickness. It carries about ten times the capacity per gram of graphite, and it is adhesive, reactive, and impossible to cut mechanically. Try the passivation switch: it decides whether the whole line downstream needs inert gas or only a dry room." },
+    d:"Not a coating line — an extruder. Lithium metal is pressed through a slot nozzle into a foil and calendered to thickness. It carries about ten times the capacity per gram of graphite, and its soft, adhesive, reactive foil is difficult to slit cleanly at production scale. Try the passivation switch: it decides whether the reference line downstream needs inert gas or only a dry room." },
   { id:"lamination", pic:"laminate", t:"Two foils, one electrode",
     d:"The lithium foil is laminated onto a current collector between tempered rollers. Adhesion is the entire output of this station, and heat contributes as much as pressure — move the roller temperature and watch the bond index before you reach for more force." },
   { id:"mixing", pic:"prep", t:"The electrolyte, prepared three ways",
-    d:"Oxide is ground dry in a ball mill. Sulfide and oxide are dispersed in a planetary mixer. Polymer is compounded in a twin-screw extruder. Sulfidic materials are sensitive to polar solvents and to moisture, which sharply limits what you can even mix them with." },
-  { id:"tape", pic:"layer", t:"Laying the layers down",
-    d:"A slot die meters slurry onto the substrate — and the substrate for the electrolyte layer is the cathode itself. Set the gap away from the wet film the recipe needs and watch thickness scatter leave specification." },
-  { id:"calender", pic:"dense", t:"Two ways to make an interface",
-    d:"Sulfide and polymer are calendered: pressure and temperature densify the composite. Oxide is sintered instead, at 500 to 2 000 °C, because it is not pressed after stacking and has to win its interface in the furnace. Switch to oxide and this station disappears entirely." },
-  { id:"separation", pic:"cut", t:"The cut that can short the cell",
-    d:"Elementary cells are cut out by laser or punched. The guide is explicit: the layer materials must not be melted, because melting them connects the layers electrically. Push the laser power up and watch the melt risk climb." },
-  { id:"stacking", pic:"press", t:"Pressure is how a solid cell makes contact",
-    d:"There is no liquid to soak into the pores, so the only way to make an interface is to press the surfaces together. Published work on lithium against a sulfide electrolyte found the critical current density rose fivefold as stack pressure went from 3 to 7 MPa. Slide the pressure and watch both the contact and the dendrite margin move." },
-  { id:"contacting", pic:"nofill", t:"And then nothing else happens",
-    d:"Conductors welded, pouch drawn, seam sealed. In a lithium-ion plant the next station is electrolyte filling in a dry room at a −50 °C dew point, followed by hours of wetting. Here that station does not exist. It is the clearest process saving of the whole solid-state route." },
-  { id:"formation", pic:"dendrite", t:"The first cycle, and the limit it must respect",
-    d:"The cell arrives already charged, because its anode is lithium metal. The first cycles grow the interface layers. Push the rate and the current density crosses the value the electrolyte can survive — and lithium starts growing through it. There is no standard way to measure that limit, which is itself worth knowing." },

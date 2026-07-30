@@ -1,3 +1,8 @@
+   in detail carry its own figures; the rest come from the 2nd edition.
+   `parts` indices line up with the hotspot data-k values in the machine.
+   ===================================================================== */
+
+/* shared helpers — defined first so every later block can use them */
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
 const PHASES = [
@@ -127,9 +132,3 @@ const STATIONS = [
   qInf:["Layer thickness variation from changing production conditions"],
   qFeat:["Coating thickness accuracy along and across the web","Surface quality — voids and particles","Adhesion between coating and substrate"],
   sop:["Confirm the slurry is released and bubble-free","Set gap height for the target wet film","Bring the dryer zones to profile","Start the belt and check the coating edge","Measure thickness across the width","Confirm solvent recovery is running"] },
-
-{ id:"aerosol", no:"07", phase:"Electrode & electrolyte production", title:"Aerosol deposition", machine:"aerosol", routes:"oxide",
-  sub:"Electrolyte production", trans:1,
-  env:{iso:"Process chamber, 0.0001–1 bar", dew:"carrier gas, dry", temp:"mixing chamber under 200 °C"},
-  cost:"—", takt:"up to 10 000 µm/h",
-  purpose:"Build the solid-electrolyte layer by firing powder at the substrate fast enough that the particles deform and stick.",

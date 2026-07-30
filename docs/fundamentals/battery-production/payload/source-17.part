@@ -1,3 +1,35 @@
+      series:[{ y:m => m.liLoss, label:"Lithium consumed", col:"var(--destructive)" }] }],
+  degassing: [
+    { x:"degP", title:"How much gas you leave behind", unit:"%", limit:6, limitLabel:"6% — cell swells", lo:0, dp:1,
+      series:[{ y:m => m.gasLeft, label:"Gas remaining", col:"var(--primary)" }] }],
+  aging: [
+    { x:"ageDays", title:"How much the screen can actually see", unit:"%", good:[88,100], goodLabel:"trustworthy screen", lo:30, hi:100, dp:0,
+      series:[{ y:m => m.screenSens, label:"Screen sensitivity", col:"var(--primary)" }] },
+    { x:"ageDays", title:"A shorter screen reduces defect sensitivity", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
+  eol: [
+    { x:"ageDays", title:"Process health is influenced upstream and summarised here", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] },
+    { x:"shipSOC", title:"Energy in the box is what the regulator caps", unit:" Wh", dp:1,
+      xMark:30, xMarkLabel:"above IATA PI 965", lo:0,
+      series:[{ y:m => m.cellAh * 3.65 * S.shipSOC / 100, label:"Watt-hours per cell as shipped", col:"var(--elyte)" }] }]
+};
+const CUSTOM = { aging:agingOCVChart, formation:formationChart };
+
+function renderCharts(st) {
+  const list = (CHARTS[st.id] || []).map(chartSVG);
+  if (CUSTOM[st.id]) list.unshift(CUSTOM[st.id]());
+  if (!list.length) return "";
+  return `<div class="charts">${list.join("")}</div>`;
+}
+
+/* --- the process window bar under every control -------------------------
+   answers the plain question "am I allowed to set it here?" before any
+   of the physics gets a chance to answer it for you.                     */
+function windowBar(k) {
+  const c = CTL[k];
+  if (c.opts || !c.good) return "";
+  const p = v => Math.max(1.6, Math.min(98.4, (v - c.min) / (c.max - c.min) * 100)).toFixed(1);
   const inside = S[k] >= c.good[0] && S[k] <= c.good[1];
   const full = c.good[0] <= c.min && c.good[1] >= c.max;
   if (full && S[k] >= c.good[0] && S[k] <= c.good[1]) return "";   /* nothing to warn about */
@@ -158,44 +190,3 @@ function renderStation(st) {
         </div>
       </div>
       <svg viewBox="0 0 980 318" role="img" aria-label="${esc(st.title)} machine schematic"
-           style="${machineStyle(st, m)}">${M[st.machine]()}</svg>
-      <div class="readout" id="readout"></div>
-    </div>
-
-    <div class="card card-pad">
-      <span class="eyebrow" style="color:${col}">${esc(st.phase)}</span>
-      <h2 style="font-size:20px;letter-spacing:-.02em;margin:5px 0 7px">${esc(st.purpose)}</h2>
-      <div class="flow" style="margin-top:12px">
-        <div class="flow-box"><small>Arrives as</small><strong>${esc(st.inp)}</strong></div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-box"><small>Leaves as</small><strong>${esc(st.out)}</strong></div>
-      </div>
-      <div class="env" style="margin-top:12px">
-        <div><small>Clean room${r(1,9)}</small><b>${esc(st.env.iso)}</b></div>
-        <div><small>Dry room${r(1,5)}</small><b>${esc(st.env.dew)}</b></div>
-        <div><small>Temperature${r(1)}</small><b>${esc(st.env.temp)}</b></div>
-        <div><small>Machine investment${r(1)}</small><b>${esc(st.cost)}</b></div>
-      </div>
-      ${madeHTML(st)}
-    </div>
-
-    <div class="grid2">
-      <div class="card card-pad block">
-        <h4><i style="background:var(--green)"></i>Process parameters &amp; requirements</h4>
-        <ul>${st.params.map(p => `<li>${p}</li>`).join("")}</ul>
-        <div class="srcline">Sources for this station: ${(SRC[st.id] || [1]).map(n =>
-          `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
-      </div>
-      <div class="card card-pad block">
-        <h4><i style="background:var(--jelly)"></i>Technology alternatives</h4>
-        <ul>${st.alts.map(p => `<li>${p}</li>`).join("")}</ul>
-        ${(st.innov || []).length ? `
-        <h4 style="margin-top:14px"><i style="background:var(--primary)"></i>Innovations &amp; trends${r(1)}</h4>
-        <ul>${st.innov.map(p => `<li>${p}</li>`).join("")}</ul>` : ""}
-      </div>
-    </div>
-
-    <div class="grid2">
-      <div class="card card-pad block">
-        <h4><i style="background:var(--warning)"></i>Quality influences</h4>
-        <ul>${st.qInf.map(p => `<li>${p}</li>`).join("")}</ul>

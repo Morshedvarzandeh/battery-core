@@ -1,3 +1,32 @@
+          fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>
+          <rect x="72" y="${127 + i * 25}" width="110" height="4" rx="1" fill="var(--sep)"/>`).join("")}
+       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Tabs">
+         <rect x="80" y="76" width="28" height="22" rx="3" class="mAl" ${ring(tOn)}/>
+         <rect x="148" y="76" width="28" height="22" rx="3" class="mCu" ${ring(tOn)}/>
+         <rect class="hit" x="74" y="70" width="110" height="34" fill="transparent"/></g>
+       <text class="mTxtS" x="127" y="330" text-anchor="middle">Pouch — stacked sheets</text>`
+    : route === "cyl"
+    ? `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Cylindrical can">
+         <rect x="82" y="86" width="94" height="222" rx="14" class="mSteel2" ${ring(cOn)}/>
+         <rect class="hit" x="76" y="80" width="106" height="234" fill="transparent"/></g>
+       <g class="spin"><circle cx="129" cy="200" r="44" class="mAn"/><circle cx="129" cy="200" r="33" class="mSep"/>
+         <circle cx="129" cy="200" r="21" class="mCa"/><circle cx="129" cy="200" r="8" class="mSteel"/></g>
+       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Terminal">
+         <rect x="116" y="66" width="26" height="22" rx="4" class="mAl" ${ring(tOn)}/>
+         <rect class="hit" x="110" y="60" width="38" height="34" fill="transparent"/></g>
+       <text class="mTxtS" x="129" y="330" text-anchor="middle">Cylindrical — wound jelly roll</text>`
+    : `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Prismatic can">
+         <rect x="56" y="92" width="146" height="216" rx="6" class="mSteel2" ${ring(cOn)}/>
+         <rect class="hit" x="50" y="86" width="158" height="228" fill="transparent"/></g>
+       <rect x="68" y="104" width="122" height="192" rx="3" fill="var(--card)"/>
+       <g class="spin"><ellipse cx="129" cy="200" rx="52" ry="36" class="mAn"/>
+         <ellipse cx="129" cy="200" rx="36" ry="23" class="mSep"/>
+         <ellipse cx="129" cy="200" rx="20" ry="11" class="mCa"/></g>
+       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Terminals">
+         <rect x="76" y="72" width="28" height="22" rx="3" class="mAl" ${ring(tOn)}/>
+         <rect x="154" y="72" width="28" height="22" rx="3" class="mCu" ${ring(tOn)}/>
+         <rect class="hit" x="70" y="66" width="120" height="34" fill="transparent"/></g>
+       <text class="mTxtS" x="129" y="330" text-anchor="middle">Prismatic — wound, in a hard can</text>`;
 
   return `<svg viewBox="0 0 760 396" role="img" aria-label="Exploded lithium-ion cell layers">
     ${cell}
@@ -205,42 +234,3 @@ function renderMatrix() {
       <div class="card card-pad block">
         <h4><i style="background:var(--destructive)"></i>Reading it across a row</h4>
         <ul>
-          <li><b>Calendering appears against four components at once</b> — both coatings and both foils. That is why one setpoint there moves capacity, wetting and crack risk together.${r(4)}</li>
-          <li><b>Most stations that build a component are also where it is most easily ruined</b> — the ◉ marks. The calender that gives the cathode its density is the same nip that cracks its particles; the stacker that places the separator is where the separator gets pierced.</li>
-          <li><b>Slitting shapes, but never adds.</b> It cuts foil to width and takes material away; nothing new enters the cell here. Everything else this station can do to the product is negative, and the burr it leaves is the classic separator-piercing defect.${r(1)}</li>
-          <li><b>Vacuum drying protects a component it never touches</b> — the electrolyte, four stations later, via the water it removes now.${r(6)}</li>
-        </ul>
-      </div>
-    </div>`;
-}
-
-/* ---------------------------------------------------------------------
-   4 · REFERENCES
-   ------------------------------------------------------------------- */
-/* =====================================================================
-   5 · TECHNOLOGY RADAR — the 44 technologies the 5th edition tracks,
-   placed by phase and by how far away series production is. [1]
-   ===================================================================== */
-const RINGS = [
-  { id:1, label:"≤ 2 years",  short:"≤2 y",  col:"var(--primary)" },
-  { id:2, label:"2 – 5 years", short:"2–5 y", col:"var(--elyte)" },
-  { id:3, label:"≥ 5 years",  short:"≥5 y",  col:"var(--jelly)" }
-];
-/* sector key: em = electrode manufacturing, ca = cell assembly,
-   cf = cell finishing, ma = material, cd = cell design            */
-const SECTORS = [
-  { id:"em", label:"Electrode manufacturing", axis:"PROCESS", a0:118, a1:180 },
-  { id:"ca", label:"Cell assembly",           axis:"PROCESS", a0: 62, a1:118 },
-  { id:"cf", label:"Cell finishing",          axis:"PROCESS", a0:  0, a1: 62 },
-  { id:"ma", label:"Material",                axis:"PRODUCT", a0:180, a1:270 },
-  { id:"cd", label:"Cell design",             axis:"PRODUCT", a0:270, a1:360 }
-];
-const sectorMap = Object.fromEntries(SECTORS.map(x => [x.id, x]));
-
-/* go: which station in this simulator the technology lands on, when there is one */
-const TECH = [
-  { n: 1, s:"em", ring:1, t:"Multi-layer coating",            go:"coating" },
-  { n: 2, s:"em", ring:1, t:"Infrared drying",                go:"drying" },
-  { n: 3, s:"em", ring:1, t:"Dry coating (anode)",            go:"drycoat" },
-  { n: 4, s:"em", ring:1, t:"Dry coating (cathode)",          go:"drycoat" },
-  { n: 5, s:"em", ring:1, t:"Laser cutting (cathode)",        go:"separation" },

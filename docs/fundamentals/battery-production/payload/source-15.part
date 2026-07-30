@@ -1,3 +1,23 @@
+      "Above the selected teaching window, pressure on a wet stack raises separator-stress and particle-driven puncture risk. Actual limits depend on separator, stack geometry, cleanliness and equipment validation."]
+    : m.wetting >= 96 ? ["ok", "Electrolyte distributed",
+      `${m.wetting.toFixed(0)}% illustrative wetting. More uniform electrolyte distribution supports more uniform formation, but this score does not prove that every pore is wetted.`]
+    : ["warn", "Still short of full wetting",
+      "Raise the pressure a little or leave the cell longer before formation."],
+  viz:m => ({ press: clamp(S.pressP / 1.2 * 100) })
+},
+
+formation: {
+  lead:"You are at formation — one of the most capital- and time-intensive stages in the reference line. The first controlled cycles form the SEI; rate, temperature, voltage limits, pressure and cleanliness all influence the result.",
+  ctl:["cRate","formT","vMax"],
+  read:m => [
+    V("First charge", S.cRate.toFixed(2) + " C", ok(S.cRate, 0.1, 0.5), "PEM: 0.1–0.5 C"),
+    V("Illustrative SEI score", m.seiQ.toFixed(0) + "%", m.seiQ >= 90 ? "ok" : m.seiQ >= 80 ? "warn" : "bad"),
+    V("Illustrative irreversible loss", m.liLoss.toFixed(1) + "%", m.liLoss < 12 ? "ok" : "warn", "teaching estimate of first-cycle cyclable-lithium consumption"),
+    V("Time on the rack", (13 / (S.cRate / 0.25)).toFixed(1) + " h", (13 / (S.cRate / 0.25)) <= 15 ? "ok" : "warn", "PEM: up to 15 h"),
+    V("Cell temperature", S.formT + " °C", band(S.formT, 20, 50, 8)),
+    V("Upper cut-off", S.vMax.toFixed(2) + " V", S.vMax <= 4.25 ? "ok" : "bad")],
+  verdict:m => S.cRate > 0.42 ? ["bad", "Charging too fast",
+      "The selected first-charge rate is near the upper end of the reference range. Faster formation can change interphase properties and raise plating risk under some conditions; validated recipes are chemistry- and design-specific."]
     : S.vMax > 4.3 ? ["bad", "Cut-off too high",
       "The selected cut-off exceeds the reference graphite/NMC teaching limit. Electrolyte oxidation, gas generation and accelerated degradation risk can rise, but actual limits depend on materials and protocol."]
     : m.seiQ >= 90 ? ["ok", "SEI forming well",
@@ -184,32 +204,3 @@ function chartSVG(cf) {
       <text class="cNow" x="${nowX}" y="${HH - PB + 13}" text-anchor="middle">${xv.toFixed(xdp)}</text>
       ${leg}
       <text class="cAx" x="${PL - 5}" y="${py(hi - pad) + 4}" text-anchor="end">${(hi - pad).toFixed(dp)}</text>
-      <text class="cAx" x="${PL - 5}" y="${py(lo + pad) + 4}" text-anchor="end">${(lo + pad).toFixed(dp)}</text>
-      <text class="cVal" x="${PL}" y="${PT - 7}" fill="${curOff ? "var(--destructive)" : "var(--foreground)"}">${cur.toFixed(dp)}${esc(cf.unit || "")} now${curOff ? " — out of specification" : ""}</text>
-    </svg>
-  </figure>`;
-}
-
-/* --- bespoke: does the aging window actually catch a faulty cell? ------ */
-function agingOCVChart() {
-  const m = model(), days = S.ageDays, HT = S.ageHiT;
-  /* a healthy cell relaxes and then sits still; a faulty one keeps falling.
-     Higher temperature accelerates both, which is why HT aging exists.     */
-  const accel = 1 + (HT - 22) / 28;
-  const good = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 0.14 * t * accel;
-  const bad  = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 1.15 * t * accel;
-  const T = 21, W2 = 340, H2 = 176, L = 40, R = 12, TT = 22, B = 30;
-  const maxY = Math.max(bad(T), 8);
-  const px = t => L + t / T * (W2 - L - R);
-  const py = v => TT + (1 - Math.min(v, maxY) / maxY) * (H2 - TT - B);
-  const path = f => Array.from({ length: 64 }, (_, i) => {
-    const t = i / 63 * T; return `${i ? "L" : "M"}${px(t).toFixed(1)} ${py(f(t)).toFixed(1)}`;
-  }).join("");
-  const sep = (bad(days) - good(days));
-  const caught = sep >= 5;
-  return `<figure class="chart">
-    <figcaption><b>Can this screen see a faulty cell?</b><span>open-circuit voltage drop over the aging period</span></figcaption>
-    <svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Open circuit voltage drop over the aging period for a healthy and a faulty cell">
-      <line x1="${L}" y1="${TT}" x2="${L}" y2="${H2 - B}" stroke="var(--border-strong)"/>
-      <line x1="${L}" y1="${H2 - B}" x2="${W2 - R}" y2="${H2 - B}" stroke="var(--border-strong)"/>
-      <rect x="${px(days)}" y="${TT}" width="${W2 - R - px(days)}" height="${H2 - TT - B}" fill="var(--foreground)" opacity=".05"/>

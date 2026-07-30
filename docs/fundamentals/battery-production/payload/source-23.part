@@ -1,3 +1,38 @@
+    el.addEventListener("click", () => { techPick = +el.dataset.tech; renderRadar(); }));
+  $("layerView").querySelectorAll(".rdDot").forEach(el =>
+    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } }));
+}
+
+/* =====================================================================
+   6 · FACTORY & ENVIRONMENT — the building the line sits in, the air it
+   needs, and what the machines cost. [1]
+   ===================================================================== */
+const ZONES = [
+  { n:1, t:"Slurry production", h:112,
+    d:"Multi-storey construction, so powder and solvent can be dosed gravimetrically — the material falls to the mixer instead of being pumped up to it." },
+  { n:2, t:"Electrode production", h:72,
+    d:"Single-storey hall with increased building height, because the dryers need complex exhaust-air handling and solvent recovery above them." },
+  { n:3, t:"Cell assembly", h:50,
+    d:"Compact hall with low plant height, held in a dry-room environment and built as modules so it can be extended." },
+  { n:4, t:"Cell finishing", h:112,
+    d:"Up to twelve metres high, built as a high-bay warehouse: formation and aging need thousands of cell positions under defined air conditioning." }
+];
+
+const ENVROWS = [
+  { g:"Electrode manufacturing", rows:[
+    ["Mixing"], ["Coating"], ["Drying"], ["Calendering"], ["Slitting"], ["Vacuum drying"]],
+    iso:"ISO 7 – 8",
+    dew:"<div><b>Water-based electrodes:</b> controlled process conditions, semi-dry (+5 °C to −5 °C)<br><b>NMP-based electrodes:</b> dry (0 °C to −30 °C) to very dry (−40 °C to −60 °C)<br><b>Vacuum drying:</b> encapsulated process, vacuum or inert</div>",
+    temp:"22 ± 2 °C",
+    note:"Electrode production runs under clean-room conditions because foreign particles in the coating are removed later by cleaning methods such as suction — so they must not get in to begin with." },
+  { g:"Cell assembly", rows:[["Cutting"], ["Stacking / winding"], ["Packaging"], ["Electrolyte filling"]],
+    iso:"min. ISO 7", dew:"Very dry (−30 °C to −60 °C)", temp:"22 ± 2 °C",
+    note:"Assembly has to be dry. Water sealed inside the cell causes severe service-life loss and a safety risk — it reacts with the salt to form hydrofluoric acid." },
+  { g:"Cell finishing", rows:[["Soaking"], ["Formation"]], iso:"—", dew:"—", temp:"20 °C to 50 °C",
+    note:"Finishing runs in a normal environment. The cell is already sealed, so the particle and humidity requirements drop away." },
+  { g:"Cell finishing", rows:[["Degassing"]], iso:"min. ISO 7", dew:"Very dry (−40 °C to −60 °C)", temp:"22 ± 2 °C",
+    note:"The exception: the cell is opened here, so the dry room comes back for one step." },
+  { g:"Cell finishing", rows:[["Aging"]], iso:"—", dew:"—", temp:"20 °C to 50 °C", note:"" },
   { g:"Cell finishing", rows:[["EoL testing"]], iso:"—", dew:"—", temp:"22 ± 2 °C", note:"" }
 ];
 
@@ -168,50 +203,3 @@ function donut(pct, label, size, col) {
       <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none"
         stroke="color-mix(in srgb,var(--foreground) 9%,transparent)" stroke-width="6"/>
       <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${col}" stroke-width="6"
-        stroke-linecap="round" stroke-dasharray="${C0.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"
-        transform="rotate(-90 ${size / 2} ${size / 2})"/>
-      <text x="${size / 2}" y="${size / 2 + 1}" text-anchor="middle" class="dnutV"
-        style="font-size:${size > 90 ? 21 : 13}px">${pct.toFixed(0)}</text>
-      <text x="${size / 2}" y="${size / 2 + (size > 90 ? 17 : 12)}" text-anchor="middle" class="dnutU">%</text>
-    </svg><small>${esc(label)}</small></div>`;
-}
-
-function spark(arr, col, title, unit, hi) {
-  const W = 230, H = 62, P = 4;
-  if (arr.length < 2) return `<div class="trend"><small>${esc(title)}</small>
-    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><text x="${W / 2}" y="${H / 2 + 4}"
-    text-anchor="middle" class="cxTick">move a setpoint to start the trace</text></svg></div>`;
-  const top = Math.max(hi, ...arr) * 1.08 || 1;
-  const step = (W - 2 * P) / (HIST_MAX - 1), n = arr.length;
-  /* newest sample on the right, so a short history reads as a trace that has
-     only just started rather than as a stub stretched across the window     */
-  const pts = arr.map((v, i) => [W - P - (n - 1 - i) * step, H - P - v / top * (H - 2 * P)]);
-  const d = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join("");
-  const last = arr[arr.length - 1];
-  return `<div class="trend"><small>${esc(title)}<b>${last.toFixed(1)}${unit}</b></small>
-    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)} trend">
-      ${[0.25, 0.5, 0.75].map(f => `<path d="M${P} ${(P + f * (H - 2 * P)).toFixed(1)}L${W - P} ${(P + f * (H - 2 * P)).toFixed(1)}"
-        stroke="color-mix(in srgb,var(--foreground) 7%,transparent)"/>`).join("")}
-      <path d="${d}L${pts[pts.length - 1][0].toFixed(1)} ${H - P}L${pts[0][0].toFixed(1)} ${H - P}Z"
-        fill="${col}" opacity=".13"/>
-      <path d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>
-      <circle cx="${pts[pts.length - 1][0].toFixed(1)}" cy="${pts[pts.length - 1][1].toFixed(1)}" r="3" fill="${col}"/>
-    </svg></div>`;
-}
-
-/* a dense row cannot carry "Electrolyte filling — pouch" under every machine */
-const SHORT = {
-  "Packaging — pouch":"Packaging", "Packaging — can":"Packaging",
-  "Electrolyte filling — pouch":"Filling", "Electrolyte filling — can":"Filling",
-  "End-of-line testing":"EoL test", "Vacuum drying":"Vacuum dry",
-  "Pre-treatment":"Pre-treat", "Winding":"Winding + tabs"
-};
-const shortTitle = st => SHORT[st.title] || st.title;
-
-/* ---------------- the line, drawn as one machine ---------------- */
-/* every station reduces to a housing plus a few marks, so the row reads as
-   one continuous machine rather than as a row of unrelated icons          */
-function glyph(st, x, w, yb) {
-  /* one housing per machine, and every mark stays inside it — a section of a
-     line, not an icon. Only the dryer stacks are allowed to break the roof. */
-  const bx = x + w * 0.09, bw = w * 0.82, byT = yb - 52, byB = yb - 2;

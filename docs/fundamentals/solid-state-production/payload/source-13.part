@@ -1,3 +1,22 @@
+    V("Roll temperature", S.dcT + " °C", ok(S.dcT, 20, 200), "guide range RT–200 °C"),
+    V("Solvent to remove", "none", "ok", "no drying section behind this machine")],
+  verdict:m => m.fibril < 55 ? ["bad", "No self-supporting film",
+      `Shear at ${S.dcFib}%. Without a fibre network the blend leaves the nip as powder, and there is nothing to laminate or stack.`]
+    : m.dryFilmQ < 80 ? ["bad", "Film outside its window",
+      "Layer thickness and position are the two challenges the guide names for this process, and both are drifting."]
+    : m.fibril > 95 ? ["warn", "Over-sheared",
+      "Past about 95% the mix agglomerates instead of knitting, and the structure stops being homogeneous."]
+    : ["ok", "Dry film formed",
+      `Film quality ${m.dryFilmQ.toFixed(0)}% at ${S.dcT} °C, with no solvent anywhere in the step.`],
+  viz:m => ({ fill: clamp(m.dryFilmQ) })
+},
+
+ald: {
+  lead:"You are at the atomic layer deposition line. Thickness is not set by a gap here — it is set by how many self-limiting cycles the web sees, which means by how fast it moves.",
+  ctl:["aldSpd","aldT"],
+  read:m => [
+    V("Film thickness", m.aldNm.toFixed(1) + " nm", m.aldNm >= 0.8 && m.aldNm <= 22 ? "ok" : "warn", "≈1 nm at 30 m/min, ≈10 nm at 10 m/min"),
+    V("Process temperature", S.aldT + " °C", m.aldOK ? "ok" : "bad", "guide window 100–250 °C"),
     V("Coating quality", m.aldQ.toFixed(0) + "%", m.aldQ >= 88 ? "ok" : m.aldQ >= 75 ? "warn" : "bad"),
     V("Interface quality", m.interQ.toFixed(0) + "%", m.interQ >= 85 ? "ok" : "warn", "what this layer exists to protect")],
   verdict:m => !m.aldOK ? ["bad", "Outside the temperature window",
@@ -155,21 +174,3 @@ aerosol: {
   read:m => [
     V("Jet velocity", S.jetV + " m/s", ok(S.jetV, 100, 1000), "2nd ed. range 100–1 000 m·s⁻¹"),
     V("Layer density", m.layerDens.toFixed(0) + "%", m.layerDens >= 88 ? "ok" : m.layerDens >= 78 ? "warn" : "bad", "particles deform on impact"),
-    V("Coating rate", fmt(S.depRate) + " µm/h", S.depRate <= 10000 ? "ok" : "bad", "the named challenge is that this is low"),
-    V("Chamber pressure", S.chamP.toFixed(3) + " bar", ok(S.chamP, 0.001, 1), "2nd ed. range 0.001–1 bar"),
-    V("Electrolyte layer", S.sseTh + " µm", band(S.sseTh, 15, 50, 10)),
-    V("Time for this layer", (S.sseTh / S.depRate * 60).toFixed(1) + " min", S.sseTh / S.depRate * 60 < 3 ? "ok" : "warn", "deposition rate is the bottleneck")],
-  verdict:m => m.layerDens < 78 ? ["bad", "Layer not dense enough",
-      `${m.layerDens.toFixed(0)}%. Below the window the particles are not deforming on impact, so the layer is porous — and a porous solid electrolyte is a dendrite path.`]
-    : S.depRate > 8000 ? ["warn", "Pushing the deposition rate",
-      "Higher rate costs layer quality: excessive surface roughness and damaged particles are both listed challenges."]
-    : (S.sseTh / S.depRate * 60) > 3 ? ["warn", "Slow — this is the line's bottleneck",
-      `${(S.sseTh / S.depRate * 60).toFixed(1)} min for one layer. Low deposition rate is the first challenge the guide names for this station.`]
-    : ["ok", "Electrolyte layer deposited",
-      `${S.sseTh} µm at ${m.layerDens.toFixed(0)}% density, ${(S.sseTh / S.depRate * 60).toFixed(1)} min per layer.`],
-  viz:m => ({ dens: m.layerDens })
-},
-
-coex: {
-  lead:"You are at the co-extruder. Two melts, two channels, one tool — and they want different temperatures.",
-  ctl:["extP","meltDT","cathTh","sseTh"],

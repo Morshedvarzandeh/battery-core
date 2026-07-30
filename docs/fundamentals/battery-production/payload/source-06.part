@@ -1,3 +1,12 @@
+  ${[0, 1, 2, 3, 4].map(i => R(824, 120 + i * 20, 110, 12, i % 2 ? "mAn" : "mCa", 2)).join("")}
+  ${T(812, 242, "Electrode stack · ±200 µm", "mTxtS")}`)}
+${P("M84 176l90 -22", "mWeb")}${ARROW(340, 152)}${ARROW(524, 152)}${ARROW(786, 152)}
+`;
+
+M.stacking = () => `
+${H(0, 26, 60, 170, 190, `
+  ${R(48, 82, 126, 100, "mSteel2", 6)}
+  ${R(60, 96, 46, 34, "mCa", 3)}${R(116, 96, 46, 34, "mAn", 3)}${REEL(90, 158, 18, "mSep")}
   ${T(48, 202, "Input magazines", "mTxt")}${T(48, 216, "anode · cathode · separator", "mTxtS")}`)}
 ${H(1, 214, 40, 170, 120, `
   ${R(238, 58, 122, 34, "mDark", 4)}
@@ -284,13 +293,3 @@ ${ARROW(322, 158)}${ARROW(664, 158)}
    PEM RWTH Aachen process guide, one entry per station page.
    `parts` indices line up with the hotspot data-k values in the machine.
    ===================================================================== */
-/* shared helpers — defined first so every later block can use them */
-const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
-const PHASES = [
-  ["Electrode manufacturing", "var(--warning)"],
-  ["Cell assembly",           "var(--elyte)"],
-  ["Cell finishing",          "var(--green)"]
-];
-const phaseColor = p => (PHASES.find(x => x[0] === p) || [, "var(--primary)"])[1];
-let proc = "wet";   /* "wet" = slurry coating + drying + calendering; "dry" = solvent-free */

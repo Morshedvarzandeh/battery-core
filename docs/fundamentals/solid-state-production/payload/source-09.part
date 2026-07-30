@@ -1,3 +1,8 @@
+    ["Heat-affected zone","RISK","The laser's own risk: layer delamination, because the materials in the composite melt at different temperatures."]],
+  params:["Cutting speed","Spot size","Pulse energy and duration","Pulse repetition rate","Laser power or line energy","Wavelength"],
+  alts:["Punching"],
+  qInf:["Fused-on parts, cracks and deflections","Decomposition products","Delamination of the coating"],
+  qFeat:["Clean cut edge","Narrow evaporation notch","Low heat-affected zone"],
   sop:["Select laser or knife for this composite","Set the cut width and thread the web","Trial-cut and inspect the edge under magnification","Check for delamination at the cut","Run and monitor the heat-affected zone","Wind the strips separately"] },
 
 { id:"separation", no:"11", phase:"Cell assembly", title:"Sheet separation", machine:"separation", routes:ALL,
@@ -113,7 +118,3 @@ const CTL = {
   pistF:   { label:"Piston pressing force",    min:1000,max:10000,step:250,  unit:" kN",    def:5000, good:[2000,9000], note:"2nd ed. range 1 000–10 000 kN — the 3rd edition gives only a 2–30 µm layer thickness", ref:[15] },
   extT:    { label:"Lithium temperature",      min:20,  max:100,  step:5,    unit:" °C",    def:70,   good:[40,100],    note:"2nd ed.: lithium tempered up to 100 °C", ref:[15] },
   passiv:  { label:"Surface passivation",      opts:["None — full inert gas","Passivation layer"],   def:1, note:"With passivation the foil can be handled in a dry room instead of inert gas", ref:[1] },
-  lamP:    { label:"Lamination line pressure", min:100, max:2500, step:50,   unit:" N/mm",  def:1300, good:[300,2000],  note:"2nd ed. limit below 2 500 N/mm", ref:[15] },
-  lamT:    { label:"Roller tempering",         min:20,  max:140,  step:5,    unit:" °C",    def:70,   good:[40,120],    note:"Tempering the rollers raises the adhesive force", ref:[1] },
-  grindH:  { label:"Grinding time",            min:1,   max:10,   step:0.5,  unit:" h",     def:5,    good:[3,10],      note:"Guide range 1–10 h", ref:[1] },
-  grindD:  { label:"Grinding ball diameter",   min:1,   max:10,   step:0.5,  unit:" mm",    def:4,    good:[1,10],      note:"Guide range 1–10 mm ceramic media", ref:[1] },

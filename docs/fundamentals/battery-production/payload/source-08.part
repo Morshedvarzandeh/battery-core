@@ -1,3 +1,8 @@
+  qFeat:["Layer thickness accuracy and homogeneity","Surface quality — voids, particles","Adhesion between coating and substrate","Surface condition — cracks","Constant weight per unit area"],
+  sop:["Confirm the dry mix has been fibrillated, not merely blended","Warm the rolls to the setpoint before threading","Set line pressure and the roll speed ratio","Thread the primed foil and set pre-tension","Run to first article and weigh the coupon","Release only when both faces match on areal weight"] },
+
+{ id:"calendering", no:"04", phase:"Electrode manufacturing", title:"Calendering", machine:"calendering", routes:ALL, proc:"wet",
+  env:{iso:"ISO 7", dew:"semi-dry, +5…−5 °C", temp:"22 ± 2 °C"}, cost:"€ 10–15 M (calendering and slitting)", takt:"60–100 m/min",
   purpose:"Compress the porous coating to a defined thickness, density and porosity — this is where energy density is set.",
   inp:"Dry electrode, ≈50% porosity", out:"Compacted electrode, 20–35% porosity",
   parts:[
@@ -103,8 +108,3 @@
   inp:"Taped stack", out:"Pouch cell, one side open",
   parts:[
     ["Deep drawing","FORM","The pouch foil — polyamide / aluminium / polypropylene composite — is drawn up to 10 mm deep to make the cavity. Done in line or bought pre-drawn."],
-    ["Tab welding","JOIN","All anode current collectors are welded together and to the negative tab, all cathode collectors to the positive tab. Ultrasonic or laser welding. The guide names the ultrasonic parameter set — frequency, amplitude, pressure, time — without fixing values, because they belong to the joint."],
-    ["Insertion","LOAD","The stack is placed into the deep-drawn cavity."],
-    ["Partial sealing","SEAL","Three sides are sealed gas-tight by impulse or contact sealing. The rule of thumb on the shop floor: 1 mm of seal seam ≈ one year of cell life. One side is left open for filling."]],
-  params:["Deep-drawing of pouch film: up to 10 mm","Parameter set for ultrasonic welding: frequency, amplitude, pressure, time","Sealing temperature and pressure","Aluminium composite film: polyamide / aluminium / polypropylene","Rule of thumb: 1 mm seal-seam width corresponds to roughly one year of calendrical service life"],
-  alts:["Book folding — one foil with two drawn cavities, folded like a book and sealed"],

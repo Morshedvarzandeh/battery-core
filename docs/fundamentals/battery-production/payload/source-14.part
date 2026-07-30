@@ -1,3 +1,24 @@
+      "Above roughly 2 300 N/mm the particles fracture and the coating develops stress cracks. PEM caps line pressure at 2 500 N/mm."]
+    : m.por < 20 ? ["warn", "Very low porosity",
+      `${m.por.toFixed(0)}% leaves the electrolyte almost nowhere to go. Energy density is up, rate capability and wetting are down.`]
+    : ["ok", "Nip inside the useful window",
+      `${m.por.toFixed(0)}% porosity, ${(4.65 * (1 - m.por / 100)).toFixed(2)} g/cm³, N/P ${m.np.toFixed(2)}.`],
+  viz:m => ({ squeeze: clamp((50 - m.por) / 32 * 100) })
+},
+
+slitting: {
+  lead:"You are at the slitter. Everything here is about the edge you leave behind — a burr from this station is what pierces a separator six stations later.",
+  ctl:["knife","cutSpd","wear"],
+  read:m => [
+    V("Burr from this cut", m.burrSlit.toFixed(1) + " µm", m.burrSlit < 8 ? "ok" : m.burrSlit < 10 ? "warn" : "bad", "separator is only 12–25 µm"),
+    V("Tallest burr in the cell", m.burr.toFixed(1) + " µm", m.burr < 8 ? "ok" : m.burr < 10 ? "warn" : "bad", m.burrSep > m.burrSlit ? "separation is currently worse" : "this station sets it"),
+    V("Method", S.knife ? "Laser" : "Rolling knives", "ok"),
+    V("Edge dust", S.knife ? "very low" : S.wear > 60 ? "high" : "low", S.knife || S.wear <= 60 ? "ok" : "warn"),
+    V("Heat-affected edge", S.knife ? "yes — binder degrades locally" : "none", S.knife ? "warn" : "ok"),
+    V("Throughput", S.cutSpd + " m/min", ok(S.cutSpd, 80, 150))],
+  verdict:m => m.burrSlit > 10 ? ["bad", "Burr above the illustrative risk threshold",
+      `${m.burrSlit.toFixed(1)} µm against a separator 12–25 µm thick. Change the knife or switch to laser cutting.`]
+    : m.burr > 10 ? ["warn", "This cut is clean, but the cell's worst burr is not",
       `${m.burr.toFixed(1)} µm is coming from separation, not from here. The tallest burr anywhere in the cell is the one that pierces.`]
     : S.wear > 70 ? ["warn", "Knife due for change",
       "A worn blade smears active material over the edge instead of cutting it, which is the other way this station makes shorts."]
@@ -165,23 +186,3 @@ rollpress: {
     V("Separator stress", S.pressP > 0.9 ? "high" : "acceptable", S.pressP > 0.9 ? "bad" : "ok"),
     V("Pre-treatment temperature", S.preT + " °C", ok(S.preT, 30, 50), "PEM pre-treatment window 30–50 °C")],
   verdict:m => S.pressP > 0.9 ? ["bad", "Pressing too hard",
-      "Above the selected teaching window, pressure on a wet stack raises separator-stress and particle-driven puncture risk. Actual limits depend on separator, stack geometry, cleanliness and equipment validation."]
-    : m.wetting >= 96 ? ["ok", "Electrolyte distributed",
-      `${m.wetting.toFixed(0)}% illustrative wetting. More uniform electrolyte distribution supports more uniform formation, but this score does not prove that every pore is wetted.`]
-    : ["warn", "Still short of full wetting",
-      "Raise the pressure a little or leave the cell longer before formation."],
-  viz:m => ({ press: clamp(S.pressP / 1.2 * 100) })
-},
-
-formation: {
-  lead:"You are at formation — one of the most capital- and time-intensive stages in the reference line. The first controlled cycles form the SEI; rate, temperature, voltage limits, pressure and cleanliness all influence the result.",
-  ctl:["cRate","formT","vMax"],
-  read:m => [
-    V("First charge", S.cRate.toFixed(2) + " C", ok(S.cRate, 0.1, 0.5), "PEM: 0.1–0.5 C"),
-    V("Illustrative SEI score", m.seiQ.toFixed(0) + "%", m.seiQ >= 90 ? "ok" : m.seiQ >= 80 ? "warn" : "bad"),
-    V("Illustrative irreversible loss", m.liLoss.toFixed(1) + "%", m.liLoss < 12 ? "ok" : "warn", "teaching estimate of first-cycle cyclable-lithium consumption"),
-    V("Time on the rack", (13 / (S.cRate / 0.25)).toFixed(1) + " h", (13 / (S.cRate / 0.25)) <= 15 ? "ok" : "warn", "PEM: up to 15 h"),
-    V("Cell temperature", S.formT + " °C", band(S.formT, 20, 50, 8)),
-    V("Upper cut-off", S.vMax.toFixed(2) + " V", S.vMax <= 4.25 ? "ok" : "bad")],
-  verdict:m => S.cRate > 0.42 ? ["bad", "Charging too fast",
-      "The selected first-charge rate is near the upper end of the reference range. Faster formation can change interphase properties and raise plating risk under some conditions; validated recipes are chemistry- and design-specific."]

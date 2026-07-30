@@ -1,3 +1,29 @@
+      `${m.jArea.toFixed(2)} mA/cm² against a critical value near ${m.jCrit.toFixed(2)}. Slow the first cycle, raise the stack pressure, or thicken the electrolyte. Critical current density rose fivefold between 3 and 7 MPa in the published work.`]
+    : m.dendrite > 60 ? ["warn", "Close to the dendrite limit",
+      `Margin ${(100 - m.dendrite).toFixed(0)}%. The published critical current density has no standard measurement protocol and varies widely — leaving little margin is not a safe position.`]
+    : m.screen < 72 ? ["warn", "Aging screen too short to trust",
+      "Self-discharge and interface instability need time and temperature to become a measurable voltage drift."]
+    : ["ok", "Cell formed and released",
+      `Interface quality ${m.interQ.toFixed(0)}%, dendrite margin ${(100 - m.dendrite).toFixed(0)}%, screened ${S.ageDays} d at ${S.ageT} °C.`],
+  viz:m => ({ sei: m.interQ })
+}
+};
+</script>
+<script>
+/* =====================================================================
+   RESPONSE CHARTS
+   Every curve below is produced by actually re-running the process model
+   across a setpoint's whole range — it is not a drawing. Move the knob and
+   the dot moves along the same curve the model just computed.
+   ===================================================================== */
+
+function sweep(key, get, n = 60) {
+  const c = CTL[key], old = S[key], out = [];
+  for (let i = 0; i <= n; i++) {
+    const v = c.min + (c.max - c.min) * i / n;
+    S[key] = c.step >= 1 ? Math.round(v) : v;
+    out.push([S[key], get(model())]);
+  }
   S[key] = old;
   return out;
 }
@@ -197,22 +223,3 @@ const CHARTS = {
     { x:"dcT", title:"Warm rolls help the binder knit", unit:"%", good:[90,100], goodLabel:"in window", dp:0,
       series:[{ y:m => m.dryFilmQ, label:"Film quality", col:"var(--sep)" }] }],
   ald: [
-    { x:"aldSpd", title:"Web speed is the thickness control", unit:" nm", dp:1, lo:0,
-      series:[{ y:m => m.aldNm, label:"Film thickness", col:"var(--primary)" }] },
-    { x:"aldT", title:"Outside the window it stops being self-limiting", unit:"%", good:[88,100], goodLabel:"discrete", dp:0,
-      series:[{ y:m => m.aldQ, label:"Coating quality", col:"var(--elyte)" }] }],
-  compacting: [
-    { x:"compP", title:"Pressure closes the porosity, with diminishing returns", unit:"%", good:[82,100], goodLabel:"densified", dp:0,
-      series:[{ y:m => m.compDens, label:"Relative density", col:"var(--primary)" }] },
-    { x:"compP", title:"…and density is interfacial contact", unit:" Ω·cm²", limit:40, limitLabel:"target", lo:0, dp:0,
-      series:[{ y:m => m.rInt, label:"Interfacial resistance", col:"var(--destructive)" }] },
-    { x:"compT", title:"Heat does the same work as pressure", unit:"%", good:[82,100], goodLabel:"densified", dp:0,
-      series:[{ y:m => m.compDens, label:"Relative density", col:"var(--sep)" }] }],
-
-  extrusion: [
-    { x:"liTh", title:"Foil thickness is lithium you may never use", unit:"", good:[1.05,3], goodLabel:"useful N/P band", dp:2, lo:0.4,
-      series:[{ y:m => m.np, label:"N/P ratio", col:"var(--primary)" }] },
-    { x:"pistF", title:"Force has a window, not a direction", unit:"%", good:[90,100], goodLabel:"in specification", lo:60, hi:100, dp:0,
-      series:[{ y:m => m.foilQ, label:"Foil quality index", col:"var(--elyte)" }] }],
-  lamination: [
-    { x:"lamP", title:"Pressure builds the bond, then stops helping", unit:"%", good:[88,100], goodLabel:"bond holds", lo:40, hi:100, dp:0,

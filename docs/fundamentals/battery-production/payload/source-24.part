@@ -1,3 +1,50 @@
+        stroke-linecap="round" stroke-dasharray="${C0.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"
+        transform="rotate(-90 ${size / 2} ${size / 2})"/>
+      <text x="${size / 2}" y="${size / 2 + 1}" text-anchor="middle" class="dnutV"
+        style="font-size:${size > 90 ? 21 : 13}px">${pct.toFixed(0)}</text>
+      <text x="${size / 2}" y="${size / 2 + (size > 90 ? 17 : 12)}" text-anchor="middle" class="dnutU">%</text>
+    </svg><small>${esc(label)}</small></div>`;
+}
+
+function spark(arr, col, title, unit, hi) {
+  const W = 230, H = 62, P = 4;
+  if (arr.length < 2) return `<div class="trend"><small>${esc(title)}</small>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><text x="${W / 2}" y="${H / 2 + 4}"
+    text-anchor="middle" class="cxTick">move a setpoint to start the trace</text></svg></div>`;
+  const top = Math.max(hi, ...arr) * 1.08 || 1;
+  const step = (W - 2 * P) / (HIST_MAX - 1), n = arr.length;
+  /* newest sample on the right, so a short history reads as a trace that has
+     only just started rather than as a stub stretched across the window     */
+  const pts = arr.map((v, i) => [W - P - (n - 1 - i) * step, H - P - v / top * (H - 2 * P)]);
+  const d = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join("");
+  const last = arr[arr.length - 1];
+  return `<div class="trend"><small>${esc(title)}<b>${last.toFixed(1)}${unit}</b></small>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)} trend">
+      ${[0.25, 0.5, 0.75].map(f => `<path d="M${P} ${(P + f * (H - 2 * P)).toFixed(1)}L${W - P} ${(P + f * (H - 2 * P)).toFixed(1)}"
+        stroke="color-mix(in srgb,var(--foreground) 7%,transparent)"/>`).join("")}
+      <path d="${d}L${pts[pts.length - 1][0].toFixed(1)} ${H - P}L${pts[0][0].toFixed(1)} ${H - P}Z"
+        fill="${col}" opacity=".13"/>
+      <path d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="${pts[pts.length - 1][0].toFixed(1)}" cy="${pts[pts.length - 1][1].toFixed(1)}" r="3" fill="${col}"/>
+    </svg></div>`;
+}
+
+/* a dense row cannot carry "Electrolyte filling — pouch" under every machine */
+const SHORT = {
+  "Packaging — pouch":"Packaging", "Packaging — can":"Packaging",
+  "Electrolyte filling — pouch":"Filling", "Electrolyte filling — can":"Filling",
+  "End-of-line testing":"EoL test", "Vacuum drying":"Vacuum dry",
+  "Pre-treatment":"Pre-treat", "Winding":"Winding + tabs"
+};
+const shortTitle = st => SHORT[st.title] || st.title;
+
+/* ---------------- the line, drawn as one machine ---------------- */
+/* every station reduces to a housing plus a few marks, so the row reads as
+   one continuous machine rather than as a row of unrelated icons          */
+function glyph(st, x, w, yb) {
+  /* one housing per machine, and every mark stays inside it — a section of a
+     line, not an icon. Only the dryer stacks are allowed to break the roof. */
+  const bx = x + w * 0.09, bw = w * 0.82, byT = yb - 52, byB = yb - 2;
   const cx = bx + bw / 2, cy = (byT + byB) / 2;
   const R0 = Math.min(13, bw * 0.115);
   const shell = (cls = "mSteel2") => R(bx, byT, bw, byB - byT, cls, 3);
@@ -199,62 +246,3 @@ function floorSVG() {
     return `<path d="${pts.map(([a, b], q) => `${q ? "L" : "M"}${a.toFixed(1)} ${b.toFixed(1)}`).join("")}Z"
       fill="${fill}" opacity="${op}" stroke="color-mix(in srgb,var(--foreground) 20%,transparent)" stroke-width=".9"/>`;
   };
-  /* a = back corner, c = front corner */
-  const prism = (x0, y0, w, d, z) => ({
-    a: iso(x0, y0, 0), b: iso(x0 + w, y0, 0), c: iso(x0 + w, y0 + d, 0), d: iso(x0, y0 + d, 0),
-    A: iso(x0, y0, z), B: iso(x0 + w, y0, z), C: iso(x0 + w, y0 + d, z), D: iso(x0, y0 + d, z)
-  });
-  /* the two walls that meet at the front corner, then the roof */
-  const solid = (p, col, o1, o2, o3) =>
-    face([p.b, p.c, p.C, p.B], col, o1) + face([p.c, p.d, p.D, p.C], col, o2) +
-    face([p.A, p.B, p.C, p.D], col, o3);
-
-  const machinesOf = hall => k.list.filter(s => hall.ids.includes(s.id));
-
-  /* 1 · every floor slab first — all at ground level, so no occlusion */
-  let floors = "";
-  HALLS.forEach(hall => {
-    const p = prism(hall.x0, hall.y0, hall.w, D, 0);
-    floors += face([p.a, p.b, p.c, p.d], "color-mix(in srgb,var(--foreground) 8%,transparent)", 1);
-  });
-
-  /* 2 · material walking hall to hall, painted on the ground */
-  const edge = (fx, fy, tx, ty, dash) => {
-    const a = iso(fx, fy, 0), b = iso(tx, ty, 0);
-    return `<path d="M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}"
-      stroke="var(--primary)" stroke-width="2.6" opacity=".85" stroke-linecap="round"
-      ${dash ? 'stroke-dasharray="7 5"' : ""}/>
-      <circle cx="${b[0].toFixed(1)}" cy="${b[1].toFixed(1)}" r="3.6" fill="var(--primary)"/>`;
-  };
-  const H = Object.fromEntries(HALLS.map(h => [h.n, h]));
-  const flows =
-    edge(H[1].x0 + H[1].w + 3, H[1].y0 + D / 2, H[2].x0 - 3, H[2].y0 + D / 2, 0) +
-    edge(H[2].x0 + 34, H[2].y0 + D + 3, H[3].x0 + H[3].w - 34, H[3].y0 - 3, 1) +
-    edge(H[3].x0 + H[3].w + 3, H[3].y0 + D / 2, H[4].x0 - 3, H[4].y0 + D / 2, 0);
-
-  /* 3 · halls back to front; within a hall, machines back to front too */
-  let bodies = "", labels = "";
-  [...HALLS].sort((a, b) => (a.x0 + a.y0) - (b.x0 + b.y0)).forEach(hall => {
-    const on = machinesOf(hall), col = phaseColor(hall.ph);
-    const cols = Math.max(1, Math.min(on.length, Math.round(hall.w / 66)));
-    const rowsN = Math.ceil(on.length / cols);
-    const spanX = hall.w - 52, spanY = D - 56;
-    const placed = on.map((st, q) => {
-      const rr = Math.floor(q / cols), cc = q % cols;
-      return { st,
-        mx: hall.x0 + 26 + (cols === 1 ? spanX / 2 : cc * spanX / (cols - 1)) - 13,
-        my: hall.y0 + 28 + (rowsN === 1 ? spanY / 2 : rr * spanY / (rowsN - 1)) };
-    }).sort((a, b) => (a.mx + a.my) - (b.mx + b.my));
-
-    placed.forEach(({ st, mx, my }) => {
-      const q4 = prism(mx, my, 26, 26, 22), lv = stationLevel(st, m);
-      const mid = [(q4.A[0] + q4.C[0]) / 2, (q4.A[1] + q4.C[1]) / 2];
-      bodies += `<g class="hmiSt" data-go="${st.id}" tabindex="0" role="button"
-          aria-label="${esc(st.title)} in ${esc(hall.t)}">
-        ${solid(q4, col, .58, .42, .85)}
-        <circle cx="${mid[0].toFixed(1)}" cy="${mid[1].toFixed(1)}" r="3.8" fill="${LEVEL_COL[lv]}"
-          stroke="var(--background)" stroke-width="1.3"/>
-        <title>${esc(st.title)}</title></g>`;
-    });
-
-    /* the shell over them, translucent, so the hall reads as a building */

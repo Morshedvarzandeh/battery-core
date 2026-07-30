@@ -1,3 +1,44 @@
+           style="${machineStyle(st, m)}">${M[st.machine]()}</svg>
+      <div class="readout" id="readout"></div>
+    </div>
+
+    <div class="card card-pad">
+      <span class="eyebrow" style="color:${col}">${esc(st.phase)}</span>
+      <h2 style="font-size:20px;letter-spacing:-.02em;margin:5px 0 7px">${esc(st.purpose)}</h2>
+      <div class="flow" style="margin-top:12px">
+        <div class="flow-box"><small>Arrives as</small><strong>${esc(st.inp)}</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box"><small>Leaves as</small><strong>${esc(st.out)}</strong></div>
+      </div>
+      <div class="env" style="margin-top:12px">
+        <div><small>Clean room${r(1,9)}</small><b>${esc(st.env.iso)}</b></div>
+        <div><small>Dry room${r(1,5)}</small><b>${esc(st.env.dew)}</b></div>
+        <div><small>Temperature${r(1)}</small><b>${esc(st.env.temp)}</b></div>
+        <div><small>Machine investment${r(1)}</small><b>${esc(st.cost)}</b></div>
+      </div>
+      ${madeHTML(st)}
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>Process parameters &amp; requirements</h4>
+        <ul>${st.params.map(p => `<li>${p}</li>`).join("")}</ul>
+        <div class="srcline">Sources for this station: ${(SRC[st.id] || [1]).map(n =>
+          `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--jelly)"></i>Technology alternatives</h4>
+        <ul>${st.alts.map(p => `<li>${p}</li>`).join("")}</ul>
+        ${(st.innov || []).length ? `
+        <h4 style="margin-top:14px"><i style="background:var(--primary)"></i>Innovations &amp; trends${r(1)}</h4>
+        <ul>${st.innov.map(p => `<li>${p}</li>`).join("")}</ul>` : ""}
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--warning)"></i>Quality influences</h4>
+        <ul>${st.qInf.map(p => `<li>${p}</li>`).join("")}</ul>
       </div>
       <div class="card card-pad block">
         <h4><i style="background:var(--elyte)"></i>Quality features</h4>
@@ -249,40 +290,3 @@ function machineStyle(st, m) {
    TOUR ILLUSTRATIONS
    One small drawing per stop, made to carry the point of that stop —
    not a copy of the machine already on screen behind the panel.
-   Drawn with the same primitives and the same material palette as the
-   station schematics, so a colour always means the same substance.
-   ===================================================================== */
-const PIC_W = 372, PIC_H = 132;
-const pic = body => `<svg viewBox="0 13 ${PIC_W} ${PIC_H - 13}" role="img" aria-hidden="true">${body}</svg>`;
-/* a small arrow between stages */
-const pArrow = (x, y) => `<path class="mArrow" d="M${x} ${y}l10 0l-3 -3.5l7 3.5l-7 3.5l3 -3.5z"/>`;
-
-const TOURPIC = {
-
-/* the wet chain against the dry chain, with what the change is worth */
-drychain: () => pic(`
-  ${T(12, 26, "WET — FIVE STEPS", "mTxtS")}
-  ${["mix", "disperse", "coating", "drying", "calender"].map((n, i) =>
-    `<rect x="${12 + i * 72}" y="32" width="64" height="18" rx="3" fill="var(--warning)" opacity=".45"/>` +
-    T(44 + i * 72, 45, n, "mTxtS", "middle")).join("")}
-  ${T(12, 68, "DRY — TWO STEPS", "mTxtS")}
-  ${["dry mix / fibrillate", "coating"].map((n, i) =>
-    `<rect x="${12 + i * 136}" y="74" width="128" height="18" rx="3" fill="var(--primary)" opacity=".5"/>` +
-    T(76 + i * 136, 87, n, "mTxtS", "middle")).join("")}
-  ${[["35", "CapEx"], ["45", "energy"], ["55", "space"], ["70", "CO₂"]].map(([v, k], i) => {
-    const x = 12 + i * 90;
-    return T(x, 112, "−" + v + "%", "mTxt") + T(x + 44, 112, k, "mTxtS") +
-      `<rect x="${x}" y="118" width="78" height="5" rx="2.5"
-        fill="color-mix(in srgb,var(--foreground) 10%,transparent)"/>
-       <rect x="${x}" y="118" width="${78 * v / 100}" height="5" rx="2.5" fill="var(--primary)" opacity=".7"/>`;
-  }).join("")}
-`),
-
-
-/* the radar, reduced to its rings and a scatter of dots */
-radar: () => pic(`
-  ${[[52, "var(--jelly)", .10], [37, "var(--elyte)", .16], [22, "var(--primary)", .22]]
-    .map(([r, c, o]) => `<circle cx="72" cy="70" r="${r}" fill="${c}" opacity="${o}"
-      stroke="color-mix(in srgb,var(--foreground) 12%,transparent)"/>`).join("")}
-  <path d="M20 70l104 0" stroke="var(--foreground)" opacity=".45"/>
-  ${[[62,52],[84,56],[72,44],[96,66],[50,58],[104,80],[60,88],[86,92],[38,84],[112,52],[70,104],[46,44]]

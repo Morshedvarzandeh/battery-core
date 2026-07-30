@@ -1,3 +1,6 @@
+.mGlass{fill:light-dark(#dceaf4,#2c3b45);stroke:light-dark(#93b6ca,#5a7180);stroke-width:1.5}
+.mHot{fill:var(--hot);stroke:light-dark(#a63d1f,#f0a184);stroke-width:1.5}
+.mHotSoft{fill:light-dark(#f0a184,#8a4229);stroke:light-dark(#c9714f,#c9714f);stroke-width:1.2}
 .mCu{fill:var(--copper);stroke:light-dark(#8a5323,#d99a5f);stroke-width:1.2}
 .mAl{fill:var(--alu);stroke:light-dark(#8b9ba5,#c7d4db);stroke-width:1.2}
 .mAn{fill:var(--anode);stroke:light-dark(#4d5c64,#7d8e97);stroke-width:1.2}
@@ -239,8 +242,3 @@ const ROLLER = (x, y, r) =>
   `<rect class="mSteel2" x="${x - 1}" y="${y - r + 2}" width="2" height="${r * .5}" rx="1"/></g>`;
 /* a coil / reel of foil */
 const REEL = (x, y, r, cls) =>
-  `<g class="spin"><circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/>` +
-  `<circle class="${cls}" cx="${x}" cy="${y}" r="${r * .66}" opacity=".55"/>` +
-  `<circle class="mDark" cx="${x}" cy="${y}" r="${Math.max(2.5, r * .18)}"/></g>`;
-const GAUGE = (x, y, label) =>
-  `<g><circle class="mSteel2" cx="${x}" cy="${y}" r="15"/>` +

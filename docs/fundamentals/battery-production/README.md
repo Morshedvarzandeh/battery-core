@@ -1,8 +1,9 @@
 # Battery Production — CellForge simulator
 
-CellForge is an interactive browser lesson that follows a reference lithium-ion
-cell-production route from incoming electrode materials to a formed, aged, tested,
-and packed cell.
+CellForge is an interactive browser lesson aligned with the February 2026 fifth
+edition of the PEM RWTH Aachen/VDMA process guide. It follows a reference
+lithium-ion cell-production route from incoming electrode materials to a formed,
+aged, tested, and packed cell.
 
 Public URL after merge:
 
@@ -13,12 +14,10 @@ Public URL after merge:
 The simulator supports pouch, cylindrical, and prismatic routes and covers:
 
 - slurry mixing, coating, drying, calendering, and slitting;
-- the solvent-free dry-electrode route: dry mixing, fibrillation, and dry coating;
 - vacuum drying, sheet separation, stacking, or winding;
 - tab joining, enclosure, electrolyte filling, and wetting;
 - formation, pouch-cell degassing, aging, grading, and end-of-line testing;
-- cell-component responsibility, material flow, process references, and a guided tour;
-- plant-level views: a factory layout, machine detail, and a route comparison.
+- cell-component responsibility, material flow, process references, and a guided tour.
 
 The quantitative reference recipe is graphite/NMC. Other chemistries and process
 routes require different material properties, operating windows, and validation.
@@ -44,7 +43,7 @@ small enough for review while preserving the validated standalone page.
 
 - `index.html` — lightweight loading page;
 - `loader.js` — ordered source-part loader;
-- `payload/source-01.part` through `payload/source-25.part` — the complete
+- `payload/source-01.part` through `payload/source-26.part` — the complete
   standalone HTML, split only at line boundaries.
 
 ## Local preview

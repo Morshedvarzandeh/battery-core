@@ -1,3 +1,13 @@
+  { n:5, tag:"J. Power Sources 2016", txt:"Ahmed, S.; Nelson, P. A.; Dees, D. W. Study of a dry room in a battery manufacturing plant using a process model. <em>J. Power Sources</em> <b>2016</b>, <em>326</em>, 490–497.",
+    use:"Dry-room dew point targets and the energy cost of holding them.",
+    url:"https://doi.org/10.1016/j.jpowsour.2016.06.107" },
+  { n:6, tag:"J. Phys. Chem. C 2018", txt:"Stich, M.; Göttlinger, M.; Kurniawan, M.; Schmidt, U.; Bund, A. Hydrolysis of LiPF₆ in Carbonate-Based Electrolytes for Lithium-Ion Batteries and in Aqueous Media. <em>J. Phys. Chem. C</em> <b>2018</b>, <em>122</em> (16), 8836–8842.",
+    use:"LiPF₆ hydrolysis and formation of HF-containing species; why residual moisture is a critical gate before filling.",
+    url:"https://doi.org/10.1021/acs.jpcc.8b02080" },
+  { n:7, tag:"Carbon 2016", txt:"An, S. J.; Li, J.; Daniel, C.; Mohanty, D.; Nagpure, S.; Wood, D. L. The State of Understanding of the Lithium-Ion-Battery Graphite Solid Electrolyte Interphase (SEI) and Its Relationship to Formation Cycling. <em>Carbon</em> <b>2016</b>, <em>105</em>, 52–76.",
+    use:"SEI composition and thickness, why formation protocol influences SEI properties, formation-protocol effects.",
+    url:"https://doi.org/10.1016/j.carbon.2016.04.008" },
+  { n:8, tag:"J. Power Sources 2015", txt:"Wood, D. L., III; Li, J.; Daniel, C. Prospects for reducing the processing cost of lithium ion batteries. <em>J. Power Sources</em> <b>2015</b>, <em>275</em>, 234–242.",
     use:"Cost share of drying, solvent recovery and formation; the case for thicker electrodes and faster formation.",
     url:"https://doi.org/10.1016/j.jpowsour.2014.11.019" },
   { n:9, tag:"ISO 14644-1:2015", txt:"ISO 14644-1:2015, <em>Cleanrooms and associated controlled environments — Part 1: Classification of air cleanliness by particle concentration</em>, 2nd ed.; International Organization for Standardization: Geneva, 2015.",
@@ -128,21 +138,3 @@ const SRC = {
   fillHard:[1,5,6],  rollpress:[1],     formation:[1,7,3], degassing:[1],
   aging:[1,3],       eol:[1,10,11,12]
 };
-
-/* ---------------- 3 · one material chain ---------------- */
-/* the dry route replaces four wet-processing stages with dry mixing/fibrillation and dry coating */
-const FLOW_DRY = [
-  { id:"fibril", by:"drymix", name:"Fibrillated dry mix", state:"Solid, no solvent",
-    note:"Shear draws the PTFE binder into fibrils that knit the powder together. There is no solvent at any point, so there is nothing to evaporate later." },
-  { id:"film", by:"drycoat", name:"Free-standing film on foil", state:"Compacted, 20–35% porosity",
-    note:"The powder leaves the nip as a self-supporting film and is pressed onto the primed collector in the same pass. Because the nip compacts it, no separate calender follows." }
-];
-const FLOW = [
-  { id:"powder", by:null, name:"Active powder", state:"Solid, free-flowing",
-    note:"Graphite and NMC reference powders, carbon black and binder. Anode and cathode materials are handled in physically separate rooms." },
-  { id:"slurry", by:"mixing", name:"Slurry", state:"Liquid, 2 000–6 000 mPa·s",
-    note:"Solvent added and the agglomerates broken up. The batch is filtered and released only on viscosity and particle size." },
-  { id:"wet", by:"coating", name:"Wet film on foil", state:"Liquid on metal",
-    note:"Metered onto the current collector at a controlled wet thickness. Nothing about the electrode is fixed yet." },
-  { id:"dryel", by:"drying", name:"Dried electrode", state:"Porous solid, ≈50% porosity",
-    note:"Solvent driven off through a multi-zone dryer and recovered. The coating is now a fragile, very open structure." },

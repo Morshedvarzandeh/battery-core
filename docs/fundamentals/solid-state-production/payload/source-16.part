@@ -1,3 +1,22 @@
+    { x:"aldSpd", title:"Web speed is the thickness control", unit:" nm", dp:1, lo:0,
+      series:[{ y:m => m.aldNm, label:"Film thickness", col:"var(--primary)" }] },
+    { x:"aldT", title:"Outside the window it stops being self-limiting", unit:"%", good:[88,100], goodLabel:"discrete", dp:0,
+      series:[{ y:m => m.aldQ, label:"Coating quality", col:"var(--elyte)" }] }],
+  compacting: [
+    { x:"compP", title:"Pressure closes the porosity, with diminishing returns", unit:"%", good:[82,100], goodLabel:"densified", dp:0,
+      series:[{ y:m => m.compDens, label:"Relative density", col:"var(--primary)" }] },
+    { x:"compP", title:"…and density is interfacial contact", unit:" Ω·cm²", limit:40, limitLabel:"target", lo:0, dp:0,
+      series:[{ y:m => m.rInt, label:"Interfacial resistance", col:"var(--destructive)" }] },
+    { x:"compT", title:"Heat does the same work as pressure", unit:"%", good:[82,100], goodLabel:"densified", dp:0,
+      series:[{ y:m => m.compDens, label:"Relative density", col:"var(--sep)" }] }],
+
+  extrusion: [
+    { x:"liTh", title:"Foil thickness is lithium you may never use", unit:"", good:[1.05,3], goodLabel:"useful N/P band", dp:2, lo:0.4,
+      series:[{ y:m => m.np, label:"N/P ratio", col:"var(--primary)" }] },
+    { x:"pistF", title:"Force has a window, not a direction", unit:"%", good:[90,100], goodLabel:"in specification", lo:60, hi:100, dp:0,
+      series:[{ y:m => m.foilQ, label:"Foil quality index", col:"var(--elyte)" }] }],
+  lamination: [
+    { x:"lamP", title:"Pressure builds the bond, then stops helping", unit:"%", good:[88,100], goodLabel:"bond holds", lo:40, hi:100, dp:0,
       series:[{ y:m => m.lamQ, label:"Bond index", col:"var(--primary)" }] },
     { x:"lamT", title:"Heat does the other half", unit:"%", good:[88,100], goodLabel:"bond holds", lo:40, hi:100, dp:0,
       series:[{ y:m => m.lamQ, label:"Bond index", col:"var(--elyte)" }] }],
@@ -176,19 +195,3 @@ function renderOverview() {
         <div><small>Stack energy</small><b>${(m.cellWh / 1000).toFixed(2)} kWh</b><span>capacity × series voltage</span></div>
         <div><small>Area-specific resistance</small><b>${m.rTot.toFixed(0)}</b><span>Ω·cm², interfaces plus bulk</span></div>
         <div><small>Interface contact</small><b>${m.contact.toFixed(0)}%</b><span>set by stack pressure and density</span></div>
-        <div><small>Dendrite margin</small><b>${(100 - m.dendrite).toFixed(0)}%</b><span>headroom to the critical current</span></div>
-        <div><small>N/P ratio</small><b>${m.np.toFixed(2)}</b><span>lithium ÷ catholyte capacity</span></div>
-        <div><small>Process-health score</small><b>${m.yieldPct.toFixed(1)}%</b><span>teaching score, not a yield prediction</span></div>
-      </div>
-      <div class="srcline">Material properties and limits follow ${
-        [1,2,8].map(n => `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
-    </div>
-
-    <div class="grid2">
-      <div class="card card-pad block">
-        <h4><i style="background:var(--primary)"></i>How to read this simulator</h4>
-        <ul>
-          <li><b>The electrolyte class is not a variant — it is a different plant.</b> Switch it in the sidebar and stations appear and disappear: oxide sinters, sulfide and polymer calender and press.${r(1)}</li>
-          <li><b>Every station is a real machine.</b> The schematics follow the guide figures — piston extruder, ball mill, planetary mixer, twin-screw compounder, slot nozzle, aerosol chamber, sintering furnace, gripper and press.</li>
-          <li><b>Hover or tab any part</b> of a machine to get its job, its parameters and why it matters.</li>
-          <li><b>Start with the big picture.</b> <button type="button" data-go="view:anatomy" style="color:var(--primary);font-weight:600;text-decoration:underline">Cell anatomy</button> shows what you are building and who builds each layer; <button type="button" data-go="view:flow" style="color:var(--primary);font-weight:600;text-decoration:underline">material flow</button> follows the two routes that meet at stacking; <button type="button" data-go="view:matrix" style="color:var(--primary);font-weight:600;text-decoration:underline">process ↔ component</button> maps every station onto every part of the cell.</li>

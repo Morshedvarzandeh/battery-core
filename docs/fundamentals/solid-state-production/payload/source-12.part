@@ -1,3 +1,8 @@
+  { n:13, tag:"Front. Mater. 2020", txt:"Wang, L.; Li, J.; Lu, G.; Li, W.; Tao, Q.; Shi, C.; Jin, H.; Chen, G.; Wang, S. Fundamentals of Electrolytes for Solid-State Batteries: Challenges and Perspectives. <em>Front. Mater.</em> <b>2020</b>, <em>7</em>, 111.",
+    use:"Polymer electrolyte conductivity at room temperature, and why PEO-based systems want to run warm.",
+    url:"https://doi.org/10.3389/fmats.2020.00111" },
+  { n:15, tag:"PEM/VDMA 2023", txt:"Heimes, H. H.; Kampker, A.; Plumeyer, J. F.; Scheibe, A.; Wennemar, S.; Michaelis, S.; Schütrumpf, J. <em>Production of an All-Solid-State Battery Cell</em>, 2nd ed.; PEM of RWTH Aachen University &amp; VDMA: Frankfurt am Main, January 2023. ISBN 978-3-947920-29-7.",
+    use:"The stations the 3rd edition no longer describes in detail — lamination, tape casting, aerosol deposition, co-extrusion, calendering, slitting and separation — together with their parameter ranges. Where a figure comes from this edition rather than the current one, it is labelled 2nd ed.",
     url:"https://www.vdma.eu/viewer/-/v2article/render/49015418" },
   { n:14, tag:"ISO 14644-1:2015", txt:"ISO 14644-1:2015, <em>Cleanrooms and associated controlled environments — Part 1: Classification of air cleanliness by particle concentration</em>, 2nd ed.; International Organization for Standardization: Geneva, 2015.",
     use:"What a clean-room class means as a particle count, where the guide names one.",
@@ -30,7 +35,7 @@ const COMPONENTS = [
     spec:"20–120 µm foil", mat:"Metallic lithium, extruded and calendered",
     src:"Made here, over two stations",
     role:"The negative electrode. Not a host that lithium enters — the metal itself.",
-    why:`This is the whole point of a solid-state cell. Lithium metal has about ten times the specific capacity of graphite, and it is only usable because a solid electrolyte can mechanically resist the dendrites that a liquid cannot. It is also adhesive, reactive, and cannot be cut mechanically — which is why extrusion and lamination replace coating and calendering here.${r(4,9)}`,
+    why:`Lithium metal has about ten times the specific capacity of graphite, which is why many solid-state concepts pursue it. A solid electrolyte can help suppress penetration, but it does not eliminate lithium growth or short-circuit risk. The soft, adhesive and reactive foil is difficult to slit cleanly at production scale, so this guide uses extrusion and lamination instead of the graphite coating route.${r(4,9)}`,
     made:["extrusion","lamination"], risk:["extrusion","lamination","formation"], checks:["formation"],
     riskWhy:"Lithium sticks to everything it touches and reacts with almost any atmosphere." },
 
@@ -72,7 +77,7 @@ const COMPONENTS = [
     spec:"series stacking inside one housing", mat:"Shared collectors between adjacent elementary cells",
     src:"Created at stacking",
     role:"Puts elementary cells in series inside a single package.",
-    why:`Only possible because there is no liquid to short between cells. The stack voltage multiplies — a stack of eight elementary cells at 3.8 V is a 30 V cell — and the packaging effort drops because only the outer collectors are needed.${r(1,2)}`,
+    why:`A solid electrolyte can enable bipolar series stacking inside one housing, provided each layer remains electrically isolated and defect-free. The stack voltage multiplies — a stack of eight elementary cells at 3.8 V is about 30 V — and packaging effort can fall because only the outer conductors leave the housing.${r(1,2)}`,
     made:["stacking","contacting"], risk:["stacking"], checks:["formation"],
     riskWhy:"A misplaced sheet in a series stack shorts more than one cell." },
 
@@ -86,9 +91,9 @@ const COMPONENTS = [
 
   { id:"absent", name:"What is no longer there", short:"Absent", col:"var(--muted-foreground)", h:0,
     spec:"liquid electrolyte, porous separator, filling station", mat:"—",
-    src:"Removed by the solid electrolyte",
-    role:"The components and stations a solid electrolyte deletes.",
-    why:`No liquid electrolyte, so no LiPF₆, no hydrofluoric acid chemistry, no flammable solvent, and no filling or wetting station. No porous polymer separator, so one bought-in component and one placement step disappear. In a lithium-ion plant, filling and wetting occupy a dry room at a −50 °C dew point and hours of queue time; here that whole area does not exist.${r(1,2)}`,
+    src:"Removed in the reference solid-state routes",
+    role:"The components and stations that the reference solid-state architecture can remove.",
+    why:`The reference routes use neither a liquid electrolyte nor a separate porous separator, so filling, wetting and separator placement disappear. That avoids the liquid-electrolyte route's LiPF₆ and flammable-carbonate-solvent hazards, but solid electrolytes and their processing solvents introduce chemistry-specific moisture, toxicity and fire controls of their own.${r(1,2)}`,
     made:[], risk:[], checks:[],
     riskWhy:"" }
 ];
@@ -139,22 +144,3 @@ drycoat: {
   read:m => [
     V("Fibrillation", m.fibril.toFixed(0) + "%", m.fibril >= 55 ? (m.fibril <= 95 ? "ok" : "warn") : "bad", "binder drawn into a fibre network"),
     V("Film quality", m.dryFilmQ.toFixed(0) + "%", m.dryFilmQ >= 90 ? "ok" : m.dryFilmQ >= 80 ? "warn" : "bad", "thickness and homogeneity"),
-    V("Roll temperature", S.dcT + " °C", ok(S.dcT, 20, 200), "guide range RT–200 °C"),
-    V("Solvent to remove", "none", "ok", "no drying section behind this machine")],
-  verdict:m => m.fibril < 55 ? ["bad", "No self-supporting film",
-      `Shear at ${S.dcFib}%. Without a fibre network the blend leaves the nip as powder, and there is nothing to laminate or stack.`]
-    : m.dryFilmQ < 80 ? ["bad", "Film outside its window",
-      "Layer thickness and position are the two challenges the guide names for this process, and both are drifting."]
-    : m.fibril > 95 ? ["warn", "Over-sheared",
-      "Past about 95% the mix agglomerates instead of knitting, and the structure stops being homogeneous."]
-    : ["ok", "Dry film formed",
-      `Film quality ${m.dryFilmQ.toFixed(0)}% at ${S.dcT} °C, with no solvent anywhere in the step.`],
-  viz:m => ({ fill: clamp(m.dryFilmQ) })
-},
-
-ald: {
-  lead:"You are at the atomic layer deposition line. Thickness is not set by a gap here — it is set by how many self-limiting cycles the web sees, which means by how fast it moves.",
-  ctl:["aldSpd","aldT"],
-  read:m => [
-    V("Film thickness", m.aldNm.toFixed(1) + " nm", m.aldNm >= 0.8 && m.aldNm <= 22 ? "ok" : "warn", "≈1 nm at 30 m/min, ≈10 nm at 10 m/min"),
-    V("Process temperature", S.aldT + " °C", m.aldOK ? "ok" : "bad", "guide window 100–250 °C"),

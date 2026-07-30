@@ -1,3 +1,42 @@
+          <li><b>Calendering appears against four components at once</b> — both coatings and both foils. That is why one setpoint there moves capacity, wetting and crack risk together.${r(4)}</li>
+          <li><b>Most stations that build a component are also where it is most easily ruined</b> — the ◉ marks. The calender that gives the cathode its density is the same nip that cracks its particles; the stacker that places the separator is where the separator gets pierced.</li>
+          <li><b>Slitting shapes, but never adds.</b> It cuts foil to width and takes material away; nothing new enters the cell here. Everything else this station can do to the product is negative, and the burr it leaves is the classic separator-piercing defect.${r(1)}</li>
+          <li><b>Vacuum drying protects a component it never touches</b> — the electrolyte, four stations later, via the water it removes now.${r(6)}</li>
+        </ul>
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   4 · REFERENCES
+   ------------------------------------------------------------------- */
+/* =====================================================================
+   5 · TECHNOLOGY RADAR — the 44 technologies the 5th edition tracks,
+   placed by phase and by how far away series production is. [1]
+   ===================================================================== */
+const RINGS = [
+  { id:1, label:"≤ 2 years",  short:"≤2 y",  col:"var(--primary)" },
+  { id:2, label:"2 – 5 years", short:"2–5 y", col:"var(--elyte)" },
+  { id:3, label:"≥ 5 years",  short:"≥5 y",  col:"var(--jelly)" }
+];
+/* sector key: em = electrode manufacturing, ca = cell assembly,
+   cf = cell finishing, ma = material, cd = cell design            */
+const SECTORS = [
+  { id:"em", label:"Electrode manufacturing", axis:"PROCESS", a0:118, a1:180 },
+  { id:"ca", label:"Cell assembly",           axis:"PROCESS", a0: 62, a1:118 },
+  { id:"cf", label:"Cell finishing",          axis:"PROCESS", a0:  0, a1: 62 },
+  { id:"ma", label:"Material",                axis:"PRODUCT", a0:180, a1:270 },
+  { id:"cd", label:"Cell design",             axis:"PRODUCT", a0:270, a1:360 }
+];
+const sectorMap = Object.fromEntries(SECTORS.map(x => [x.id, x]));
+
+/* go: which station in this simulator the technology lands on, when there is one */
+const TECH = [
+  { n: 1, s:"em", ring:1, t:"Multi-layer coating",            go:"coating" },
+  { n: 2, s:"em", ring:1, t:"Infrared drying",                go:"drying" },
+  { n: 3, s:"em", ring:1, t:"Dry coating (anode)",            go:"drycoat" },
+  { n: 4, s:"em", ring:1, t:"Dry coating (cathode)",          go:"drycoat" },
+  { n: 5, s:"em", ring:1, t:"Laser cutting (cathode)",        go:"separation" },
   { n: 6, s:"em", ring:1, t:"Laser drying",                   go:"drying" },
   { n: 7, s:"em", ring:2, t:"Roll-to-roll baking",            go:"vacdry" },
   { n: 8, s:"em", ring:2, t:"Trajectory mixing",              go:"mixing" },
@@ -178,38 +217,3 @@ function renderRadar() {
     </div>`;
 
   $("layerView").querySelectorAll("[data-tech]").forEach(el =>
-    el.addEventListener("click", () => { techPick = +el.dataset.tech; renderRadar(); }));
-  $("layerView").querySelectorAll(".rdDot").forEach(el =>
-    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } }));
-}
-
-/* =====================================================================
-   6 · FACTORY & ENVIRONMENT — the building the line sits in, the air it
-   needs, and what the machines cost. [1]
-   ===================================================================== */
-const ZONES = [
-  { n:1, t:"Slurry production", h:112,
-    d:"Multi-storey construction, so powder and solvent can be dosed gravimetrically — the material falls to the mixer instead of being pumped up to it." },
-  { n:2, t:"Electrode production", h:72,
-    d:"Single-storey hall with increased building height, because the dryers need complex exhaust-air handling and solvent recovery above them." },
-  { n:3, t:"Cell assembly", h:50,
-    d:"Compact hall with low plant height, held in a dry-room environment and built as modules so it can be extended." },
-  { n:4, t:"Cell finishing", h:112,
-    d:"Up to twelve metres high, built as a high-bay warehouse: formation and aging need thousands of cell positions under defined air conditioning." }
-];
-
-const ENVROWS = [
-  { g:"Electrode manufacturing", rows:[
-    ["Mixing"], ["Coating"], ["Drying"], ["Calendering"], ["Slitting"], ["Vacuum drying"]],
-    iso:"ISO 7 – 8",
-    dew:"<div><b>Water-based electrodes:</b> controlled process conditions, semi-dry (+5 °C to −5 °C)<br><b>NMP-based electrodes:</b> dry (0 °C to −30 °C) to very dry (−40 °C to −60 °C)<br><b>Vacuum drying:</b> encapsulated process, vacuum or inert</div>",
-    temp:"22 ± 2 °C",
-    note:"Electrode production runs under clean-room conditions because foreign particles in the coating are removed later by cleaning methods such as suction — so they must not get in to begin with." },
-  { g:"Cell assembly", rows:[["Cutting"], ["Stacking / winding"], ["Packaging"], ["Electrolyte filling"]],
-    iso:"min. ISO 7", dew:"Very dry (−30 °C to −60 °C)", temp:"22 ± 2 °C",
-    note:"Assembly has to be dry. Water sealed inside the cell causes severe service-life loss and a safety risk — it reacts with the salt to form hydrofluoric acid." },
-  { g:"Cell finishing", rows:[["Soaking"], ["Formation"]], iso:"—", dew:"—", temp:"20 °C to 50 °C",
-    note:"Finishing runs in a normal environment. The cell is already sealed, so the particle and humidity requirements drop away." },
-  { g:"Cell finishing", rows:[["Degassing"]], iso:"min. ISO 7", dew:"Very dry (−40 °C to −60 °C)", temp:"22 ± 2 °C",
-    note:"The exception: the cell is opened here, so the dry room comes back for one step." },
-  { g:"Cell finishing", rows:[["Aging"]], iso:"—", dew:"—", temp:"20 °C to 50 °C", note:"" },

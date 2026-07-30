@@ -1,3 +1,20 @@
+/* ---------------- 3 · one material chain ---------------- */
+/* the dry route replaces four wet-processing stages with dry mixing/fibrillation and dry coating */
+const FLOW_DRY = [
+  { id:"fibril", by:"drymix", name:"Fibrillated dry mix", state:"Solid, no solvent",
+    note:"Shear draws the PTFE binder into fibrils that knit the powder together. There is no solvent at any point, so there is nothing to evaporate later." },
+  { id:"film", by:"drycoat", name:"Free-standing film on foil", state:"Compacted, 20–35% porosity",
+    note:"The powder leaves the nip as a self-supporting film and is pressed onto the primed collector in the same pass. Because the nip compacts it, no separate calender follows." }
+];
+const FLOW = [
+  { id:"powder", by:null, name:"Active powder", state:"Solid, free-flowing",
+    note:"Graphite and NMC reference powders, carbon black and binder. Anode and cathode materials are handled in physically separate rooms." },
+  { id:"slurry", by:"mixing", name:"Slurry", state:"Liquid, 2 000–6 000 mPa·s",
+    note:"Solvent added and the agglomerates broken up. The batch is filtered and released only on viscosity and particle size." },
+  { id:"wet", by:"coating", name:"Wet film on foil", state:"Liquid on metal",
+    note:"Metered onto the current collector at a controlled wet thickness. Nothing about the electrode is fixed yet." },
+  { id:"dryel", by:"drying", name:"Dried electrode", state:"Porous solid, ≈50% porosity",
+    note:"Solvent driven off through a multi-zone dryer and recovered. The coating is now a fragile, very open structure." },
   { id:"comp", by:"calendering", name:"Compacted electrode", state:"Porous solid, 20–35% porosity",
     note:"Rolled to its final thickness and density. This single step sets areal capacity, contact between particles and how easily electrolyte can move." },
   { id:"daughter", by:"slitting", name:"Daughter roll", state:"Narrow coil, 60–300 mm",
@@ -142,24 +159,3 @@ calendering: {
   verdict:m => m.np < 1.02 ? ["bad", "Anode under-sized — plating risk",
       `N/P ${m.np.toFixed(2)}. Compressing both coatings equally does not fix a balance problem; change coat thickness instead.`]
     : S.force > 2300 ? ["bad", "Squeezing, not compacting",
-      "Above roughly 2 300 N/mm the particles fracture and the coating develops stress cracks. PEM caps line pressure at 2 500 N/mm."]
-    : m.por < 20 ? ["warn", "Very low porosity",
-      `${m.por.toFixed(0)}% leaves the electrolyte almost nowhere to go. Energy density is up, rate capability and wetting are down.`]
-    : ["ok", "Nip inside the useful window",
-      `${m.por.toFixed(0)}% porosity, ${(4.65 * (1 - m.por / 100)).toFixed(2)} g/cm³, N/P ${m.np.toFixed(2)}.`],
-  viz:m => ({ squeeze: clamp((50 - m.por) / 32 * 100) })
-},
-
-slitting: {
-  lead:"You are at the slitter. Everything here is about the edge you leave behind — a burr from this station is what pierces a separator six stations later.",
-  ctl:["knife","cutSpd","wear"],
-  read:m => [
-    V("Burr from this cut", m.burrSlit.toFixed(1) + " µm", m.burrSlit < 8 ? "ok" : m.burrSlit < 10 ? "warn" : "bad", "separator is only 12–25 µm"),
-    V("Tallest burr in the cell", m.burr.toFixed(1) + " µm", m.burr < 8 ? "ok" : m.burr < 10 ? "warn" : "bad", m.burrSep > m.burrSlit ? "separation is currently worse" : "this station sets it"),
-    V("Method", S.knife ? "Laser" : "Rolling knives", "ok"),
-    V("Edge dust", S.knife ? "very low" : S.wear > 60 ? "high" : "low", S.knife || S.wear <= 60 ? "ok" : "warn"),
-    V("Heat-affected edge", S.knife ? "yes — binder degrades locally" : "none", S.knife ? "warn" : "ok"),
-    V("Throughput", S.cutSpd + " m/min", ok(S.cutSpd, 80, 150))],
-  verdict:m => m.burrSlit > 10 ? ["bad", "Burr above the illustrative risk threshold",
-      `${m.burrSlit.toFixed(1)} µm against a separator 12–25 µm thick. Change the knife or switch to laser cutting.`]
-    : m.burr > 10 ? ["warn", "This cut is clean, but the cell's worst burr is not",

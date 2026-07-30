@@ -1,3 +1,8 @@
+    ["Tab welding","JOIN","All anode current collectors are welded together and to the negative tab, all cathode collectors to the positive tab. Ultrasonic or laser welding. The guide names the ultrasonic parameter set — frequency, amplitude, pressure, time — without fixing values, because they belong to the joint."],
+    ["Insertion","LOAD","The stack is placed into the deep-drawn cavity."],
+    ["Partial sealing","SEAL","Three sides are sealed gas-tight by impulse or contact sealing. The rule of thumb on the shop floor: 1 mm of seal seam ≈ one year of cell life. One side is left open for filling."]],
+  params:["Deep-drawing of pouch film: up to 10 mm","Parameter set for ultrasonic welding: frequency, amplitude, pressure, time","Sealing temperature and pressure","Aluminium composite film: polyamide / aluminium / polypropylene","Rule of thumb: 1 mm seal-seam width corresponds to roughly one year of calendrical service life"],
+  alts:["Book folding — one foil with two drawn cavities, folded like a book and sealed"],
   innov:["Reduction of mechanical and thermal stress","Increase of the deep-drawing depth for thicker cell stacks","Positioning tabs on opposite sides instead of on one side"],
   qInf:["Reduction of thermal stress during contacting and sealing","Seal seam width","Sealing temperature and pressure"],
   qFeat:["Low contact resistance, low mechanical and thermal stress at the weld","Fatigue strength and tightness of the sealing seams"],
@@ -96,13 +101,3 @@
   innov:["Integration of degassing steps for ever larger cylindrical formats"],
   qInf:["Pressing of the cells for degassing","Sealing and folding technology","Suction of gases under vacuum and in a dry atmosphere"],
   qFeat:["Residual gas inside the cell","Damage-free cell handling"],
-  sop:["Confirm gas treatment is online","Pierce inside the vacuum chamber","Evacuate and hold","Seal the final seam","Cut and dispose of the gas bag as hazardous waste","Fold and glue the seam if specified"] },
-
-{ id:"aging", no:"14", phase:"Cell finishing", title:"Aging", machine:"aging", routes:ALL,
-  env:{iso:"—", dew:"—", temp:"20 – 50 °C · HT 30–50, RT 20–25"}, cost:"€ 15–45 M (aging)", takt:"up to 3 weeks",
-  purpose:"Hold the cells and watch their open-circuit voltage — the screen that catches internal defects before the customer does.",
-  inp:"Formed, degassed cell", out:"Released or scrapped cell",
-  parts:[
-    ["High-temperature aging","ACCELERATE","Cells first go through HT aging at 30–50 °C, which accelerates any latent defect so it shows up in days rather than months."],
-    ["Normal-temperature aging","OBSERVE","Then room-temperature aging at 20–25 °C on shelves or towers, for up to three weeks in total. The cell enters the aging period at 30–80% state of charge."],
-    ["OCV monitoring","MEASURE","Open-circuit voltage is measured repeatedly through the whole period. Unlike formation, the pouch cells are no longer pressurised here."],

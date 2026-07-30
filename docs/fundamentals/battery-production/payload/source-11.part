@@ -1,3 +1,25 @@
+  /* the dry route has no separate calender — the coating nip does the
+     compaction, so line pressure and roll temperature set porosity here. [1] */
+  const por  = dry
+    ? clamp(52 - (S.dcLine - 150) / 150 * 30 - (S.dcRollT - 50) * 0.05, 15, 58)
+    : clamp(50 - (S.force / 2500) * 30 - (S.rollT - 60) * 0.06, 15, 55);
+  const solidFrac = 1 - por / 100;
+  /* Illustrative active-material estimate. The 2026 reference recipes use
+     95 wt% active material in the dry solids for both electrodes. [1][2] */
+  const activeCathodeFrac = 0.95;
+  const activeAnodeFrac = 0.95;
+  const capC = S.tC * 1e-4 * solidFrac * activeCathodeFrac * 4.65 * 180;
+  const capA = S.tA * 1e-4 * solidFrac * activeAnodeFrac * 2.24 * 350;
+  const np   = capA / capC;
+  const cellAh = capC * g.area * (g.layers > 1 ? 2 * g.layers : 1) / 1000;
+
+  /* --- mixing ---------------------------------------------------------- */
+  const visc = 3000 * Math.exp(0.085 * (S.solid - 58)) * Math.pow(25 / S.mixT, 0.35);
+  const disp = clamp(100 - 40 * Math.exp(-(S.mixMin - 25) / 45));
+
+  /* --- dry coating ------------------------------------------------------ */
+  /* PTFE fibrillation is what turns loose powder into a free-standing film;
+     the primer is what lets that film hold on to the metal. [1][12]         */
   const fibril  = clamp(S.dcFib + (S.dmTime - 30) * 0.35
                    - Math.max(0, 20 - S.dmT) * 0.45 - Math.max(0, S.dmT - 50) * 0.65);
   const adhesion = clamp(94 - (S.dcPrimer ? 34 : 0) + (S.dcRollT - 50) * 0.06
@@ -152,13 +174,3 @@ const REFS = [
   { n:4, tag:"Adv. Energy Mater. 2023", txt:"Abdollahifar, M.; Cavers, H.; Scheffler, S.; Diener, A.; Lippke, M.; Kwade, A. Insights into Influencing Electrode Calendering on the Battery Performance. <em>Adv. Energy Mater.</em> <b>2023</b>, <em>13</em> (40), 2300973.",
     use:"Porosity–performance trade-off, particle cracking and tortuosity increase under severe calendering.",
     url:"https://doi.org/10.1002/aenm.202300973" },
-  { n:5, tag:"J. Power Sources 2016", txt:"Ahmed, S.; Nelson, P. A.; Dees, D. W. Study of a dry room in a battery manufacturing plant using a process model. <em>J. Power Sources</em> <b>2016</b>, <em>326</em>, 490–497.",
-    use:"Dry-room dew point targets and the energy cost of holding them.",
-    url:"https://doi.org/10.1016/j.jpowsour.2016.06.107" },
-  { n:6, tag:"J. Phys. Chem. C 2018", txt:"Stich, M.; Göttlinger, M.; Kurniawan, M.; Schmidt, U.; Bund, A. Hydrolysis of LiPF₆ in Carbonate-Based Electrolytes for Lithium-Ion Batteries and in Aqueous Media. <em>J. Phys. Chem. C</em> <b>2018</b>, <em>122</em> (16), 8836–8842.",
-    use:"LiPF₆ hydrolysis and formation of HF-containing species; why residual moisture is a critical gate before filling.",
-    url:"https://doi.org/10.1021/acs.jpcc.8b02080" },
-  { n:7, tag:"Carbon 2016", txt:"An, S. J.; Li, J.; Daniel, C.; Mohanty, D.; Nagpure, S.; Wood, D. L. The State of Understanding of the Lithium-Ion-Battery Graphite Solid Electrolyte Interphase (SEI) and Its Relationship to Formation Cycling. <em>Carbon</em> <b>2016</b>, <em>105</em>, 52–76.",
-    use:"SEI composition and thickness, why formation protocol influences SEI properties, formation-protocol effects.",
-    url:"https://doi.org/10.1016/j.carbon.2016.04.008" },
-  { n:8, tag:"J. Power Sources 2015", txt:"Wood, D. L., III; Li, J.; Daniel, C. Prospects for reducing the processing cost of lithium ion batteries. <em>J. Power Sources</em> <b>2015</b>, <em>275</em>, 234–242.",

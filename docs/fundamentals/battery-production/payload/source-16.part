@@ -1,3 +1,32 @@
+      <text class="cAx" x="${PL - 5}" y="${py(lo + pad) + 4}" text-anchor="end">${(lo + pad).toFixed(dp)}</text>
+      <text class="cVal" x="${PL}" y="${PT - 7}" fill="${curOff ? "var(--destructive)" : "var(--foreground)"}">${cur.toFixed(dp)}${esc(cf.unit || "")} now${curOff ? " — out of specification" : ""}</text>
+    </svg>
+  </figure>`;
+}
+
+/* --- bespoke: does the aging window actually catch a faulty cell? ------ */
+function agingOCVChart() {
+  const m = model(), days = S.ageDays, HT = S.ageHiT;
+  /* a healthy cell relaxes and then sits still; a faulty one keeps falling.
+     Higher temperature accelerates both, which is why HT aging exists.     */
+  const accel = 1 + (HT - 22) / 28;
+  const good = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 0.14 * t * accel;
+  const bad  = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 1.15 * t * accel;
+  const T = 21, W2 = 340, H2 = 176, L = 40, R = 12, TT = 22, B = 30;
+  const maxY = Math.max(bad(T), 8);
+  const px = t => L + t / T * (W2 - L - R);
+  const py = v => TT + (1 - Math.min(v, maxY) / maxY) * (H2 - TT - B);
+  const path = f => Array.from({ length: 64 }, (_, i) => {
+    const t = i / 63 * T; return `${i ? "L" : "M"}${px(t).toFixed(1)} ${py(f(t)).toFixed(1)}`;
+  }).join("");
+  const sep = (bad(days) - good(days));
+  const caught = sep >= 5;
+  return `<figure class="chart">
+    <figcaption><b>Can this screen see a faulty cell?</b><span>open-circuit voltage drop over the aging period</span></figcaption>
+    <svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Open circuit voltage drop over the aging period for a healthy and a faulty cell">
+      <line x1="${L}" y1="${TT}" x2="${L}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <line x1="${L}" y1="${H2 - B}" x2="${W2 - R}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <rect x="${px(days)}" y="${TT}" width="${W2 - R - px(days)}" height="${H2 - TT - B}" fill="var(--foreground)" opacity=".05"/>
       <line x1="${px(days)}" y1="${TT}" x2="${px(days)}" y2="${H2 - B}" stroke="var(--foreground)" stroke-width="1.2" stroke-dasharray="3 3" opacity=".55"/>
       <text class="cLab" x="${px(days) + (days > 11 ? -4 : 4)}" y="${TT + 10}"
         text-anchor="${days > 11 ? "end" : "start"}">you release here</text>
@@ -141,35 +170,3 @@ const CHARTS = {
     { x:"cRate", title:"Formation rate strongly influences the SEI", unit:"%", good:[90,100], goodLabel:"good film", lo:40, hi:100, dp:0,
       series:[{ y:m => m.seiQ, label:"Illustrative SEI score", col:"var(--primary)" }] },
     { x:"cRate", title:"…and the lithium you never get back", unit:"%", limit:12, limitLabel:"12% — expensive", dp:1,
-      series:[{ y:m => m.liLoss, label:"Lithium consumed", col:"var(--destructive)" }] }],
-  degassing: [
-    { x:"degP", title:"How much gas you leave behind", unit:"%", limit:6, limitLabel:"6% — cell swells", lo:0, dp:1,
-      series:[{ y:m => m.gasLeft, label:"Gas remaining", col:"var(--primary)" }] }],
-  aging: [
-    { x:"ageDays", title:"How much the screen can actually see", unit:"%", good:[88,100], goodLabel:"trustworthy screen", lo:30, hi:100, dp:0,
-      series:[{ y:m => m.screenSens, label:"Screen sensitivity", col:"var(--primary)" }] },
-    { x:"ageDays", title:"A shorter screen reduces defect sensitivity", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
-  eol: [
-    { x:"ageDays", title:"Process health is influenced upstream and summarised here", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] },
-    { x:"shipSOC", title:"Energy in the box is what the regulator caps", unit:" Wh", dp:1,
-      xMark:30, xMarkLabel:"above IATA PI 965", lo:0,
-      series:[{ y:m => m.cellAh * 3.65 * S.shipSOC / 100, label:"Watt-hours per cell as shipped", col:"var(--elyte)" }] }]
-};
-const CUSTOM = { aging:agingOCVChart, formation:formationChart };
-
-function renderCharts(st) {
-  const list = (CHARTS[st.id] || []).map(chartSVG);
-  if (CUSTOM[st.id]) list.unshift(CUSTOM[st.id]());
-  if (!list.length) return "";
-  return `<div class="charts">${list.join("")}</div>`;
-}
-
-/* --- the process window bar under every control -------------------------
-   answers the plain question "am I allowed to set it here?" before any
-   of the physics gets a chance to answer it for you.                     */
-function windowBar(k) {
-  const c = CTL[k];
-  if (c.opts || !c.good) return "";
-  const p = v => Math.max(1.6, Math.min(98.4, (v - c.min) / (c.max - c.min) * 100)).toFixed(1);

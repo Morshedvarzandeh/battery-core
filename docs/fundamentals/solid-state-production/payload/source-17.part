@@ -1,3 +1,19 @@
+        <div><small>Dendrite margin</small><b>${(100 - m.dendrite).toFixed(0)}%</b><span>headroom to the critical current</span></div>
+        <div><small>N/P ratio</small><b>${m.np.toFixed(2)}</b><span>lithium ÷ catholyte capacity</span></div>
+        <div><small>Process-health score</small><b>${m.yieldPct.toFixed(1)}%</b><span>teaching score, not a yield prediction</span></div>
+      </div>
+      <div class="srcline">Material properties and limits follow ${
+        [1,2,8].map(n => `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--primary)"></i>How to read this simulator</h4>
+        <ul>
+          <li><b>The electrolyte class is not a variant — it is a different plant.</b> Switch it in the sidebar and stations appear and disappear: oxide sinters, sulfide and polymer calender and press.${r(1)}</li>
+          <li><b>Every station is a real machine.</b> The schematics follow the guide figures — piston extruder, ball mill, planetary mixer, twin-screw compounder, slot nozzle, aerosol chamber, sintering furnace, gripper and press.</li>
+          <li><b>Hover or tab any part</b> of a machine to get its job, its parameters and why it matters.</li>
+          <li><b>Start with the big picture.</b> <button type="button" data-go="view:anatomy" style="color:var(--primary);font-weight:600;text-decoration:underline">Cell anatomy</button> shows what you are building and who builds each layer; <button type="button" data-go="view:flow" style="color:var(--primary);font-weight:600;text-decoration:underline">material flow</button> follows the two routes that meet at stacking; <button type="button" data-go="view:matrix" style="color:var(--primary);font-weight:600;text-decoration:underline">process ↔ component</button> maps every station onto every part of the cell.</li>
         </ul>
       </div>
       <div class="card card-pad block">
@@ -248,44 +264,3 @@ $("resetBtn").addEventListener("click", () => { S = { ...DEFAULTS }; renderSlide
 function machineStyle(st, m) {
   const o = OPS[st.id];
   return o && o.viz ? Object.entries(o.viz(m)).map(([k, v]) =>
-    `--${k}:${typeof v === "number" ? v.toFixed(1) : v}`).join(";") : "";
-}
-
-/* ---------------- guided tour ---------------- */
-/* =====================================================================
-   TOUR ILLUSTRATIONS
-   One small drawing per stop, made to carry the point of that stop.
-   Same primitives and the same material palette as the station
-   schematics, so a colour always means the same thing.
-   ===================================================================== */
-const PIC_W = 372, PIC_H = 132;
-/* a little headroom above y=13 so ascenders in the top caption are not clipped */
-const pic = body => `<svg viewBox="0 2 ${PIC_W} ${PIC_H - 2}" role="img" aria-hidden="true">${body}</svg>`;
-const pArrow = (x, y) => `<path class="mArrow" d="M${x} ${y}l10 0l-3 -3.5l7 3.5l-7 3.5l3 -3.5z"/>`;
-
-const TOURPIC = {
-
-/* the line, one block per station, coloured by phase */
-line: () => pic(`
-  ${[...Array(13)].map((_, i) => {
-    const col = i < 8 ? "var(--warning)" : i < 12 ? "var(--elyte)" : "var(--green)";
-    return `<rect x="${18 + i * 27}" y="${40 - (i % 3) * 3}" width="20" height="${44 + (i % 3) * 3}"
-      rx="3" fill="${col}" opacity="${0.35 + i * 0.045}"/>`;
-  }).join("")}
-  ${T(18, 104, "electrode & electrolyte", "mTxtS")}
-  ${T(226, 104, "assembly", "mTxtS")}
-  ${T(310, 104, "finishing", "mTxtS")}
-  <circle cx="22" cy="118" r="3.5" fill="var(--warning)"/>
-  <circle cx="230" cy="118" r="3.5" fill="var(--elyte)"/>
-  <circle cx="314" cy="118" r="3.5" fill="var(--green)"/>
-  ${T(18, 32, "12 to 15 stations — the electrolyte class decides", "mTxtS")}`),
-
-/* the elementary cell and the series stack */
-cell: () => pic(`
-  ${[["var(--copper)", 7, "collector"], ["var(--anode)", 20, "lithium metal"],
-     ["var(--sep)", 12, "solid electrolyte"], ["var(--cathode)", 22, "catholyte"],
-     ["var(--alu)", 7, "collector"]]
-    .reduce((acc, [c, h, n]) => {
-      const y = acc.y;
-      acc.s += `<rect x="22" y="${y}" width="140" height="${h}" rx="1.5" fill="${c}"/>` +
-               T(170, y + h / 2 + 3.5, n, "mTxtS");

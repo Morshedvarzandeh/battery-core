@@ -1,3 +1,7 @@
+  lamP:    { label:"Lamination line pressure", min:100, max:2500, step:50,   unit:" N/mm",  def:1300, good:[300,2000],  note:"2nd ed. limit below 2 500 N/mm", ref:[15] },
+  lamT:    { label:"Roller tempering",         min:20,  max:140,  step:5,    unit:" °C",    def:70,   good:[40,120],    note:"Tempering the rollers raises the adhesive force", ref:[1] },
+  grindH:  { label:"Grinding time",            min:1,   max:10,   step:0.5,  unit:" h",     def:5,    good:[3,10],      note:"Guide range 1–10 h", ref:[1] },
+  grindD:  { label:"Grinding ball diameter",   min:1,   max:10,   step:0.5,  unit:" mm",    def:4,    good:[1,10],      note:"Guide range 1–10 mm ceramic media", ref:[1] },
   grindRPM:{ label:"Grinding speed",           min:100, max:900,  step:25,   unit:" min⁻¹", def:500,  good:[300,700],   note:"Guide: approx. 500 min⁻¹", ref:[1] },
   mixMin:  { label:"Mixing time",              min:6,   max:60,   step:2,    unit:" min",   def:30,   good:[15,60],     note:"Guide range 0.1–1 h", ref:[1] },
   agit:    { label:"Agitator speed",           min:100, max:10000,step:100,  unit:" min⁻¹", def:3000, good:[800,8000],  note:"Guide range 100–10 000 min⁻¹", ref:[1] },
@@ -48,7 +52,7 @@ const GEOM = {
              note:"High ionic conductivity and deformability. Limited stability against the lithium anode and the cathode, and reactive in normal air — H₂S." },
   halide:  { name:"Halide-based",  sse:"Chloride or fluoride halide electrolyte",
              cond:0.9, dens:2.9, unit:"ductile halide electrolyte", press:"moderate — pressed to contact",
-             note:"High high-voltage stability and ionic conductivity with good processability, and it can be handled without a protective atmosphere. Stability against lithium metal and suitability as a separator are both limited." },
+             note:"High-voltage stability, ionic conductivity and good processability. Handling atmosphere, stability against lithium metal and suitability as a separator all depend on the specific halide chemistry." },
   polymer: { name:"Polymer-based", sse:"Polymer electrolyte, PEO–LiTFSI class",
              cond:0.22, dens:1.2, unit:"deformable polymer electrolyte", press:"moderate — laminated warm",
              note:"Highly deformable, which favours interfacial contact. Low conductivity at room temperature and a limited electrochemical window." }
@@ -133,13 +137,3 @@ function model() {
   const wvol = clamp(cellWh * 1000 / (areaCm2 * unitTh * S.layers * 1e-4) * 0.62, 100, 1400);
 
   /* --- lithium plating and dendrites ------------------------------------- */
-  const jArea = S.cRate * capC;                                   /* mA/cm² during formation */
-  const jCrit = (oxide ? 1.1 : sulf ? 0.9 : hal ? 0.8 : 0.45) * (1 + S.stackF / 14)
-              * (1 + Math.max(0, S.cellT - 25) / 90) * (S.sseTh / 25) ** 0.25;
-  const dendrite = clamp((jArea / jCrit) * 55, 0, 140);           /* >100 = through-growth */
-
-  /* --- drying, on the routes that cast a slurry ---------------------------- */
-  const solvRes = (oxide || ductile) ? Math.max(0, 108 - S.dryT) * 3.4 + Math.max(0, S.dryT - 150) * 2.0 : 0;
-
-  /* --- cutting and handling ---------------------------------------------- */
-  const lineE = S.laserP / Math.max(1, S.cutSpd) * 0.06;          /* J/mm proxy */

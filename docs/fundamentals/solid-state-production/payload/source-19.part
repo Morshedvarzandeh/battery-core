@@ -1,3 +1,16 @@
+    d:"Oxide is ground dry in a ball mill. Sulfide and oxide are dispersed in a planetary mixer. Polymer is compounded in a twin-screw extruder. Sulfidic materials are sensitive to polar solvents and to moisture, which sharply limits what you can even mix them with." },
+  { id:"tape", pic:"layer", t:"Laying the layers down",
+    d:"A slot die meters slurry onto the substrate — and the substrate for the electrolyte layer is the cathode itself. Set the gap away from the wet film the recipe needs and watch thickness scatter leave specification." },
+  { id:"calender", pic:"dense", t:"Two ways to make an interface",
+    d:"Sulfide and polymer are calendered: pressure and temperature densify the composite. Oxide is sintered instead, at 500 to 2 000 °C, because it is not pressed after stacking and has to win its interface in the furnace. Switch to oxide and this station disappears entirely." },
+  { id:"separation", pic:"cut", t:"The cut that can short the cell",
+    d:"Elementary cells are cut out by laser or punched. The guide is explicit: the layer materials must not be melted, because melting them connects the layers electrically. Push the laser power up and watch the melt risk climb." },
+  { id:"stacking", pic:"press", t:"Pressure is how a solid cell makes contact",
+    d:"There is no liquid to wet interfacial gaps, so pressure is one key way to establish contact at this stage. Published work on lithium against a sulfide electrolyte found the critical current density rose fivefold as stack pressure went from 3 to 7 MPa. Slide the pressure and watch both the contact and the illustrative dendrite margin move." },
+  { id:"contacting", pic:"nofill", t:"And then nothing else happens",
+    d:"Conductors welded, pouch drawn, seam sealed. In a lithium-ion plant the next station is electrolyte filling in a dry room at a −50 °C dew point, followed by hours of wetting. Here that station does not exist. It is the clearest process saving of the whole solid-state route." },
+  { id:"formation", pic:"dendrite", t:"The first cycle, and the limit it must respect",
+    d:"The cell arrives already charged, because its anode is lithium metal. The first cycles grow the interface layers. Push the rate and the current density crosses the value the electrolyte can survive — and lithium starts growing through it. There is no standard way to measure that limit, which is itself worth knowing." },
   { id:"view:matrix", pic:"matrix", t:"Who is responsible for what",
     d:"Fifteen machines down the side, the parts of the cell across the top. Two columns that would be full in a lithium-ion plant are empty here: there is no liquid electrolyte and no porous separator." },
   { id:"view:refs", pic:"refs", t:"And where every number came from",
@@ -198,45 +211,3 @@ function renderAnatomy() {
 
 /* ---------------------------------------------------------------------
    2 · MATERIAL FLOW — one chain, every state, the station that changes it
-   ------------------------------------------------------------------- */
-function renderFlow() {
-  const m = model();
-  const live = {
-    foil:   `${S.liTh} µm lithium · N/P ${m.np.toFixed(2)}`,
-    anode:  `bond ${m.lamQ.toFixed(0)}%`,
-    powder: route === "oxide" ? `${m.partSize.toFixed(1)} µm particles` : `dispersion ${m.disp.toFixed(0)}%`,
-    layer:  `±${m.coatErr.toFixed(1)} g/m² · ${m.capC.toFixed(2)} mAh/cm²`,
-    dense:  `${m.layerDens.toFixed(0)}% density`,
-    strip:  `edge quality ${m.edgeQ.toFixed(0)}%`,
-    elem:   `${m.meltRisk > 25 && !S.sepMode ? "layers melting — short risk" : "clean cut"}`,
-    stack:  `${m.contact.toFixed(0)}% contact at ${S.stackF.toFixed(1)} MPa · ${m.vCell.toFixed(1)} V`,
-    sealed: `seal ${m.sealQ.toFixed(0)}% · no filling step`,
-    formed: `${m.rTot.toFixed(0)} Ω·cm² · dendrite margin ${(100 - m.dendrite).toFixed(0)}%`
-  };
-  const byBtn = by => {
-    if (!by) return `<small>STARTS HERE</small>`;
-    const ids = by.split("|").filter(id => (STATIONS.find(s => s.id === id) || {routes:""}).routes.includes(route));
-    if (!ids.length) return `<small>NOT ON THIS ROUTE</small>`;
-    return ids.map(id => {
-      const st = STATIONS.find(s => s.id === id), n = active().indexOf(st) + 1;
-      return `<button data-go="${id}"><small>STATION ${String(n).padStart(2, "0")}</small>${esc(st.title)}</button>`;
-    }).join("");
-  };
-  $("layerView").innerHTML = `
-    <div class="card card-pad">
-      <span class="eyebrow">The big picture · 2 of 3</span>
-      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">One material chain, eleven states</h2>
-      <p class="lede" style="max-width:80ch">Two routes start apart and meet at stacking: metallic lithium down one side, electrolyte and cathode down the
-      other. Which stations you pass through depends entirely on the electrolyte class. The right-hand figures are
-      live — they come from the setpoints you currently have set.${r(3)}</p>
-    </div>
-    <div class="card card-pad">
-      <div class="chain">
-        ${FLOW.map(f => `
-          <div class="chain-row">
-            <div class="chain-by">${byBtn(f.by)}</div>
-            <div class="chain-spine"><i></i></div>
-            <div class="chain-state">
-              <strong>${esc(f.name)}</strong>
-              <em>${esc(f.state)}</em>
-              ${live[f.id] ? `<em style="background:var(--foreground);color:var(--primary);border-color:var(--foreground)">${esc(live[f.id])}</em>` : ""}

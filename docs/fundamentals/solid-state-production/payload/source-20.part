@@ -1,3 +1,45 @@
+   ------------------------------------------------------------------- */
+function renderFlow() {
+  const m = model();
+  const live = {
+    foil:   `${S.liTh} µm lithium · N/P ${m.np.toFixed(2)}`,
+    anode:  `bond ${m.lamQ.toFixed(0)}%`,
+    powder: route === "oxide" ? `${m.partSize.toFixed(1)} µm particles` : `dispersion ${m.disp.toFixed(0)}%`,
+    layer:  `±${m.coatErr.toFixed(1)} g/m² · ${m.capC.toFixed(2)} mAh/cm²`,
+    dense:  `${m.layerDens.toFixed(0)}% density`,
+    strip:  `edge quality ${m.edgeQ.toFixed(0)}%`,
+    elem:   `${m.meltRisk > 25 && !S.sepMode ? "layers melting — short risk" : "clean cut"}`,
+    stack:  `${m.contact.toFixed(0)}% contact at ${S.stackF.toFixed(1)} MPa · ${m.vCell.toFixed(1)} V`,
+    sealed: `seal ${m.sealQ.toFixed(0)}% · no filling step`,
+    formed: `${m.rTot.toFixed(0)} Ω·cm² · dendrite margin ${(100 - m.dendrite).toFixed(0)}%`
+  };
+  const byBtn = by => {
+    if (!by) return `<small>STARTS HERE</small>`;
+    const ids = by.split("|").filter(id => (STATIONS.find(s => s.id === id) || {routes:""}).routes.includes(route));
+    if (!ids.length) return `<small>NOT ON THIS ROUTE</small>`;
+    return ids.map(id => {
+      const st = STATIONS.find(s => s.id === id), n = active().indexOf(st) + 1;
+      return `<button data-go="${id}"><small>STATION ${String(n).padStart(2, "0")}</small>${esc(st.title)}</button>`;
+    }).join("");
+  };
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture · 2 of 3</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">One material chain, eleven states</h2>
+      <p class="lede" style="max-width:80ch">Two routes start apart and meet at stacking: metallic lithium down one side, electrolyte and cathode down the
+      other. Which stations you pass through depends entirely on the electrolyte class. The right-hand figures are
+      live — they come from the setpoints you currently have set.${r(3)}</p>
+    </div>
+    <div class="card card-pad">
+      <div class="chain">
+        ${FLOW.map(f => `
+          <div class="chain-row">
+            <div class="chain-by">${byBtn(f.by)}</div>
+            <div class="chain-spine"><i></i></div>
+            <div class="chain-state">
+              <strong>${esc(f.name)}</strong>
+              <em>${esc(f.state)}</em>
+              ${live[f.id] ? `<em style="background:var(--foreground);color:var(--primary);border-color:var(--foreground)">${esc(live[f.id])}</em>` : ""}
               <span>${esc(f.note)}</span>
             </div>
           </div>`).join("")}
@@ -198,49 +240,3 @@ function glyph(st, x, w, yb) {
       break;
     case "mixing":
       g += R(at(.24), byT + 8, bw * .52, byB - byT - 14, "mGlass", 4) +
-           R(cx - 3, byT, 6, 14, "mDark", 2) + P(`M${cx} ${byT + 12}l0 ${byB - byT - 26}`, "mDark") +
-           `<g class="spin">${R(cx - bw * .14, byB - 18, bw * .28, 6, "mDark", 3)}</g>`;
-      break;
-    case "compounding":
-      g += R(at(.08), cy - 8, bw * .72, 16, "mDark", 3) + R(at(.14), byT + 4, bw * .16, 10, "mSteel", 2) +
-           [0, 1, 2, 3].map(q => C(at(.22) + q * bw * .16, cy, 5, "mSteel2")).join("") +
-           P(`M${at(.82)} ${cy}L${at(.94)} ${cy}`, "mEl");
-      break;
-    case "tape":
-      g += P(`M${at(.14)} ${byT + 8}l${bw * .16} 0l0 20l${-bw * .16} 0z`, "mDark") +
-           P(`M${at(.08)} ${cy + 12}L${at(.94)} ${cy + 12}`, "mWebA") + ROLLER(at(.78), cy + 20, R0 * .7) +
-           [0, 1, 2].map(q => R(at(.4) + q * bw * .16, byT + 4, bw * .08, 8, "mDark", 1)).join("");
-      break;
-    case "aerosol":
-      g = shell("mGlass") + P(`M${at(.2)} ${byT + 8}l10 0l0 12l-5 8l-5 -8z`, "mDark") +
-          [0, 1, 2, 3, 4].map(q => C(at(.3) + q * bw * .1, cy + 4 + (q % 2) * 5, 2.6, "mAcc")).join("") +
-          P(`M${at(.12)} ${byB - 10}L${at(.92)} ${byB - 10}`, "mWebA");
-      break;
-    case "ald":
-      g = shell("mGlass") + [0, 1, 2].map(q =>
-            R(at(.14) + q * bw * .26, byT + 6, bw * .18, 9, "mDark", 2)).join("") +
-          [0, 1, 2, 3, 4, 5].map(q => C(at(.16) + q * bw * .14, cy + 2, 2.2, "mAcc")).join("") +
-          P(`M${at(.08)} ${byB - 11}L${at(.92)} ${byB - 11}`, "mWebA") +
-          P(`M${at(.08)} ${byB - 16}L${at(.92)} ${byB - 16}`, "mEl");
-      break;
-    case "coex":
-      g += P(`M${at(.1)} ${cy - 12}l${bw * .3} 0l0 8l${-bw * .3} 0z`, "mDark") +
-           P(`M${at(.1)} ${cy + 4}l${bw * .3} 0l0 8l${-bw * .3} 0z`, "mSteel") +
-           P(`M${at(.42)} ${cy - 8}q${bw * .14} 8 ${bw * .3} 0`, "mEl") +
-           P(`M${at(.42)} ${cy + 8}q${bw * .14} -8 ${bw * .3} 0`, "mEl") +
-           ROLLER(at(.84), cy, R0 * .8);
-      break;
-    case "calender":
-      g += ROLLER(cx, cy - R0 * .95, R0) + ROLLER(cx, cy + R0 * .95, R0) +
-           P(`M${at(.06)} ${cy}L${at(.94)} ${cy}`, "mLine") +
-           R(at(.06), byT + 5, bw * .1, byB - byT - 10, "mDark", 2) +
-           R(at(.84), byT + 5, bw * .1, byB - byT - 10, "mDark", 2);
-      break;
-    case "slitting":
-      g += REEL(at(.2), cy, R0, "mSep") + REEL(at(.84), cy, R0 * .8, "mSep") +
-           [0, 1, 2].map(q => P(`M${at(.44 + q * .12)} ${cy - 13}l0 26`, "mAcc")).join("") +
-           P(`M${at(.2)} ${cy}L${at(.84)} ${cy}`, "mLine");
-      break;
-    case "separation":
-      g += R(cx - bw * .2, byT + 6, bw * .4, 12, "mDark", 2) +
-           P(`M${cx} ${byT + 18}l0 12`, "mAcc") +

@@ -1,3 +1,21 @@
+    V("Coating rate", fmt(S.depRate) + " µm/h", S.depRate <= 10000 ? "ok" : "bad", "the named challenge is that this is low"),
+    V("Chamber pressure", S.chamP.toFixed(3) + " bar", ok(S.chamP, 0.001, 1), "2nd ed. range 0.001–1 bar"),
+    V("Electrolyte layer", S.sseTh + " µm", band(S.sseTh, 15, 50, 10)),
+    V("Time for this layer", (S.sseTh / S.depRate * 60).toFixed(1) + " min", S.sseTh / S.depRate * 60 < 3 ? "ok" : "warn", "deposition rate is the bottleneck")],
+  verdict:m => m.layerDens < 78 ? ["bad", "Layer not dense enough",
+      `${m.layerDens.toFixed(0)}%. Below the window the particles are not deforming on impact, so the layer is porous — and a porous solid electrolyte is a dendrite path.`]
+    : S.depRate > 8000 ? ["warn", "Pushing the deposition rate",
+      "Higher rate costs layer quality: excessive surface roughness and damaged particles are both listed challenges."]
+    : (S.sseTh / S.depRate * 60) > 3 ? ["warn", "Slow — this is the line's bottleneck",
+      `${(S.sseTh / S.depRate * 60).toFixed(1)} min for one layer. Low deposition rate is the first challenge the guide names for this station.`]
+    : ["ok", "Electrolyte layer deposited",
+      `${S.sseTh} µm at ${m.layerDens.toFixed(0)}% density, ${(S.sseTh / S.depRate * 60).toFixed(1)} min per layer.`],
+  viz:m => ({ dens: m.layerDens })
+},
+
+coex: {
+  lead:"You are at the co-extruder. Two melts, two channels, one tool — and they want different temperatures.",
+  ctl:["extP","meltDT","cathTh","sseTh"],
   read:m => [
     V("Extrusion pressure", S.extP + " bar", band(S.extP, 40, 160, 25)),
     V("Melt temperature difference", S.meltDT + " K", S.meltDT <= 25 ? "ok" : "bad", "the central challenge of this station"),
@@ -148,29 +166,3 @@ formation: {
     V("Interface layer quality", m.interQ.toFixed(0) + "%", m.interQ >= 88 ? "ok" : m.interQ >= 75 ? "warn" : "bad"),
     V("Screen sensitivity", m.screen.toFixed(0) + "%", m.screen >= 88 ? "ok" : m.screen >= 72 ? "warn" : "bad", `${S.ageDays} d at ${S.ageT} °C`)],
   verdict:m => m.dendrite > 100 ? ["bad", "Lithium is growing through the electrolyte",
-      `${m.jArea.toFixed(2)} mA/cm² against a critical value near ${m.jCrit.toFixed(2)}. Slow the first cycle, raise the stack pressure, or thicken the electrolyte. Critical current density rose fivefold between 3 and 7 MPa in the published work.`]
-    : m.dendrite > 60 ? ["warn", "Close to the dendrite limit",
-      `Margin ${(100 - m.dendrite).toFixed(0)}%. The published critical current density has no standard measurement protocol and varies widely — leaving little margin is not a safe position.`]
-    : m.screen < 72 ? ["warn", "Aging screen too short to trust",
-      "Self-discharge and interface instability need time and temperature to become a measurable voltage drift."]
-    : ["ok", "Cell formed and released",
-      `Interface quality ${m.interQ.toFixed(0)}%, dendrite margin ${(100 - m.dendrite).toFixed(0)}%, screened ${S.ageDays} d at ${S.ageT} °C.`],
-  viz:m => ({ sei: m.interQ })
-}
-};
-</script>
-<script>
-/* =====================================================================
-   RESPONSE CHARTS
-   Every curve below is produced by actually re-running the process model
-   across a setpoint's whole range — it is not a drawing. Move the knob and
-   the dot moves along the same curve the model just computed.
-   ===================================================================== */
-
-function sweep(key, get, n = 60) {
-  const c = CTL[key], old = S[key], out = [];
-  for (let i = 0; i <= n; i++) {
-    const v = c.min + (c.max - c.min) * i / n;
-    S[key] = c.step >= 1 ? Math.round(v) : v;
-    out.push([S[key], get(model())]);
-  }

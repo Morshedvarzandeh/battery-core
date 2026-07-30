@@ -1,3 +1,4 @@
+.map-node{flex:1 1 132px;min-width:132px;padding:10px;border-radius:var(--radius-md);border:1px solid var(--border);
   background:var(--background);text-align:left}
 .map-node:hover{border-color:var(--primary)}
 .map-node[data-off="1"]{opacity:.34}
@@ -174,6 +175,3 @@
 .chart[data-off="true"]{border-color:color-mix(in srgb,var(--destructive) 45%,transparent);background:var(--destructive-bg)}
 .chart figcaption{margin-bottom:2px}
 .chart figcaption b{display:block;font-size:var(--font-size-normal);font-weight:var(--font-weight-medium)}
-.chart figcaption span{display:block;font-size:var(--font-size-small);color:var(--muted-foreground);margin-top:1px}
-.chart svg{display:block;width:100%;height:auto}
-.chart text{font-family:inherit}

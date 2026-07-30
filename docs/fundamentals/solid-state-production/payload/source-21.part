@@ -1,3 +1,49 @@
+           R(cx - 3, byT, 6, 14, "mDark", 2) + P(`M${cx} ${byT + 12}l0 ${byB - byT - 26}`, "mDark") +
+           `<g class="spin">${R(cx - bw * .14, byB - 18, bw * .28, 6, "mDark", 3)}</g>`;
+      break;
+    case "compounding":
+      g += R(at(.08), cy - 8, bw * .72, 16, "mDark", 3) + R(at(.14), byT + 4, bw * .16, 10, "mSteel", 2) +
+           [0, 1, 2, 3].map(q => C(at(.22) + q * bw * .16, cy, 5, "mSteel2")).join("") +
+           P(`M${at(.82)} ${cy}L${at(.94)} ${cy}`, "mEl");
+      break;
+    case "tape":
+      g += P(`M${at(.14)} ${byT + 8}l${bw * .16} 0l0 20l${-bw * .16} 0z`, "mDark") +
+           P(`M${at(.08)} ${cy + 12}L${at(.94)} ${cy + 12}`, "mWebA") + ROLLER(at(.78), cy + 20, R0 * .7) +
+           [0, 1, 2].map(q => R(at(.4) + q * bw * .16, byT + 4, bw * .08, 8, "mDark", 1)).join("");
+      break;
+    case "aerosol":
+      g = shell("mGlass") + P(`M${at(.2)} ${byT + 8}l10 0l0 12l-5 8l-5 -8z`, "mDark") +
+          [0, 1, 2, 3, 4].map(q => C(at(.3) + q * bw * .1, cy + 4 + (q % 2) * 5, 2.6, "mAcc")).join("") +
+          P(`M${at(.12)} ${byB - 10}L${at(.92)} ${byB - 10}`, "mWebA");
+      break;
+    case "ald":
+      g = shell("mGlass") + [0, 1, 2].map(q =>
+            R(at(.14) + q * bw * .26, byT + 6, bw * .18, 9, "mDark", 2)).join("") +
+          [0, 1, 2, 3, 4, 5].map(q => C(at(.16) + q * bw * .14, cy + 2, 2.2, "mAcc")).join("") +
+          P(`M${at(.08)} ${byB - 11}L${at(.92)} ${byB - 11}`, "mWebA") +
+          P(`M${at(.08)} ${byB - 16}L${at(.92)} ${byB - 16}`, "mEl");
+      break;
+    case "coex":
+      g += P(`M${at(.1)} ${cy - 12}l${bw * .3} 0l0 8l${-bw * .3} 0z`, "mDark") +
+           P(`M${at(.1)} ${cy + 4}l${bw * .3} 0l0 8l${-bw * .3} 0z`, "mSteel") +
+           P(`M${at(.42)} ${cy - 8}q${bw * .14} 8 ${bw * .3} 0`, "mEl") +
+           P(`M${at(.42)} ${cy + 8}q${bw * .14} -8 ${bw * .3} 0`, "mEl") +
+           ROLLER(at(.84), cy, R0 * .8);
+      break;
+    case "calender":
+      g += ROLLER(cx, cy - R0 * .95, R0) + ROLLER(cx, cy + R0 * .95, R0) +
+           P(`M${at(.06)} ${cy}L${at(.94)} ${cy}`, "mLine") +
+           R(at(.06), byT + 5, bw * .1, byB - byT - 10, "mDark", 2) +
+           R(at(.84), byT + 5, bw * .1, byB - byT - 10, "mDark", 2);
+      break;
+    case "slitting":
+      g += REEL(at(.2), cy, R0, "mSep") + REEL(at(.84), cy, R0 * .8, "mSep") +
+           [0, 1, 2].map(q => P(`M${at(.44 + q * .12)} ${cy - 13}l0 26`, "mAcc")).join("") +
+           P(`M${at(.2)} ${cy}L${at(.84)} ${cy}`, "mLine");
+      break;
+    case "separation":
+      g += R(cx - bw * .2, byT + 6, bw * .4, 12, "mDark", 2) +
+           P(`M${cx} ${byT + 18}l0 12`, "mAcc") +
            R(cx - bw * .26, byB - 16, bw * .52, 6, "mSteel", 2) +
            R(cx - bw * .1, byB - 26, bw * .2, 8, "mCa", 1);
       break;
@@ -187,49 +233,3 @@ function alarmList(m, k) {
     .filter(([, lv]) => lv !== "ok")
     .sort((a, b) => (a[1] === "bad" ? 0 : 1) - (b[1] === "bad" ? 0 : 1));
   if (!rows.length) return `<div class="alarmBar" data-ok="1">
-    <i style="background:var(--green)"></i><b>Every station inside its window.</b>
-    <span>Push a setpoint out of range and the machine it belongs to will light up here.</span></div>`;
-  return `<div class="alarmBar">
-    <i style="background:${rows[0][1] === "bad" ? "var(--destructive)" : "var(--warning)"}"></i>
-    <b>${rows.length} station${rows.length === 1 ? "" : "s"} off window</b>
-    <div class="alarmRows">${rows.map(([st, lv]) => {
-      const v = OPS[st.id].verdict(m);
-      return `<button type="button" data-go="${st.id}" data-l="${lv}">
-        <em>${String(k.list.indexOf(st) + 1).padStart(2, "0")}</em>
-        <strong>${esc(st.title)}</strong><span>${esc(v[1])}</span></button>`;
-    }).join("")}</div></div>`;
-}
-
-function renderMachineOverview() {
-  const m = model(), k = kpis(m), g = GEOM[route];
-  const grade = gradeOf(m.yieldPct);
-  $("layerView").innerHTML = `
-    <div class="card card-pad">
-      <span class="eyebrow">The big picture</span>
-      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">The whole line on one screen</h2>
-      <p class="lede" style="max-width:86ch">Every station in order, the material running through them, and one lamp per
-      machine telling you whether it is inside its window right now. The lamps come from the same verdict each station's
-      own operator console gives. Because there is no standard process sequence for a solid-state cell, the line you see
-      is the one your chosen electrolyte class demands — switch it in the sidebar and machines appear and disappear.${r(1)}
-      Click any machine to walk over to it.</p>
-    </div>
-
-    <div class="card card-pad hmiHead">
-      <div class="hmiOee">
-        <small>LINE CONDITION — ILLUSTRATIVE</small>
-        <div class="hmiOeeRow">
-          ${donut(k.oee, "Overall", 104, k.oee >= 80 ? "var(--green)" : k.oee >= 62 ? "var(--warning)" : "var(--destructive)")}
-          <div class="hmiSub">
-            ${donut(k.a, "Availability", 62, "var(--primary)")}
-            ${donut(k.e, "Interface", 62, "var(--primary)")}
-            ${donut(k.q, "Quality", 62, "var(--primary)")}
-          </div>
-        </div>
-      </div>
-      <div class="hmiCur">
-        <small>CURRENT</small>
-        <div><span>Electrolyte class</span><b>${esc(g.name)}</b></div>
-        <div><span>Cell</span><b>${m.cellAh.toFixed(1)} Ah · ${m.cellWh.toFixed(1)} Wh · ${m.vCell.toFixed(1)} V</b></div>
-        <div><span>Grade</span><b data-g="${grade}">${grade} · ${m.yieldPct.toFixed(1)}%</b></div>
-        <div><span>Lot ID</span><b class="mono">${lotId()}</b></div>
-        <div><span>Stations off window</span><b>${k.bad + k.warn} of ${k.list.length}</b></div>

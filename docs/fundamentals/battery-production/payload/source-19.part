@@ -1,3 +1,40 @@
+   Drawn with the same primitives and the same material palette as the
+   station schematics, so a colour always means the same substance.
+   ===================================================================== */
+const PIC_W = 372, PIC_H = 132;
+const pic = body => `<svg viewBox="0 13 ${PIC_W} ${PIC_H - 13}" role="img" aria-hidden="true">${body}</svg>`;
+/* a small arrow between stages */
+const pArrow = (x, y) => `<path class="mArrow" d="M${x} ${y}l10 0l-3 -3.5l7 3.5l-7 3.5l3 -3.5z"/>`;
+
+const TOURPIC = {
+
+/* the wet chain against the dry chain, with what the change is worth */
+drychain: () => pic(`
+  ${T(12, 26, "WET — FIVE STEPS", "mTxtS")}
+  ${["mix", "disperse", "coating", "drying", "calender"].map((n, i) =>
+    `<rect x="${12 + i * 72}" y="32" width="64" height="18" rx="3" fill="var(--warning)" opacity=".45"/>` +
+    T(44 + i * 72, 45, n, "mTxtS", "middle")).join("")}
+  ${T(12, 68, "DRY — TWO STEPS", "mTxtS")}
+  ${["dry mix / fibrillate", "coating"].map((n, i) =>
+    `<rect x="${12 + i * 136}" y="74" width="128" height="18" rx="3" fill="var(--primary)" opacity=".5"/>` +
+    T(76 + i * 136, 87, n, "mTxtS", "middle")).join("")}
+  ${[["35", "CapEx"], ["45", "energy"], ["55", "space"], ["70", "CO₂"]].map(([v, k], i) => {
+    const x = 12 + i * 90;
+    return T(x, 112, "−" + v + "%", "mTxt") + T(x + 44, 112, k, "mTxtS") +
+      `<rect x="${x}" y="118" width="78" height="5" rx="2.5"
+        fill="color-mix(in srgb,var(--foreground) 10%,transparent)"/>
+       <rect x="${x}" y="118" width="${78 * v / 100}" height="5" rx="2.5" fill="var(--primary)" opacity=".7"/>`;
+  }).join("")}
+`),
+
+
+/* the radar, reduced to its rings and a scatter of dots */
+radar: () => pic(`
+  ${[[52, "var(--jelly)", .10], [37, "var(--elyte)", .16], [22, "var(--primary)", .22]]
+    .map(([r, c, o]) => `<circle cx="72" cy="70" r="${r}" fill="${c}" opacity="${o}"
+      stroke="color-mix(in srgb,var(--foreground) 12%,transparent)"/>`).join("")}
+  <path d="M20 70l104 0" stroke="var(--foreground)" opacity=".45"/>
+  ${[[62,52],[84,56],[72,44],[96,66],[50,58],[104,80],[60,88],[86,92],[38,84],[112,52],[70,104],[46,44]]
     .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="4.5" fill="var(--background)"
       stroke="${i < 4 ? "var(--primary)" : i < 8 ? "var(--elyte)" : "var(--jelly)"}" stroke-width="1.6"/>`).join("")}
   ${T(132, 40, "44 technologies", "mTxt")}
@@ -231,16 +268,3 @@ refs: () => pic(`
 
 const TOUR = [
   { id:null, t:"Welcome to Line A-17",
-    d:"You are standing at the head of a lithium-ion cell plant. A line of stations turns black powder into a packed cell. This tour walks you through in order — at each stop the machine on screen is the one you would actually be looking at." , pic:"line" },
-  { id:"view:machine", t:"The line on one screen",
-    d:"Before you walk it, see all of it. Every station in order with the material running through, one lamp per machine showing whether it is inside its window, and the four halls it all stands in drawn in plan. Every lamp comes from that station's own operator verdict, so when you push a setpoint out of range further into the tour, come back here and you will see which machine lit up.", pic:"line" },
-  { id:"view:anatomy", t:"First — what you are actually building",
-    d:"Before the machines, the product. A cell is a five-layer sandwich repeated up to 120 times, soaked in electrolyte and sealed in a barrier. Click any layer to see which stations are responsible for it. Only three of the nine components are made in this building." , pic:"stack" },
-  { id:"view:flow", t:"Materials and bought-in components converge", 
-    d:"Active materials are transformed through the line, while bought-in foils, separator, electrolyte, tabs and housings join at defined stations. A mistake early in the chain can remain embedded in the finished cell, which is why traceability follows every material and component." , pic:"chain" },
-  { id:"mixing", proc:"wet", t:"The wet route starts with two black powders",
-    d:"Anode and cathode active materials arrive as powder and are nearly indistinguishable by eye. Contamination between them ruins a cell, so they are mixed in physically separate rooms. Hover the mixer to see the two-step dry-then-wet sequence." , pic:"powders" },
-  { id:"coating", t:"Slurry meets foil",
-    d:"A slot die meters slurry onto copper foil for the anode, aluminium for the cathode — both only 5–25 µm thick. Only one side is coated per pass. Scroll down to the black Operate this station panel: those are this machine's real knobs. Move the die gap away from the wet film the recipe needs and watch coat weight leave specification." , pic:"die" },
-  { id:"drying", t:"The longest machine in the building",
-    d:"Up to 100 metres of dryer in four temperature zones. Push the line speed up and the model will tell you the dryer needs more heat — run it under-heated and solvent stays in the coating." , pic:"dryer" },

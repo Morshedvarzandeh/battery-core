@@ -1,3 +1,13 @@
+  sop:["Confirm gas treatment is online","Pierce inside the vacuum chamber","Evacuate and hold","Seal the final seam","Cut and dispose of the gas bag as hazardous waste","Fold and glue the seam if specified"] },
+
+{ id:"aging", no:"14", phase:"Cell finishing", title:"Aging", machine:"aging", routes:ALL,
+  env:{iso:"—", dew:"—", temp:"20 – 50 °C · HT 30–50, RT 20–25"}, cost:"€ 15–45 M (aging)", takt:"up to 3 weeks",
+  purpose:"Hold the cells and watch their open-circuit voltage — the screen that catches internal defects before the customer does.",
+  inp:"Formed, degassed cell", out:"Released or scrapped cell",
+  parts:[
+    ["High-temperature aging","ACCELERATE","Cells first go through HT aging at 30–50 °C, which accelerates any latent defect so it shows up in days rather than months."],
+    ["Normal-temperature aging","OBSERVE","Then room-temperature aging at 20–25 °C on shelves or towers, for up to three weeks in total. The cell enters the aging period at 30–80% state of charge."],
+    ["OCV monitoring","MEASURE","Open-circuit voltage is measured repeatedly through the whole period. Unlike formation, the pouch cells are no longer pressurised here."],
     ["The decision","JUDGE","Stable OCV is one release indicator, not proof of a defect-free cell. Excessive voltage loss can indicate elevated self-discharge, leakage or an internal defect and should trigger the manufacturer’s investigation and rejection criteria."]],
   params:["State of charge at the start of aging: 30–80%","Aging time: up to 3 weeks","Room temperature: approximately 20–25 °C","High temperature: approximately 30–50 °C"],
   alts:["Sequence and duration of HT and NT aging vary by manufacturer and chemistry"],
@@ -99,25 +109,3 @@ function model() {
   /* --- electrode structure -------------------------------------------- */
   /* calendering sets porosity: ~50% as dried, down towards 20% at full
      line force. Heated rolls compact more for the same force. [1][4]      */
-  /* the dry route has no separate calender — the coating nip does the
-     compaction, so line pressure and roll temperature set porosity here. [1] */
-  const por  = dry
-    ? clamp(52 - (S.dcLine - 150) / 150 * 30 - (S.dcRollT - 50) * 0.05, 15, 58)
-    : clamp(50 - (S.force / 2500) * 30 - (S.rollT - 60) * 0.06, 15, 55);
-  const solidFrac = 1 - por / 100;
-  /* Illustrative active-material estimate. The 2026 reference recipes use
-     95 wt% active material in the dry solids for both electrodes. [1][2] */
-  const activeCathodeFrac = 0.95;
-  const activeAnodeFrac = 0.95;
-  const capC = S.tC * 1e-4 * solidFrac * activeCathodeFrac * 4.65 * 180;
-  const capA = S.tA * 1e-4 * solidFrac * activeAnodeFrac * 2.24 * 350;
-  const np   = capA / capC;
-  const cellAh = capC * g.area * (g.layers > 1 ? 2 * g.layers : 1) / 1000;
-
-  /* --- mixing ---------------------------------------------------------- */
-  const visc = 3000 * Math.exp(0.085 * (S.solid - 58)) * Math.pow(25 / S.mixT, 0.35);
-  const disp = clamp(100 - 40 * Math.exp(-(S.mixMin - 25) / 45));
-
-  /* --- dry coating ------------------------------------------------------ */
-  /* PTFE fibrillation is what turns loose powder into a free-standing film;
-     the primer is what lets that film hold on to the metal. [1][12]         */

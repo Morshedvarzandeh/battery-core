@@ -1,3 +1,6 @@
+.chart figcaption span{display:block;font-size:var(--font-size-small);color:var(--muted-foreground);margin-top:1px}
+.chart svg{display:block;width:100%;height:auto}
+.chart text{font-family:inherit}
 .cAx{font-size:9px;fill:var(--faint)}
 .cLab{font-size:9px;font-weight:500;fill:var(--muted-foreground)}
 .cNow{font-size:9.5px;font-weight:600;fill:var(--foreground)}
@@ -195,6 +198,3 @@
 .mSteel{fill:light-dark(#e4e9ec,#3a4247);stroke:light-dark(#a9b6bd,#5d686e);stroke-width:1.5}
 .mSteel2{fill:light-dark(#f0f3f5,#454e54);stroke:light-dark(#b6c2c8,#6a757b);stroke-width:1.5}
 .mDark{fill:light-dark(#3f4a51,#8b979e);stroke:light-dark(#2c353a,#a7b2b8);stroke-width:1.5}
-.mGlass{fill:light-dark(#dceaf4,#2c3b45);stroke:light-dark(#93b6ca,#5a7180);stroke-width:1.5}
-.mHot{fill:var(--hot);stroke:light-dark(#a63d1f,#f0a184);stroke-width:1.5}
-.mHotSoft{fill:light-dark(#f0a184,#8a4229);stroke:light-dark(#c9714f,#c9714f);stroke-width:1.2}

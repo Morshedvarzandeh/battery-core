@@ -1,3 +1,4 @@
+.map-node{flex:1 1 132px;min-width:132px;padding:10px;border-radius:var(--radius-md);border:1px solid var(--border);
   background:var(--background);text-align:left}
 .map-node:hover{border-color:var(--primary)}
 .map-node[data-off="1"]{opacity:.34}
@@ -176,5 +177,3 @@
 .cAx{font-size:9px;fill:var(--faint)}
 .cLab{font-size:9px;font-weight:500;fill:var(--muted-foreground)}
 .cNow{font-size:9.5px;font-weight:600;fill:var(--foreground)}
-.cVal{font-size:10.5px;font-weight:600;fill:var(--foreground)}
-.chart-note{font-size:var(--font-size-small);line-height:1.55;color:var(--muted-foreground);margin:2px 2px 4px;

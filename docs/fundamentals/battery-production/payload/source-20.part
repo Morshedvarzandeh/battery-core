@@ -1,3 +1,16 @@
+    d:"You are standing at the head of a lithium-ion cell plant. A line of stations turns black powder into a packed cell. This tour walks you through in order — at each stop the machine on screen is the one you would actually be looking at." , pic:"line" },
+  { id:"view:machine", t:"The line on one screen",
+    d:"Before you walk it, see all of it. Every station in order with the material running through, one lamp per machine showing whether it is inside its window, and the four halls it all stands in drawn in plan. Every lamp comes from that station's own operator verdict, so when you push a setpoint out of range further into the tour, come back here and you will see which machine lit up.", pic:"line" },
+  { id:"view:anatomy", t:"First — what you are actually building",
+    d:"Before the machines, the product. A cell is a five-layer sandwich repeated up to 120 times, soaked in electrolyte and sealed in a barrier. Click any layer to see which stations are responsible for it. Only three of the nine components are made in this building." , pic:"stack" },
+  { id:"view:flow", t:"Materials and bought-in components converge",
+    d:"Active materials are transformed through the line, while bought-in foils, separator, electrolyte, tabs and housings join at defined stations. A mistake early in the chain can remain embedded in the finished cell, which is why traceability follows every material and component." , pic:"chain" },
+  { id:"mixing", proc:"wet", t:"The wet route starts with two black powders",
+    d:"Anode and cathode active materials arrive as powder and are nearly indistinguishable by eye. Contamination between them ruins a cell, so they are mixed in physically separate rooms. Hover the mixer to see the two-step dry-then-wet sequence." , pic:"powders" },
+  { id:"coating", t:"Slurry meets foil",
+    d:"A slot die meters slurry onto copper foil for the anode, aluminium for the cathode — both only 5–25 µm thick. Only one side is coated per pass. Scroll down to the black Operate this station panel: those are this machine's real knobs. Move the die gap away from the wet film the recipe needs and watch coat weight leave specification." , pic:"die" },
+  { id:"drying", t:"The longest machine in the building",
+    d:"Up to 100 metres of dryer in four temperature zones. Push the line speed up and the model will tell you the dryer needs more heat — run it under-heated and solvent stays in the coating." , pic:"dryer" },
   { id:"drymix", proc:"dry", t:"The dry route begins without slurry",
     d:"Dry mixing distributes the powders and mechanically draws the PTFE-based binder into a fibril network. The source does not provide one universal mixer recipe, so the controls here are explicitly illustrative and material-dependent.", pic:"powders" },
   { id:"drycoat", proc:"dry", t:"Then form and laminate the dry film",
@@ -152,32 +165,3 @@ function anatomySVG(pick) {
          <rect class="hit" x="46" y="90" width="162" height="224" fill="transparent"/></g>
        <rect x="64" y="110" width="126" height="184" rx="5" fill="var(--card)"/>
        ${[0,1,2,3,4,5,6].map(i => `<rect x="72" y="${118 + i * 25}" width="110" height="8" rx="1"
-          fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>
-          <rect x="72" y="${127 + i * 25}" width="110" height="4" rx="1" fill="var(--sep)"/>`).join("")}
-       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Tabs">
-         <rect x="80" y="76" width="28" height="22" rx="3" class="mAl" ${ring(tOn)}/>
-         <rect x="148" y="76" width="28" height="22" rx="3" class="mCu" ${ring(tOn)}/>
-         <rect class="hit" x="74" y="70" width="110" height="34" fill="transparent"/></g>
-       <text class="mTxtS" x="127" y="330" text-anchor="middle">Pouch — stacked sheets</text>`
-    : route === "cyl"
-    ? `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Cylindrical can">
-         <rect x="82" y="86" width="94" height="222" rx="14" class="mSteel2" ${ring(cOn)}/>
-         <rect class="hit" x="76" y="80" width="106" height="234" fill="transparent"/></g>
-       <g class="spin"><circle cx="129" cy="200" r="44" class="mAn"/><circle cx="129" cy="200" r="33" class="mSep"/>
-         <circle cx="129" cy="200" r="21" class="mCa"/><circle cx="129" cy="200" r="8" class="mSteel"/></g>
-       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Terminal">
-         <rect x="116" y="66" width="26" height="22" rx="4" class="mAl" ${ring(tOn)}/>
-         <rect class="hit" x="110" y="60" width="38" height="34" fill="transparent"/></g>
-       <text class="mTxtS" x="129" y="330" text-anchor="middle">Cylindrical — wound jelly roll</text>`
-    : `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Prismatic can">
-         <rect x="56" y="92" width="146" height="216" rx="6" class="mSteel2" ${ring(cOn)}/>
-         <rect class="hit" x="50" y="86" width="158" height="228" fill="transparent"/></g>
-       <rect x="68" y="104" width="122" height="192" rx="3" fill="var(--card)"/>
-       <g class="spin"><ellipse cx="129" cy="200" rx="52" ry="36" class="mAn"/>
-         <ellipse cx="129" cy="200" rx="36" ry="23" class="mSep"/>
-         <ellipse cx="129" cy="200" rx="20" ry="11" class="mCa"/></g>
-       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Terminals">
-         <rect x="76" y="72" width="28" height="22" rx="3" class="mAl" ${ring(tOn)}/>
-         <rect x="154" y="72" width="28" height="22" rx="3" class="mCu" ${ring(tOn)}/>
-         <rect class="hit" x="70" y="66" width="120" height="34" fill="transparent"/></g>
-       <text class="mTxtS" x="129" y="330" text-anchor="middle">Prismatic — wound, in a hard can</text>`;

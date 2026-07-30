@@ -1,3 +1,8 @@
+  `<g class="spin"><circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/>` +
+  `<circle class="${cls}" cx="${x}" cy="${y}" r="${r * .66}" opacity=".55"/>` +
+  `<circle class="mDark" cx="${x}" cy="${y}" r="${Math.max(2.5, r * .18)}"/></g>`;
+const GAUGE = (x, y, label) =>
+  `<g><circle class="mSteel2" cx="${x}" cy="${y}" r="15"/>` +
   `<path class="mLine" d="M${x} ${y}L${x + 8} ${y - 8}"/>` +
   `<circle class="mDark" cx="${x}" cy="${y}" r="2"/>` + T(x, y + 27, label, "mTxtS", "middle") + `</g>`;
 const ARROW = (x, y, dir = 1) =>
@@ -278,12 +283,3 @@ ${H(3, 546, 90, 230, 170, `
   ${[0, 1, 2].map(c => `${R(566 + c * 74, 180, 58, 52, "mAn", 3)}`).join("")}
   ${T(566, 106, "Cathode sheets", "mTxtS")}${T(566, 250, "Anode sheets", "mTxtS")}`)}
 ${H(4, 800, 96, 160, 160, `
-  ${[0, 1, 2, 3, 4].map(i => R(824, 120 + i * 20, 110, 12, i % 2 ? "mAn" : "mCa", 2)).join("")}
-  ${T(812, 242, "Electrode stack · ±200 µm", "mTxtS")}`)}
-${P("M84 176l90 -22", "mWeb")}${ARROW(340, 152)}${ARROW(524, 152)}${ARROW(786, 152)}
-`;
-
-M.stacking = () => `
-${H(0, 26, 60, 170, 190, `
-  ${R(48, 82, 126, 100, "mSteel2", 6)}
-  ${R(60, 96, 46, 34, "mCa", 3)}${R(116, 96, 46, 34, "mAn", 3)}${REEL(90, 158, 18, "mSep")}

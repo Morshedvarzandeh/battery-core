@@ -213,4 +213,3 @@ h3{font-size:var(--font-size-h3);font-weight:var(--font-weight-medium);line-heig
 /* line map */
 .map{display:grid;gap:12px}
 .map-row{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
-.map-node{flex:1 1 132px;min-width:132px;padding:10px;border-radius:var(--radius-md);border:1px solid var(--border);

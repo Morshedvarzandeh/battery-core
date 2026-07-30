@@ -1,3 +1,6 @@
+  .hot:hover .spin,.hot:hover .spinR,.hot:hover .tumble,.hot:hover .orbit,.hot:hover .orbitS,
+  .hot:hover .press,.hot:hover .screw,.hot:hover .bob,.hot:hover .puff,
+  .hot:hover .flowdash{animation:none}
 }
 /* ---- machine overview ---- */
 .hmiHead{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:stretch}
@@ -248,7 +251,3 @@ const ROLLERR = (x, y, r) => ROLL_(x, y, r, "spinR");
 const REEL = (x, y, r, cls) =>
   `<g class="spin"><circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/>` +
   `<circle class="${cls}" cx="${x}" cy="${y}" r="${r * .66}" opacity=".55"/>` +
-  `<circle class="mDark" cx="${x}" cy="${y}" r="${Math.max(2.5, r * .18)}"/></g>`;
-const GAUGE = (x, y, label) =>
-  `<g><circle class="mSteel2" cx="${x}" cy="${y}" r="15"/>` +
-  `<path class="mLine" d="M${x} ${y}L${x + 8} ${y - 8}"/>` +

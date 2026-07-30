@@ -1,3 +1,12 @@
+${P("M606 166q40 2 64 4", "mLine")}${P("M732 170q40 -2 70 -2", "mLine")}
+`;
+
+M.calender = () => `
+${H(0, 26, 140, 150, 116, `
+  ${REEL(92, 194, 30, "mCa")}
+  ${T(30, 248, "Composite infeed", "mTxtS")}`)}
+${H(1, 330, 68, 220, 250, `
+  ${NIP(438, 194, 42)}
   ${T(340, 84, "Calender rollers", "mTxt")}
   ${T(340, 98, "below 2 500 N/mm, tempered", "mTxtS")}`)}
 ${H(2, 560, 40, 200, 110, `
@@ -287,8 +296,3 @@ ${H(5, 820, 200, 150, 100, `
    Process steps, atmospheres, parameters, quality features, challenges,
    technology alternatives and the LIB-transferability rating are taken
    from the PEM RWTH Aachen / VDMA guide. Stations the 3rd edition describes
-   in detail carry its own figures; the rest come from the 2nd edition.
-   `parts` indices line up with the hotspot data-k values in the machine.
-   ===================================================================== */
-
-/* shared helpers — defined first so every later block can use them */

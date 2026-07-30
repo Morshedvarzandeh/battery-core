@@ -1,3 +1,7 @@
+  `<circle class="mDark" cx="${x}" cy="${y}" r="${Math.max(2.5, r * .18)}"/></g>`;
+const GAUGE = (x, y, label) =>
+  `<g><circle class="mSteel2" cx="${x}" cy="${y}" r="15"/>` +
+  `<path class="mLine" d="M${x} ${y}L${x + 8} ${y - 8}"/>` +
   `<circle class="mDark" cx="${x}" cy="${y}" r="2"/>` + T(x, y + 27, label, "mTxtS", "middle") + `</g>`;
 const ARROW = (x, y, dir = 1) =>
   `<path class="mArrow" d="M${x} ${y}l${14 * dir} 0l${-4 * dir} -4l${9 * dir} 4l${-9 * dir} 4l${4 * dir} -4z"/>`;
@@ -288,12 +292,3 @@ ${H(5, 780, 130, 180, 100, `
   ${R(804, 175, 140, 8, "mCu", 1)}
   ${T(806, 152, "Cathode–electrolyte composite", "mTxtS")}
   ${T(806, 210, "on the current collector", "mTxtS")}`)}
-${P("M606 166q40 2 64 4", "mLine")}${P("M732 170q40 -2 70 -2", "mLine")}
-`;
-
-M.calender = () => `
-${H(0, 26, 140, 150, 116, `
-  ${REEL(92, 194, 30, "mCa")}
-  ${T(30, 248, "Composite infeed", "mTxtS")}`)}
-${H(1, 330, 68, 220, 250, `
-  ${NIP(438, 194, 42)}

@@ -1,3 +1,49 @@
+    <i style="background:var(--green)"></i><b>Every station inside its window.</b>
+    <span>Push a setpoint out of range and the machine it belongs to will light up here.</span></div>`;
+  return `<div class="alarmBar">
+    <i style="background:${rows[0][1] === "bad" ? "var(--destructive)" : "var(--warning)"}"></i>
+    <b>${rows.length} station${rows.length === 1 ? "" : "s"} off window</b>
+    <div class="alarmRows">${rows.map(([st, lv]) => {
+      const v = OPS[st.id].verdict(m);
+      return `<button type="button" data-go="${st.id}" data-l="${lv}">
+        <em>${String(k.list.indexOf(st) + 1).padStart(2, "0")}</em>
+        <strong>${esc(st.title)}</strong><span>${esc(v[1])}</span></button>`;
+    }).join("")}</div></div>`;
+}
+
+function renderMachineOverview() {
+  const m = model(), k = kpis(m), g = GEOM[route];
+  const grade = gradeOf(m.yieldPct);
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">The whole line on one screen</h2>
+      <p class="lede" style="max-width:86ch">Every station in order, the material running through them, and one lamp per
+      machine telling you whether it is inside its window right now. The lamps come from the same verdict each station's
+      own operator console gives. Because there is no standard process sequence for a solid-state cell, the line you see
+      is the one your chosen electrolyte class demands — switch it in the sidebar and machines appear and disappear.${r(1)}
+      Click any machine to walk over to it.</p>
+    </div>
+
+    <div class="card card-pad hmiHead">
+      <div class="hmiOee">
+        <small>LINE CONDITION — ILLUSTRATIVE</small>
+        <div class="hmiOeeRow">
+          ${donut(k.oee, "Overall", 104, k.oee >= 80 ? "var(--green)" : k.oee >= 62 ? "var(--warning)" : "var(--destructive)")}
+          <div class="hmiSub">
+            ${donut(k.a, "Availability", 62, "var(--primary)")}
+            ${donut(k.e, "Interface", 62, "var(--primary)")}
+            ${donut(k.q, "Quality", 62, "var(--primary)")}
+          </div>
+        </div>
+      </div>
+      <div class="hmiCur">
+        <small>CURRENT</small>
+        <div><span>Electrolyte class</span><b>${esc(g.name)}</b></div>
+        <div><span>Cell</span><b>${m.cellAh.toFixed(1)} Ah · ${m.cellWh.toFixed(1)} Wh · ${m.vCell.toFixed(1)} V</b></div>
+        <div><span>Grade</span><b data-g="${grade}">${grade} · ${m.yieldPct.toFixed(1)}%</b></div>
+        <div><span>Lot ID</span><b class="mono">${lotId()}</b></div>
+        <div><span>Stations off window</span><b>${k.bad + k.warn} of ${k.list.length}</b></div>
       </div>
       <div class="hmiTrend">
         ${spark(HIST.oee, "var(--primary)", "Line condition", "%", 100)}
@@ -45,7 +91,8 @@
       station set and the three-phase split are from the 3rd edition of the process guide.${r(1)} Transferability scores
       are its own where the station has a page there, and carried over from the 2nd edition otherwise.${r(15)} The lamps come
       from this simulator's own process windows. The line-condition, availability and interface figures are illustrative
-      constructions on top of the teaching model — no solid-state line is in series production to measure them against.
+      constructions on top of the teaching model — no comparable high-volume all-solid-state line supplies validated
+      production data for these scores.
       Read them as a way of seeing the line react, not as numbers to quote.</p>
     </div>`;
 
@@ -179,46 +226,3 @@ const PROCTECH = [
   { step:"Drying",     ph:"Electrode & electrolyte production",
     opts:[["Induction drying", 0], ["Convective drying", 0], ["Infrared drying", 0], ["Laser drying", 0]] },
   { step:"Compacting", ph:"Electrode & electrolyte production",
-    opts:[["Sintering", 1, "sintering"], ["Isostatic pressing", 1, "compacting"], ["Annealing", 0], ["Calendering", 0, "calender"]] },
-  { step:"Slitting",   ph:"Electrode & electrolyte production",
-    opts:[["Laser slitting", 0, "slitting"], ["Rotary knife cutting", 0, "slitting"]] },
-  { step:"Cutting",    ph:"Cell assembly",
-    opts:[["Punching", 0, "separation"], ["Laser cutting", 0, "separation"], ["Laser punching", 0]] },
-  { step:"Stacking",   ph:"Cell assembly",
-    opts:[["Single-sheet stacking", 0, "stacking"], ["Z-folding", 0, "stacking"], ["(Flat winding)", 0]] }
-];
-
-function renderProcTech() {
-  const list = active();
-  const live = id => id && list.some(s => s.id === id);
-  const deep = PROCTECH.reduce((a, r) => a + r.opts.filter(o => o[1]).length, 0);
-  $("layerView").innerHTML = `
-    <div class="card card-pad">
-      <span class="eyebrow">The big picture</span>
-      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">There is no standard process sequence yet</h2>
-      <p class="lede" style="max-width:88ch">That sentence is the guide's own, and it is the reason this page exists.
-      For each job on a solid-state line there are several technologies that could do it, and which one you pick depends
-      on the electrolyte, the format and what your plant already owns. ${deep} of them are singled out for a detailed
-      description — those are outlined below. The ones this simulator has built as stations on your current line are
-      marked, and you can click straight through to them.${r(1)}</p>
-    </div>
-    <div class="card card-pad">
-      <div class="ptGrid">
-        ${PROCTECH.map(row => `
-          <div class="ptStep"><b>${esc(row.step)}</b><small>${esc(row.ph)}</small></div>
-          <div class="ptOpts">${row.opts.map(([name, dd, id]) => {
-            const cls = "ptChip" + (dd ? " deep" : "") + (live(id) ? " live" : "");
-            return id && live(id)
-              ? `<button type="button" class="${cls}" data-go="${id}">${esc(name)}</button>`
-              : `<span class="${cls}">${esc(name)}</span>`;
-          }).join("")}</div>`).join("")}
-      </div>
-      <div class="ptKey">
-        <span><i class="ptChip deep" style="padding:2px 8px">outlined</i> described in detail in the guide</span>
-        <span><i class="ptChip live" style="padding:2px 8px">filled</i> built as a station on this line — click it</span>
-      </div>
-      <p class="lede" style="margin-top:12px;font-size:12px;opacity:.85">After stacking, the chain closes with contacting,
-      sealing, formation and aging — the four steps the guide lists separately because they are common to every route.</p>
-    </div>`;
-  $("layerView").querySelectorAll(".ptChip[data-go]").forEach(el =>
-    el.addEventListener("click", () => go(el.dataset.go)));

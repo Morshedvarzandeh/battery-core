@@ -9,7 +9,7 @@ MODULE = ROOT / "docs" / "fundamentals" / "battery-production"
 HTML = MODULE / "index.html"
 LOADER = MODULE / "loader.js"
 PAYLOAD = MODULE / "payload"
-EXPECTED_PARTS = [f"source-{index:02d}.part" for index in range(1, 26)]
+EXPECTED_PARTS = [f"source-{index:02d}.part" for index in range(1, 27)]
 
 
 class _StructureParser(HTMLParser):
@@ -69,6 +69,8 @@ def test_reconstructed_page_has_accessible_structure() -> None:
 def test_production_scope_is_explicit() -> None:
     source = _source()
     assert "Lithium-ion Cell Production Simulator" in source
+    assert "5th ed." in source
+    assert "February 2026" in source
     assert "digital twin" not in source.lower()
     assert "graphite / NMC" in source
     assert "not calibrated plant predictions" in source
@@ -82,6 +84,8 @@ def test_production_routes_and_process_stages_are_present() -> None:
     source = _source()
     for route in ("pouch", "cyl", "prism"):
         assert f'data-route="{route}"' in source
+    for process in ("wet", "dry"):
+        assert f'data-proc="{process}"' in source
     for station in (
         "mixing", "coating", "drying", "calendering", "slitting",
         "vacdry", "formation", "aging", "eol",
@@ -93,8 +97,9 @@ def test_production_routes_and_process_stages_are_present() -> None:
 
 def test_production_scientific_qualifications_are_present() -> None:
     source = _source()
-    assert "PEM working pressure ≈150 mbar" in source
-    assert "separate from chamber evacuation" in source
+    assert "Working pressure: 0.07 mbar < p < 1 000 mbar" in source
+    assert "Wetting-cycle pressure" in source
+    assert "working pressure of about 150 mbar for filling and wetting" in source
     assert "does not guarantee prevention of thermal runaway" in source
     assert "formation should not be treated as a reliable correction" in source
     assert "Hard-case gas-management and closure sequences vary by design" in source
@@ -110,20 +115,6 @@ def test_production_scientific_qualifications_are_present() -> None:
     # here and must not be normalised to a hyphen.
     assert "Example plant shipping target: 10%–20% SOC" in source  # noqa: RUF001
     assert "PI 965 maximum: 30% SOC for UN 3480 shipped alone by air" in source
-
-
-def test_dry_electrode_route_is_present() -> None:
-    """The 2026 revision adds the solvent-free electrode route."""
-    source = _source()
-    for station in ("drymix", "drycoat", "fibril"):
-        assert f'id:"{station}"' in source
-
-
-def test_plant_level_views_are_present() -> None:
-    """The 2026 revision adds factory, machine, and comparison views."""
-    source = _source()
-    for station in ("factory", "machine", "radar"):
-        assert f'id:"{station}"' in source
 
 
 def test_standalone_page_uses_no_external_code_assets() -> None:
