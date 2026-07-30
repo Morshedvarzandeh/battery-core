@@ -46,6 +46,14 @@ jobs:
           --output 02_capacity_and_c_rate.executed.ipynb
           --output-dir /tmp
           --ExecutePreprocessor.timeout=120
+      - name: Execute battery-aging notebook
+        run: >-
+          jupyter nbconvert
+          --to notebook
+          --execute notebooks/fundamentals/04_battery_aging.ipynb
+          --output 04_battery_aging.executed.ipynb
+          --output-dir /tmp
+          --ExecutePreprocessor.timeout=180
       - name: Execute Fick's first-law notebook
         run: >-
           jupyter nbconvert
