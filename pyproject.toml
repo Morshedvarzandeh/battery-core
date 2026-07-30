@@ -23,7 +23,7 @@ classifiers = [
 dependencies = ["numpy>=1.23"]
 
 [project.optional-dependencies]
-test = ["pytest>=7"]
+test = ["pytest>=7", "tomli>=2; python_version < '3.11'"]
 lint = ["mypy>=1.11", "ruff>=0.6"]
 notebook = [
     "jupyterlab>=4.2,<5",
