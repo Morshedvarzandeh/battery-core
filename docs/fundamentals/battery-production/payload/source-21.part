@@ -1,0 +1,236 @@
+          fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>
+          <rect x="72" y="${127 + i * 25}" width="110" height="4" rx="1" fill="var(--sep)"/>`).join("")}
+       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Tabs">
+         <rect x="80" y="76" width="28" height="22" rx="3" class="mAl" ${ring(tOn)}/>
+         <rect x="148" y="76" width="28" height="22" rx="3" class="mCu" ${ring(tOn)}/>
+         <rect class="hit" x="74" y="70" width="110" height="34" fill="transparent"/></g>
+       <text class="mTxtS" x="127" y="330" text-anchor="middle">Pouch — stacked sheets</text>`
+    : route === "cyl"
+    ? `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Cylindrical can">
+         <rect x="82" y="86" width="94" height="222" rx="14" class="mSteel2" ${ring(cOn)}/>
+         <rect class="hit" x="76" y="80" width="106" height="234" fill="transparent"/></g>
+       <g class="spin"><circle cx="129" cy="200" r="44" class="mAn"/><circle cx="129" cy="200" r="33" class="mSep"/>
+         <circle cx="129" cy="200" r="21" class="mCa"/><circle cx="129" cy="200" r="8" class="mSteel"/></g>
+       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Terminal">
+         <rect x="116" y="66" width="26" height="22" rx="4" class="mAl" ${ring(tOn)}/>
+         <rect class="hit" x="110" y="60" width="38" height="34" fill="transparent"/></g>
+       <text class="mTxtS" x="129" y="330" text-anchor="middle">Cylindrical — wound jelly roll</text>`
+    : `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Prismatic can">
+         <rect x="56" y="92" width="146" height="216" rx="6" class="mSteel2" ${ring(cOn)}/>
+         <rect class="hit" x="50" y="86" width="158" height="228" fill="transparent"/></g>
+       <rect x="68" y="104" width="122" height="192" rx="3" fill="var(--card)"/>
+       <g class="spin"><ellipse cx="129" cy="200" rx="52" ry="36" class="mAn"/>
+         <ellipse cx="129" cy="200" rx="36" ry="23" class="mSep"/>
+         <ellipse cx="129" cy="200" rx="20" ry="11" class="mCa"/></g>
+       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Terminals">
+         <rect x="76" y="72" width="28" height="22" rx="3" class="mAl" ${ring(tOn)}/>
+         <rect x="154" y="72" width="28" height="22" rx="3" class="mCu" ${ring(tOn)}/>
+         <rect class="hit" x="70" y="66" width="120" height="34" fill="transparent"/></g>
+       <text class="mTxtS" x="129" y="330" text-anchor="middle">Prismatic — wound, in a hard can</text>`;
+
+  return `<svg viewBox="0 0 760 396" role="img" aria-label="Exploded lithium-ion cell layers">
+    ${cell}
+    <path class="mLead" d="M204 200 C 250 200, 258 212, 330 212"/>
+    <text class="mTxtS" x="214" y="192">one repeat unit →</text>
+    <text class="mTxtS" x="214" y="236" fill="var(--faint)">repeated up to 120×</text>
+    ${rows}</svg>`;
+}
+
+function renderAnatomy() {
+  const c = compMap[layerPick];
+  const stationChip = id => {
+    const st = STATIONS.find(x => x.id === id);
+    if (!st || !st.routes.includes(route)) return "";
+    const col = phaseColor(st.phase);
+    return `<button type="button" class="chipc" data-go="${st.id}"><i style="background:${col}"></i>${esc(st.title)}</button>`;
+  };
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture · 1 of 3</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">What you are actually building</h2>
+      <p class="lede" style="max-width:80ch">A lithium-ion cell is a sandwich repeated tens of times, soaked in liquid and
+      wrapped in a barrier. Nine components, only three of which the plant makes itself. Pick any layer to see what it is,
+      why it is that thickness, and which stations on the line are responsible for it.</p>
+    </div>
+
+    <div class="card card-pad">
+      <div class="anat">
+        <div>
+          <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint);margin-bottom:9px">THE REPEAT UNIT</small>
+          <div class="layerlist">
+            ${COMPONENTS.map(x => `
+              <button type="button" class="layer" data-layer="${x.id}" aria-current="${x.id === layerPick}">
+                <i style="background:${x.col}"></i>
+                <span><strong>${esc(x.name)}</strong><small>${esc(x.spec)}</small></span>
+                <em>${x.made.filter(id => (STATIONS.find(s => s.id === id) || {routes:""}).routes.includes(route)).length} ST</em>
+              </button>`).join("")}
+          </div>
+        </div>
+        <div class="anat-detail">
+          ${anatomySVG(layerPick)}
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-pad anat">
+      <div>
+        <span class="eyebrow" style="color:${c.col === "var(--sep)" ? "var(--warning)" : c.col}">${esc(c.short)}</span>
+        <h3 style="margin:5px 0 10px">${esc(c.name)}</h3>
+        <div class="anat-spec">
+          <div><small>Dimension</small><b>${esc(c.spec)}</b></div>
+          <div><small>Material</small><b>${esc(c.mat)}</b></div>
+          <div><small>Origin</small><b>${esc(c.src)}</b></div>
+        </div>
+      </div>
+      <div>
+        <p><b>${esc(c.role)}</b></p>
+        <p style="margin-top:9px">${c.why}</p>
+        <div style="margin-top:14px">
+          <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint)">STATIONS THAT BUILD OR SHAPE IT — ${GEOM[route].name.toUpperCase()} ROUTE</small>
+          <div class="makes">${c.made.map(stationChip).join("") || "<span style='font-size:11px;color:var(--faint)'>Not built on this route.</span>"}</div>
+        </div>
+        <div style="margin-top:12px">
+          <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--destructive)">WHERE IT IS MOST EASILY RUINED</small>
+          <div class="makes">${c.risk.map(stationChip).join("")}</div>
+          <p style="margin-top:7px;font-size:11.5px">${esc(c.riskWhy)}</p>
+        </div>
+      </div>
+    </div>`;
+
+  $("layerView").querySelectorAll("[data-layer]").forEach(el =>
+    el.addEventListener("click", () => { layerPick = el.dataset.layer; renderAnatomy(); }));
+  $("layerView").querySelectorAll("svg [data-layer]").forEach(el =>
+    el.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); layerPick = el.dataset.layer; renderAnatomy(); }
+    }));
+}
+
+/* ---------------------------------------------------------------------
+   2 · MATERIAL FLOW — one chain, every state, the station that changes it
+   ------------------------------------------------------------------- */
+function renderFlow() {
+  const m = model();
+  const live = {
+    slurry:  `${m.visc.toFixed(0)} mPa·s · ${S.solid} wt% solids`,
+    wet:     `${m.wetNeed.toFixed(0)} µm wet film`,
+    dryel:   m.solventGap > 0 ? `${(m.solventGap * 240).toFixed(0)} ppm solvent left` : "solvent removed",
+    comp:    `${m.por.toFixed(0)}% porosity · ${m.capC.toFixed(2)} mAh/cm²`,
+    dry:     `${m.ppm.toFixed(0)} ppm residual water`,
+    piece:   `burr ${m.burr.toFixed(1)} µm`,
+    stack:   `N/P ${m.np.toFixed(2)}`,
+    filled:  `${m.wetting.toFixed(0)}% wetted`,
+    formed:  `SEI ${m.seiQ.toFixed(0)}% · ${m.liLoss.toFixed(1)}% Li spent`,
+    aged:    `screen ${m.screenSens.toFixed(0)}%`,
+    graded:  `${m.cellAh.toFixed(1)} Ah · ${m.yieldPct.toFixed(1)}% yield`
+  };
+  /* on the dry route the four wet electrode states collapse into two */
+  const chain = proc === "dry"
+    ? [FLOW[0], ...FLOW_DRY, ...FLOW.slice(5)]
+    : FLOW;
+  Object.assign(live, {
+    fibril: `${m.fibril.toFixed(0)}% fibrillation`,
+    film:   `${m.por.toFixed(0)}% porosity · adhesion ${m.adhesion.toFixed(0)}%`
+  });
+  const byBtn = by => {
+    if (!by) return `<small>STARTS HERE</small>`;
+    const ids = by.split("|").filter(id => {
+      const st = STATIONS.find(s => s.id === id);
+      return st && st.routes.includes(route) && (!st.proc || st.proc === proc);
+    });
+    if (!ids.length) return `<small>NOT ON THIS ROUTE</small>`;
+    return ids.map(id => {
+      const st = STATIONS.find(s => s.id === id), n = active().indexOf(st) + 1;
+      return `<button type="button" data-go="${id}"><small>STATION ${String(n).padStart(2, "0")}</small>${esc(st.title)}</button>`;
+    }).join("");
+  };
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture · 2 of 3</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">One material, ${chain.length} states</h2>
+      <p class="lede" style="max-width:80ch">Nothing on this line is assembled from finished parts. The same material is
+      carried through every station and changed a little each time — and because it is one chain, a mistake at station
+      two is still in the cell at the last one. The right-hand figures are live: they come from the setpoints you
+      currently have set.${r(3)}</p>
+    </div>
+    <div class="card card-pad">
+      <div class="chain">
+        ${chain.map(f => `
+          <div class="chain-row">
+            <div class="chain-by">${byBtn(f.by)}</div>
+            <div class="chain-spine"><i></i></div>
+            <div class="chain-state">
+              <strong>${esc(f.name)}</strong>
+              <em>${esc(f.state)}</em>
+              ${live[f.id] ? `<em style="background:var(--foreground);color:var(--primary);border-color:var(--foreground)">${esc(live[f.id])}</em>` : ""}
+              <span>${esc(f.note)}</span>
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   3 · PROCESS ↔ COMPONENT MATRIX
+   ------------------------------------------------------------------- */
+function cellRole(st, comp) {
+  const made = comp.made.includes(st.id), risk = comp.risk.includes(st.id);
+  if (made && risk) return "both";
+  if (made) return "make";
+  if (risk) return "risk";
+  if ((comp.checks || []).includes(st.id)) return "check";
+  return "";
+}
+function renderMatrix() {
+  const list = active();
+  const mark = { make:"●", both:"◉", risk:"▲", check:"◆" };
+  const word = { make:"builds or shapes", both:"builds it — and is where it is most easily ruined",
+                 risk:"main risk to", check:"measures or screens" };
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture · 3 of 3</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Which station touches which part of the cell</h2>
+      <p class="lede" style="max-width:80ch">Read a row to see what one machine is responsible for. Read a column to see
+      how many hands a single component passes through before it is finished. Click any mark to jump straight to that
+      station. The table rebuilds when you change the cell format, because the line does.</p>
+    </div>
+    <div class="card card-pad">
+      <div class="mtxwrap">
+        <table class="mtx">
+          <thead><tr><th class="rowh">Station</th>
+            ${COMPONENTS.map(c => `<th><i style="background:${c.col}"></i>${esc(c.short)}</th>`).join("")}
+          </tr></thead>
+          <tbody>
+            ${list.map((st, i) => `
+              <tr>
+                <th class="rowh"><span style="color:var(--faint);font-weight:900;font-size:9px">${String(i + 1).padStart(2, "0")}</span>
+                  &nbsp;${esc(st.title)}</th>
+                ${COMPONENTS.map(c => {
+                  const k = cellRole(st, c);
+                  return k ? `<td data-k="${k}"><button type="button" data-go="${st.id}" title="${esc(st.title)} — ${esc(c.name)}"
+                        aria-label="${esc(st.title)}, ${esc(c.name)}, ${word[k]}">${mark[k]}</button></td>`
+                    : `<td></td>`;
+                }).join("")}
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+      <div class="legend">
+        <span><b style="background:color-mix(in srgb,var(--primary) 15%,transparent);color:var(--primary)">●</b> builds or shapes this component</span>
+        <span><b style="background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 19%,transparent) 50%,color-mix(in srgb,var(--destructive) 19%,transparent) 50%);color:var(--foreground)">◉</b> builds it — and is where it is most easily ruined</span>
+        <span><b style="background:color-mix(in srgb,var(--destructive) 15%,transparent);color:var(--destructive)">▲</b> where this component is most easily ruined</span>
+        <span><b style="background:color-mix(in srgb,var(--elyte) 15%,transparent);color:var(--elyte)">◆</b> where it is measured or screened</span>
+        <span>blank — the component passes through untouched</span>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>Reading it down a column</h4>
+        <ul>
+          <li><b>On the wet route, the two coatings pass through five station families</b> before they are finished — wet mixing, coating, drying, calendering and vacuum drying. The dry route replaces the first four with dry mixing/fibrillation and dry coating before the common downstream steps.</li>
+          <li><b>The separator is introduced during stacking or winding.</b> Damage at this stage can create latent short-circuit risk, so cleanliness, alignment and edge quality are critical.${r(2,3)}</li>
+          <li><b>The SEI is formed during formation.</b> It is not installed as a conventional part, and its properties depend on the full formation and cleanliness history.${r(7)}</li>
+        </ul>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--destructive)"></i>Reading it across a row</h4>
+        <ul>

@@ -1,157 +1,103 @@
-  const coatErr  = 0.5 + Math.abs(S.gap - wetNeed) * 0.06 + (S.speed - 35) * 0.022
-                 + (100 - disp) * 0.05;               /* g/m² dry, target ±2 [1] */
+    ["Tab welding","JOIN","All anode current collectors are welded together and to the negative tab, all cathode collectors to the positive tab. Ultrasonic or laser welding. The guide names the ultrasonic parameter set — frequency, amplitude, pressure, time — without fixing values, because they belong to the joint."],
+    ["Insertion","LOAD","The stack is placed into the deep-drawn cavity."],
+    ["Partial sealing","SEAL","Three sides are sealed gas-tight by impulse or contact sealing. The rule of thumb on the shop floor: 1 mm of seal seam ≈ one year of cell life. One side is left open for filling."]],
+  params:["Deep-drawing of pouch film: up to 10 mm","Parameter set for ultrasonic welding: frequency, amplitude, pressure, time","Sealing temperature and pressure","Aluminium composite film: polyamide / aluminium / polypropylene","Rule of thumb: 1 mm seal-seam width corresponds to roughly one year of calendrical service life"],
+  alts:["Book folding — one foil with two drawn cavities, folded like a book and sealed"],
+  innov:["Reduction of mechanical and thermal stress","Increase of the deep-drawing depth for thicker cell stacks","Positioning tabs on opposite sides instead of on one side"],
+  qInf:["Reduction of thermal stress during contacting and sealing","Seal seam width","Sealing temperature and pressure"],
+  qFeat:["Low contact resistance, low mechanical and thermal stress at the weld","Fatigue strength and tightness of the sealing seams"],
+  sop:["Verify foil lot and draw depth","Set sonotrode energy for the collector stack thickness","Weld and pull-test a sample","Insert the stack without abrading the foil","Seal three sides to the seam-width spec","Leak-check before release"] },
 
-  /* --- drying ---------------------------------------------------------- */
-  const solventLoad = (100 - S.solid) / 42;
-  const needT = (40 + S.speed * 1.4) * solventLoad * (60 / S.dryLen);
-  const solventGap = Math.max(0, needT - S.dryT);      /* under-dried */
-  const crackGap   = Math.max(0, S.dryT - needT - 30); /* over-dried  */
+{ id:"packHard", no:"09", phase:"Cell assembly", title:"Packaging — can", machine:"packHard", routes:"cyl prism",
+  env:{iso:"min. ISO 7", dew:"very dry, −30…−60 °C", temp:"22 ± 2 °C"}, cost:"€ 35–45 M cylindrical · € 45–60 M prismatic", takt:"—",
+  purpose:"Insert the jelly roll into a metal can, insulate it, and weld the terminals and the lid.",
+  inp:"Jelly roll", out:"Sealed can, fill port open",
+  parts:[
+    ["Jelly roll with terminals","INPUT","For prismatic cells the roll edges are compressed, fixed and ultrasonically welded to the contact terminals on the lid."],
+    ["Insulator foil","INSULATE","An insulation foil protects the jelly roll during insertion and keeps it off the metal housing."],
+    ["Lid welding","SEAL","The housing is sealed by laser welding. Flexible beam guidance and beam shaping are needed for the prismatic lid geometry."],
+    ["Cylindrical route","VARIANT","A bottom insulator goes in first, then the roll. The anode collector is resistance-welded to the can bottom; the cathode collector is laser-welded to the lid. An insulation ring finishes the job."]],
+  params:["Material compatibility at the joint areas","Ultrasonic parameter set: frequency, amplitude, pressure, time","Flexible beam guidance and shaping for laser welding","Possible cleaning afterwards if there is weld spatter","Laser protection during laser welding"],
+  alts:["Reference route shown; equipment configuration varies by manufacturer"],
+  innov:["Reduction of mechanical and thermal stress during welding","Avoiding the use of tabs — the tabless design","Connecting multiple cell stacks within one housing (prismatic)"],
+  qInf:["Reduction of thermal stress during welding","Purity of the metallic housing","Handling of the jelly roll"],
+  qFeat:["Low contact resistance, low mechanical and thermal stress","Insulation against the metallic housing"],
+  sop:["Check can and insulator cleanliness","Compress and weld the roll to the terminals","Insert with the insulator in place","Weld the lid and inspect the seam","Verify insulation resistance","Leave the fill port open"] },
 
-  /* --- slitting / separation ------------------------------------------- */
-  const burrSlit = S.knife
-    ? 2 + S.cutSpd * 0.01
-    : 4 + S.wear * 0.10 + Math.max(0, S.cutSpd - 110) * 0.05;   /* µm */
-  /* the pouch route cuts a second time, at separation */
-  const burrSep = pouch ? (S.sepMode ? 2.5 : 4.5 + S.wear * 0.12) : 0;
-  const burr = Math.max(burrSlit, burrSep);   /* the tallest burr in the cell is what matters */
+{ id:"fillPouch", no:"10", phase:"Cell assembly", title:"Electrolyte filling — pouch", machine:"fillPouch", routes:"pouch",
+  env:{iso:"min. ISO 7", dew:"very dry, −30…−60 °C", temp:"22 ± 2 °C"}, cost:"€ 35–45 M (electrolyte filling)", takt:"—",
+  purpose:"Dose electrolyte into the cell under vacuum, then drive it into every pore before sealing.",
+  inp:"Open pouch cell", out:"Filled cell with gas bag",
+  parts:[
+    ["Filling under vacuum","DOSE","The chamber is evacuated — the guide quotes a working pressure of about 150 mbar — before a high-precision dosing needle meters the electrolyte. The very dry environment limits LiPF₆ hydrolysis and the formation of HF-containing species that can degrade interfaces and cell life."],
+    ["Wetting by pressure cycling","WET","Filling and wetting are two different sub-processes. Inert gas pressure and vacuum are alternated so capillary action pulls electrolyte into the pores. The cycle is repeated several times."],
+    ["Seal under vacuum","CLOSE","The last side is sealed under vacuum. A gas bag — dead space — is left attached to catch the gas that formation will produce."]],
+  params:["Working pressure: approximately 150 mbar","Particularly dry and inert environment","Tightened safety measures because of the electrolyte","Gravimetric measurement of the electrolyte quantity","Continuous or cyclic filling and wetting"],
+  alts:["Reference route shown; equipment configuration varies by manufacturer"],
+  innov:["Reducing the risk of reaction between electrolyte and moisture through lower dew points or pressures","Shortening the process time in wetting","Innovative measurement methods for monitoring wetting"],
+  qInf:["Dosing method","Geometry and closing mechanism of the dosing needle","Electrolyte transport system — piping"],
+  qFeat:["Dosing and distribution accuracy","No electrolyte residue in the sealing seam","Tightness of the sealed cell"],
+  sop:["Confirm dew point and HF exposure controls","Verify needle geometry and dose by weight","Evacuate, dose, pressurise, repeat","Check for residue in the seal area","Seal under vacuum with the gas bag attached","Weigh the cell to confirm the electrolyte quantity"] },
 
-  /* --- vacuum drying ---------------------------------------------------- */
-  const ppm = (18 + 420 * Math.exp(-(S.vac - 12) / 5.5)) * Math.pow(120 / S.vacT, 0.85);
+{ id:"fillHard", no:"10", phase:"Cell assembly", title:"Electrolyte filling — can", machine:"fillHard", routes:"cyl prism",
+  env:{iso:"min. ISO 7", dew:"very dry, −30…−60 °C", temp:"22 ± 2 °C"}, cost:"€ 35–45 M (electrolyte filling)", takt:"—",
+  purpose:"Fill the sealed can through its port, wet the roll, then close the cell permanently.",
+  inp:"Welded can, port open", out:"Sealed filled cell",
+  parts:[
+    ["Prismatic fill valve","DOSE","Electrolyte goes in through a valve in the lid, under vacuum, by dosing needle."],
+    ["Cylindrical fill","DOSE","Filled through the open end before the cell is closed."],
+    ["Valve sealing","CLOSE","The prismatic fill valve is laser-sealed once wetting is complete."],
+    ["Beading and crimping","CLOSE","Cylindrical cells are closed mechanically: a bead is rolled into the can and the top is crimped over a gasket."]],
+  params:["Working pressure: approximately 150 mbar","Particularly dry and inert environment","Tightened safety measures because of the electrolyte","Gravimetric measurement of the electrolyte quantity","Continuous or cyclic filling and wetting"],
+  alts:["Reference route shown; equipment configuration varies by manufacturer"],
+  innov:["Reducing the risk of reaction between electrolyte and moisture through lower dew points or pressures","Shortening the process time in wetting","Innovative measurement methods for monitoring wetting"],
+  qInf:["Dosing method","Geometry and closing mechanism of the dosing needle","Electrolyte transport system"],
+  qFeat:["Dosing and distribution accuracy","Tightness of the sealed cell","Electrolyte quantity"],
+  sop:["Confirm dew point and HF controls","Dose by weight through the port","Cycle pressure to wet the roll","Seal the valve or bead and crimp","Leak-test every cell","Clean any external residue"] },
 
-  /* --- assembly --------------------------------------------------------- */
-  const alignRisk = Math.max(0, S.stackAcc - 300) * 0.05
-                  + Math.abs(S.webTens - 60) * 0.03;
-  const sealQ = clamp(100 - Math.abs(S.sealT - 190) * 1.1 - Math.max(0, S.drawDepth - 8) * 5);
+{ id:"rollpress", no:"11", phase:"Cell finishing", title:"Pre-treatment", machine:"rollpress", routes:"pouch",
+  env:{iso:"—", dew:"—", temp:"20 – 50 °C"}, cost:"€ 5–15 M (high-temperature soaking)", takt:"soaking time, process-dependent",
+  purpose:"Squeeze the filled pouch cell between rollers so electrolyte reaches every corner of every electrode sheet.",
+  inp:"Filled pouch cell", out:"Evenly wetted cell",
+  parts:[
+    ["Good carrier","HOLD","A gripper clamps the cell into a dedicated carrier that stays with it through finishing."],
+    ["Roller pair","PRESS","A servo motor guides the cell through two rollers at a defined pressure. Pressure must be even across the whole cell surface."],
+    ["Cleaning rollers","CLEAN","The rollers are cleaned between cells so nothing is pressed into the pouch foil."],
+    ["Result","EFFECT","More uniform electrolyte distribution reduces poorly wetted or locally inactive regions and supports more uniform formation. The benefit depends on cell design and the full formation protocol."]],
+  params:["Homogeneous temperature application in a window of 30–50 °C","Soaking time","Homogeneous pressure over the entire cell surface where roll pressing is used","Ideal coverage of the individual electrode sheets"],
+  alts:["Roll pressing — pouch cells","Vibrating table — prismatic and cylindrical cells","Pre-charging — all formats, up to 30% SoC"],
+  innov:["Inline measurement technology for wetting-degree measurement"],
+  qInf:["Pressure distribution","Roller geometry","Process control — number of passes"],
+  qFeat:["Optimum SEI formation in the next step","Electrolyte distribution within the cell","Capacity of the cell after formation"],
+  sop:["Clamp the cell in its carrier","Set pressure and pass count","Confirm roller cleanliness","Run passes and inspect the pouch surface","Check for seam stress","Release to formation"] },
 
-  /* --- filling and wetting ---------------------------------------------- */
-  const wetDrive = S.soak * Math.max(0, S.doseFac - 0.98) * Math.pow(200 / S.fillP, 0.35)
-                 * (1 + (pouch ? S.pressP * 0.8 : 0)) / (por / 30);
-  const wetting  = clamp(100 - 55 * Math.exp(-wetDrive / 0.9));
-  const excess   = Math.max(0, S.doseFac - 1.35) * 60;   /* flooded cell gasses */
+{ id:"formation", no:"12", phase:"Cell finishing", title:"Formation", machine:"formation", routes:ALL,
+  env:{iso:"—", dew:"—", temp:"20 – 50 °C"}, cost:"€ 65–95 M (formation) — the most capital-intensive station on the line", takt:"up to 15 h",
+  purpose:"Give the cell its first controlled charge and discharge cycles, which build the SEI and turn the materials into their working form.",
+  inp:"Filled, wetted cell", out:"Activated cell with a formed SEI",
+  parts:[
+    ["Formation rack","CONTACT","Cells sit in good carriers in racks and are contacted by spring-loaded pins. Low contact resistance at those pins is a named requirement — a bad contact falsifies the measurement and heats the tab."],
+    ["Charge / discharge profile","CYCLE","First charge at roughly 0.1–0.5 C, with the C-rate stepped up on each successive cycle. Up to 15 hours in total."],
+    ["Product carrier","PRESSURE","Top view: cells are held and, for pouch cells in particular, lightly pressurised during formation. Orientation, contact method, temperature and pressure all influence the result."],
+    ["SEI and gas","CHEMISTRY","Lithium moves into the graphite and the solid electrolyte interphase forms on its surface. The reaction consumes lithium and generates gas — which is why the gas bag is there."]],
+  params:["First charging process: approximately 0.1–0.5 C","Gradual increase in C-rate with each charge and discharge cycle","Duration of the formation process: up to 15 h","Low contact resistance at the spring contact pins"],
+  alts:["Procedures differ by manufacturer and cell chemistry — formation recipes are treated as core know-how"],
+  innov:["Inline measurement technology for early quality detection","Open forming, with the cell open so the gases produced can escape","Forming at higher temperatures"],
+  qInf:["Orientation of the cells","Contact method","Process temperature","Pressurisation, especially for pouch cells"],
+  qFeat:["Formation of the SEI layer","Stability of the SEI layer","Internal resistance of the cell"],
+  sop:["Load carriers and verify every pin contact","Select the formation recipe for the chemistry","Run the stepped C-rate profile","Log current, voltage and temperature per cell","Watch for outliers against the fleet","Release to degassing or aging"] },
 
-  /* --- formation -------------------------------------------------------- */
-  const seiQ = clamp(100 - Math.max(0, S.cRate - 0.2) * 90
-                     - Math.max(0, S.formT - 50) * 1.6 - Math.max(0, 20 - S.formT) * 1.2
-                     - Math.max(0, S.vMax - 4.25) * 140 - Math.max(0, ppm - 60) * 0.06);
-  const liLoss = 6 + Math.max(0, S.cRate - 0.2) * 22 + Math.max(0, S.formT - 45) * 0.35;
-
-  /* --- shipping compliance ------------------------------------------------ */
-  const shipOK = S.shipSOC <= 30;   /* PI 965 check for UN 3480 cells/batteries shipped alone by air */
-
-  /* --- finishing --------------------------------------------------------- */
-  const gasLeft   = pouch ? clamp(2 + (S.degP - 1) * 0.9 + (100 - seiQ) * 0.25, 0, 100) : 0;
-  const screenSens = clamp(35 + S.ageDays * 3.0 + (S.ageHiT - 25) * 1.0 + (S.ageSOC - 30) * 0.18);
-  const escape    = Math.max(0, 96 - screenSens) * 0.06;   /* defects that get past aging */
-
-  /* --- scores ------------------------------------------------------------ */
-  const uniformity = clamp(100 - Math.max(0, coatErr - 1) * 9 - solventGap * 0.5 - (100 - disp) * 0.3);
-  const moisture   = clamp(100 - Math.max(0, ppm - 40) * 0.18);
-  const npPenalty  = np < 1.02 ? (1.02 - np) * 260 : np > 1.25 ? (np - 1.25) * 90 : 0;
-  const cPenalty   = Math.max(0, S.cRate - 0.35) * 70;
-  const agePenalty = Math.max(0, 10 - S.ageDays) * 2.2;
-  const safety     = clamp(100 - npPenalty - cPenalty - Math.max(0, ppm - 60) * 0.12
-                     - Math.max(0, burr - 8) * 2.5 - alignRisk * 1.5 - (100 - seiQ) * 0.25);
-  const yieldPct   = clamp(99.6 - solventGap * 0.55 - crackGap * 0.5 - Math.max(0, ppm - 40) * 0.05
-                     - npPenalty * 0.5 - cPenalty * 0.5 - agePenalty
-                     - Math.max(0, S.force - 2300) * 0.006
-                     - Math.max(0, coatErr - 2) * 3.5
-                     - Math.max(0, burr - 8) * 1.2
-                     - Math.max(0, 96 - wetting) * 0.35
-                     - Math.max(0, 90 - disp) * 0.12
-                     - alignRisk - excess * 0.3
-                     - (pouch ? Math.max(0, 96 - sealQ) * 0.25 + gasLeft * 0.1 : 0)
-                     - escape * 2, 55, 99.6);
-
-  /* --- throughput: 1 m effective coating width, 85% uptime --------------- */
-  const cathodePerCell = g.area * (g.layers > 1 ? 2 * g.layers : 1) / 10000;   /* m² */
-  const cellsDay = S.speed * 1.0 * 60 * 24 * 0.85 / (cathodePerCell * 2);
-  const gwh = cellsDay * 365 * cellAh * 3.65 / 1e9;
-
-  /* --- the worst problem, in plain language ------------------------------ */
-  let level = "ok", head = "Model inside the training window", body =
-    `Porosity ${por.toFixed(0)}%, N/P ${np.toFixed(2)}, residual moisture ${ppm.toFixed(0)} ppm, wetting ${wetting.toFixed(0)}%.`;
-  const flag = (cond, lv, h, b) => { if (cond) { level = lv; head = h; body = b; } };
-
-  flag(disp < 85, "warn", "Slurry not fully dispersed",
-    `Dispersion index ${disp.toFixed(0)}%. Agglomerates survive into the coating and print through as thickness scatter.`);
-  flag(visc < 2000, "warn", "Slurry too thin",
-    `${visc.toFixed(0)} mPa·s. Below the 2 000 mPa·s floor the solids settle in the buffer tank and the film runs at the die.`);
-  flag(visc > 6000, "warn", "Slurry too thick",
-    `${visc.toFixed(0)} mPa·s. Above the 6 000 mPa·s ceiling the die streaks and the coat weight drifts.`);
-  flag(coatErr > 2, "warn", "Coat weight outside ±2 g/m²",
-    `Predicted scatter ${coatErr.toFixed(1)} g/m². Thickness variation becomes capacity variation, which end-of-line grading will find.`);
-  flag(S.force > 2300, "warn", "Calender line force very high",
-    "Above roughly 2 300 N/mm this teaching model increases the risk of over-compression, particle damage and stress cracking. PEM caps line pressure at 2 500 N/mm.");
-  flag(crackGap > 12, "warn", "Dryer hotter than the web needs",
-    `At ${S.speed} m/min and ${S.solid} wt% solids the profile only needs about ${needT.toFixed(0)} °C. Overshooting skins the surface and drags binder to the top.`);
-  flag(np > 1.25, "warn", "Anode heavily over-sized",
-    `N/P ratio ${np.toFixed(2)}. Safe, but you are carrying graphite that stores nothing — thin the anode or thicken the cathode.`);
-  flag(burr > 10, "warn", "Burr taller than is safe",
-    `${burr.toFixed(1)} µm on the cut edge against a separator only 12–25 µm thick. Change the knife or slow the cut.`);
-  flag(ppm > 120, "warn", "Residual moisture too high",
-    `${ppm.toFixed(0)} ppm going into the dry room. Residual water can hydrolyse LiPF₆ and generate HF-containing species that degrade electrolyte and interfaces.`);
-  flag(wetting < 90, "warn", "Electrolyte has not reached every pore",
-    `Wetting ${wetting.toFixed(0)}%. Incomplete wetting can create locally inactive or nonuniform regions. Additional rest or pressure cycling may help, but formation should not be treated as a reliable correction for an inadequate filling process.`);
-  flag(pouch && sealQ < 90, "warn", "Pouch seal outside its window",
-    `Seal quality ${sealQ.toFixed(0)}%. The sealant layer melts around 165 °C — too cold and it never bonds, too hot and it thins.`);
-  flag(solventGap > 10, "bad", "Web is under-dried",
-    `At ${S.speed} m/min and ${S.solid} wt% solids the dryer needs about ${needT.toFixed(0)} °C but is set to ${S.dryT} °C. Solvent left in the coating ruins adhesion and poisons the cell.`);
-  flag(S.cRate > 0.42, "bad", "Formation charge too aggressive",
-    `${S.cRate.toFixed(2)} C on the first charge. PEM specifies 0.1–0.5 C stepped up over successive cycles — rushing the first one builds a poor SEI and can plate lithium.`);
-  flag(S.vMax > 4.3, "bad", "Upper cut-off voltage too high",
-    `${S.vMax.toFixed(2)} V. Electrolyte oxidation and interfacial degradation can increase gas generation and impedance.`);
-  flag(!shipOK, "warn", "Above the air-freight state of charge limit",
-    `${S.shipSOC}% SOC. For this UN 3480 shipped-alone air scenario, PI 965 limits state of charge to 30%; other shipment configurations and modes use different requirements.`);
-  flag(np < 1.02, "bad", "Anode under-sized — lithium plating risk",
-    `N/P ratio ${np.toFixed(2)}. Insufficient anode capacity raises lithium-plating risk during charge and can contribute to internal-short hazards.`);
-
-  return { por, capC, capA, np, cellAh, ppm, uniformity, moisture, safety, yieldPct,
-           cellsDay, gwh, level, head, body, needT, visc, disp, coatErr, wetNeed, burr,
-           wetting, excess, seiQ, liLoss, sealQ, alignRisk, gasLeft, screenSens, solventGap, crackGap,
-           burrSlit, burrSep, shipOK };
-}
-</script>
-<script>
-/* =====================================================================
-   THE BIG PICTURE LAYER
-   1. REFS       — every cited process range points at a source
-   2. COMPONENTS — the cell, layer by layer, and which station builds it
-   3. FLOW       — one material chain from powder to graded cell
-   4. MATRIX     — station × component, derived from the two above
-   ===================================================================== */
-
-/* ---------------- 1 · references ---------------- */
-const REFS = [
-  { n:1, tag:"PEM/VDMA", txt:"Michaelis, S.; Rothhagen, B.; Heimes, H. H.; Born, H.; Kampker, A.; Scherer, C.; Lingohr, P. <em>Production Process of a Lithium-Ion Battery Cell</em>, 5th ed.; PEM of RWTH Aachen University &amp; VDMA: Frankfurt am Main, February 2026. ISBN 978-3-947920-71-6.",
-    use:"Process parameters, environment classes, machine investments and cycle times used in this simulator.",
-    url:"https://www.vdma.eu/documents/34570/35405938/Production_Process_of_a_Lithium-Ion_Battery_Cell_2026.pdf" },
-  { n:2, tag:"Chem. Rev. 2022", txt:"Li, J.; Fleetwood, J.; Hawley, W. B.; Kays, W. From Materials to Cell: State-of-the-Art and Prospective Technologies for Lithium-Ion Battery Electrode Processing. <em>Chem. Rev.</em> <b>2022</b>, <em>122</em> (1), 903–956.",
-    use:"Areal loading and areal capacity, commercial calendered porosity (≈20% anode, ≈25% cathode; 30–35% in research cells), separator thickness, foil thickness trend, scrap-rate range.",
-    url:"https://doi.org/10.1021/acs.chemrev.1c00565" },
-  { n:3, tag:"Nat. Energy 2018", txt:"Kwade, A.; Haselrieder, W.; Leithoff, R.; Modlinger, A.; Dietrich, F.; Droeder, K. Current status and challenges for automotive battery production technologies. <em>Nat. Energy</em> <b>2018</b>, <em>3</em> (4), 290–300.",
-    use:"Process-chain structure, the dominance of formation and aging in cost and floor space, quality-gate logic.",
-    url:"https://doi.org/10.1038/s41560-018-0130-3" },
-  { n:4, tag:"Adv. Energy Mater. 2023", txt:"Abdollahifar, M.; Cavers, H.; Scheffler, S.; Diener, A.; Lippke, M.; Kwade, A. Insights into Influencing Electrode Calendering on the Battery Performance. <em>Adv. Energy Mater.</em> <b>2023</b>, <em>13</em> (40), 2300973.",
-    use:"Porosity–performance trade-off, particle cracking and tortuosity increase under severe calendering.",
-    url:"https://doi.org/10.1002/aenm.202300973" },
-  { n:5, tag:"J. Power Sources 2016", txt:"Ahmed, S.; Nelson, P. A.; Dees, D. W. Study of a dry room in a battery manufacturing plant using a process model. <em>J. Power Sources</em> <b>2016</b>, <em>326</em>, 490–497.",
-    use:"Dry-room dew point targets and the energy cost of holding them.",
-    url:"https://doi.org/10.1016/j.jpowsour.2016.06.107" },
-  { n:6, tag:"J. Phys. Chem. C 2018", txt:"Stich, M.; Göttlinger, M.; Kurniawan, M.; Schmidt, U.; Bund, A. Hydrolysis of LiPF₆ in Carbonate-Based Electrolytes for Lithium-Ion Batteries and in Aqueous Media. <em>J. Phys. Chem. C</em> <b>2018</b>, <em>122</em> (16), 8836–8842.",
-    use:"LiPF₆ hydrolysis and formation of HF-containing species; why residual moisture is a critical gate before filling.",
-    url:"https://doi.org/10.1021/acs.jpcc.8b02080" },
-  { n:7, tag:"Carbon 2016", txt:"An, S. J.; Li, J.; Daniel, C.; Mohanty, D.; Nagpure, S.; Wood, D. L. The State of Understanding of the Lithium-Ion-Battery Graphite Solid Electrolyte Interphase (SEI) and Its Relationship to Formation Cycling. <em>Carbon</em> <b>2016</b>, <em>105</em>, 52–76.",
-    use:"SEI composition and thickness, why formation protocol influences SEI properties, formation-protocol effects.",
-    url:"https://doi.org/10.1016/j.carbon.2016.04.008" },
-  { n:8, tag:"J. Power Sources 2015", txt:"Wood, D. L., III; Li, J.; Daniel, C. Prospects for reducing the processing cost of lithium ion batteries. <em>J. Power Sources</em> <b>2015</b>, <em>275</em>, 234–242.",
-    use:"Cost share of drying, solvent recovery and formation; the case for thicker electrodes and faster formation.",
-    url:"https://doi.org/10.1016/j.jpowsour.2014.11.019" },
-  { n:9, tag:"ISO 14644-1:2015", txt:"ISO 14644-1:2015, <em>Cleanrooms and associated controlled environments — Part 1: Classification of air cleanliness by particle concentration</em>, 2nd ed.; International Organization for Standardization: Geneva, 2015.",
-    use:"What ISO 7 and ISO 8 actually mean as particle counts.",
-    url:"https://www.iso.org/standard/53394.html" },
-  { n:10, tag:"UN 38.3", txt:"United Nations. <em>Manual of Tests and Criteria</em>, 8th revised ed. (ST/SG/AC.10/11/Rev.8), Part III, sub-section 38.3: Lithium metal and lithium ion batteries; United Nations: New York and Geneva, 2023 (Amendment 1, 2024).",
-    use:"The eight transport-safety tests (T.1–T.8) every cell design must pass before shipping.",
-    url:"https://unece.org/transport/dangerous-goods/rev8-files-manual-tests-and-criteria" },
-  { n:11, tag:"IATA DGR PI 965", txt:"International Air Transport Association. <em>Dangerous Goods Regulations</em>, Packing Instruction 965 (UN 3480, lithium-ion cells and batteries shipped alone).",
-    use:"The ≤30% SOC rule for UN 3480 cells and batteries shipped alone by air under PI 965. Other configurations use different packing instructions.",
-    url:"https://www.iata.org/en/publications/manuals/battery-shipping-regulations/" },
+{ id:"degassing", no:"13", phase:"Cell finishing", title:"Degassing", machine:"degassing", routes:"pouch",
+  env:{iso:"min. ISO 7", dew:"very dry, −40…−60 °C", temp:"22 ± 2 °C"}, cost:"€ 10–15 M (degassing)", takt:"—",
+  purpose:"Remove the gas that formation produced and close the cell to its final dimensions.",
+  inp:"Formed cell with full gas bag", out:"Sealed cell, final size",
+  parts:[
+    ["Pierce under vacuum","VENT","The gas bag is pierced inside a vacuum chamber and the escaping gases are sucked off. The extracted gas is treated — regenerative thermal oxidation, for example — before it reaches the exhaust system."],
+    ["Extraction","TREAT","Larger cells gas strongly on first charge, which is why pressurised carriers push that gas into the bag in the first place."],
+    ["Final seal","CLOSE","The cell is sealed under vacuum, then the gas bag is cut off and disposed of as hazardous waste."],
+    ["Fold and glue","FINISH","Optional: the seal edges are folded and glued to reduce the external dimensions and raise volumetric energy density."]],
+  params:["Pouch cells: folding and gluing of seal seams to increase volumetric energy density","Particularly dry, or even inert, environment required","Sealing against moisture and oxygen","Damage-free cell handling — the gas bubbles behave differently in every cell"],
+  alts:["For smaller cells with low gas generation, some manufacturers do not separate the gas bag at all"],
+  innov:["Integration of degassing steps for ever larger cylindrical formats"],
+  qInf:["Pressing of the cells for degassing","Sealing and folding technology","Suction of gases under vacuum and in a dry atmosphere"],
+  qFeat:["Residual gas inside the cell","Damage-free cell handling"],

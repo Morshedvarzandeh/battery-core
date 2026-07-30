@@ -1,5 +1,19 @@
 (() => {
-  const parts = ['payload/source-01.part', 'payload/source-02.part', 'payload/source-03.part', 'payload/source-04a.part', 'payload/source-04b.part', 'payload/source-05.part', 'payload/source-06.part', 'payload/source-07.part', 'payload/source-08.part', 'payload/source-09.part', 'payload/source-10.part', 'payload/source-11.part', 'payload/source-12.part', 'payload/source-13.part', 'payload/source-14.part', 'payload/source-15.part', 'payload/source-16.part', 'payload/source-17.part', 'payload/source-18.part'];
+  const parts = [
+    "payload/source-01.part", "payload/source-02.part",
+    "payload/source-03.part", "payload/source-04.part",
+    "payload/source-05.part", "payload/source-06.part",
+    "payload/source-07.part", "payload/source-08.part",
+    "payload/source-09.part", "payload/source-10.part",
+    "payload/source-11.part", "payload/source-12.part",
+    "payload/source-13.part", "payload/source-14.part",
+    "payload/source-15.part", "payload/source-16.part",
+    "payload/source-17.part", "payload/source-18.part",
+    "payload/source-19.part", "payload/source-20.part",
+    "payload/source-21.part", "payload/source-22.part",
+    "payload/source-23.part", "payload/source-24.part",
+    "payload/source-25.part", "payload/source-26.part",
+  ];
   const status = document.getElementById("load-status");
 
   async function boot() {

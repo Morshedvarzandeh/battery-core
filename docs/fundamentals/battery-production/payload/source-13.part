@@ -1,195 +1,161 @@
-  if (cf.xMark != null) xmark = `<rect x="${px(cf.xMark)}" y="${PT}" width="${W - PR - px(cf.xMark)}"
-      height="${HH - PT - PB}" fill="color-mix(in srgb,var(--destructive) 8%,transparent)"/>
-      <line x1="${px(cf.xMark)}" y1="${PT}" x2="${px(cf.xMark)}" y2="${HH - PB}" stroke="var(--destructive)" stroke-width="1.4"/>
-      <text class="cLab" x="${px(cf.xMark) + 4}" y="${PT + 10}" fill="var(--destructive)">${esc(cf.xMarkLabel || "not allowed")}</text>`;
+/* ---------------- 3 · one material chain ---------------- */
+/* the dry route replaces four wet-processing stages with dry mixing/fibrillation and dry coating */
+const FLOW_DRY = [
+  { id:"fibril", by:"drymix", name:"Fibrillated dry mix", state:"Solid, no solvent",
+    note:"Shear draws the PTFE binder into fibrils that knit the powder together. There is no solvent at any point, so there is nothing to evaporate later." },
+  { id:"film", by:"drycoat", name:"Free-standing film on foil", state:"Compacted, 20–35% porosity",
+    note:"The powder leaves the nip as a self-supporting film and is pressed onto the primed collector in the same pass. Because the nip compacts it, no separate calender follows." }
+];
+const FLOW = [
+  { id:"powder", by:null, name:"Active powder", state:"Solid, free-flowing",
+    note:"Graphite and NMC reference powders, carbon black and binder. Anode and cathode materials are handled in physically separate rooms." },
+  { id:"slurry", by:"mixing", name:"Slurry", state:"Liquid, 2 000–6 000 mPa·s",
+    note:"Solvent added and the agglomerates broken up. The batch is filtered and released only on viscosity and particle size." },
+  { id:"wet", by:"coating", name:"Wet film on foil", state:"Liquid on metal",
+    note:"Metered onto the current collector at a controlled wet thickness. Nothing about the electrode is fixed yet." },
+  { id:"dryel", by:"drying", name:"Dried electrode", state:"Porous solid, ≈50% porosity",
+    note:"Solvent driven off through a multi-zone dryer and recovered. The coating is now a fragile, very open structure." },
+  { id:"comp", by:"calendering", name:"Compacted electrode", state:"Porous solid, 20–35% porosity",
+    note:"Rolled to its final thickness and density. This single step sets areal capacity, contact between particles and how easily electrolyte can move." },
+  { id:"daughter", by:"slitting", name:"Daughter roll", state:"Narrow coil, 60–300 mm",
+    note:"The wide mother roll is cut to cell width. Every cut makes an edge, and every edge can carry a burr." },
+  { id:"dry", by:"vacdry", name:"Dry electrode", state:"< 50 ppm residual water",
+    note:"Batch vacuum drying at 60–150 °C. From here on the material never sees room air again." },
+  { id:"piece", by:"separation|winding", name:"Sheets or jelly roll", state:"Discrete parts",
+    note:"Pouch cells are punched into sheets with a contact lug; cylindrical and prismatic cells are wound continuously onto a mandrel." },
+  { id:"stack", by:"stacking|winding", name:"Electrode stack", state:"Assembled, dry",
+    note:"Anode, separator, cathode, separator, repeated. The anode is typically designed with overhang beyond the cathode edge according to the cell design." },
+  { id:"packed", by:"packPouch|packHard", name:"Packaged cell", state:"Sealed except for the fill port",
+    note:"Tabs welded, housing formed and sealed. The cell is now a container waiting for its electrolyte." },
+  { id:"filled", by:"fillPouch|fillHard", name:"Filled cell", state:"Wetted, not yet working",
+    note:"Electrolyte is dosed under vacuum and given time — sometimes with pressure cycling or roll pressing — to reach the porous structure. Incomplete wetting can create locally inactive or nonuniform regions and may not be fully corrected later." },
+  { id:"formed", by:"formation", name:"Formed cell", state:"Electrochemically alive",
+    note:"The first controlled cycles form the SEI and activate the cell. A chemistry- and process-dependent fraction of cyclable lithium is consumed during interphase formation." },
+  { id:"aged", by:"aging", name:"Aged cell", state:"Screened",
+    note:"Days to weeks of rest with OCV logged. Excessive voltage loss can indicate elevated self-discharge or an internal defect; the threshold depends on chemistry, SOC, temperature and test duration." },
+  { id:"graded", by:"eol", name:"Graded cell", state:"Sorted, at shipping SOC",
+    note:"Capacity and resistance measured, cell binned, discharged to transport state of charge and packed." }
+];
+</script>
+<script>
+/* =====================================================================
+   OPERATOR CONSOLES
+   Every station gets the knobs that machine actually has. They write the
+   same S the rail writes, so anything you change here is felt by every
+   station downstream and by the cell at the end of the line.
+   ===================================================================== */
+const ok   = (v, lo, hi) => v >= lo && v <= hi ? "ok" : "bad";
+const band = (v, lo, hi, soft) => v >= lo && v <= hi ? "ok" : (v >= lo - soft && v <= hi + soft ? "warn" : "bad");
+const V    = (label, value, state, hint) => ({ label, value, state: state || "ok", hint: hint || "" });
 
-  /* is an outcome value acceptable? drives the colour of the curve */
-  const okAt = v => cf.good ? (v >= cf.good[0] && v <= cf.good[1])
-    : cf.limit != null ? v <= cf.limit
-    : true;
-  const hasState = !!(cf.good || cf.limit != null);
+const OPS = {
 
-  /* the curves — the primary one is drawn in two colours, so the part of
-     the range that lands out of specification is red on the chart itself */
-  const lines = runs.map((pts, i) => {
-    const s = cf.series[i];
-    if (i > 0 || !hasState) {
-      const d = pts.map((p, j) => `${j ? "L" : "M"}${px(p[0]).toFixed(1)} ${py(p[1]).toFixed(1)}`).join("");
-      return `<path d="${d}" fill="none" stroke="${s.col || "var(--primary)"}" stroke-width="2.2"
-        stroke-linejoin="round" stroke-linecap="round" ${s.dash ? 'stroke-dasharray="5 4"' : ""}/>`;
-    }
-    let dIn = "", dOut = "";
-    for (let j = 1; j < pts.length; j++) {
-      const a = pts[j - 1], b = pts[j];
-      const seg = `M${px(a[0]).toFixed(1)} ${py(a[1]).toFixed(1)}L${px(b[0]).toFixed(1)} ${py(b[1]).toFixed(1)}`;
-      if (okAt(a[1]) && okAt(b[1])) dIn += seg; else dOut += seg;
-    }
-    return `<path d="${dOut}" fill="none" stroke="var(--destructive)" stroke-width="2.4" stroke-linecap="round"/>
-      <path d="${dIn}" fill="none" stroke="${s.col || "var(--primary)"}" stroke-width="2.2" stroke-linecap="round"/>`;
-  }).join("");
+mixing: {
+  lead:"You are at the mixer HMI. Set the recipe and the dispersing programme, then decide whether this batch releases to coating.",
+  ctl:["solid","mixMin","mixT"],
+  read:m => [
+    V("Slurry viscosity", m.visc.toFixed(0) + " mPa·s", band(m.visc, 2000, 6000, 900), "coatable window 2 000–6 000"),
+    V("Dispersion index", m.disp.toFixed(0) + "%", m.disp >= 92 ? "ok" : m.disp >= 85 ? "warn" : "bad", "agglomerates broken up"),
+    V("Solvent to remove", ((100 - S.solid) * 10).toFixed(0) + " kg/t", S.solid >= 55 ? "ok" : "warn", "every kg is dryer energy"),
+    V("Batch time", (S.mixMin / 60).toFixed(1) + " h", ok(S.mixMin, 20, 360), "PEM 20 min – 6 h")],
+  verdict:m => m.visc < 2000 ? ["bad", "Batch rejected — too thin",
+      "The solids will settle in the buffer tank and the film will run at the die. Raise the solid content or drop the jacket temperature."]
+    : m.visc > 6000 ? ["bad", "Batch rejected — too thick",
+      "The die will streak and coat weight will drift. Lower the solid content, or warm the jacket to thin it."]
+    : m.disp < 85 ? ["warn", "Released with a note — under-dispersed",
+      "Agglomerates survive into the coating and print through as thickness scatter. Give it more dispersing time."]
+    : ["ok", "Batch released to coating",
+      `Viscosity ${m.visc.toFixed(0)} mPa·s, dispersion ${m.disp.toFixed(0)}%. This is a coatable slurry.`],
+  viz:m => ({ fill: clamp((m.visc - 1000) / 7000 * 100, 10, 95) })
+},
 
-  /* where you are standing right now */
-  const m = model(), xv = S[cf.x];
-  const dots = cf.series.map((s, i) => {
-    const v = s.y(m);
-    const off = i === 0 && hasState && !okAt(v);
-    return `<circle cx="${px(xv)}" cy="${py(v)}" r="${off ? 5.4 : 4.6}"
-      fill="${off ? "var(--destructive)" : "#fff"}" stroke="${off ? "var(--destructive)" : (s.col || "var(--primary)")}" stroke-width="2.4"/>`;
-  }).join("");
-  const curOff = hasState && !okAt(cf.series[0].y(m));
 
-  /* legend */
-  const leg = cf.series.length > 1 ? cf.series.map((s, i) =>
-    `<g transform="translate(${PL + i * 132} ${HH - 4})">
-       <line x1="0" y1="-3" x2="13" y2="-3" stroke="${s.col}" stroke-width="2.2" ${s.dash ? 'stroke-dasharray="4 3"' : ""}/>
-       <text class="cLab" x="17" y="0">${esc(s.label)}</text></g>`).join("") : "";
+drymix: {
+  lead:"You are at dry mixing and fibrillation. There is no slurry: powder distribution, residence time, temperature and mechanical work determine whether the mix can form a coherent film at the next station.",
+  ctl:["dcFib","dmTime","dmT"],
+  read:m => [
+    V("Illustrative fibrillation index", m.fibril.toFixed(0) + "%", m.fibril >= 55 ? (m.fibril <= 95 ? "ok" : "warn") : "bad", "teaching indicator, not a release criterion"),
+    V("Residence time", S.dmTime + " min", band(S.dmTime, 15, 60, 10), "equipment- and recipe-dependent"),
+    V("Mix temperature", S.dmT + " °C", band(S.dmT, 20, 50, 10), "material-dependent"),
+    V("Process solvent", "none", "ok", "dry route")],
+  verdict:m => m.fibril < 55 ? ["bad", "Fibril network not established",
+      "The teaching indicator is below the selected film-forming window. Increase mechanical work or residence time, while staying within the validated material temperature range."]
+    : m.fibril > 95 ? ["warn", "Agglomeration risk rising",
+      "The teaching indicator is above the selected window. Excessive work can compact or agglomerate the powder before controlled film forming."]
+    : ["ok", "Dry mix ready for film forming",
+      `Illustrative fibrillation index ${m.fibril.toFixed(0)}%. Release still depends on the manufacturer's homogeneity, agglomerate and powder-flow criteria.`],
+  viz:m => ({ fill: m.fibril })
+},
 
-  const cur = cf.series[0].y(m);
-  const xdp = c.step < 1 ? String(c.step).split(".")[1].length : 0;
-  /* axis labels: the current-value tick wins, and any end label it would
-     collide with is dropped rather than drawn on top of it */
-  const tw = t => String(t).length * 5.0;                      /* ≈ width at 9 px */
-  const loTxt = `${c.min}${c.unit || ""}`, hiTxt = `${c.max}${c.unit || ""}`;
-  const nowTxt = xv.toFixed(xdp);
-  const nowX = Math.max(PL + tw(nowTxt) / 2, Math.min(W - PR - tw(nowTxt) / 2, px(xv)));
-  const nowL = nowX - tw(nowTxt) / 2 - 5, nowR = nowX + tw(nowTxt) / 2 + 5;
-  const loLab = nowL > PL + tw(loTxt)
-    ? `<text class="cAx" x="${PL}" y="${HH - PB + 13}">${esc(loTxt)}</text>` : "";
-  const hiLab = nowR < W - PR - tw(hiTxt)
-    ? `<text class="cAx" x="${W - PR}" y="${HH - PB + 13}" text-anchor="end">${esc(hiTxt)}</text>` : "";
-  return `<figure class="chart" data-off="${curOff}">
-    <figcaption><b>${esc(cf.title)}</b><span>${esc(c.label)} → ${esc(cf.series[0].label)}</span></figcaption>
-    <svg viewBox="0 0 ${W} ${HH}" role="img" aria-label="${esc(cf.title)}: ${esc(c.label)} against ${esc(cf.series[0].label)}">
-      <line x1="${PL}" y1="${PT}" x2="${PL}" y2="${HH - PB}" stroke="var(--border-strong)"/>
-      <line x1="${PL}" y1="${HH - PB}" x2="${W - PR}" y2="${HH - PB}" stroke="var(--border-strong)"/>
-      ${band}${xmark}${limit}${lines}
-      <line x1="${px(xv)}" y1="${PT}" x2="${px(xv)}" y2="${HH - PB}" stroke="var(--foreground)" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>
-      ${dots}
-      ${loLab}${hiLab}
-      <text class="cNow" x="${nowX}" y="${HH - PB + 13}" text-anchor="middle">${xv.toFixed(xdp)}</text>
-      ${leg}
-      <text class="cAx" x="${PL - 5}" y="${py(hi - pad) + 4}" text-anchor="end">${(hi - pad).toFixed(dp)}</text>
-      <text class="cAx" x="${PL - 5}" y="${py(lo + pad) + 4}" text-anchor="end">${(lo + pad).toFixed(dp)}</text>
-      <text class="cVal" x="${PL}" y="${PT - 7}" fill="${curOff ? "var(--destructive)" : "var(--foreground)"}">${cur.toFixed(dp)}${esc(cf.unit || "")} now${curOff ? " — out of specification" : ""}</text>
-    </svg>
-  </figure>`;
-}
+drycoat: {
+  lead:"You are at the dry coater. The upstream dry mixer has already created the fibril network. This nip now forms the film, bonds it to the foil and compacts it without solvent. Web speed is an explicit teaching assumption because the guide does not quote a separate dry-coating speed.",
+  ctl:["dcLine","dcRollT","dcPrimer","speed","tC","tA"],
+  read:m => [
+    V("Fibrillation", m.fibril.toFixed(0) + "%", m.fibril >= 55 ? (m.fibril <= 95 ? "ok" : "warn") : "bad", "PTFE drawn into a binding network"),
+    V("Adhesion to the foil", m.adhesion.toFixed(0) + "%", m.adhesion >= 88 ? "ok" : m.adhesion >= 80 ? "warn" : "bad", "the standing weakness of this route"),
+    V("Areal-weight scatter", "±" + m.dcErr.toFixed(1) + " g/m²", m.dcErr <= 2 ? "ok" : m.dcErr <= 3 ? "warn" : "bad", "constant weight per unit area"),
+    V("Porosity out of the nip", m.por.toFixed(0) + "%", band(m.por, 20, 35, 6), "no separate calender follows"),
+    V("Solvent to evaporate", "none", "ok", "no dryer, no recovery plant"),
+    V("Illustrative cathode areal capacity", m.capC.toFixed(2) + " mAh/cm²", band(m.capC, 2.5, 5, 1))],
+  verdict:m => m.fibril < 55 ? ["bad", "No self-supporting film",
+      `Shear at ${S.dcFib}%. Without a fibril network the mix leaves the nip as powder, not as a film, and there is nothing to laminate.`]
+    : m.adhesion < 80 ? ["bad", "Film will not stay on the foil",
+      `Adhesion ${m.adhesion.toFixed(0)}%. ${S.dcPrimer ? "Bare foil gives it nothing to key into." : "Warm the rolls or raise the shear."} It will delaminate at slitting or in the cell.`]
+    : m.dcErr > 2 ? ["warn", "Areal weight drifting",
+      `±${m.dcErr.toFixed(1)} g/m². Weight per unit area is the headline quality feature here, exactly as coat weight is on the wet line.`]
+    : ["ok", "Dry film laid down and compacted",
+      `Adhesion ${m.adhesion.toFixed(0)}%, ±${m.dcErr.toFixed(1)} g/m², porosity ${m.por.toFixed(0)}% straight out of the nip — no dryer and no calender needed.`],
+  viz:m => ({ coat: clamp(S.tC / 80 * 100, 20, 100), err: m.dcErr })
+},
 
-/* --- bespoke: does the aging window actually catch a faulty cell? ------ */
-function agingOCVChart() {
-  const m = model(), days = S.ageDays, HT = S.ageHiT;
-  /* a healthy cell relaxes and then sits still; a faulty one keeps falling.
-     Higher temperature accelerates both, which is why HT aging exists.     */
-  const accel = 1 + (HT - 22) / 28;
-  const good = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 0.14 * t * accel;
-  const bad  = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 1.15 * t * accel;
-  const T = 21, W2 = 340, H2 = 176, L = 40, R = 12, TT = 22, B = 30;
-  const maxY = Math.max(bad(T), 8);
-  const px = t => L + t / T * (W2 - L - R);
-  const py = v => TT + (1 - Math.min(v, maxY) / maxY) * (H2 - TT - B);
-  const path = f => Array.from({ length: 64 }, (_, i) => {
-    const t = i / 63 * T; return `${i ? "L" : "M"}${px(t).toFixed(1)} ${py(f(t)).toFixed(1)}`;
-  }).join("");
-  const sep = (bad(days) - good(days));
-  const caught = sep >= 5;
-  return `<figure class="chart">
-    <figcaption><b>Can this screen see a faulty cell?</b><span>open-circuit voltage drop over the aging period</span></figcaption>
-    <svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Open circuit voltage drop over the aging period for a healthy and a faulty cell">
-      <line x1="${L}" y1="${TT}" x2="${L}" y2="${H2 - B}" stroke="var(--border-strong)"/>
-      <line x1="${L}" y1="${H2 - B}" x2="${W2 - R}" y2="${H2 - B}" stroke="var(--border-strong)"/>
-      <rect x="${px(days)}" y="${TT}" width="${W2 - R - px(days)}" height="${H2 - TT - B}" fill="var(--foreground)" opacity=".05"/>
-      <line x1="${px(days)}" y1="${TT}" x2="${px(days)}" y2="${H2 - B}" stroke="var(--foreground)" stroke-width="1.2" stroke-dasharray="3 3" opacity=".55"/>
-      <text class="cLab" x="${px(days) + (days > 11 ? -4 : 4)}" y="${TT + 10}"
-        text-anchor="${days > 11 ? "end" : "start"}">you release here</text>
-      <path d="${path(bad)}" fill="none" stroke="var(--destructive)" stroke-width="2.2"/>
-      <path d="${path(good)}" fill="none" stroke="var(--primary)" stroke-width="2.2"/>
-      <circle cx="${px(days)}" cy="${py(bad(days))}" r="4.6" fill="#fff" stroke="var(--destructive)" stroke-width="2.4"/>
-      <circle cx="${px(days)}" cy="${py(good(days))}" r="4.6" fill="#fff" stroke="var(--primary)" stroke-width="2.4"/>
-      <path d="M${px(days) + 13} ${py(good(days))}L${px(days) + 13} ${py(bad(days))}" stroke="var(--foreground)" stroke-width="1"/>
-      <text class="cVal" x="${px(days) + 18}" y="${(py(good(days)) + py(bad(days))) / 2 + 4}"
-        fill="${caught ? "var(--primary)" : "var(--destructive)"}">${sep.toFixed(1)} mV apart</text>
-      <text class="cAx" x="${L}" y="${H2 - B + 13}">0 d</text>
-      <text class="cAx" x="${W2 - R}" y="${H2 - B + 13}" text-anchor="end">21 d</text>
-      <text class="cAx" x="${L - 5}" y="${py(maxY) + 8}" text-anchor="end">${maxY.toFixed(0)}</text>
-      <text class="cAx" x="${L - 5}" y="${py(0)}" text-anchor="end">0</text>
-      <text class="cVal" x="${L}" y="${TT - 7}">mV lost</text>
-      <g transform="translate(${L} ${H2 - 6})">
-        <line x1="0" y1="-3" x2="14" y2="-3" stroke="var(--primary)" stroke-width="2.2"/><text class="cLab" x="18" y="0">healthy cell</text>
-        <line x1="112" y1="-3" x2="126" y2="-3" stroke="var(--destructive)" stroke-width="2.2"/><text class="cLab" x="130" y="0">illustrative high-self-discharge cell</text>
-      </g>
-    </svg>
-    <p class="chart-note" data-s="${caught ? "ok" : "bad"}">${caught
-      ? `At ${days} days and ${HT} °C the two cells are ${sep.toFixed(1)} mV apart — above the illustrative 5 mV/week flag, so this teaching example would trigger further investigation or rejection.`
-      : `At ${days} days and ${HT} °C the two cells are only ${sep.toFixed(1)} mV apart. In this teaching example the separation is too small for the assumed screen. A real release decision requires validated limits, measurement uncertainty and site procedures.`}</p>
-  </figure>`;
-}
+coating: {
+  lead:"You are at the coater. The pump and the web speed together set coat weight; the die gap has to match the wet film the recipe needs.",
+  ctl:["tC","tA","speed","gap"],
+  read:m => [
+    V("Wet film the recipe needs", m.wetNeed.toFixed(0) + " µm", "ok", "dry thickness ÷ solids by volume"),
+    V("Gap error", (S.gap - m.wetNeed).toFixed(0) + " µm", Math.abs(S.gap - m.wetNeed) < 12 ? "ok" : Math.abs(S.gap - m.wetNeed) < 30 ? "warn" : "bad"),
+    V("Coat weight scatter", "±" + m.coatErr.toFixed(1) + " g/m²", m.coatErr <= 2 ? "ok" : m.coatErr <= 3 ? "warn" : "bad", "±2 g/m² working target"),
+    V("Illustrative cathode areal capacity", m.capC.toFixed(2) + " mAh/cm²", band(m.capC, 2.5, 5, 1), "sets the cell's capacity"),
+    V("Web throughput", (S.speed * 60).toFixed(0) + " m/h", "ok"),
+    V("Coating uniformity", m.uniformity.toFixed(0) + "%", m.uniformity >= 92 ? "ok" : "warn")],
+  verdict:m => m.coatErr > 3 ? ["bad", "Coat weight out of specification",
+      `±${m.coatErr.toFixed(1)} g/m² against a ±2 g/m² target. Set the gap to ${m.wetNeed.toFixed(0)} µm and slow the web.`]
+    : m.coatErr > 2 ? ["warn", "Coat weight drifting",
+      `±${m.coatErr.toFixed(1)} g/m². Thickness variation becomes capacity variation, and grading will find it.`]
+    : ["ok", "Coating on target",
+      `±${m.coatErr.toFixed(1)} g/m² at ${S.speed} m/min. Cathode is laying down ${m.capC.toFixed(2)} mAh/cm².`],
+  viz:m => ({ coat: clamp(S.tC / 80 * 100, 20, 100), err: m.coatErr })
+},
 
-/* --- bespoke: the first charge, drawn ---------------------------------- */
-function formationChart() {
-  const m = model(), C = S.cRate, hours = 13 / (C / 0.25);
-  const W2 = 340, H2 = 176, L = 40, R = 12, TT = 22, B = 30;
-  const px = t => L + t / hours * (W2 - L - R);
-  const py = v => TT + (1 - (v - 2.8) / (S.vMax + 0.1 - 2.8)) * (H2 - TT - B);
-  /* CC to the cut-off, then CV taper — the shape every formation recipe has */
-  const cc = hours * 0.78;
-  const v = t => t < cc ? 2.8 + (S.vMax - 2.8) * (1 - Math.exp(-t / (cc * 0.34))) : S.vMax;
-  const path = Array.from({ length: 70 }, (_, i) => {
-    const t = i / 69 * hours; return `${i ? "L" : "M"}${px(t).toFixed(1)} ${py(v(t)).toFixed(1)}`;
-  }).join("");
-  /* the SEI grows in the first part of the charge, between about 0.7 and 1.5 V vs Li */
-  const seiEnd = px(cc * 0.42);
-  return `<figure class="chart">
-    <figcaption><b>The first charge, drawn</b><span>cell voltage against time at ${C.toFixed(2)} C</span></figcaption>
-    <svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Cell voltage against time during the first charge">
-      <line x1="${L}" y1="${TT}" x2="${L}" y2="${H2 - B}" stroke="var(--border-strong)"/>
-      <line x1="${L}" y1="${H2 - B}" x2="${W2 - R}" y2="${H2 - B}" stroke="var(--border-strong)"/>
-      <rect x="${L}" y="${TT}" width="${seiEnd - L}" height="${H2 - TT - B}" fill="color-mix(in srgb,var(--jelly) 12%,transparent)"/>
-      <text class="cLab" x="${L + 4}" y="${H2 - B - 6}" fill="var(--jelly)">SEI forms in here</text>
-      <line x1="${L}" y1="${py(S.vMax)}" x2="${W2 - R}" y2="${py(S.vMax)}" stroke="var(--destructive)"
-        stroke-width="1.4" stroke-dasharray="4 3"/>
-      <text class="cLab" x="${W2 - R - 3}" y="${py(S.vMax) - 4}" text-anchor="end" fill="var(--destructive)">cut-off ${S.vMax.toFixed(2)} V</text>
-      <path d="${path}" fill="none" stroke="var(--primary)" stroke-width="2.4" stroke-linejoin="round"/>
-      <text class="cAx" x="${L}" y="${H2 - B + 13}">0 h</text>
-      <text class="cAx" x="${W2 - R}" y="${H2 - B + 13}" text-anchor="end">${hours.toFixed(1)} h</text>
-      <text class="cAx" x="${L - 5}" y="${py(S.vMax) + 4}" text-anchor="end">${S.vMax.toFixed(1)}</text>
-      <text class="cAx" x="${L - 5}" y="${py(2.8) }" text-anchor="end">2.8</text>
-      <text class="cVal" x="${L}" y="${TT - 7}">cell voltage, V</text>
-    </svg>
-    <p class="chart-note" data-s="${m.seiQ >= 90 ? "ok" : m.seiQ >= 80 ? "warn" : "bad"}">
-      ${hours.toFixed(1)} h on the rack. The film forms in the shaded part of the ramp — the faster you push through it,
-      the more porous and resistive it may become in this teaching model. Illustrative SEI score ${m.seiQ.toFixed(0)}%, ${m.liLoss.toFixed(1)}% simplified cyclable-lithium loss
-      spent permanently.</p>
-  </figure>`;
-}
+drying: {
+  lead:"You are at the dryer control desk. The web needs a certain amount of heat to lose its solvent — set the zones, and mind that more is not better.",
+  ctl:["dryT","speed","dryLen","solid"],
+  read:m => [
+    V("Heat the web needs", m.needT.toFixed(0) + " °C", "ok", "from speed, solvent load and dryer length"),
+    V("Peak set", S.dryT + " °C", "ok"),
+    V("Margin", (S.dryT - m.needT).toFixed(0) + " °C", m.solventGap > 0 ? "bad" : m.crackGap > 12 ? "warn" : "ok", "aim for 0 to +30 °C"),
+    V("Residual solvent", m.solventGap > 0 ? (m.solventGap * 240).toFixed(0) + " ppm" : "< 300 ppm", m.solventGap > 0 ? "bad" : "ok"),
+    V("Binder migration", m.crackGap > 12 ? "high" : m.crackGap > 0 ? "some" : "low", m.crackGap > 12 ? "warn" : "ok", "binder pulled to the surface"),
+    V("Dwell time in the dryer", (S.dryLen / S.speed * 60).toFixed(0) + " s", "ok")],
+  verdict:m => m.solventGap > 10 ? ["bad", "Web leaving wet",
+      `Needs about ${m.needT.toFixed(0)} °C, set to ${S.dryT} °C. Solvent left in the coating destroys adhesion and poisons the cell.`]
+    : m.crackGap > 12 ? ["warn", "Over-dried",
+      "The surface skins before the depth is dry. Binder migrates up, adhesion to the foil falls, and the coating cracks at the calender."]
+    : ["ok", "Drying profile balanced",
+      `${(S.dryT - m.needT).toFixed(0)} °C of margin over what the web needs, ${(S.dryLen / S.speed * 60).toFixed(0)} s of dwell.`],
+  viz:m => ({ heat: clamp((S.dryT - 50) / 110 * 100), gap: m.solventGap })
+},
 
-/* --- which charts each station shows ------------------------------------ */
-const CHARTS = {
-  mixing: [
-    { x:"solid", title:"Solid content sets viscosity", unit:" mPa·s", good:[2000,6000], goodLabel:"coatable window",
-      series:[{ y:m => m.visc, label:"Slurry viscosity", col:"var(--primary)" }] },
-    { x:"mixMin", title:"Dispersing time breaks the agglomerates", unit:"%", good:[92,100], goodLabel:"released", lo:55, hi:100,
-      series:[{ y:m => m.disp, label:"Dispersion index", col:"var(--elyte)" }] }],
-  coating: [
-    { x:"gap", title:"The gap has one right answer", unit:" g/m²", limit:2, limitLabel:"±2 g/m² specification", lo:0, dp:1,
-      series:[{ y:m => m.coatErr, label:"Coat weight scatter", col:"var(--primary)" }] },
-    { x:"tC", title:"Coat thickness is cell capacity", unit:" Ah", dp:1,
-      series:[{ y:m => m.cellAh, label:"Cell capacity", col:"var(--elyte)" }] }],
-  drying: [
-    { x:"speed", title:"Faster web, hotter dryer", unit:" °C", dp:0,
-      series:[{ y:m => m.needT, label:"heat the web needs", col:"var(--destructive)" },
-              { y:() => S.dryT,  label:"your setting", col:"var(--primary)", dash:1 }] },
-    { x:"dryT", title:"Under-drying and over-drying reduce process health", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
-  calendering: [
-    { x:"force", title:"Line force sets porosity", unit:"%", good:[20,35], goodLabel:"useful window", dp:0,
-      series:[{ y:m => m.por, label:"Porosity", col:"var(--primary)" }] },
-    { x:"force", title:"…and porosity is capacity against wetting", unit:" mAh/cm²", dp:2,
-      series:[{ y:m => m.capC, label:"Cathode areal capacity", col:"var(--elyte)" }] }],
-  slitting: [
-    { x:"wear", title:"Burr grows quietly with blade wear", unit:" µm", limit:10, limitLabel:"pierces the separator", lo:0, dp:1,
-      series:[{ y:m => m.burrSlit, label:"Burr from this cut", col:"var(--primary)" }] },
-    { x:"cutSpd", title:"And with cutting speed", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
-  vacdry: [
-    { x:"vac", title:"Water leaves slowly, then very slowly", unit:" ppm", limit:50, limitLabel:"50 ppm target", lo:0, dp:0,
-      series:[{ y:m => m.ppm, label:"Residual moisture", col:"var(--primary)" }] },
+calendering: {
+  lead:"You are at the calender. This one nip decides energy density, wetting and crack risk at the same time — it is the most consequential setpoint on the line.",
+  ctl:["force","rollT","speed"],
+  read:m => [
+    V("Porosity", m.por.toFixed(0) + "%", band(m.por, 20, 35, 5), "commercial cells run 20–25%, research 30–35%"),
+    V("Coating density", (4.65 * (1 - m.por / 100)).toFixed(2) + " g/cm³", "ok"),
+    V("Illustrative cathode areal capacity", m.capC.toFixed(2) + " mAh/cm²", "ok"),
+    V("N/P ratio", m.np.toFixed(2), band(m.np, 1.05, 1.25, 0.05), "anode must stay oversized"),
+    V("Particle cracking", S.force > 2300 ? "likely" : S.force > 1900 ? "possible" : "unlikely", S.force > 2300 ? "bad" : S.force > 1900 ? "warn" : "ok"),
+    V("Electrolyte access", m.por > 24 ? "good" : m.por > 19 ? "tight" : "poor", m.por > 24 ? "ok" : m.por > 19 ? "warn" : "bad", "pores are the ion path")],
+  verdict:m => m.np < 1.02 ? ["bad", "Anode under-sized — plating risk",
+      `N/P ${m.np.toFixed(2)}. Compressing both coatings equally does not fix a balance problem; change coat thickness instead.`]
+    : S.force > 2300 ? ["bad", "Squeezing, not compacting",

@@ -1,0 +1,235 @@
+           R(cx - 3, byT, 6, 14, "mDark", 2) + P(`M${cx} ${byT + 12}l0 ${byB - byT - 26}`, "mDark") +
+           `<g class="spin">${R(cx - bw * .14, byB - 18, bw * .28, 6, "mDark", 3)}</g>`;
+      break;
+    case "compounding":
+      g += R(at(.08), cy - 8, bw * .72, 16, "mDark", 3) + R(at(.14), byT + 4, bw * .16, 10, "mSteel", 2) +
+           [0, 1, 2, 3].map(q => C(at(.22) + q * bw * .16, cy, 5, "mSteel2")).join("") +
+           P(`M${at(.82)} ${cy}L${at(.94)} ${cy}`, "mEl");
+      break;
+    case "tape":
+      g += P(`M${at(.14)} ${byT + 8}l${bw * .16} 0l0 20l${-bw * .16} 0z`, "mDark") +
+           P(`M${at(.08)} ${cy + 12}L${at(.94)} ${cy + 12}`, "mWebA") + ROLLER(at(.78), cy + 20, R0 * .7) +
+           [0, 1, 2].map(q => R(at(.4) + q * bw * .16, byT + 4, bw * .08, 8, "mDark", 1)).join("");
+      break;
+    case "aerosol":
+      g = shell("mGlass") + P(`M${at(.2)} ${byT + 8}l10 0l0 12l-5 8l-5 -8z`, "mDark") +
+          [0, 1, 2, 3, 4].map(q => C(at(.3) + q * bw * .1, cy + 4 + (q % 2) * 5, 2.6, "mAcc")).join("") +
+          P(`M${at(.12)} ${byB - 10}L${at(.92)} ${byB - 10}`, "mWebA");
+      break;
+    case "ald":
+      g = shell("mGlass") + [0, 1, 2].map(q =>
+            R(at(.14) + q * bw * .26, byT + 6, bw * .18, 9, "mDark", 2)).join("") +
+          [0, 1, 2, 3, 4, 5].map(q => C(at(.16) + q * bw * .14, cy + 2, 2.2, "mAcc")).join("") +
+          P(`M${at(.08)} ${byB - 11}L${at(.92)} ${byB - 11}`, "mWebA") +
+          P(`M${at(.08)} ${byB - 16}L${at(.92)} ${byB - 16}`, "mEl");
+      break;
+    case "coex":
+      g += P(`M${at(.1)} ${cy - 12}l${bw * .3} 0l0 8l${-bw * .3} 0z`, "mDark") +
+           P(`M${at(.1)} ${cy + 4}l${bw * .3} 0l0 8l${-bw * .3} 0z`, "mSteel") +
+           P(`M${at(.42)} ${cy - 8}q${bw * .14} 8 ${bw * .3} 0`, "mEl") +
+           P(`M${at(.42)} ${cy + 8}q${bw * .14} -8 ${bw * .3} 0`, "mEl") +
+           ROLLER(at(.84), cy, R0 * .8);
+      break;
+    case "calender":
+      g += ROLLER(cx, cy - R0 * .95, R0) + ROLLER(cx, cy + R0 * .95, R0) +
+           P(`M${at(.06)} ${cy}L${at(.94)} ${cy}`, "mLine") +
+           R(at(.06), byT + 5, bw * .1, byB - byT - 10, "mDark", 2) +
+           R(at(.84), byT + 5, bw * .1, byB - byT - 10, "mDark", 2);
+      break;
+    case "slitting":
+      g += REEL(at(.2), cy, R0, "mSep") + REEL(at(.84), cy, R0 * .8, "mSep") +
+           [0, 1, 2].map(q => P(`M${at(.44 + q * .12)} ${cy - 13}l0 26`, "mAcc")).join("") +
+           P(`M${at(.2)} ${cy}L${at(.84)} ${cy}`, "mLine");
+      break;
+    case "separation":
+      g += R(cx - bw * .2, byT + 6, bw * .4, 12, "mDark", 2) +
+           P(`M${cx} ${byT + 18}l0 12`, "mAcc") +
+           R(cx - bw * .26, byB - 16, bw * .52, 6, "mSteel", 2) +
+           R(cx - bw * .1, byB - 26, bw * .2, 8, "mCa", 1);
+      break;
+    case "sintering":
+      g = shell("mHotSoft") + R(at(.1), byT + 8, bw * .8, byB - byT - 20, "mHot", 3) +
+          [0, 1, 2, 3].map(q => R(at(.18) + q * bw * .18, cy - 2, bw * .1, 7, "mDark", 1)).join("") +
+          [0, 1, 2].map(q => R(at(.24) + q * bw * .24, byT - 8, 7, 8, "mDark", 2)).join("");
+      break;
+    case "compacting":
+      g += R(at(.1), byT + 6, bw * .8, 9, "mDark", 2) + R(at(.1), byB - 15, bw * .8, 9, "mDark", 2) +
+           R(at(.22), cy - 6, bw * .56, 12, "mSep", 2) +
+           [0, 1].map(q => P(`M${at(.32) + q * bw * .36} ${byT + 15}l0 ${cy - byT - 21}`, "mAcc")).join("") +
+           P(`M${at(.32)} ${byB - 15}l0 -6M${at(.68)} ${byB - 15}l0 -6`, "mAcc");
+      break;
+    case "stacking":
+      g += [0, 1, 2, 3, 4].map(q =>
+        R(cx - bw * .26, byB - 12 - q * 6, bw * .52, 4, q % 2 ? "mCa" : "mAn", 1)).join("") +
+           R(cx - bw * .3, byT + 6, bw * .6, 7, "mDark", 2);
+      break;
+    case "contacting":
+      g += R(cx - bw * .27, cy - 4, bw * .54, 20, "mAl", 3) +
+           P(`M${cx - bw * .08} ${byT + 6}l0 14`, "mAcc") + P(`M${cx + bw * .08} ${byT + 6}l0 14`, "mAcc") +
+           R(cx - bw * .3, byT + 4, bw * .6, 5, "mDark", 2);
+      break;
+    default: /* formation */
+      g += [0, 1, 2].map(rr => [0, 1, 2, 3].map(cc =>
+        R(at(.1) + cc * bw * .21, byB - 13 - rr * 12, bw * .15, 8, "mAl", 1)).join("")).join("") +
+           P(`M${at(.06)} ${byT + 8}L${at(.94)} ${byT + 8}`, "mAcc");
+  }
+  return g;
+}
+
+function lineSVG() {
+  const m = model(), k = kpis(m), list = k.list;
+  const rows = [
+    { p:"Electrode & electrolyte production", items: list.filter(s => s.phase === "Electrode & electrolyte production") },
+    { p:"Cell assembly + finishing",          items: list.filter(s => s.phase !== "Electrode & electrolyte production") }
+  ];
+  const W = 1240, L = 26, RW = W - L * 2, ROWY = [178, 388];
+  let g = "";
+  rows.forEach((row, ri) => {
+    const n = row.items.length || 1, w = RW / n, yb = ROWY[ri];
+    g += `<path d="M${L} ${yb + 1}L${W - L} ${yb + 1}" stroke="color-mix(in srgb,var(--foreground) 24%,transparent)" stroke-width="2"/>`;
+    if (row.items.length) {
+      const web = row.items.map((st, i) => {
+        const x = L + i * w;
+        return `${i ? "L" : "M"}${(x + w * .04).toFixed(0)} ${yb - 24 - (i % 2) * 6}L${(x + w * .96).toFixed(0)} ${yb - 24 - ((i + 1) % 2) * 6}`;
+      }).join("");
+      g += `<path d="${web}" stroke="${ri ? "var(--jelly, var(--elyte))" : "var(--sep)"}" stroke-width="3" fill="none" opacity=".55"/>
+        <path class="flowdash" d="${web}" stroke="${ri ? "var(--elyte)" : "var(--sep)"}" stroke-width="3" fill="none"/>`;
+    }
+    row.items.forEach((st, i) => {
+      const x = L + i * w, lv = stationLevel(st, m), col = phaseColor(st.phase);
+      const on = current === st.id;
+      g += `<g class="hmiSt ${on ? "on" : ""}" data-go="${st.id}" tabindex="0" role="button"
+          aria-label="${esc(st.title)}, ${lv === "ok" ? "in window" : lv === "warn" ? "warning" : "out of window"}">
+        <rect class="hmiHit" x="${x + 2}" y="${yb - 96}" width="${w - 4}" height="132" rx="8"/>
+        ${glyph(st, x, w, yb)}
+        <rect x="${x + w * .12}" y="${yb + 10}" width="${w * .76}" height="19" rx="3"
+          fill="var(--background)" stroke="color-mix(in srgb,var(--foreground) 22%,transparent)"/>
+        <text x="${x + w / 2}" y="${yb + 23}" text-anchor="middle" class="hmiLab"
+          style="font-size:${w < 118 ? 9.5 : 11}px">${esc(shortTitle(st))}</text>
+        <circle cx="${x + w * .12 + 7}" cy="${yb - 88}" r="4.5" fill="${LEVEL_COL[lv]}"/>
+        <text x="${x + w * .12 + 17}" y="${yb - 84}" class="hmiNo">${String(list.indexOf(st) + 1).padStart(2, "0")}</text>
+        ${st.trans ? `<text x="${x + w * .88}" y="${yb - 84}" text-anchor="end" class="hmiNo"
+          title="LIB transferability">T${st.trans}</text>` : ""}
+        <rect x="${x + w * .12}" y="${yb - 78}" width="${w * .76}" height="2.5" rx="1.5" fill="${col}" opacity=".7"/>
+      </g>`;
+    });
+    g += `<text x="${L}" y="${yb - 104}" class="hmiPhase">${esc(row.p).toUpperCase()}</text>`;
+  });
+  g += `<g opacity=".6">
+      <path d="M${W - L - 4} ${ROWY[0] - 27}l14 0l0 26l-8 0l8 10l8 -10l-8 0" fill="none"
+        stroke="var(--sep)" stroke-width="2" stroke-linejoin="round"/>
+      <text x="${W - L - 4}" y="${ROWY[0] + 46}" text-anchor="end" class="hmiNo">continues below</text>
+      <path d="M${L - 10} ${ROWY[1] - 44}l0 12l-6 0l8 10l8 -10l-6 0l0 -12" fill="none"
+        stroke="var(--elyte)" stroke-width="2" stroke-linejoin="round"/>
+    </g>`;
+  return `<svg viewBox="0 0 ${W} 430" role="img" aria-label="Complete line overview">${g}</svg>`;
+}
+
+/* ---------------- the three production areas, in plan ---------------- */
+function floorSVG() {
+  const m = model(), k = kpis(m);
+  const iso = (x, y, z) => [(x - y) * 0.866, (x + y) * 0.5 - z];
+  const D = 122, GAP_X = 76, GAP_Y = 132;
+  const AREAS = [
+    { n:1, t:"Electrode & electrolyte", ph:"Electrode & electrolyte production", w:260, h:88, bay:0, col:0,
+      sub:"powder handling under inert gas or dry room" },
+    { n:2, t:"Cell assembly",           ph:"Cell assembly",                      w:250, h:64, bay:0, col:1,
+      sub:"stacking and pressing, sealed and dry" },
+    { n:3, t:"Cell finishing",          ph:"Cell finishing",                     w:250, h:96, bay:1, col:1,
+      sub:"formation and aging under pressure" }
+  ];
+  const COL1 = AREAS[0].w + GAP_X;
+  AREAS.forEach(h => { h.x0 = h.col === 0 ? 0 : COL1; h.y0 = h.bay * (D + GAP_Y); });
+  const box = [];
+  const face = (pts, fill, op) => {
+    pts.forEach(pp => box.push(pp));
+    return `<path d="${pts.map(([a, b], q) => `${q ? "L" : "M"}${a.toFixed(1)} ${b.toFixed(1)}`).join("")}Z"
+      fill="${fill}" opacity="${op}" stroke="color-mix(in srgb,var(--foreground) 20%,transparent)" stroke-width=".9"/>`;
+  };
+  const prism = (x0, y0, w, d, z) => ({
+    a: iso(x0, y0, 0), b: iso(x0 + w, y0, 0), c: iso(x0 + w, y0 + d, 0), d: iso(x0, y0 + d, 0),
+    A: iso(x0, y0, z), B: iso(x0 + w, y0, z), C: iso(x0 + w, y0 + d, z), D: iso(x0, y0 + d, z)
+  });
+  const solid = (p, col, o1, o2, o3) =>
+    face([p.b, p.c, p.C, p.B], col, o1) + face([p.c, p.d, p.D, p.C], col, o2) +
+    face([p.A, p.B, p.C, p.D], col, o3);
+
+  let floors = "", bodies = "", labels = "";
+  AREAS.forEach(a2 => {
+    const p = prism(a2.x0, a2.y0, a2.w, D, 0);
+    floors += face([p.a, p.b, p.c, p.d], "color-mix(in srgb,var(--foreground) 8%,transparent)", 1);
+  });
+  const edge = (fx, fy, tx, ty, dash) => {
+    const a = iso(fx, fy, 0), b = iso(tx, ty, 0);
+    return `<path d="M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}"
+      stroke="var(--primary)" stroke-width="2.6" opacity=".85" stroke-linecap="round"
+      ${dash ? 'stroke-dasharray="7 5"' : ""}/>
+      <circle cx="${b[0].toFixed(1)}" cy="${b[1].toFixed(1)}" r="3.6" fill="var(--primary)"/>`;
+  };
+  const A = Object.fromEntries(AREAS.map(h => [h.n, h]));
+  const flows =
+    edge(A[1].x0 + A[1].w + 3, A[1].y0 + D / 2, A[2].x0 - 3, A[2].y0 + D / 2, 0) +
+    edge(A[2].x0 + A[2].w / 2, A[2].y0 + D + 3, A[3].x0 + A[3].w / 2, A[3].y0 - 3, 1);
+
+  [...AREAS].sort((x, y) => (x.x0 + x.y0) - (y.x0 + y.y0)).forEach(area => {
+    const on = k.list.filter(s => s.phase === area.ph), col = phaseColor(area.ph);
+    const cols = Math.max(1, Math.min(on.length, Math.round(area.w / 66)));
+    const rowsN = Math.ceil(on.length / cols) || 1;
+    const spanX = area.w - 52, spanY = D - 56;
+    const placed = on.map((st, q) => {
+      const rr = Math.floor(q / cols), cc = q % cols;
+      return { st,
+        mx: area.x0 + 26 + (cols === 1 ? spanX / 2 : cc * spanX / (cols - 1)) - 13,
+        my: area.y0 + 28 + (rowsN === 1 ? spanY / 2 : rr * spanY / (rowsN - 1)) };
+    }).sort((x, y) => (x.mx + x.my) - (y.mx + y.my));
+    placed.forEach(({ st, mx, my }) => {
+      const q4 = prism(mx, my, 26, 26, 22), lv = stationLevel(st, m);
+      const mid = [(q4.A[0] + q4.C[0]) / 2, (q4.A[1] + q4.C[1]) / 2];
+      bodies += `<g class="hmiSt" data-go="${st.id}" tabindex="0" role="button"
+          aria-label="${esc(st.title)} in ${esc(area.t)}">
+        ${solid(q4, col, .58, .42, .85)}
+        <circle cx="${mid[0].toFixed(1)}" cy="${mid[1].toFixed(1)}" r="3.8" fill="${LEVEL_COL[lv]}"
+          stroke="var(--background)" stroke-width="1.3"/>
+        <title>${esc(st.title)}</title></g>`;
+    });
+    const p = prism(area.x0, area.y0, area.w, D, area.h);
+    bodies += solid(p, col, .14, .1, .2);
+    const lab = iso(area.x0 + area.w / 2, area.y0 + D / 2, area.h);
+    labels += `<text x="${lab[0].toFixed(1)}" y="${(lab[1] - 6).toFixed(1)}" text-anchor="middle" class="floorT">${area.n} · ${esc(area.t)}</text>
+      <text x="${lab[0].toFixed(1)}" y="${(lab[1] + 8).toFixed(1)}" text-anchor="middle" class="floorS">${on.length} station${on.length === 1 ? "" : "s"} · ${esc(area.sub)}</text>`;
+  });
+  const xs = box.map(q => q[0]), ys = box.map(q => q[1]), PAD = 54;
+  const vx = Math.min(...xs) - PAD, vy = Math.min(...ys) - PAD;
+  const vw = Math.max(...xs) - Math.min(...xs) + PAD * 2;
+  const vh = Math.max(...ys) - Math.min(...ys) + PAD * 2;
+  return `<svg viewBox="${vx.toFixed(0)} ${vy.toFixed(0)} ${vw.toFixed(0)} ${vh.toFixed(0)}" role="img"
+    aria-label="Isometric plan of the three production areas">${floors}${flows}${bodies}${labels}</svg>`;
+}
+
+/* ---------------- transferability, the guide's own headline number ---------------- */
+function transSVG() {
+  const list = active().filter(s => s.trans);
+  const W = 900, RH = 26, TOP = 34, L = 214, sc = (W - L - 90) / 5;
+  let g = `<text class="cxHead" x="${L}" y="20">transferability of lithium-ion knowledge — 1 low, 5 high</text>`;
+  [1, 2, 3, 4, 5].forEach(v => {
+    const x = L + v * sc;
+    g += `<path d="M${x} ${TOP - 8}L${x} ${TOP + list.length * RH - 6}" stroke="color-mix(in srgb,var(--foreground) 9%,transparent)"/>
+      <text class="cxTick" x="${x}" y="${TOP + list.length * RH + 10}" text-anchor="middle">${v}</text>`;
+  });
+  list.forEach((st, i) => {
+    const y = TOP + i * RH, col = st.trans >= 4 ? "var(--green)" : st.trans >= 3 ? "var(--warning)" : "var(--destructive)";
+    g += `<text class="cxLab" x="${L - 12}" y="${y + 8}" text-anchor="end">${esc(st.title)}</text>
+      <rect x="${L + sc * 0.35}" y="${y}" width="${Math.max(3, (st.trans - 0.35) * sc)}" height="11" rx="3"
+        fill="${col}" opacity="${st.tpage ? .82 : .3}"${st.tpage ? "" : ` stroke="${col}" stroke-width="1.2" stroke-dasharray="4 3"`}/>
+      <text class="cxVal" x="${L + st.trans * sc + 10}" y="${y + 9}">${st.trans}${st.tpage ? "" : " *"}</text>`;
+  });
+  g += `<text class="cxTick" x="${L}" y="${TOP + list.length * RH + 28}">* carried over from the 2nd edition — the current one does not describe this station in detail</text>`;
+  return `<svg viewBox="0 0 ${W} ${TOP + list.length * RH + 40}" role="img"
+    aria-label="Transferability of lithium-ion knowledge by station">${g}</svg>`;
+}
+
+function alarmList(m, k) {
+  const rows = k.list.map(st => [st, stationLevel(st, m)])
+    .filter(([, lv]) => lv !== "ok")
+    .sort((a, b) => (a[1] === "bad" ? 0 : 1) - (b[1] === "bad" ? 0 : 1));
+  if (!rows.length) return `<div class="alarmBar" data-ok="1">

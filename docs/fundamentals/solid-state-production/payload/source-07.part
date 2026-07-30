@@ -1,0 +1,134 @@
+   in detail carry its own figures; the rest come from the 2nd edition.
+   `parts` indices line up with the hotspot data-k values in the machine.
+   ===================================================================== */
+
+/* shared helpers — defined first so every later block can use them */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]));
+const PHASES = [
+  ["Electrode & electrolyte production", "var(--warning)"],
+  ["Cell assembly",                      "var(--elyte)"],
+  ["Cell finishing",                     "var(--green)"]
+];
+const phaseColor = p => (PHASES.find(x => x[0] === p) || [, "var(--primary)"])[1];
+const active = () => STATIONS.filter(s => s.routes.includes(route));
+const clamp = (v, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, v));
+const fmt = n => n >= 1000 ? Math.round(n).toLocaleString("en-US") : n.toFixed(n < 10 ? 2 : 1);
+
+const ALL = "oxide sulfide polymer halide";
+const STATIONS = [
+
+{ id:"extrusion", no:"01", phase:"Electrode & electrolyte production", title:"Lithium metal anode", machine:"extrusion", routes:ALL,
+  sub:"Anode production", trans:1, tpage:1,
+  env:{iso:"Inert gas atmosphere", dew:"lithium is handled dry", temp:"lithium up to 100 °C"},
+  cost:"—", takt:"continuous foil",
+  purpose:"Press lithium metal ingots through a slot-shaped nozzle into a foil, then calender that foil to its final thickness and surface finish.",
+  inp:"Lithium metal ingots", out:"Lithium foil, optionally passivated",
+  parts:[
+    ["Piston","PRESS","Forces the lithium through the nozzle. Pressing force runs from 1 000 to 10 000 kN — lithium is soft, but a metre-wide foil needs real tonnage."],
+    ["Piston seal","CONTAIN","Keeps the metal in the cylinder under pressure. Lithium is adhesive and reactive, so seal material choice is not routine."],
+    ["Cylinder","HOLD","Holds the lithium billet, temperature-controlled up to about 100 °C so the metal flows rather than tears."],
+    ["Slot nozzle","FORM","The exit cross-section defines foil width and thickness. Nozzle geometry is the primary shape-giving tool on this station."],
+    ["Calender rollers","FINISH","The extruded film is rolled between two rollers under pressure and temperature control to set homogeneity, surface roughness and final thickness."],
+    ["Coating nozzles","PASSIVATE","Optional passivation layer on the lithium surface. With it, the foil can be processed further in a dry room instead of a full inert-gas environment — a large facility saving."]],
+  params:["Layer thicknesses: 2–30 µm","Homogeneity of layer thickness","Processing in a dry atmosphere to prevent oxidation","Extrusion speed, roller speed and nozzle geometry","Lithium temperature up to 100 °C and piston force 1 000–10 000 kN (2nd ed.)"],
+  alts:["Wet coating process","Vacuum and thin-film processes — PVD, CVD and similar"],
+  chall:["High reactivity and adhesion of lithium metal","Uniform lithium deposition"],
+  qInf:["Adhesion tendency and reactivity of metallic lithium"],
+  qFeat:["Consistent layer thickness","Homogeneity and purity of the coating","Adhesion between coating and substrate"],
+  sop:["Confirm the inert-gas envelope before opening the cylinder","Load and temper the lithium billet","Set nozzle geometry for the target foil width","Ramp piston force and check extrudate continuity","Calender to target thickness and measure","Apply passivation and hand over to lamination"] },
+
+{ id:"lamination", no:"02", phase:"Electrode & electrolyte production", title:"Lamination", machine:"lamination", routes:ALL,
+  sub:"Anode production", trans:2,
+  env:{iso:"Inert gas atmosphere", dew:"lithium is handled dry", temp:"rollers tempered"},
+  cost:"—", takt:"continuous web",
+  purpose:"Bond the passivated lithium foil onto a current-collector foil to make the finished negative electrode.",
+  inp:"Lithium foil + current-collector foil", out:"Laminated negative electrode",
+  parts:[
+    ["Lithium unwind","FEED","The passivated lithium foil enters under controlled tension. Mechanical cutting is unsuitable for lithium, so the web is handled continuously."],
+    ["Collector unwind","FEED","The current-collector foil is brought in to meet the lithium. The two can have different thicknesses — that is a design choice, not a constraint."],
+    ["Guide rollers","ALIGN","Bring the two foils together edge-to-edge before the nip. Foil alignment is one of the three named quality features here."],
+    ["Lamination nip","BOND","Two rollers press the layers together. Tempering the rollers raises the adhesive force — heat, not just pressure, makes the bond."],
+    ["Laminate","OUTFEED","The bonded composite. Adhesion between the layers is what the whole station exists to produce."]],
+  params:["Feeding speed of the layers","Temperature control / roller tempering","Roller speed","Calender gap","Line pressure below 2 500 N/mm"],
+  alts:["PVD process","Liquid coating with lithium in the molten state"],
+  chall:["Adhesion between the layers","Alignment of the two foils"],
+  qInf:["Adhesion tendency of metallic lithium during lamination","Mechanical cutting methods are unsuitable for lithium"],
+  qFeat:["Adhesion between the layers","Foil alignment","Uniform layer thickness"],
+  sop:["Verify passivation is intact on the incoming lithium","Thread both webs and set tension","Temper the rollers to the recipe value","Set the gap and line pressure","Run a leader and peel-test the bond","Rewind under controlled tension"] },
+
+{ id:"ballmill", no:"03", phase:"Electrode & electrolyte production", title:"Mixing & grinding", machine:"ballmill", routes:"oxide halide",
+  sub:"Mixture preparation: electrolyte", trans:4, tpage:1,
+  env:{iso:"Clean room or no requirement", dew:"not controlled", temp:"ambient"},
+  cost:"—", takt:"1–10 h per batch",
+  purpose:"Grind the oxide electrolyte raw materials down to a defined particle size in a dry ball mill, then calcine the powder.",
+  inp:"Oxide raw materials", out:"Ground, calcined electrolyte powder",
+  parts:[
+    ["Material infeed","FEED","Starting materials go into the drum dry — no liquid is added. This is one of the few stations in the plant with no atmosphere requirement at all."],
+    ["Grinding drum","GRIND","A cylindrical drum set in rotation. Relative movement between media and material is what does the grinding, so drum speed and fill are the real setpoints."],
+    ["Grinding media","MILL","Ceramic balls, 1–10 mm. Media diameter sets the trade-off: large balls break coarse material fast, small balls reach the fine end."],
+    ["Powder bed","PRODUCT","Ground until the electrolyte powder reaches its defined particle size. Average particle size and homogeneity are the two quality features."],
+    ["Material removal","DISCHARGE","The powder is then calcined to set its properties and to minimise later shrinkage during sintering — a step that only matters because oxide is sintered downstream."]],
+  params:["Grinding time 1–10 h","Grinding speed approx. 500 min⁻¹","Atmosphere: clean room or no requirement","Quantity of raw materials","Ball-mill material, e.g. ceramic","Ball diameter 1–10 mm"],
+  alts:["Attritor mill","Agitator ball mill"],
+  chall:["Abrasion of the grinding media"],
+  qInf:["Abrasion of the grinding media"],
+  qFeat:["Average powder particle size","Homogeneity of the powder — degree of mixing"],
+  sop:["Weigh the raw materials to the recipe","Charge the drum with media and material","Set rotation speed and start the clock","Sample particle size at interval","Discharge and separate the media","Calcine the powder to the target properties"] },
+
+{ id:"mixing", no:"04", phase:"Electrode & electrolyte production", title:"Mixing", machine:"mixing", routes:"oxide sulfide halide",
+  sub:"Mixture preparation: electrolyte & electrode", trans:5, tpage:1,
+  env:{iso:"Inert gas, vacuum or dry room", dew:"sulfides are moisture sensitive", temp:"RT – 50 °C"},
+  cost:"—", takt:"0.1–1 h",
+  purpose:"Mix the powders — and optionally disperse them with solvent and binder into a coatable slurry.",
+  inp:"Electrolyte and active-material powders", out:"Powder mixture or slurry",
+  parts:[
+    ["Drive shaft","DRIVE","Agitator speed spans 100 to 10 000 min⁻¹ — the same machine does gentle blending and high-shear dispersing."],
+    ["Gearbox","TRANSMIT","Fast and slow rotating tools can be combined. Intensive mixers of this type are usually called planetary mixers."],
+    ["Stirrer","DISPERSE","Breaks agglomerates. When the slurry is highly viscous, a geometry free of dead space is essential — otherwise material sits unmixed."],
+    ["Container","HOLD","Tempered through the wall, 30–50 °C, and tiltable by up to 30° so the whole charge reaches the tool."],
+    ["Suspension","PRODUCT","Sulfidic materials are sensitive to polar solvents and to moisture, which sharply limits which solvents can be used at all."]],
+  params:["Mixing time 0.1–1 h","Agitator speed 100–10 000 min⁻¹","Temperature control: RT–50 °C","Atmosphere: inert gas, vacuum or dry room","Tank filling level","Mixing time and vessel inclination"],
+  alts:["Inline disperser","Twin-screw extruder"],
+  chall:["Agglomerates, sedimentation and similar","Corrosion caused by H₂S","Explosion protection — solvents"],
+  qInf:["Agglomerates and inhomogeneities","Abrasion","Sedimentation","Concentration gradients and separation"],
+  qFeat:["Homogeneity of the slurry","Agglomerate size","Free of bubbles","Purity — foreign matter content","Viscosity"],
+  sop:["Confirm the atmosphere before charging","Load powders in the specified sequence","Blend dry, then add solvent and binder if used","Disperse at the recipe shear","Sample viscosity, agglomerate size and bubbles","Release under seal to coating"] },
+
+{ id:"compounding", no:"05", phase:"Electrode & electrolyte production", title:"Compounding", machine:"compounding", routes:"polymer",
+  sub:"Mixture preparation: electrolyte & electrode", trans:4, tpage:1,
+  env:{iso:"Inert gas, vacuum or dry room", dew:"dry", temp:"cylinder 20–100 °C"},
+  cost:"—", takt:"under 1 h",
+  purpose:"Produce the cathode melt and the electrolyte melt in two separate twin-screw compounding processes.",
+  inp:"Granules or powder", out:"Two homogeneous melts",
+  parts:[
+    ["Funnel","FEED","Components arrive as granules or powder and are metered into the heated barrel. Dosage is one of the named parameters."],
+    ["Heated cylinder","TEMPER","20–100 °C. The barrel does part of the melting; the screws do the rest through shear."],
+    ["Twin screw extruder","COMPOUND","Rotation introduces energy into the components. Shear energy is the setpoint that turns a mixture into a homogeneous melt."],
+    ["Extrusion tool","SHAPE","The connection point to the downstream tool. From here the melt goes straight to co-extrusion."],
+    ["Melt","PRODUCT","The cathode melt carries active material plus electrolyte particles, binders and additives. Those electrolyte particles are what lower the interfacial resistance between cathode and electrolyte layers."]],
+  params:["Mixing time under 1 h","Extruder speed and torque","Cylinder temperature 20–100 °C","Atmosphere: inert gas, vacuum or dry room","Dosage","Shear energy"],
+  alts:["Single-screw extrusion"],
+  chall:["Avoidance of inclusions, agglomerates, concentration gradients and pores"],
+  qInf:["Inclusions and agglomerates","Concentration gradients","Pores"],
+  qFeat:["Homogeneity of the melt","Agglomerate size","Free of bubbles","Purity","Viscosity"],
+  sop:["Set the barrel temperature profile","Start dosing at the recipe rate","Bring screw speed and torque to setpoint","Check the melt for inclusions and pores","Purge to waste until homogeneous","Hand the melt over to the co-extruder"] },
+
+{ id:"tape", no:"06", phase:"Electrode & electrolyte production", title:"Tape casting", machine:"tape", routes:"oxide sulfide halide",
+  sub:"Cathode and electrolyte production", trans:5,
+  env:{iso:"Dry / clean room", dew:"dry", temp:"dryer zones 50–160 °C"},
+  cost:"—", takt:"25–100 m/min",
+  purpose:"Meter the slurry onto the substrate through a slot die, then drive the solvent off.",
+  inp:"Slurry + substrate", out:"Coated layer, dried",
+  parts:[
+    ["Slurry vessel","SUPPLY","The fluid must be supplied evenly and without pulsation — which is why the pump matters as much as the die."],
+    ["Pump","METER","Conveys slurry through the feed hose to the die. Flow rate and band speed together set the coat weight."],
+    ["Slot nozzle head","APPLY","Coating can go on one side or both, continuously or intermittently. Gap height between nozzle head and substrate is the direct thickness control."],
+    ["Substrate belt","CARRY","Band speed 25–100 m/min, under controlled pretension."],
+    ["Dryer zones","DRY","50–160 °C across the zones. A solvent recovery option is ideally provided — the solvent is a cost, not just an emission."],
+    ["Coated layer","PRODUCT","Flawless coatings demand solvents free of bubbles and reliable application tools. Thickness accuracy along and across the web is the headline quality feature."]],
+  params:["Band speed 25–100 m·min⁻¹","Gap height, nozzle head to substrate","Dryer zone temperature profile 50–160 °C","Solvent recovery","Foil pretension"],
+  alts:["Extrusion","Roller coating","Screen printing"],
+  qInf:["Layer thickness variation from changing production conditions"],
+  qFeat:["Coating thickness accuracy along and across the web","Surface quality — voids and particles","Adhesion between coating and substrate"],
+  sop:["Confirm the slurry is released and bubble-free","Set gap height for the target wet film","Bring the dryer zones to profile","Start the belt and check the coating edge","Measure thickness across the width","Confirm solvent recovery is running"] },

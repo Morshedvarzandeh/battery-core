@@ -1,210 +1,172 @@
-  ${P("M120 32l58 0l-20 40l-18 0z", "mSteel2")}
-  ${P("M138 70l22 0l-3 12l-16 0z", "mAcc")}
-  ${T(120, 28, "slot die", "mTxtS")}
-  ${ROLLER(160, 96, 22)}
-  ${REEL(46, 96, 18, "mCu")}
-  ${P("M64 96q30 -10 74 -14l190 0", "mWeb")}
-  <path class="mWeb flowdash" stroke="var(--copper)" d="M64 96q30 -10 74 -14l190 0"/>
-  ${T(24, 124, "bare foil", "mTxtS")}
-  ${R(238, 68, 74, 12, "mAn", 2)}
-  ${T(238, 62, "wet film", "mTxtS")}
-  ${T(238, 124, "coated", "mTxtS")}`),
-
-/* four heated chambers over a web */
-dryer: () => pic(`
-  ${[0, 1, 2, 3].map(i => `${R(20 + i * 84, 34, 74, 56, "mHot", 4)}
-     ${T(57 + i * 84, 66, [50, 100, 160, 90][i] + " °C", "mTxtW", "middle")}`).join("")}
-  ${P("M14 62l340 0", "mWebA")}
-  <path class="mWebA flowdash" stroke="var(--anode)" d="M14 62l340 0"/>
-  ${T(16, 108, "solvent out, recovered", "mTxtS")}
-  ${T(232, 108, "too hot cracks the coating", "mTxtS")}`),
-
-/* the nip: thick porous in, thin dense out */
-nip: () => pic(`
-  ${ROLLER(150, 44, 26)}${ROLLER(150, 100, 26)}
-  ${R(20, 62, 104, 20, "mAn", 2)}
-  ${[...Array(9)].map((_, i) => `<circle cx="${28 + i * 12}" cy="72" r="3.4" fill="var(--background)"/>`).join("")}
-  ${T(20, 56, "≈50% porosity", "mTxtS")}
-  ${R(178, 66, 104, 12, "mAn", 2)}
-  ${[...Array(9)].map((_, i) => `<circle cx="${186 + i * 12}" cy="72" r="1.9" fill="var(--background)"/>`).join("")}
-  ${T(178, 60, "20–35% porosity", "mTxtS")}
-  ${T(20, 124, "thinner and denser", "mTxtS")}
-  ${T(296, 72, "→ capacity", "mTxtS")}${T(296, 86, "→ less room", "mTxtS")}
-  ${T(296, 100, "   for electrolyte", "mTxtS")}`),
-
-/* the burr, against a separator */
-burr: () => pic(`
-  ${R(20, 40, 130, 26, "mCu", 2)}
-  ${P("M150 40l0 26", "mLine")}
-  ${[0, 1, 2].map(i => `${P(`M${24 + i * 44} 78l36 0`, "mLine")}${T(24 + i * 44, 96, "strip", "mTxtS")}`).join("")}
-  ${T(20, 34, "mother roll cut into strips", "mTxtS")}
-  ${R(206, 52, 140, 12, "mCu", 1)}
-  ${P("M346 52l8 -14l4 14z", "mDark")}
-  ${T(206, 46, "burr left on the edge", "mTxtS")}
-  ${R(206, 74, 148, 9, "mSep", 1)}
-  ${T(206, 100, "separator, only 12–25 µm", "mTxtS")}
-  ${T(206, 114, "taller than this and the cell shorts", "mTxtS")}`),
-
-/* water leaving under vacuum */
-water: () => pic(`
-  ${R(24, 36, 150, 74, "mSteel2", 6)}${R(24, 36, 150, 12, "mDark", 3)}
-  ${[0, 1].map(r => [0, 1].map(c => REEL(66 + c * 66, 66 + r * 30, 12, "mCu")).join("")).join("")}
-  ${T(28, 126, "12–48 h under vacuum", "mTxtS")}
-  <g class="puff">${[0, 1, 2, 3].map(i => `<circle cx="${196 + i * 15}" cy="${52 - (i % 2) * 10}" r="4"
-     fill="var(--elyte)" opacity=".55"/>`).join("")}</g>
-  ${T(196, 82, "H₂O + LiPF₆ → HF", "mTxt")}
-  ${T(196, 98, "which attacks the cathode", "mTxtS")}
-  ${T(196, 112, "and the aluminium", "mTxtS")}`),
-
-/* z-folded separator with sheets dropping in */
-stacker: () => pic(`
-  ${P("M24 44q26 34 52 0t52 0t52 0", "mWebS")}
-  ${P("M24 80q26 34 52 0t52 0t52 0", "mWebS")}
-  ${[0, 1, 2].map(i => `${R(38 + i * 52, 52, 34, 7, "mCa", 1)}${R(38 + i * 52, 88, 34, 7, "mAn", 1)}`).join("")}
-  ${T(24, 118, "cathode, separator, anode, separator …", "mTxtS")}
-  ${R(246, 34, 100, 76, "mSteel2", 5)}
-  ${[...Array(7)].map((_, i) => `<rect x="256" y="${40 + i * 10}" width="80" height="4" rx="1"
-     fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>
-     <rect x="256" y="${45 + i * 10}" width="80" height="2" rx="1" fill="var(--sep)"/>`).join("")}
-  ${T(246, 124, "up to 120 layers", "mTxtS")}`),
-
-/* electrolyte finding its way into pores */
-wetting: () => pic(`
-  ${R(22, 36, 96, 76, "mSteel2", 5)}
-  ${[...Array(6)].map((_, i) => `<rect x="30" y="${42 + i * 12}" width="80" height="6" rx="1"
-     fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>`).join("")}
-  ${P("M70 30l0 -14", "mPipe")}<path class="mPipe flowdash" stroke="var(--elyte)" d="M70 30l0 -14"/>
-  ${T(22, 126, "dosed under vacuum", "mTxtS")}
-  ${R(160, 40, 90, 60, "mSteel2", 4)}
-  ${[...Array(4)].map((_, i) => [...Array(6)].map((_, j) =>
-     `<circle cx="${172 + j * 14}" cy="${52 + i * 14}" r="4" fill="${(i + j) % 3 ? "var(--elyte)" : "var(--background)"}"
-      stroke="var(--border-strong)" stroke-width=".8"/>`).join("")).join("")}
-  ${T(160, 116, "incomplete wetting can leave inactive regions", "mTxtS")}
-  ${T(160, 130, "for the life of the cell", "mTxtS")}
-  ${T(272, 60, "capillary", "mTxtS")}${T(272, 74, "action is slow", "mTxtS")}`),
-
-/* first charge and the film it grows */
-sei: () => pic(`
-  <path class="mLine" d="M24 106l0 -70M24 106l124 0" stroke="var(--border-strong)"/>
-  <path d="M24 104C56 62 74 46 92 44l56 0" fill="none" stroke="var(--primary)" stroke-width="2.4"/>
-  <rect x="24" y="36" width="34" height="70" fill="var(--jelly)" opacity=".16"/>
-  ${T(26, 30, "SEI forms here", "mTxtS")}
-  ${T(24, 122, "0 h", "mTxtS")}${T(148, 122, "up to 15 h", "mTxtS", "end")}
-  ${R(196, 42, 26, 62, "mAn", 2)}
-  <rect x="222" y="42" width="5" height="62" fill="var(--jelly)"/>
-  ${R(227, 42, 40, 62, "mGlass", 2)}
-  ${T(196, 36, "graphite", "mTxtS")}${T(238, 36, "electrolyte", "mTxtS")}
-  ${T(196, 120, "the SEI is 10–50 nm and permanent", "mTxtS")}
-  ${T(282, 60, "5–15% of the", "mTxtS")}${T(282, 74, "lithium is spent", "mTxtS")}
-  ${T(282, 88, "building it", "mTxtS")}`),
-
-/* two cells drifting apart */
-screen: () => pic(`
-  <path class="mLine" d="M28 108l0 -66M28 108l180 0" stroke="var(--border-strong)"/>
-  <path d="M28 106C60 96 120 88 208 84" fill="none" stroke="var(--primary)" stroke-width="2.2"/>
-  <path d="M28 106C68 88 130 62 208 44" fill="none" stroke="var(--destructive)" stroke-width="2.2"/>
-  <path class="mLead" d="M208 84l0 -40"/>
-  ${T(214, 66, "gap", "mTxt")}
-  ${T(28, 122, "0 d", "mTxtS")}${T(208, 122, "21 d", "mTxtS", "middle")}
-  ${T(28, 36, "mV lost", "mTxtS")}
-  ${T(252, 52, "> 5 mV/week", "mTxt")}
-  ${T(252, 66, "→ investigate", "mTxtS")}
-  ${T(252, 88, "stable", "mTxt")}
-  ${T(252, 102, "→ release checks", "mTxtS")}`),
-
-/* graded and packed */
-grade: () => pic(`
-  ${[0, 1, 2].map(i => `${R(24 + i * 62, 44, 50, 56, "mSteel2", 4)}
-    ${R(34 + i * 62, 54, 30, 10, "mDark", 2)}
-    ${T(49 + i * 62, 86, "class " + (i + 1), "mTxtS", "middle")}`).join("")}
-  ${T(24, 118, "graded on capacity and resistance", "mTxtS")}
-  ${R(232, 40, 62, 64, "mCu", 4)}
-  ${[...Array(3)].map((_, i) => `<rect x="240" y="${48 + i * 18}" width="46" height="12" rx="2" fill="var(--elyte)"/>`).join("")}
-  ${T(232, 118, "packed at shipping SOC", "mTxtS")}
-  ${T(308, 62, "air freight", "mTxtS")}${T(308, 76, "caps this at", "mTxtS")}${T(308, 90, "30%", "mTxt")}`),
-
-/* the responsibility grid */
-matrix: () => pic(`
-  ${[...Array(5)].map((_, r) => [...Array(9)].map((_, c) => {
-    const k = (r * 9 + c * 5) % 7;
-    const f = k === 0 ? "var(--primary)" : k === 1 ? "var(--destructive)" : k === 2 ? "var(--green)" : null;
-    return f ? `<rect x="${96 + c * 26}" y="${36 + r * 17}" width="17" height="11" rx="3"
-      fill="${f}" opacity=".55"/>` : "";
-  }).join("")).join("")}
-  ${[...Array(5)].map((_, r) => T(16, 46 + r * 17, ["mixing", "coating", "calendering", "slitting", "formation"][r], "mTxtS")).join("")}
-  ${T(96, 30, "the nine parts of the cell →", "mTxtS")}
-  ${T(16, 126, "● builds it   ▲ can ruin it   ◆ checks it", "mTxtS")}`),
-
-/* the sources */
-refs: () => pic(`
-  ${[0, 1, 2].map(i => `<rect x="${24 + i * 14}" y="${36 + i * 8}" width="120" height="76" rx="5"
-     fill="var(--card)" stroke="var(--border-strong)"/>`).join("")}
-  ${[...Array(5)].map((_, i) => `<rect x="66" y="${64 + i * 11}" width="${86 - (i % 2) * 24}" height="4" rx="2"
-     fill="var(--border-strong)"/>`).join("")}
-  ${T(66, 58, "PEM / VDMA, 5th ed.", "mTxtS")}
-  ${T(200, 50, "+ peer-reviewed sources", "mTxt")}
-  ${T(200, 68, "for porosity, N/P balance,", "mTxtS")}
-  ${T(200, 82, "moisture, SEI, dry rooms", "mTxtS")}
-  ${T(200, 104, "every superscript number", "mTxtS")}
-  ${T(200, 118, "opens its source", "mTxtS")}`)
-};
-
-const TOUR = [
-  { id:null, t:"Welcome to Line A-17",
-    d:"You are standing at the head of a lithium-ion cell plant. A line of stations turns black powder into a packed cell. This tour walks you through in order — at each stop the machine on screen is the one you would actually be looking at." , pic:"line" },
-  { id:"view:anatomy", t:"First — what you are actually building",
-    d:"Before the machines, the product. A cell is a five-layer sandwich repeated up to 120 times, soaked in electrolyte and sealed in a barrier. Click any layer to see which stations are responsible for it. Only three of the nine components are made in this building." , pic:"stack" },
-  { id:"view:flow", t:"Follow the product state",
-    d:"Electrode materials are transformed through successive stations while bought-in foils, separator, electrolyte and housing components are added at defined stages. Upstream defects can therefore remain embedded in the finished cell." , pic:"chain" },
-  { id:"mixing", t:"It starts with two black powders",
-    d:"Anode and cathode active materials arrive as powder and are nearly indistinguishable by eye. Contamination between them ruins a cell, so they are mixed in physically separate rooms. Hover the mixer to see the two-step dry-then-wet sequence." , pic:"powders" },
-  { id:"coating", t:"Slurry meets foil",
-    d:"A slot die meters slurry onto copper foil for the anode, aluminium for the cathode — both only 5–25 µm thick. Only one side is coated per pass. Scroll down to the black Operate this station panel: those are this machine's real knobs. Move the die gap away from the wet film the recipe needs and watch coat weight leave specification." , pic:"die" },
-  { id:"drying", t:"The longest machine in the building",
-    d:"Up to 100 metres of dryer in four temperature zones. Push the line speed up and the model will tell you the dryer needs more heat — run it under-heated and solvent stays in the coating." , pic:"dryer" },
-  { id:"calendering", t:"Where energy density is decided",
-    d:"Two rollers press the coating from about 50% porosity down to a lower target range. This setpoint influences capacity, wetting and crack risk at once. Slide the calender force and watch porosity, N/P ratio and the illustrative process-health score move." , pic:"nip" },
-  { id:"slitting", t:"The most dangerous burr in the plant",
-    d:"Rolling knives cut the wide roll into daughter rolls. A burr can damage or pierce the separator and create a latent internal-short risk, so blade condition, edge inspection and cleanliness are critical." , pic:"burr" },
-  { id:"vacdry", t:"Getting the water out",
-    d:"12 to 30 hours under vacuum. From here on the dew point falls station by station, because residual water can hydrolyse LiPF₆ and generate HF-containing species. Try dropping the vacuum drying time and watch the moisture score collapse." , pic:"water" },
-  { id:"stacking", t:"Building the sandwich",
-    d:"For pouch cells, sheets are stacked alternately into a Z-folded separator — up to 120 layers, one second per sheet, positioned to ±200 µm. Switch the format to cylindrical in the sidebar and this station is replaced by a winder." , pic:"stacker" },
-  { id:"fillPouch", t:"The driest room you will ever stand in",
-    d:"The chamber is first evacuated to about 0.01 mbar in a −50 to −70 °C dew-point environment. Dosing is followed by separate pressure/vacuum wetting cycles, represented here by a roughly 150 mbar reference setpoint." , pic:"wetting" },
-  { id:"formation", t:"The cell's first controlled cycles",
-    d:"The reference guide shows stepped formation rates in the 0.1–0.5 C range. These first controlled cycles form the SEI, consume some cyclable lithium and can generate gas. Formation is capital- and time-intensive, and validated recipes are manufacturer-specific." , pic:"sei" },
-  { id:"aging", t:"Three weeks of watching",
-    d:"Cells are held hot, then at room temperature, while their open-circuit voltage is logged. Excessive OCV loss can indicate elevated self-discharge or an internal defect. The actual threshold depends on chemistry, SOC, temperature, duration and the manufacturer’s release procedure." , pic:"screen" },
-  { id:"eol", t:"Out the door",
-    d:"Run a defined capacity test, set the required shipping SOC, then grade, label and pack. Every station has an Operate panel, and every one of them feeds this number." , pic:"grade" },
-  { id:"view:matrix", t:"Who is responsible for what",
-    d:"One grid: fifteen machines down the side, nine cell components across the top. Read a row to see what a station is accountable for, a column to see how many hands a component passes through. Slitting builds nothing at all — its entire row is risk." , pic:"matrix" },
-  { id:"view:refs", t:"And where every number came from",
-    d:"Process parameters, room classes, machine investments and cycle times are from the PEM RWTH Aachen and VDMA guide. The physics linking them is from the peer-reviewed sources listed here. Every superscript number in this simulator opens the source it came from." , pic:"refs" }
-];
-let tourAt = -1;
-let tourReturnFocus = null;
-function closeTour() {
-  $("tour").dataset.open = "0";
-  if (tourReturnFocus && document.contains(tourReturnFocus)) tourReturnFocus.focus();
+      <text class="cAx" x="${PL - 5}" y="${py(lo + pad) + 4}" text-anchor="end">${(lo + pad).toFixed(dp)}</text>
+      <text class="cVal" x="${PL}" y="${PT - 7}" fill="${curOff ? "var(--destructive)" : "var(--foreground)"}">${cur.toFixed(dp)}${esc(cf.unit || "")} now${curOff ? " — out of specification" : ""}</text>
+    </svg>
+  </figure>`;
 }
-function showTour(i) {
-  const opening = $("tour").dataset.open !== "1";
-  if (opening) tourReturnFocus = document.activeElement;
-  tourAt = i;
-  const s = TOUR[i];
-  go(s.id);
-  $("tour").dataset.open = "1";
-  $("tourStep").textContent = `STOP ${i + 1} OF ${TOUR.length}`;
-  $("tourTitle").textContent = s.t;
-  $("tourText").textContent = s.d;
-  $("tourPic").innerHTML = s.pic && TOURPIC[s.pic] ? TOURPIC[s.pic]() : "";
-  $("tourDots").innerHTML = TOUR.map((_, j) => `<i class="${j <= i ? "on" : ""}"></i>`).join("");
-  $("tourBack").disabled = i === 0;
-  $("tourNext").textContent = i === TOUR.length - 1 ? "Finish tour" : "Next stop →";
-  if (opening) requestAnimationFrame(() => $("tourClose").focus());
+
+/* --- bespoke: does the aging window actually catch a faulty cell? ------ */
+function agingOCVChart() {
+  const m = model(), days = S.ageDays, HT = S.ageHiT;
+  /* a healthy cell relaxes and then sits still; a faulty one keeps falling.
+     Higher temperature accelerates both, which is why HT aging exists.     */
+  const accel = 1 + (HT - 22) / 28;
+  const good = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 0.14 * t * accel;
+  const bad  = t => 3.2 * (1 - Math.exp(-t / 1.6)) + 1.15 * t * accel;
+  const T = 21, W2 = 340, H2 = 176, L = 40, R = 12, TT = 22, B = 30;
+  const maxY = Math.max(bad(T), 8);
+  const px = t => L + t / T * (W2 - L - R);
+  const py = v => TT + (1 - Math.min(v, maxY) / maxY) * (H2 - TT - B);
+  const path = f => Array.from({ length: 64 }, (_, i) => {
+    const t = i / 63 * T; return `${i ? "L" : "M"}${px(t).toFixed(1)} ${py(f(t)).toFixed(1)}`;
+  }).join("");
+  const sep = (bad(days) - good(days));
+  const caught = sep >= 5;
+  return `<figure class="chart">
+    <figcaption><b>Can this screen see a faulty cell?</b><span>open-circuit voltage drop over the aging period</span></figcaption>
+    <svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Open circuit voltage drop over the aging period for a healthy and a faulty cell">
+      <line x1="${L}" y1="${TT}" x2="${L}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <line x1="${L}" y1="${H2 - B}" x2="${W2 - R}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <rect x="${px(days)}" y="${TT}" width="${W2 - R - px(days)}" height="${H2 - TT - B}" fill="var(--foreground)" opacity=".05"/>
+      <line x1="${px(days)}" y1="${TT}" x2="${px(days)}" y2="${H2 - B}" stroke="var(--foreground)" stroke-width="1.2" stroke-dasharray="3 3" opacity=".55"/>
+      <text class="cLab" x="${px(days) + (days > 11 ? -4 : 4)}" y="${TT + 10}"
+        text-anchor="${days > 11 ? "end" : "start"}">you release here</text>
+      <path d="${path(bad)}" fill="none" stroke="var(--destructive)" stroke-width="2.2"/>
+      <path d="${path(good)}" fill="none" stroke="var(--primary)" stroke-width="2.2"/>
+      <circle cx="${px(days)}" cy="${py(bad(days))}" r="4.6" fill="#fff" stroke="var(--destructive)" stroke-width="2.4"/>
+      <circle cx="${px(days)}" cy="${py(good(days))}" r="4.6" fill="#fff" stroke="var(--primary)" stroke-width="2.4"/>
+      <path d="M${px(days) + 13} ${py(good(days))}L${px(days) + 13} ${py(bad(days))}" stroke="var(--foreground)" stroke-width="1"/>
+      <text class="cVal" x="${px(days) + 18}" y="${(py(good(days)) + py(bad(days))) / 2 + 4}"
+        fill="${caught ? "var(--primary)" : "var(--destructive)"}">${sep.toFixed(1)} mV apart</text>
+      <text class="cAx" x="${L}" y="${H2 - B + 13}">0 d</text>
+      <text class="cAx" x="${W2 - R}" y="${H2 - B + 13}" text-anchor="end">21 d</text>
+      <text class="cAx" x="${L - 5}" y="${py(maxY) + 8}" text-anchor="end">${maxY.toFixed(0)}</text>
+      <text class="cAx" x="${L - 5}" y="${py(0)}" text-anchor="end">0</text>
+      <text class="cVal" x="${L}" y="${TT - 7}">mV lost</text>
+      <g transform="translate(${L} ${H2 - 6})">
+        <line x1="0" y1="-3" x2="14" y2="-3" stroke="var(--primary)" stroke-width="2.2"/><text class="cLab" x="18" y="0">healthy cell</text>
+        <line x1="112" y1="-3" x2="126" y2="-3" stroke="var(--destructive)" stroke-width="2.2"/><text class="cLab" x="130" y="0">illustrative high-self-discharge cell</text>
+      </g>
+    </svg>
+    <p class="chart-note" data-s="${caught ? "ok" : "bad"}">${caught
+      ? `At ${days} days and ${HT} °C the two cells are ${sep.toFixed(1)} mV apart — above the illustrative 5 mV/week flag, so this teaching example would trigger further investigation or rejection.`
+      : `At ${days} days and ${HT} °C the two cells are only ${sep.toFixed(1)} mV apart. In this teaching example the separation is too small for the assumed screen. A real release decision requires validated limits, measurement uncertainty and site procedures.`}</p>
+  </figure>`;
 }
-$("tourStart").addEventListener("click", () => showTour(0));
-$("tourNext").addEventListener("click", () => {
-  if (tourAt >= TOUR.length - 1) { closeTour(); return; }
+
+/* --- bespoke: the first charge, drawn ---------------------------------- */
+function formationChart() {
+  const m = model(), C = S.cRate, hours = 13 / (C / 0.25);
+  const W2 = 340, H2 = 176, L = 40, R = 12, TT = 22, B = 30;
+  const px = t => L + t / hours * (W2 - L - R);
+  const py = v => TT + (1 - (v - 2.8) / (S.vMax + 0.1 - 2.8)) * (H2 - TT - B);
+  /* CC to the cut-off, then CV taper — the shape every formation recipe has */
+  const cc = hours * 0.78;
+  const v = t => t < cc ? 2.8 + (S.vMax - 2.8) * (1 - Math.exp(-t / (cc * 0.34))) : S.vMax;
+  const path = Array.from({ length: 70 }, (_, i) => {
+    const t = i / 69 * hours; return `${i ? "L" : "M"}${px(t).toFixed(1)} ${py(v(t)).toFixed(1)}`;
+  }).join("");
+  /* the SEI grows in the first part of the charge, between about 0.7 and 1.5 V vs Li */
+  const seiEnd = px(cc * 0.42);
+  return `<figure class="chart">
+    <figcaption><b>The first charge, drawn</b><span>cell voltage against time at ${C.toFixed(2)} C</span></figcaption>
+    <svg viewBox="0 0 ${W2} ${H2}" role="img" aria-label="Cell voltage against time during the first charge">
+      <line x1="${L}" y1="${TT}" x2="${L}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <line x1="${L}" y1="${H2 - B}" x2="${W2 - R}" y2="${H2 - B}" stroke="var(--border-strong)"/>
+      <rect x="${L}" y="${TT}" width="${seiEnd - L}" height="${H2 - TT - B}" fill="color-mix(in srgb,var(--jelly) 12%,transparent)"/>
+      <text class="cLab" x="${L + 4}" y="${H2 - B - 6}" fill="var(--jelly)">SEI forms in here</text>
+      <line x1="${L}" y1="${py(S.vMax)}" x2="${W2 - R}" y2="${py(S.vMax)}" stroke="var(--destructive)"
+        stroke-width="1.4" stroke-dasharray="4 3"/>
+      <text class="cLab" x="${W2 - R - 3}" y="${py(S.vMax) - 4}" text-anchor="end" fill="var(--destructive)">cut-off ${S.vMax.toFixed(2)} V</text>
+      <path d="${path}" fill="none" stroke="var(--primary)" stroke-width="2.4" stroke-linejoin="round"/>
+      <text class="cAx" x="${L}" y="${H2 - B + 13}">0 h</text>
+      <text class="cAx" x="${W2 - R}" y="${H2 - B + 13}" text-anchor="end">${hours.toFixed(1)} h</text>
+      <text class="cAx" x="${L - 5}" y="${py(S.vMax) + 4}" text-anchor="end">${S.vMax.toFixed(1)}</text>
+      <text class="cAx" x="${L - 5}" y="${py(2.8) }" text-anchor="end">2.8</text>
+      <text class="cVal" x="${L}" y="${TT - 7}">cell voltage, V</text>
+    </svg>
+    <p class="chart-note" data-s="${m.seiQ >= 90 ? "ok" : m.seiQ >= 80 ? "warn" : "bad"}">
+      ${hours.toFixed(1)} h on the rack. The film forms in the shaded part of the ramp — the faster you push through it,
+      the more porous and resistive it is. SEI quality ${m.seiQ.toFixed(0)}%, with ${m.liLoss.toFixed(1)}% illustrative first-cycle irreversible loss. Actual values are chemistry- and protocol-dependent.</p>
+  </figure>`;
+}
+
+/* --- which charts each station shows ------------------------------------ */
+const CHARTS = {
+  drymix: [
+    { x:"dcFib", title:"Mechanical work builds the fibril network", unit:"%", good:[55,95], goodLabel:"selected teaching window", lo:20, hi:100, dp:0,
+      series:[{ y:m => m.fibril, label:"Illustrative fibrillation index", col:"var(--primary)" }] },
+    { x:"dmTime", title:"Residence time also changes the teaching indicator", unit:"%", good:[55,95], goodLabel:"selected teaching window", lo:20, hi:100, dp:0,
+      series:[{ y:m => m.fibril, label:"Illustrative fibrillation index", col:"var(--elyte)" }] }],
+  mixing: [
+    { x:"solid", title:"Solid content sets viscosity", unit:" mPa·s", good:[2000,6000], goodLabel:"coatable window",
+      series:[{ y:m => m.visc, label:"Slurry viscosity", col:"var(--primary)" }] },
+    { x:"mixMin", title:"Dispersing time breaks the agglomerates", unit:"%", good:[92,100], goodLabel:"released", lo:55, hi:100,
+      series:[{ y:m => m.disp, label:"Dispersion index", col:"var(--elyte)" }] }],
+  drycoat: [
+    { x:"dcFib", title:"Too little shear and there is no film; too much and it clumps", unit:" g/m²", limit:2, limitLabel:"±2 g/m²", lo:0, dp:1,
+      series:[{ y:m => m.dcErr, label:"Areal-weight scatter", col:"var(--primary)" }] },
+    { x:"dcLine", title:"The nip does the calender's job", unit:"%", good:[20,35], goodLabel:"useful window", dp:0,
+      series:[{ y:m => m.por, label:"Porosity", col:"var(--elyte)" }] },
+    { x:"dcRollT", title:"Warm rolls soften the binder and it grips", unit:"%", good:[88,100], goodLabel:"holds", dp:0,
+      series:[{ y:m => m.adhesion, label:"Adhesion to the foil", col:"var(--cathode)" }] }],
+  coating: [
+    { x:"gap", title:"The gap has one right answer", unit:" g/m²", limit:2, limitLabel:"±2 g/m² specification", lo:0, dp:1,
+      series:[{ y:m => m.coatErr, label:"Coat weight scatter", col:"var(--primary)" }] },
+    { x:"tC", title:"Coat thickness changes the illustrative capacity estimate", unit:" Ah", dp:1,
+      series:[{ y:m => m.cellAh, label:"Cell capacity", col:"var(--elyte)" }] }],
+  drying: [
+    { x:"speed", title:"Faster web, hotter dryer", unit:" °C", dp:0,
+      series:[{ y:m => m.needT, label:"heat the web needs", col:"var(--destructive)" },
+              { y:() => S.dryT,  label:"your setting", col:"var(--primary)", dash:1 }] },
+    { x:"dryT", title:"Under-drying and over-drying reduce process health", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
+  calendering: [
+    { x:"force", title:"Line force sets porosity", unit:"%", good:[20,35], goodLabel:"useful window", dp:0,
+      series:[{ y:m => m.por, label:"Porosity", col:"var(--primary)" }] },
+    { x:"force", title:"…and porosity changes the illustrative active-material estimate", unit:" mAh/cm²", dp:2,
+      series:[{ y:m => m.capC, label:"Cathode areal capacity", col:"var(--elyte)" }] }],
+  slitting: [
+    { x:"wear", title:"Illustrative burr risk grows with blade wear", unit:" µm", limit:10, limitLabel:"illustrative risk threshold", lo:0, dp:1,
+      series:[{ y:m => m.burrSlit, label:"Burr from this cut", col:"var(--primary)" }] },
+    { x:"cutSpd", title:"And with cutting speed", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
+  vacdry: [
+    { x:"vac", title:"Water leaves slowly, then very slowly", unit:" ppm", limit:50, limitLabel:"50 ppm target", lo:0, dp:0,
+      series:[{ y:m => m.ppm, label:"Residual moisture", col:"var(--primary)" }] },
+    { x:"vacT", title:"Temperature does the same job faster", unit:" ppm", limit:50, limitLabel:"50 ppm target", lo:0, dp:0,
+      series:[{ y:m => m.ppm, label:"Residual moisture", col:"var(--elyte)" }] }],
+  separation: [
+    { x:"wear", title:"A worn punch is a burr generator", unit:" µm", limit:10, limitLabel:"illustrative risk threshold", lo:0, dp:1,
+      series:[{ y:m => m.burrSep, label:"Burr from this cut", col:"var(--primary)" },
+              { y:m => m.burr,    label:"tallest in the cell", col:"var(--destructive)", dash:1 }] }],
+  stacking: [
+    { x:"stackAcc", title:"Alignment has a cliff, not a slope", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
+  winding: [
+    { x:"webTens", title:"Too loose telescopes, too tight tears", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
+  packPouch: [
+    { x:"sealT", title:"The seal has one narrow window", unit:"%", good:[96,100], goodLabel:"sound seal", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.sealQ, label:"Seal quality", col:"var(--primary)" }] },
+    { x:"drawDepth", title:"Depth costs barrier thickness", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
+  packHard: [
+    { x:"sealT", title:"Weld energy window", unit:"%", good:[96,100], goodLabel:"sound weld", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.sealQ, label:"Weld quality index", col:"var(--primary)" }] }],
+  fillPouch: [
+    { x:"soak", title:"Wetting is slow, and then it is done", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] },
+    { x:"doseFac", title:"Under-dose starves it, over-dose gasses it", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
+      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
+  fillHard: [
+    { x:"soak", title:"A wound cell wets more slowly", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] },
+    { x:"fillP", title:"Wetting-cycle pressure changes infiltration", unit:"%", good:[96,100], goodLabel:"well wetted", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--elyte)" }] }],
+  rollpress: [
+    { x:"pressP", title:"Pressing buys time — up to a point", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] }],
+  formation: [
+    { x:"cRate", title:"Formation rate strongly influences the SEI", unit:"%", good:[90,100], goodLabel:"good film", lo:40, hi:100, dp:0,
+      series:[{ y:m => m.seiQ, label:"Illustrative SEI score", col:"var(--primary)" }] },
+    { x:"cRate", title:"…and the lithium you never get back", unit:"%", limit:12, limitLabel:"12% — expensive", dp:1,

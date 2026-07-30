@@ -1,304 +1,206 @@
-           style="${machineStyle(st, m)}">${M[st.machine]()}</svg>
-      <div class="readout" id="readout"></div>
-    </div>
+      "Above the selected teaching window, pressure on a wet stack raises separator-stress and particle-driven puncture risk. Actual limits depend on separator, stack geometry, cleanliness and equipment validation."]
+    : m.wetting >= 96 ? ["ok", "Electrolyte distributed",
+      `${m.wetting.toFixed(0)}% illustrative wetting. More uniform electrolyte distribution supports more uniform formation, but this score does not prove that every pore is wetted.`]
+    : ["warn", "Still short of full wetting",
+      "Raise the pressure a little or leave the cell longer before formation."],
+  viz:m => ({ press: clamp(S.pressP / 1.2 * 100) })
+},
 
-    <div class="card card-pad">
-      <span class="eyebrow" style="color:${col}">${esc(st.phase)}</span>
-      <h2 style="font-size:20px;letter-spacing:-.02em;margin:5px 0 7px">${esc(st.purpose)}</h2>
-      <div class="flow" style="margin-top:12px">
-        <div class="flow-box"><small>Arrives as</small><strong>${esc(st.inp)}</strong></div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-box"><small>Leaves as</small><strong>${esc(st.out)}</strong></div>
-      </div>
-      <div class="env" style="margin-top:12px">
-        <div><small>Clean room${r(1,9)}</small><b>${esc(st.env.iso)}</b></div>
-        <div><small>Dry room${r(1,5)}</small><b>${esc(st.env.dew)}</b></div>
-        <div><small>Temperature${r(1)}</small><b>${esc(st.env.temp)}</b></div>
-        <div><small>Machine investment${r(1)}</small><b>${esc(st.cost)}</b></div>
-      </div>
-      ${madeHTML(st)}
-    </div>
+formation: {
+  lead:"You are at formation — one of the most capital- and time-intensive stages in the reference line. The first controlled cycles form the SEI; rate, temperature, voltage limits, pressure and cleanliness all influence the result.",
+  ctl:["cRate","formT","vMax"],
+  read:m => [
+    V("First charge", S.cRate.toFixed(2) + " C", ok(S.cRate, 0.1, 0.5), "PEM: 0.1–0.5 C"),
+    V("Illustrative SEI score", m.seiQ.toFixed(0) + "%", m.seiQ >= 90 ? "ok" : m.seiQ >= 80 ? "warn" : "bad"),
+    V("Illustrative irreversible loss", m.liLoss.toFixed(1) + "%", m.liLoss < 12 ? "ok" : "warn", "teaching estimate of first-cycle cyclable-lithium consumption"),
+    V("Time on the rack", (13 / (S.cRate / 0.25)).toFixed(1) + " h", (13 / (S.cRate / 0.25)) <= 15 ? "ok" : "warn", "PEM: up to 15 h"),
+    V("Cell temperature", S.formT + " °C", band(S.formT, 20, 50, 8)),
+    V("Upper cut-off", S.vMax.toFixed(2) + " V", S.vMax <= 4.25 ? "ok" : "bad")],
+  verdict:m => S.cRate > 0.42 ? ["bad", "Charging too fast",
+      "The selected first-charge rate is near the upper end of the reference range. Faster formation can change interphase properties and raise plating risk under some conditions; validated recipes are chemistry- and design-specific."]
+    : S.vMax > 4.3 ? ["bad", "Cut-off too high",
+      "The selected cut-off exceeds the reference graphite/NMC teaching limit. Electrolyte oxidation, gas generation and accelerated degradation risk can rise, but actual limits depend on materials and protocol."]
+    : m.seiQ >= 90 ? ["ok", "SEI forming well",
+      `${m.seiQ.toFixed(0)}% illustrative SEI score and ${m.liLoss.toFixed(1)}% illustrative first-cycle irreversible loss. Actual values depend on materials, electrolyte and formation protocol.`]
+    : ["warn", "SEI quality mediocre",
+      "Review the first-charge rate and the validated formation-temperature window for this chemistry and cell design."],
+  viz:m => ({ sei: m.seiQ, rate: clamp((S.cRate - 0.1) / 0.4 * 100) })
+},
 
-    <div class="grid2">
-      <div class="card card-pad block">
-        <h4><i style="background:var(--green)"></i>Process parameters &amp; requirements</h4>
-        <ul>${st.params.map(p => `<li>${p}</li>`).join("")}</ul>
-        <div class="srcline">Sources for this station: ${(SRC[st.id] || [1]).map(n =>
-          `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
-      </div>
-      <div class="card card-pad block">
-        <h4><i style="background:var(--jelly)"></i>Technology alternatives</h4>
-        <ul>${st.alts.map(p => `<li>${p}</li>`).join("")}</ul>
-      </div>
-    </div>
+degassing: {
+  lead:"You are at degassing — pouch cells only. Formation made gas inside a bag that cannot vent, so you cut the pocket open, pull the gas out and re-seal.",
+  ctl:["degP","cRate"],
+  read:m => [
+    V("Vacuum level", S.degP + " mbar", S.degP <= 10 ? "ok" : "warn"),
+    V("Gas remaining", m.gasLeft.toFixed(1) + "%", m.gasLeft < 6 ? "ok" : m.gasLeft < 12 ? "warn" : "bad"),
+    V("Gas generated at formation", (S.cRate * 34).toFixed(0) + " (index)", S.cRate <= 0.35 ? "ok" : "warn", "gentler formation makes less gas"),
+    V("Final seal", "made after evacuation", "ok"),
+    V("Cell thickness after", m.gasLeft < 6 ? "nominal" : "swollen", m.gasLeft < 6 ? "ok" : "warn")],
+  verdict:m => m.gasLeft > 12 ? ["bad", "Gas left in the cell",
+      "A pouch with trapped gas has layers that are not touching. Those areas do not work, and the cell swells further in service."]
+    : ["ok", "Degassed and re-sealed",
+      `${m.gasLeft.toFixed(1)}% residual gas at ${S.degP} mbar. Hard-case gas-management and closure sequences vary by design; pressure-relief devices do not replace controlled formation-gas management.`],
+  viz:m => ({ gas: clamp(100 - m.gasLeft * 6) })
+},
 
-    <div class="grid2">
-      <div class="card card-pad block">
-        <h4><i style="background:var(--warning)"></i>Quality influences</h4>
-        <ul>${st.qInf.map(p => `<li>${p}</li>`).join("")}</ul>
-      </div>
-      <div class="card card-pad block">
-        <h4><i style="background:var(--elyte)"></i>Quality features</h4>
-        <ul>${st.qFeat.map(p => `<li>${p}</li>`).join("")}</ul>
-      </div>
-    </div>
+aging: {
+  lead:"You are at aging. The cell is rested and monitored for OCV drift and other release indicators. This screen can reveal elevated self-discharge or latent internal defects, but it is not a standalone proof of cell safety.",
+  ctl:["ageDays","ageHiT","ageSOC"],
+  read:m => [
+    V("Total period", S.ageDays + " d", ok(S.ageDays, 3, 21), "PEM: up to 3 weeks"),
+    V("High-temperature stage", S.ageHiT + " °C", ok(S.ageHiT, 30, 50), "PEM: 30–50 °C"),
+    V("State of charge", S.ageSOC + "%", ok(S.ageSOC, 30, 80), "PEM: 30–80%"),
+    V("Screen sensitivity", m.screenSens.toFixed(0) + "%", m.screenSens >= 88 ? "ok" : m.screenSens >= 72 ? "warn" : "bad"),
+    V("Defects that would escape", (Math.max(0, 100 - m.screenSens) * 0.06).toFixed(2) + "%", m.screenSens >= 88 ? "ok" : "warn"),
+    V("Floor space cost", (S.ageDays * 3.6).toFixed(0) + " (index)", S.ageDays <= 16 ? "ok" : "warn", "weeks of inventory standing still")],
+  verdict:m => m.screenSens < 72 ? ["bad", "Screen too short to be trusted",
+      "A slow self-discharge fault needs time and controlled temperature to appear as measurable voltage drift. Shortening the screen can reduce sensitivity."]
+    : S.ageDays > 18 ? ["warn", "Very long — this is inventory",
+      "Every extra day is finished cells sitting in a heated warehouse. Aging and formation together dominate cell-finishing cost."]
+    : ["ok", "Screen adequate",
+      `${S.ageDays} days, ${S.ageHiT} °C stage, ${m.screenSens.toFixed(0)}% illustrative sensitivity using a 5 mV/week teaching flag.`],
+  viz:m => ({ screen: m.screenSens })
+},
 
-    ${renderConsole(st, m)}
-
-    <div class="card card-pad block">
-      <h4><i style="background:var(--foreground)"></i>Standard operating sequence</h4>
-      <ol class="sop">${st.sop.map(p => `<li>${p}</li>`).join("")}</ol>
-    </div>
-
-`;
-
-  bindHotspots(st);
-  bindConsole(st);
-  setHot(st, 0);
+eol: {
+  lead:"You are at end of line. Run the defined performance tests, grade the cell, set the required shipping SOC, verify the applicable transport instruction, label and pack it.",
+  ctl:["shipSOC","ageDays"],
+  read:m => [
+    V("Reference capacity estimate", m.cellAh.toFixed(1) + " Ah", "ok", "the actual capacity test requires a defined charge/rest/discharge protocol"),
+    V("Example plant target", S.shipSOC + "% SOC", band(S.shipSOC, 10, 20, 10), "illustrative target; manufacturer-specific"),
+    V("PI 965 air-shipping check", m.shipOK ? "≤30% — pass" : ">30% — fail", m.shipOK ? "ok" : "bad", "UN 3480 cells/batteries shipped alone by air; other shipment configurations use different instructions"),
+    V("Process-health score", m.yieldPct.toFixed(1) + "%", m.yieldPct >= 95 ? "ok" : m.yieldPct >= 90 ? "warn" : "bad"),
+    V("Cells per day, this line", fmt(m.cellsDay), "ok"),
+    V("Annual output, this line", m.gwh.toFixed(1) + " GWh", "ok"),
+    V("Grading spread", "±" + (m.coatErr * 1.4).toFixed(1) + "% capacity", m.coatErr <= 2 ? "ok" : "warn", "coating scatter arrives here")],
+  verdict:m => !m.shipOK ? ["bad", "Above the air-freight limit",
+      "For this UN 3480 shipped-alone air scenario, PI 965 limits state of charge to 30%. Other shipment configurations and transport modes use different requirements."]
+    : m.yieldPct < 90 ? ["warn", "Illustrative process-health score is low",
+      "Walk back up the line — the advice panel names the worst problem, and it is almost always upstream of here."]
+    : ["ok", "Cells graded and released",
+      `${m.cellAh.toFixed(1)} Ah at ${m.yieldPct.toFixed(1)}% process-health score, packed at ${S.shipSOC}% SOC.`],
+  viz:m => ({ grade: m.yieldPct })
 }
-
-/* which parts of the finished cell this station is responsible for */
-function madeHTML(st) {
-  const makes  = COMPONENTS.filter(c => c.made.includes(st.id));
-  const risks  = COMPONENTS.filter(c => c.risk.includes(st.id) && !c.made.includes(st.id));
-  const checks = COMPONENTS.filter(c => (c.checks || []).includes(st.id)
-                   && !c.made.includes(st.id) && !c.risk.includes(st.id));
-  const TITLE = { make:"Built or shaped here", risk:"Most easily ruined here", check:"Measured or screened here" };
-  const SUF   = { make:"", risk:" ▲", check:" ◆" };
-  const chip = (c, kind) => `<button class="chipc" data-goview="${c.id}" title="${TITLE[kind]}">
-      <i style="background:${c.col}"></i>${esc(c.short)}${SUF[kind]}</button>`;
-  if (!makes.length && !risks.length && !checks.length) return "";
-  const label = makes.length ? "PART OF THE CELL THIS STATION IS RESPONSIBLE FOR"
-                             : "PART OF THE CELL THIS STATION CHECKS";
-  return `<div style="margin-top:14px;padding-top:13px;border-top:1px solid var(--border)">
-    <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint)">${label}</small>
-    <div class="makes">${makes.map(c => chip(c, "make")).join("")}${risks.map(c => chip(c, "risk")).join("")}${checks.map(c => chip(c, "check")).join("")}</div>
-    <p style="margin-top:7px;font-size:10.5px;color:var(--faint)">${makes.length ? "● built or shaped here" : ""}${risks.length ? (makes.length ? " · " : "") + "▲ most easily ruined here" : ""}${checks.length ? ((makes.length || risks.length) ? " · " : "") + "◆ measured or screened here" : ""} — click any chip to open it in the cell anatomy.</p>
-  </div>`;
-}
-
-function bindHotspots(st) {
-  document.querySelectorAll("#machineWrap .hot").forEach(g => {
-    const k = Number(g.dataset.k);
-    const go = () => setHot(st, k);
-    g.addEventListener("mouseenter", go);
-    g.addEventListener("focus", go);
-    g.addEventListener("click", go);
-    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
-    const p = st.parts[k];
-    if (p) g.setAttribute("aria-label", p[0] + " — " + p[1]);
-  });
-}
-function setHot(st, k) {
-  const p = st.parts[k];
-  if (!p) return;
-  hotIndex = k;
-  document.querySelectorAll("#machineWrap .hot").forEach(g =>
-    g.setAttribute("aria-current", Number(g.dataset.k) === k));
-  $("readout").innerHTML =
-    `<div class="num">${String(k + 1).padStart(2, "0")}</div>
-     <div><strong>${esc(p[0])}</strong><span>${p[2]}</span><em>${esc(p[1])}</em></div>`;
-}
-
-/* ---------------- rail ---------------- */
-function renderSliders() {
-  $("sliders").innerHTML = HEAD.map(k => {
-    const c = CTL[k], dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
-    return `<div class="slider" id="sw-${k}" data-in="${inWindow(k)}">
-      <label for="sl-${k}">${c.label}<b id="v-${k}">${S[k].toFixed(dec)}${c.unit}</b></label>
-      <input id="sl-${k}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${S[k]}"
-             aria-label="${c.label}">
-      <div id="wb-${k}">${windowBar(k)}</div>
-      <small>${c.note}</small>
-    </div>`;
-  }).join("");
-  HEAD.forEach(k => $("sl-" + k).addEventListener("input", e => {
-    S[k] = Number(e.target.value);
-    refresh();
-  }));
-}
-/* keep the rail in step when a station console moves a headline setpoint */
-function syncSliders() {
-  HEAD.forEach(k => {
-    const c = CTL[k], dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
-    const inp = $("sl-" + k), lab = $("v-" + k), wb = $("wb-" + k), wrap = $("sw-" + k);
-    if (inp) inp.value = S[k];
-    if (lab) lab.textContent = S[k].toFixed(dec) + c.unit;
-    if (wb) wb.innerHTML = windowBar(k);
-    if (wrap) wrap.dataset.in = inWindow(k);
-  });
-}
-function renderRail() {
-  const m = model();
-  $("gauge").style.setProperty("--v", m.yieldPct.toFixed(0));
-  $("yieldVal").textContent = m.yieldPct.toFixed(1);
-  const set = (t, b, v) => { $(t).textContent = Math.round(v) + "%"; $(b).style.width = clamp(v) + "%"; };
-  set("mUniT", "mUniB", m.uniformity);
-  set("mMoiT", "mMoiB", m.moisture);
-  set("mSafT", "mSafB", m.safety);
-  const a = $("advice");
-  a.dataset.level = m.level;
-  a.innerHTML = `<strong>${esc(m.head)}</strong><span>${m.body}</span>`;
-  const g = GEOM[route];
-  $("cellKpi").innerHTML = `
-    <div><small>Capacity</small><b>${m.cellAh.toFixed(1)}</b><span>Ah · ${g.name.toLowerCase()}</span></div>
-    <div><small>Porosity</small><b>${m.por.toFixed(0)}%</b><span>after calendering</span></div>
-    <div><small>Moisture</small><b>${m.ppm.toFixed(0)}</b><span>ppm into the dry room</span></div>
-    <div><small>Output</small><b>${m.gwh.toFixed(1)}</b><span>GWh/a, this line</span></div>`;
-}
-
-/* ---------------- navigation ---------------- */
-function go(id) {
-  current = id;
-  if (typeof id === "string" && id.startsWith("view:")) {
-    showView(id.slice(5));
-    renderNav();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    return;
-  }
-  $("layerView").hidden = true;
-  const st = STATIONS.find(s => s.id === id);
-  if (!st) {
-    $("overview").hidden = false; $("stationView").hidden = true;
-    $("crumbTitle").textContent = "Factory overview";
-    $("pillEnv").innerHTML = `<i></i><b>Line ready</b>`;
-    $("pillPos").textContent = "—";
-    renderOverview();
-  } else {
-    $("overview").hidden = true; $("stationView").hidden = false;
-    $("crumbTitle").textContent = st.title;
-    $("pillEnv").innerHTML = `<i></i><b>${esc(st.env.iso)}${st.env.dew !== "—" ? " · " + esc(st.env.dew) : ""}</b>`;
-    $("pillPos").textContent = (active().indexOf(st) + 1) + " of " + active().length;
-    renderStation(st);
-  }
-  renderNav();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-function refresh() {
-  renderRail();
-  syncSliders();
-  if (typeof current === "string" && current.startsWith("view:")) { showView(current.slice(5)); return; }
-  if (current) { const st = STATIONS.find(s => s.id === current); if (st) { renderStation(st); setHot(st, hotIndex); } }
-  else renderOverview();
-}
-document.addEventListener("click", e => {
-  const v = e.target.closest("[data-goview]");
-  if (v) { layerPick = v.dataset.goview; go("view:anatomy"); return; }
-  const b = e.target.closest("[data-go]");
-  if (b) go(b.dataset.go);
-});
-
-/* route switch — rebuilds the line */
-$("routeOpts").addEventListener("click", e => {
-  const b = e.target.closest("[data-route]");
-  if (!b) return;
-  route = b.dataset.route;
-  document.querySelectorAll("#routeOpts button").forEach(x =>
-    x.setAttribute("aria-pressed", x.dataset.route === route));
-  $("crumbRoute").textContent = GEOM[route].name.toUpperCase();
-  const st = typeof current === "string" && !current.startsWith("view:") ? STATIONS.find(s => s.id === current) : null;
-  if (st && !st.routes.includes(route)) current = null;
-  go(current);
-});
-
-/* run / pause */
-$("runBtn").addEventListener("click", () => {
-  running = !running;
-  $("runBtn").setAttribute("aria-pressed", running);
-  $("runBtn").textContent = running ? "⏸ Pause line" : "▶ Run line";
-  $("liveTag").textContent = running ? "● RUNNING" : "❚❚ HELD";
-  const w = $("machineWrap"); if (w) w.classList.toggle("is-run", running);
-});
-
-$("resetBtn").addEventListener("click", () => { S = { ...DEFAULTS }; renderSliders(); refresh(); });
-/* the machine schematic reacts to the setpoints that drive it */
-function machineStyle(st, m) {
-  const o = OPS[st.id];
-  return o && o.viz ? Object.entries(o.viz(m)).map(([k, v]) =>
-    `--${k}:${typeof v === "number" ? v.toFixed(1) : v}`).join(";") : "";
-}
-
-/* ---------------- guided tour ---------------- */
+};
+</script>
+<script>
 /* =====================================================================
-   TOUR ILLUSTRATIONS
-   One small drawing per stop, made to carry the point of that stop —
-   not a copy of the machine already on screen behind the panel.
-   Drawn with the same primitives and the same material palette as the
-   station schematics, so a colour always means the same substance.
+   RESPONSE CHARTS
+   Every curve below is produced by actually re-running the process model
+   across a setpoint's whole range — it is not a drawing. Move the knob and
+   the dot moves along the same curve the model just computed.
    ===================================================================== */
-const PIC_W = 372, PIC_H = 132;
-const pic = body => `<svg viewBox="0 13 ${PIC_W} ${PIC_H - 13}" role="img" aria-hidden="true">${body}</svg>`;
-/* a small arrow between stages */
-const pArrow = (x, y) => `<path class="mArrow" d="M${x} ${y}l10 0l-3 -3.5l7 3.5l-7 3.5l3 -3.5z"/>`;
 
-const TOURPIC = {
+function sweep(key, get, n = 60) {
+  const c = CTL[key], old = S[key], out = [];
+  for (let i = 0; i <= n; i++) {
+    const v = c.min + (c.max - c.min) * i / n;
+    S[key] = c.step >= 1 ? Math.round(v) : v;
+    out.push([S[key], get(model())]);
+  }
+  S[key] = old;
+  return out;
+}
 
-/* the whole line, one block per station, coloured by phase */
-line: () => pic(`
-  ${[...Array(15)].map((_, i) => {
-    const col = i < 6 ? "var(--warning)" : i < 10 ? "var(--elyte)" : "var(--green)";
-    const x = 16 + i * 23;
-    return `<rect x="${x}" y="${44 - (i % 3) * 3}" width="17" height="${40 + (i % 3) * 3}" rx="3"
-      fill="${col}" opacity="${0.35 + i * 0.04}"/>`;
-  }).join("")}
-  ${T(16, 34, "15 stations, 3 phases", "mTxt")}
-  ${T(16, 106, "electrode manufacturing", "mTxtS")}
-  ${T(150, 106, "assembly", "mTxtS")}
-  ${T(246, 106, "finishing", "mTxtS")}
-  <circle cx="20" cy="118" r="3.5" fill="var(--warning)"/>
-  <circle cx="154" cy="118" r="3.5" fill="var(--elyte)"/>
-  <circle cx="250" cy="118" r="3.5" fill="var(--green)"/>
-`),
+const W = 340, HH = 168, PL = 46, PR = 12, PT = 22, PB = 30;
 
-/* the five-layer repeat unit */
-stack: () => pic(`
-  ${[["var(--alu)", 10, "Al foil"], ["var(--cathode)", 22, "cathode"], ["var(--sep)", 12, "separator"],
-     ["var(--anode)", 26, "anode"], ["var(--copper)", 9, "Cu foil"]]
-    .reduce((acc, [c, h, n]) => {
-      const y = acc.y;
-      acc.s += `<rect x="24" y="${y}" width="150" height="${h}" rx="1.5" fill="${c}"/>` +
-               T(182, y + h / 2 + 3.5, n, "mTxtS");
-      acc.y = y + h + 4;
-      return acc;
-    }, { y: 16, s: "" }).s}
-  <rect x="20" y="12" width="158" height="99" rx="5" fill="none" stroke="var(--elyte)"
-    stroke-width="1.4" stroke-dasharray="5 4"/>
-  ${T(262, 44, "repeated", "mTxt")}${T(262, 58, "up to 120×", "mTxt")}
-  ${T(262, 76, "electrolyte fills", "mTxtS")}${T(262, 88, "every pore", "mTxtS")}
-  ${[0, 1, 2].map(i => `<rect x="${300 + i * 6}" y="${20 + i * 3}" width="52" height="${34 - i * 6}"
-     rx="3" fill="none" stroke="var(--border-strong)"/>`).join("")}`),
+function chartSVG(cf) {
+  const c = CTL[cf.x];
+  const runs = cf.series.map(s => sweep(cf.x, s.y));
+  const all = runs.flat().map(p => p[1]).filter(v => isFinite(v));
+  let lo = cf.lo != null ? cf.lo : Math.min(...all);
+  let hi = cf.hi != null ? cf.hi : Math.max(...all);
+  if (cf.good) { lo = Math.min(lo, cf.good[0]); hi = Math.max(hi, cf.good[1]); }
+  if (cf.limit != null) { lo = Math.min(lo, cf.limit); hi = Math.max(hi, cf.limit); }
+  if (hi - lo < 1e-9) hi = lo + 1;
+  const pad = (hi - lo) * 0.1; lo -= pad; hi += pad;
 
-/* powder → slurry → coated web → cell */
-chain: () => pic(`
-  ${C(34, 54, 15, "mSteel2")}
-  <g class="bob">${C(29, 52, 4, "mAn")}${C(38, 57, 3.5, "mCa")}${C(34, 48, 3, "mDark")}</g>
-  ${T(16, 90, "powder", "mTxtS")}
-  ${pArrow(56, 54)}
-  ${R(78, 40, 34, 28, "mGlass", 4)}<path class="mLine" d="M78 50q17 7 34 0"/>
-  ${T(78, 90, "slurry", "mTxtS")}
-  ${pArrow(120, 54)}
-  ${REEL(158, 54, 15, "mCu")}<path class="mWeb" d="M173 54l38 0"/>
-  ${T(140, 90, "coated web", "mTxtS")}
-  ${pArrow(214, 54)}
-  ${R(238, 34, 30, 40, "mSteel2", 4)}
-  ${[0, 1, 2, 3].map(i => `<rect x="242" y="${39 + i * 8}" width="22" height="3" rx="1"
-     fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>`).join("")}
-  ${T(232, 90, "stack", "mTxtS")}
-  ${pArrow(274, 54)}
-  ${R(298, 30, 40, 48, "mSteel", 6)}${R(310, 22, 16, 9, "mAl", 2)}
-  ${T(296, 90, "packed cell", "mTxtS")}
-  ${T(16, 20, "one material, changed at every station", "mTxt")}`),
+  const px = v => PL + (v - c.min) / (c.max - c.min) * (W - PL - PR);
+  const py = v => PT + (1 - (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo)) * (HH - PT - PB);
+  const dp = cf.dp != null ? cf.dp : 0;
 
-/* two powders, kept apart */
-powders: () => pic(`
-  ${R(24, 36, 116, 62, "mSteel2", 6)}
-  <g class="bob">${C(56, 62, 8, "mAn")}${C(82, 70, 7, "mAn")}${C(106, 60, 6, "mAn")}</g>
-  ${T(32, 112, "graphite · negative", "mTxtS")}
-  ${R(230, 36, 116, 62, "mSteel2", 6)}
-  <g class="bob">${C(262, 62, 8, "mCa")}${C(288, 70, 7, "mCa")}${C(312, 60, 6, "mCa")}</g>
-  ${T(238, 112, "NMC · positive", "mTxtS")}
-  <path class="mLead" d="M186 34l0 72" stroke-dasharray="4 4"/>
-  ${T(186, 66, "separate", "mTxtS", "middle")}${T(186, 80, "rooms", "mTxtS", "middle")}`),
+  /* the band of outcomes you are allowed to land in */
+  let band = "";
+  if (cf.good) {
+    const y1 = py(Math.min(cf.good[1], hi)), y2 = py(Math.max(cf.good[0], lo));
+    band = `<rect x="${PL}" y="${y1}" width="${W - PL - PR}" height="${Math.max(1, y2 - y1)}"
+      fill="color-mix(in srgb,var(--primary) 10%,transparent)"/>
+      <text class="cLab" x="${W - PR - 3}" y="${y1 + 11}" text-anchor="end" fill="var(--primary)">${esc(cf.goodLabel || "acceptable")}</text>`;
+  }
+  let limit = "";
+  if (cf.limit != null) limit = `<line x1="${PL}" y1="${py(cf.limit)}" x2="${W - PR}" y2="${py(cf.limit)}"
+      stroke="var(--destructive)" stroke-width="1.4" stroke-dasharray="4 3"/>
+      <text class="cLab" x="${PL + 3}" y="${py(cf.limit) - 4}" fill="var(--destructive)">${esc(cf.limitLabel || "limit")}</text>`;
+  /* a hard boundary on the setpoint itself, e.g. a regulatory ceiling */
+  let xmark = "";
+  if (cf.xMark != null) xmark = `<rect x="${px(cf.xMark)}" y="${PT}" width="${W - PR - px(cf.xMark)}"
+      height="${HH - PT - PB}" fill="color-mix(in srgb,var(--destructive) 8%,transparent)"/>
+      <line x1="${px(cf.xMark)}" y1="${PT}" x2="${px(cf.xMark)}" y2="${HH - PB}" stroke="var(--destructive)" stroke-width="1.4"/>
+      <text class="cLab" x="${px(cf.xMark) + 4}" y="${PT + 10}" fill="var(--destructive)">${esc(cf.xMarkLabel || "not allowed")}</text>`;
 
-/* slot die laying a film on foil */
-die: () => pic(`
+  /* is an outcome value acceptable? drives the colour of the curve */
+  const okAt = v => cf.good ? (v >= cf.good[0] && v <= cf.good[1])
+    : cf.limit != null ? v <= cf.limit
+    : true;
+  const hasState = !!(cf.good || cf.limit != null);
+
+  /* the curves — the primary one is drawn in two colours, so the part of
+     the range that lands out of specification is red on the chart itself */
+  const lines = runs.map((pts, i) => {
+    const s = cf.series[i];
+    if (i > 0 || !hasState) {
+      const d = pts.map((p, j) => `${j ? "L" : "M"}${px(p[0]).toFixed(1)} ${py(p[1]).toFixed(1)}`).join("");
+      return `<path d="${d}" fill="none" stroke="${s.col || "var(--primary)"}" stroke-width="2.2"
+        stroke-linejoin="round" stroke-linecap="round" ${s.dash ? 'stroke-dasharray="5 4"' : ""}/>`;
+    }
+    let dIn = "", dOut = "";
+    for (let j = 1; j < pts.length; j++) {
+      const a = pts[j - 1], b = pts[j];
+      const seg = `M${px(a[0]).toFixed(1)} ${py(a[1]).toFixed(1)}L${px(b[0]).toFixed(1)} ${py(b[1]).toFixed(1)}`;
+      if (okAt(a[1]) && okAt(b[1])) dIn += seg; else dOut += seg;
+    }
+    return `<path d="${dOut}" fill="none" stroke="var(--destructive)" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="${dIn}" fill="none" stroke="${s.col || "var(--primary)"}" stroke-width="2.2" stroke-linecap="round"/>`;
+  }).join("");
+
+  /* where you are standing right now */
+  const m = model(), xv = S[cf.x];
+  const dots = cf.series.map((s, i) => {
+    const v = s.y(m);
+    const off = i === 0 && hasState && !okAt(v);
+    return `<circle cx="${px(xv)}" cy="${py(v)}" r="${off ? 5.4 : 4.6}"
+      fill="${off ? "var(--destructive)" : "#fff"}" stroke="${off ? "var(--destructive)" : (s.col || "var(--primary)")}" stroke-width="2.4"/>`;
+  }).join("");
+  const curOff = hasState && !okAt(cf.series[0].y(m));
+
+  /* legend */
+  const leg = cf.series.length > 1 ? cf.series.map((s, i) =>
+    `<g transform="translate(${PL + i * 132} ${HH - 4})">
+       <line x1="0" y1="-3" x2="13" y2="-3" stroke="${s.col}" stroke-width="2.2" ${s.dash ? 'stroke-dasharray="4 3"' : ""}/>
+       <text class="cLab" x="17" y="0">${esc(s.label)}</text></g>`).join("") : "";
+
+  const cur = cf.series[0].y(m);
+  const xdp = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+  /* axis labels: the current-value tick wins, and any end label it would
+     collide with is dropped rather than drawn on top of it */
+  const tw = t => String(t).length * 5.0;                      /* ≈ width at 9 px */
+  const loTxt = `${c.min}${c.unit || ""}`, hiTxt = `${c.max}${c.unit || ""}`;
+  const nowTxt = xv.toFixed(xdp);
+  const nowX = Math.max(PL + tw(nowTxt) / 2, Math.min(W - PR - tw(nowTxt) / 2, px(xv)));
+  const nowL = nowX - tw(nowTxt) / 2 - 5, nowR = nowX + tw(nowTxt) / 2 + 5;
+  const loLab = nowL > PL + tw(loTxt)
+    ? `<text class="cAx" x="${PL}" y="${HH - PB + 13}">${esc(loTxt)}</text>` : "";
+  const hiLab = nowR < W - PR - tw(hiTxt)
+    ? `<text class="cAx" x="${W - PR}" y="${HH - PB + 13}" text-anchor="end">${esc(hiTxt)}</text>` : "";
+  return `<figure class="chart" data-off="${curOff}">
+    <figcaption><b>${esc(cf.title)}</b><span>${esc(c.label)} → ${esc(cf.series[0].label)}</span></figcaption>
+    <svg viewBox="0 0 ${W} ${HH}" role="img" aria-label="${esc(cf.title)}: ${esc(c.label)} against ${esc(cf.series[0].label)}">
+      <line x1="${PL}" y1="${PT}" x2="${PL}" y2="${HH - PB}" stroke="var(--border-strong)"/>
+      <line x1="${PL}" y1="${HH - PB}" x2="${W - PR}" y2="${HH - PB}" stroke="var(--border-strong)"/>
+      ${band}${xmark}${limit}${lines}
+      <line x1="${px(xv)}" y1="${PT}" x2="${px(xv)}" y2="${HH - PB}" stroke="var(--foreground)" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>
+      ${dots}
+      ${loLab}${hiLab}
+      <text class="cNow" x="${nowX}" y="${HH - PB + 13}" text-anchor="middle">${xv.toFixed(xdp)}</text>
+      ${leg}
+      <text class="cAx" x="${PL - 5}" y="${py(hi - pad) + 4}" text-anchor="end">${(hi - pad).toFixed(dp)}</text>

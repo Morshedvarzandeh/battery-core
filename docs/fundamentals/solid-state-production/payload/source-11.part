@@ -1,0 +1,152 @@
+  const jArea = S.cRate * capC;                                   /* mA/cm² during formation */
+  const jCrit = (oxide ? 1.1 : sulf ? 0.9 : hal ? 0.8 : 0.45) * (1 + S.stackF / 14)
+              * (1 + Math.max(0, S.cellT - 25) / 90) * (S.sseTh / 25) ** 0.25;
+  const dendrite = clamp((jArea / jCrit) * 55, 0, 140);           /* >100 = through-growth */
+
+  /* --- drying, on the routes that cast a slurry ---------------------------- */
+  const solvRes = (oxide || ductile) ? Math.max(0, 108 - S.dryT) * 3.4 + Math.max(0, S.dryT - 150) * 2.0 : 0;
+
+  /* --- cutting and handling ---------------------------------------------- */
+  const lineE = S.laserP / Math.max(1, S.cutSpd) * 0.06;          /* J/mm proxy */
+  const meltRisk = S.cutMode ? 0 : clamp((lineE - 1.1) * 55, 0, 100);
+  const delam = S.cutMode ? clamp((S.cutSpd - 60) * 0.7 + 18, 0, 100) : clamp((1.1 - lineE) * 45, 0, 100);
+  const edgeQ = clamp(100 - meltRisk * 0.75 - delam * 0.45);
+  /* separation cuts a second time, and punching fails differently from laser */
+  const meltSep = S.sepMode ? 0 : meltRisk;
+  const delamSep = S.sepMode ? clamp(26 + Math.max(0, S.cutSpd - 60) * 0.55, 0, 100) : delam;
+  const edgeSep = clamp(100 - meltSep * 0.85 - delamSep * 0.45);
+
+  /* --- assembly ---------------------------------------------------------- */
+  const alignRisk = Math.max(0, S.stackAcc - 300) * 0.16 + Math.max(0, 0.6 - S.stackSpd) * 12
+                  + Math.max(0, S.stackSpd - 1) * 6;   /* guide requires under 1 s per sheet */
+  const weldQ = clamp(100 - Math.abs(S.weldP - 1600) / 34 - Math.max(0, S.weldP - 3200) * 0.02);
+  const sealQ = clamp(100 - Math.abs(S.sealT - 190) * 1.2 - Math.max(0, S.drawD - 10) * 6);
+
+  /* --- formation and aging ------------------------------------------------ */
+  const interQ = clamp(100 - Math.max(0, S.cRate - 0.12) * 150 - Math.max(0, dendrite - 55) * 0.5
+                     - Math.max(0, rTot - 60) * 0.14 - Math.max(0, 90 - aldQ) * 0.28);
+  const screen = clamp(30 + S.ageDays * 5.2 + (S.ageT - 25) * 0.9 + (S.ageSOC - 20) * 0.22);
+  const escape = Math.max(0, 92 - screen) * 0.07;
+
+  /* --- lithium handling ---------------------------------------------------- */
+  const liRisk = S.passiv ? 0 : 22;                              /* unpassivated foil, inert gas everywhere */
+  const foilQ = clamp(100 - Math.abs(S.extT - 70) * 0.5 - Math.max(0, 3000 - S.pistF) * 0.006
+                    - Math.max(0, S.pistF - 9000) * 0.008);
+  const lamQ = clamp(58 + (S.lamP / 2500) * 36 + (S.lamT - 20) * 0.30 - Math.max(0, S.lamP - 2200) * 0.03);
+
+  /* --- coating ------------------------------------------------------------- */
+  const wetNeed = oxide || ductile ? S.cathTh / 0.42 : 0;
+  const coatErr = oxide || ductile
+    ? 0.6 + Math.abs(S.gapH - wetNeed) * 0.05 + (S.bandSpd - 25) * 0.016 + (100 - disp) * 0.05
+    : 0.6 + Math.abs(S.meltDT - 8) * 0.09 + Math.abs(S.extP - 90) * 0.012 + (100 - disp) * 0.05;
+
+  /* --- scores --------------------------------------------------------------- */
+  const uniformity = clamp(100 - Math.max(0, coatErr - 1) * 9 - (100 - disp) * 0.3 - (100 - layerDens) * 0.5
+                     - (route === "oxide" ? 0 : Math.max(0, 90 - dryFilmQ) * 0.35));
+  const interfaces = clamp(100 - Math.max(0, rTot - 40) * 0.28 - (100 - contact) * 0.35);
+  const safety     = clamp(100 - Math.max(0, dendrite - 45) * 0.9
+                     - Math.max(0, 100 - edgeQ) * 0.28 - Math.max(0, 100 - edgeSep) * 0.28
+                     - alignRisk * 1.4 - liRisk * 0.6 - (np < 1 ? (1 - np) * 120 : 0));
+  const yieldPct   = clamp(99.4
+                     - Math.max(0, coatErr - 2) * 3.2
+                     - Math.max(0, 100 - edgeQ) * 0.10 - Math.max(0, 100 - edgeSep) * 0.10
+                     - solvRes * 0.05 - liRisk * 0.10
+                     - Math.max(0, dendrite - 60) * 0.35
+                     - Math.max(0, 88 - lamQ) * 0.22
+                     - Math.max(0, 90 - foilQ) * 0.16
+                     - Math.max(0, 60 - contact) * 0.30
+                     - Math.max(0, 94 - weldQ) * 0.2 - Math.max(0, 94 - sealQ) * 0.2
+                     - alignRisk - escape * 2
+                     - (oxide && !grainOK ? 5 : 0)
+                     - Math.max(0, polyDeg) * 0.3, 50, 99.4);
+
+  /* --- the worst problem, in plain language ---------------------------------- */
+  let level = "ok", head = "Model inside the training window", body =
+    `Interfacial resistance ${rInt.toFixed(0)} Ω·cm², total ${rTot.toFixed(0)} Ω·cm², contact ${contact.toFixed(0)}%, stack voltage ${vCell.toFixed(1)} V.`;
+  const flag = (c, lv, h, b) => { if (c) { level = lv; head = h; body = b; } };
+
+  flag(disp < 82, "warn", "Mixture not fully homogeneous",
+    `Dispersion index ${disp.toFixed(0)}%. Agglomerates survive into the layer and print through as thickness scatter.`);
+  flag(oxide && partSize > 6, "warn", "Particle size still coarse",
+    `${partSize.toFixed(1)} µm after grinding. Coarse powder sinters unevenly and leaves a rough, resistive interface.`);
+  flag(coatErr > 2, "warn", "Layer thickness scatter high",
+    `Predicted scatter ±${coatErr.toFixed(1)} g/m². Thickness accuracy along and across the web is the headline quality feature of this station.`);
+  flag(lamQ < 88, "warn", "Lithium lamination weak",
+    `Bond index ${lamQ.toFixed(0)}%. Raise line pressure or temper the rollers — heat, not just pressure, makes this bond.`);
+  flag(!S.passiv, "warn", "Lithium foil is not passivated",
+    "Without a passivation layer the whole downstream line has to stay under inert gas rather than in a dry room. That is a large facility cost.");
+  flag(contact < 60, "warn", "Interfaces are not properly in contact",
+    `Contact index ${contact.toFixed(0)}%. A solid cell has no liquid to wet its pores, so pressure and density are key controls on the interface.`);
+  flag(oxide && !grainOK, "warn", "Sintering outside the useful band",
+    `${S.sintT} °C. Too low and the particles do not grow together; too high and grains coarsen and the materials fight each other.`);
+  flag(solvRes > 40, "warn", "Solvent not fully driven off",
+    `Dryer at ${S.dryT} °C against a 50–160 °C profile. Residual solvent in the layer is the reason the guide asks for a drying step and a recovery option.`);
+  flag(edgeSep < 70, "warn", "Separation edge quality poor",
+    S.sepMode ? "Punching is deflecting and delaminating the film at this speed."
+              : "Laser energy at separation is off — and here the failure is specific: melted layers connect anode to cathode.");
+  flag(edgeQ < 70, "warn", "Slitting edge quality poor",
+    S.cutMode ? "The rolling knife is deflecting the substrate and delaminating the coating."
+              : "Laser energy is off: too little leaves a ragged edge, too much melts the layers together.");
+  flag(rTot > 120, "bad", "Cell resistance too high to be useful",
+    `${rTot.toFixed(0)} Ω·cm² total. Either the interfaces are not in contact or the electrolyte layer is too thick for its conductivity.`);
+  flag(np < 1, "bad", "Lithium anode under-sized",
+    `N/P ratio ${np.toFixed(2)}. There is less lithium in the foil than the catholyte will demand.`);
+  flag(!S.cutMode && meltRisk > 55, "bad", "Laser is melting the layers together",
+    "Melting the layer materials connects them electrically. That is a short circuit built at the cutting station.");
+  flag(dendrite > 100, "bad", "Lithium is growing through the electrolyte",
+    `Current density ${jArea.toFixed(2)} mA/cm² against a critical value near ${jCrit.toFixed(2)}. Lower the first-cycle rate, raise the pressure, or use a thicker electrolyte.`);
+
+  return { fibril, dryFilmQ, aldNm, aldOK, aldQ, compDens,
+           partSize, disp, polyDeg, layerDens, grainOK, contact, rInt, rBulk, rTot,
+           capC, capA, np, vCell, cellAh, cellWh, wgrav, wvol, unitTh,
+           jArea, jCrit, dendrite, lineE, meltRisk, delam, edgeQ, meltSep, delamSep, edgeSep, solvRes,
+           alignRisk, weldQ, sealQ, interQ, screen, escape, liRisk, foilQ, lamQ,
+           wetNeed, coatErr, uniformity, interfaces, safety, yieldPct, level, head, body };
+}
+</script>
+<script>
+/* =====================================================================
+   THE BIG PICTURE LAYER — all-solid-state cell
+   1. REFS       — every number in this simulator points at a source
+   2. COMPONENTS — the cell, layer by layer, and which station builds it
+   3. FLOW       — one material chain, ingot to released cell
+   ===================================================================== */
+
+/* ---------------- 1 · references ---------------- */
+const REFS = [
+  { n:1, tag:"PEM/VDMA 2026", txt:"Heimes, H. H.; Kampker, A.; Born, H.; Plumeyer, J. F.; Kim, D.; Smulka, M.; Michaelis, S.; Rothhagen, B. <em>Production of a Solid-State Battery Cell</em>, 3rd ed.; PEM of RWTH Aachen University &amp; VDMA: Aachen, February 2026. ISBN 978-3-947920-75-4.",
+    use:"Every process step, parameter range, atmosphere, quality feature, challenge, technology alternative and LIB-transferability rating in this simulator.",
+    url:"https://www.vdma.eu/en/battery-production-equipment" },
+  { n:2, tag:"Nat. Energy 2016", txt:"Janek, J.; Zeier, W. G. A solid future for battery development. <em>Nat. Energy</em> <b>2016</b>, <em>1</em> (9), 16141.",
+    use:"Why a solid electrolyte changes the cell design at all: bipolar stacking, the loss of the porous separator, the interface problem.",
+    url:"https://doi.org/10.1038/nenergy.2016.141" },
+  { n:3, tag:"Nat. Energy 2023", txt:"Janek, J.; Zeier, W. G. Challenges in speeding up solid-state battery development. <em>Nat. Energy</em> <b>2023</b>, <em>8</em> (3), 230–240.",
+    use:"Where the real bottlenecks sit — interfaces, pressure, scale-up — and why no established process chain exists yet.",
+    url:"https://doi.org/10.1038/s41560-023-01208-9" },
+  { n:4, tag:"Chem. Rev. 2020", txt:"Krauskopf, T.; Richter, F. H.; Zeier, W. G.; Janek, J. Physicochemical Concepts of the Lithium Metal Anode in Solid-State Batteries. <em>Chem. Rev.</em> <b>2020</b>, <em>120</em> (15), 7745–7794.",
+    use:"Lithium metal against a solid electrolyte: contact loss, void formation, and why current density has a critical value.",
+    url:"https://doi.org/10.1021/acs.chemrev.0c00431" },
+  { n:5, tag:"Adv. Energy Mater. 2020", txt:"Doux, J.-M.; Nguyen, H.; Tan, D. H. S.; Banerjee, A.; Wang, X.; Wu, E. A.; Jo, C.; Yang, H.; Meng, Y. S. Stack Pressure Considerations for Room-Temperature All-Solid-State Lithium Metal Batteries. <em>Adv. Energy Mater.</em> <b>2020</b>, <em>10</em> (1), 1903253.",
+    use:"Stack pressure as a process variable: about 5 MPa gave over 1 000 h of stable plating and stripping.",
+    url:"https://doi.org/10.1002/aenm.201903253" },
+  { n:6, tag:"Nat. Mater. 2019", txt:"Kasemchainan, J.; Zekoll, S.; Spencer Jolly, D.; Ning, Z.; Hartley, G. O.; Marrow, J.; Bruce, P. G. Critical stripping current leads to dendrite formation on plating in lithium anode solid electrolyte cells. <em>Nat. Mater.</em> <b>2019</b>, <em>18</em> (12), 1105–1111.",
+    use:"Critical current density rose from 0.2 to 1 mA/cm² as stack pressure went from 3 to 7 MPa — the pressure–dendrite link this simulator models.",
+    url:"https://doi.org/10.1038/s41563-019-0438-9" },
+  { n:7, tag:"J. Power Sources 2018", txt:"Schnell, J.; Günther, T.; Knoche, T.; Vieider, C.; Köhler, L.; Just, A.; Keller, M.; Passerini, S.; Reinhart, G. All-solid-state lithium-ion and lithium metal batteries — paving the way to large-scale production. <em>J. Power Sources</em> <b>2018</b>, <em>382</em>, 160–175.",
+    use:"Process-chain thinking for solid-state manufacturing, and which lithium-ion equipment carries over.",
+    url:"https://doi.org/10.1016/j.jpowsour.2018.02.062" },
+  { n:8, tag:"Nat. Energy 2020", txt:"Randau, S.; Weber, D. A.; Kötz, O.; Koerver, R.; Braun, P.; Weber, A.; Ivers-Tiffée, E.; Adermann, T.; Kulisch, J.; Zeier, W. G.; Richter, F. H.; Janek, J. Benchmarking the performance of all-solid-state lithium batteries. <em>Nat. Energy</em> <b>2020</b>, <em>5</em> (3), 259–270.",
+    use:"What solid-state cells actually achieve — the reality check behind the energy-density figures shown here.",
+    url:"https://doi.org/10.1038/s41560-020-0565-1" },
+  { n:9, tag:"Nat. Energy 2018", txt:"Albertus, P.; Babinec, S.; Litzelman, S.; Newman, A. Status and challenges in enabling the lithium metal electrode for high-energy and low-cost rechargeable batteries. <em>Nat. Energy</em> <b>2018</b>, <em>3</em> (1), 16–21.",
+    use:"Why lithium metal is the prize and the problem, and how much excess lithium a real cell can afford.",
+    url:"https://doi.org/10.1038/s41560-017-0047-2" },
+  { n:10, tag:"Nat. Mater. 2011", txt:"Kamaya, N.; Homma, K.; Yamakawa, Y.; Hirayama, M.; Kanno, R.; Yonemura, M.; Kamiyama, T.; Kato, Y.; Hama, S.; Kawamoto, K.; Mitsui, A. A lithium superionic conductor. <em>Nat. Mater.</em> <b>2011</b>, <em>10</em> (9), 682–686.",
+    use:"Sulfide conductivity: Li₁₀GeP₂S₁₂ at 1.2 × 10⁻² S/cm — the reason sulfide leads on ionic conductivity.",
+    url:"https://doi.org/10.1038/nmat3066" },
+  { n:11, tag:"Angew. Chem. 2007", txt:"Murugan, R.; Thangadurai, V.; Weppner, W. Fast Lithium Ion Conduction in Garnet-Type Li₇La₃Zr₂O₁₂. <em>Angew. Chem. Int. Ed.</em> <b>2007</b>, <em>46</em> (41), 7778–7781.",
+    use:"Oxide conductivity: garnet LLZO at about 3 × 10⁻⁴ S/cm, roughly an order below sulfide.",
+    url:"https://doi.org/10.1002/anie.200701144" },
+  { n:12, tag:"Commun. Chem. 2023", txt:"Klimpel, M.; Zhang, H.; Kovalenko, M. V.; Kravchyk, K. V. Standardizing critical current density measurements in lithium garnets. <em>Commun. Chem.</em> <b>2023</b>, <em>6</em>, 192.",
+    use:"Critical current density in garnet is commonly quoted near 0.3–1 mA/cm², but there is no standard protocol — reported values vary widely.",
+    url:"https://doi.org/10.1038/s42004-023-01002-4" },

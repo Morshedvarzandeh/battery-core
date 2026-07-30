@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A guided route through Battery Core Chapter 1, from cell anatomy and ratings to production and aging.">
+  <meta name="theme-color" content="#07131d">
+  <link rel="canonical" href="https://morshedvarzandeh.github.io/battery-core/chapter-1/">
+  <link rel="stylesheet" href="../assets/site.css">
+  <title>Chapter 1 Study Guide — Battery Core</title>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the study guide</a>
+
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="Battery Core home">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span>Battery Core</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../">Home</a>
+      <a href="#sequence" aria-current="page">Study guide</a>
+      <a href="#checkpoint">Chapter checkpoint</a>
+      <a href="https://github.com/Morshedvarzandeh/battery-core">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="guide-hero" aria-labelledby="guide-title">
+      <div>
+        <p class="eyebrow">Chapter 1 · Battery cell foundations</p>
+        <h1 id="guide-title">See the cell, quantify it, build it, then understand how it ages.</h1>
+        <p class="hero-summary">This study guide connects six finished modules into one learning sequence. Follow the parts in order, use the checkpoints to test your understanding, and return to any module when a link is not yet clear.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#sequence">Begin with Part 01</a>
+          <a class="button button-secondary" href="#checkpoint">View the final checkpoint</a>
+        </div>
+      </div>
+
+      <aside class="chapter-status" aria-label="Chapter 1 completion summary">
+        <p class="format">Chapter status</p>
+        <strong>6 of 6 modules available</strong>
+        <div class="progress-track" role="progressbar" aria-label="Chapter 1 module availability" aria-valuemin="0" aria-valuemax="6" aria-valuenow="6">
+          <span></span>
+        </div>
+        <dl>
+          <div><dt>Start with</dt><dd>Cell structure</dd></div>
+          <div><dt>Finish with</dt><dd>Aging</dd></div>
+          <div><dt>Formats</dt><dd>Browser + notebook</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <section class="section guide-intro" aria-labelledby="guide-use-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">How to use this chapter</p>
+          <h2 id="guide-use-title">One question leads to the next.</h2>
+        </div>
+        <p>Each part adds one layer of understanding. The two “B” modules deepen the preceding topic without breaking the main sequence.</p>
+      </div>
+
+      <ol class="question-path">
+        <li><span>01</span><p><strong>What is inside a cell?</strong> Name the components and trace charge/discharge paths.</p></li>
+        <li><span>02</span><p><strong>How is cell output rated?</strong> Connect capacity, current, C-rate, and ideal duration.</p></li>
+        <li><span>03</span><p><strong>How is a cell made?</strong> Compare conventional lithium-ion and solid-state production routes.</p></li>
+        <li><span>04</span><p><strong>Why does performance change?</strong> Link operating conditions to degradation signals.</p></li>
+      </ol>
+    </section>
+
+    <section id="sequence" class="section" aria-labelledby="sequence-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Study sequence</p>
+          <h2 id="sequence-title">Complete Chapter 1 in order.</h2>
+        </div>
+        <p>For every part: learn the core idea, interact with the model, then answer the checkpoint before moving on.</p>
+      </div>
+
+      <div class="study-sequence">
+        <article class="study-step">
+          <div class="study-step-number"><span>Part</span><strong>01</strong></div>
+          <div class="study-step-copy">
+            <p class="format">Interactive browser workbench · Foundation</p>
+            <h3>Cell anatomy and charge/discharge paths</h3>
+            <p>Identify the electrodes, collectors, separator, and electrolyte, then distinguish the electron path from the lithium-ion path.</p>
+            <div class="study-prompts">
+              <p><strong>Focus:</strong> component function and direction conventions.</p>
+              <p><strong>Checkpoint:</strong> Can you explain why electrons use the external circuit while lithium ions move inside the cell?</p>
+            </div>
+            <a class="card-action" href="../fundamentals/cell-anatomy-workbench/">Launch Part 01 <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+
+        <article class="study-step study-step-deeper">
+          <div class="study-step-number"><span>Part</span><strong>01B</strong></div>
+          <div class="study-step-copy">
+            <p class="format">Interactive browser tutorial · Deeper view</p>
+            <h3>Lithium-ion cell architecture</h3>
+            <p>Move from the five-layer stack into porous electrodes, pore electrolyte, solvent molecules, ions, and transport paths.</p>
+            <div class="study-prompts">
+              <p><strong>Builds on:</strong> the components and paths from Part 01.</p>
+              <p><strong>Checkpoint:</strong> Can you explain why electrolyte in electrode pores is not a sixth structural layer?</p>
+            </div>
+            <a class="card-action" href="../fundamentals/lithium-ion-cell-architecture/">Launch Part 01B <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+
+        <article class="study-step">
+          <div class="study-step-number"><span>Part</span><strong>02</strong></div>
+          <div class="study-step-copy">
+            <p class="format">Python API + Jupyter notebook · Quantitative foundation</p>
+            <h3>Nominal capacity and C-rate</h3>
+            <p>Calculate current, C-rate, and ideal constant-current duration while keeping exact definitions separate from real cutoff behavior.</p>
+            <div class="study-prompts">
+              <p><strong>Focus:</strong> units, proportional reasoning, and model limits.</p>
+              <p><strong>Checkpoint:</strong> Can you calculate the current for a 5 Ah cell at 2C and state why the real runtime may differ?</p>
+            </div>
+            <a class="card-action" href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb">Launch Part 02 in Binder <span aria-hidden="true">→</span></a>
+            <p class="launch-note">Binder's first launch may take a few minutes.</p>
+          </div>
+        </article>
+
+        <article class="study-step">
+          <div class="study-step-number"><span>Part</span><strong>03</strong></div>
+          <div class="study-step-copy">
+            <p class="format">Interactive production simulator · Process chain</p>
+            <h3>Lithium-ion battery production</h3>
+            <p>Follow reference graphite/NMC routes through electrode manufacturing, assembly, formation, aging, grading, and final testing.</p>
+            <div class="study-prompts">
+              <p><strong>Focus:</strong> material flow, process windows, and quality dependencies.</p>
+              <p><strong>Checkpoint:</strong> Can you identify one upstream process change that affects a downstream cell-quality signal?</p>
+            </div>
+            <a class="card-action" href="../fundamentals/battery-production/">Launch Part 03 <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+
+        <article class="study-step study-step-deeper">
+          <div class="study-step-number"><span>Part</span><strong>03B</strong></div>
+          <div class="study-step-copy">
+            <p class="format">Interactive route-comparison simulator · Deeper view</p>
+            <h3>All-solid-state cell production</h3>
+            <p>Compare how oxide, halide, sulfide, and polymer electrolyte choices change the line, atmosphere, interfaces, and process challenges.</p>
+            <div class="study-prompts">
+              <p><strong>Builds on:</strong> the production logic from Part 03.</p>
+              <p><strong>Checkpoint:</strong> Can you explain why choosing a solid electrolyte changes the required machines rather than merely replacing one material?</p>
+            </div>
+            <a class="card-action" href="../fundamentals/solid-state-production/">Launch Part 03B <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+
+        <article class="study-step">
+          <div class="study-step-number"><span>Part</span><strong>04</strong></div>
+          <div class="study-step-copy">
+            <p class="format">Interactive Jupyter notebook · Chapter synthesis</p>
+            <h3>Battery aging</h3>
+            <p>Connect degradation mechanisms to capacity loss, impedance rise, self-discharge, temperature, and cycling conditions through explicitly illustrative models.</p>
+            <div class="study-prompts">
+              <p><strong>Focus:</strong> mechanism, observable signal, and operating condition.</p>
+              <p><strong>Checkpoint:</strong> Can you distinguish capacity fade from impedance rise and name a condition that can accelerate each?</p>
+            </div>
+            <a class="card-action" href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb">Launch Part 04 in Binder <span aria-hidden="true">→</span></a>
+            <p class="launch-note">Binder's first launch may take a few minutes.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="checkpoint" class="section" aria-labelledby="checkpoint-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Chapter checkpoint</p>
+          <h2 id="checkpoint-title">Connect the whole cell story.</h2>
+        </div>
+        <p>Chapter 1 is complete when you can connect structure, rating, production, and aging without treating them as isolated topics.</p>
+      </div>
+
+      <div class="checkpoint-grid">
+        <article>
+          <span class="principle-number">01</span>
+          <h3>Trace</h3>
+          <p>Trace electron and lithium-ion paths through a cell during charge and discharge.</p>
+        </article>
+        <article>
+          <span class="principle-number">02</span>
+          <h3>Calculate</h3>
+          <p>Use capacity and C-rate to calculate current and ideal duration with correct units.</p>
+        </article>
+        <article>
+          <span class="principle-number">03</span>
+          <h3>Compare</h3>
+          <p>Compare a conventional lithium-ion route with one solid-state route and explain the changed process steps.</p>
+        </article>
+        <article>
+          <span class="principle-number">04</span>
+          <h3>Connect</h3>
+          <p>Connect an operating condition to a degradation mechanism and then to an observable performance signal.</p>
+        </article>
+      </div>
+
+      <div class="closing guide-closing">
+        <p class="eyebrow">Chapter 1 complete</p>
+        <h2>Ready to model terminal behavior?</h2>
+        <p>Chapter 2 will build equivalent-circuit models from terminal-voltage conventions and open-circuit voltage through resistance, dynamic RC behavior, parameter identification, and validation.</p>
+        <a class="button button-primary" href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LEARNING_PATH.md">View the full learning roadmap</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Battery Core · Chapter 1 study guide</p>
+    <div><a href="../">Course home</a><a href="https://github.com/Morshedvarzandeh/battery-core">Source</a><a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">MIT License</a></div>
+  </footer>
+</body>
+</html>

@@ -1,126 +1,110 @@
-{ id:"degassing", no:"13", phase:"Cell finishing", title:"Degassing", machine:"degassing", routes:"pouch",
-  env:{iso:"Normal factory air", dew:"not controlled", temp:"22 ± 3 °C"}, cost:"€ 10–15 M", takt:"—",
-  purpose:"Remove the gas that formation produced and close the cell to its final dimensions.",
-  inp:"Formed cell with full gas bag", out:"Sealed cell, final size",
+  qFeat:["Layer thickness accuracy and homogeneity","Surface quality — voids, particles","Adhesion between coating and substrate","Surface condition — cracks","Constant weight per unit area"],
+  sop:["Confirm the dry mix has been fibrillated, not merely blended","Warm the rolls to the setpoint before threading","Set line pressure and the roll speed ratio","Thread the primed foil and set pre-tension","Run to first article and weigh the coupon","Release only when both faces match on areal weight"] },
+
+{ id:"calendering", no:"04", phase:"Electrode manufacturing", title:"Calendering", machine:"calendering", routes:ALL, proc:"wet",
+  env:{iso:"ISO 7", dew:"semi-dry, +5…−5 °C", temp:"22 ± 2 °C"}, cost:"€ 10–15 M (calendering and slitting)", takt:"60–100 m/min",
+  purpose:"Compress the porous coating to a defined thickness, density and porosity — this is where energy density is set.",
+  inp:"Dry electrode, ≈50% porosity", out:"Compacted electrode, 20–35% porosity",
   parts:[
-    ["Pierce under vacuum","VENT","The gas bag is pierced inside a vacuum chamber and the escaping gases are sucked off. The extracted gas is treated — regenerative thermal oxidation, for example — before it reaches the exhaust system."],
-    ["Extraction","TREAT","Larger cells gas strongly on first charge, which is why pressurised carriers push that gas into the bag in the first place."],
-    ["Final seal","CLOSE","The cell is sealed under vacuum, then the gas bag is cut off and disposed of as hazardous waste."],
-    ["Fold and glue","FINISH","Optional: the seal edges are folded and glued to reduce the external dimensions and raise volumetric energy density. Seam widths up to 1 cm."]],
-  params:["Folding and gluing of sealing seams to raise volumetric energy density","Damage-free folding of the edges","Seam widths up to 1 cm","Sealing against moisture and oxygen"],
-  alts:["For smaller cells with low gas generation, some manufacturers do not separate the gas bag at all"],
-  qInf:["Pressing of the cells for degassing","Sealing and folding technology","Suction of gases under vacuum and in a dry atmosphere"],
-  qFeat:["Residual gas inside the cell","Damage-free cell handling"],
-  sop:["Confirm gas treatment is online","Pierce inside the vacuum chamber","Evacuate and hold","Seal the final seam","Cut and dispose of the gas bag as hazardous waste","Fold and glue the seam if specified"] },
+    ["Unwind","INFEED","The dried mother roll enters under controlled tension and edge guidance."],
+    ["Static discharge","NEUTRALISE","The web is statically discharged first. Charged foil can attract particles that later damage or pierce the separator."],
+    ["Clean + suction","CLEAN","Brushes or air flow plus extraction. Roller cleanliness is called out as crucial — a particle rolled into the coating is a latent short circuit."],
+    ["Roller pair","COMPACT","Top and bottom rollers apply a precisely defined line pressure, up to 2 500 N/mm. Rollers can be heated to 50–250 °C to make the coating more ductile."],
+    ["Thickness gauge","MEASURE","Closes the loop on final thickness. Line pressure sets porosity, and porosity sets how well the electrode later wets with electrolyte."],
+    ["Clean + suction","CLEAN","A second cleaning stage after the nip removes anything the compaction shook loose."],
+    ["Rewind","OUTFEED","Roll-to-roll: the calendered web is wound back up for slitting."]],
+  params:["Maintaining a constant line pressure of up to 2 500 N/mm","Calendering speed: 60–100 m/min","Pre-heating sections and roll tempering optionally possible, approximately 50–250 °C","Defined porosity and thickness","Adhesion of the material to the film, surface cleanliness, wrinkle-free film"],
+  alts:["Multi-roll calender systems","Hot rollers — water or oil heated, to set ductility precisely"],
+  innov:["Multi-roll calender systems","Enhanced web speeds through innovative roll design"],
+  qInf:["Line pressure","Roller material and diameter","Surface accuracy and concentricity of the rollers","Roller temperature"],
+  qFeat:["Defined porosity","Surface texture","Adhesion between coating and substrate"],
+  sop:["Inspect roller surfaces for damage and debris","Confirm static neutralisation is active","Set gap and line pressure for the target porosity","Run a leader and measure","Verify the thickness profile across the width","Rewind under controlled tension"] },
 
-{ id:"aging", no:"14", phase:"Cell finishing", title:"Aging", machine:"aging", routes:ALL,
-  env:{iso:"Normal factory air", dew:"not controlled", temp:"HT 30–50 °C · NT ≈22 °C"}, cost:"€ 5–15 M", takt:"up to 3 weeks",
-  purpose:"Hold the cells and watch their open-circuit voltage — the screen that catches internal defects before the customer does.",
-  inp:"Formed, degassed cell", out:"Released or scrapped cell",
+{ id:"slitting", no:"05", phase:"Electrode manufacturing", title:"Slitting", machine:"slitting", routes:ALL,
+  env:{iso:"ISO 7 – ISO 8", dew:"semi-dry, +5…−5 °C", temp:"22 ± 2 °C"}, cost:"€ 10–15 M — quoted together with calendering", takt:"80–150 m/min",
+  purpose:"Cut the wide mother roll into daughter rolls of the exact width the cell design needs — without leaving a burr.",
+  inp:"Calendered mother roll, up to 1 500 mm", out:"Daughter rolls, 60–300 mm",
   parts:[
-    ["High-temperature aging","ACCELERATE","Cells first go through HT aging at 30–50 °C, which accelerates any latent defect so it shows up in days rather than months."],
-    ["Normal-temperature aging","OBSERVE","Then NT aging at about 22 °C on shelves or towers, for up to three weeks in total, starting at 80–100% SOC."],
-    ["OCV monitoring","MEASURE","Open-circuit voltage is measured repeatedly through the whole period. Unlike formation, the pouch cells are no longer pressurised here."],
-    ["The decision","JUDGE","Stable OCV is one release indicator, not proof of a defect-free cell. Excessive voltage loss can indicate elevated self-discharge, leakage or an internal defect and should trigger the manufacturer’s investigation and rejection criteria."]],
-  params:["SOC at the start of aging: 80% – 100%","Aging time up to 3 weeks","NT ≈22 °C, HT ≈30 °C – 50 °C"],
-  alts:["Sequence and duration of HT and NT aging vary by manufacturer and chemistry"],
-  qInf:["Orientation of cells","Packing density of the cell good carriers","Ambient temperature"],
-  qFeat:["Capacity","Internal resistance","Self-discharge rate"],
-  sop:["Set the starting SOC","Load HT racks and log the start OCV","Transfer to NT aging on schedule","Measure OCV at each interval","Flag any cell drifting beyond the limit","Release only cells with stable OCV"] },
+    ["Mother roll","INFEED","The full-width calendered roll, fed in by manual transport from the calender."],
+    ["Coated web","MATERIAL","Intermittent coating for the pouch route, continuous coating for prismatic and cylindrical. The cut lines fall in the bare foil."],
+    ["Rolling knives + suction","CUT","Rolling knives are standard. Cut quality and coil cleanliness are the two main quality criteria — a burr on the edge can pierce the separator and short the finished cell."],
+    ["Separated strips","SEPARATE","The web leaves as parallel strips, edge trim extracted away."],
+    ["Daughter rolls","OUTFEED","Rewound individually, 60–300 mm wide depending on cell design, cleaned by suction and brushes."]],
+  params:["Cutting speed 80–150 m/min","Suction for the separated edge strips","Width tolerance ±150 µm to ±250 µm","Burr-free cutting"],
+  alts:["Laser slitting — more flexible, but risks a heat-affected zone and more dust contamination"],
+  innov:["Multi-roll calender systems","Enhanced web speeds through innovative roll design"],
+  qInf:["Finish of the cutting blades","Parameters matched to coating thickness","Extraction of dust and cutting waste"],
+  qFeat:["Edge geometry — cutting burr","Thermal and mechanical stress at the edge","Particle contamination during cutting"],
+  sop:["Check knife condition and replace on schedule","Set slit positions against the coating pattern","Confirm extraction at every knife","Run and inspect the first edges under magnification","Measure width tolerance","Label and seal each daughter roll"] },
 
-{ id:"eol", no:"15", phase:"Cell finishing", title:"End-of-line testing", machine:"eol", routes:ALL,
-  env:{iso:"Normal factory air", dew:"not controlled", temp:"22 ± 3 °C"}, cost:"€ 5–8 M", takt:"—",
-  purpose:"Measure what each cell actually is, sort it, and ship it at a safe state of charge.",
-  inp:"Aged cell", out:"Graded, packed cell",
+{ id:"vacdry", no:"06", phase:"Electrode manufacturing", title:"Vacuum drying", machine:"vacdry", routes:ALL,
+  env:{iso:"ISO 7 – ISO 8", dew:"dry, 0…−30 °C", temp:"22 ± 2 °C"}, cost:"€ 5–15 M (vacuum drying)", takt:"8–48 h per batch",
+  purpose:"Pull the last residual moisture and solvent out of the coils before they enter the dry room.",
+  inp:"Daughter rolls from slitting", out:"Coils at low residual moisture",
   parts:[
-    ["EOL test rig","TEST","Cells undergo a defined capacity test with specified charge, rest, discharge and cutoff conditions. The cell is then adjusted to its shipping SOC; pulse, DC-resistance, optical, OCV and leakage tests vary by manufacturer."],
-    ["Grading","SORT","Many manufacturers sort cells into classes by performance data, so that cells built into one pack are matched. Listed as an optional process."],
-    ["Packing","SHIP","Cells are covered in plastic and stacked in cardboard. An example plant target is 10–20% SOC. The applicable transport maximum depends on shipment configuration and mode; for UN 3480 shipped alone by air under PI 965, the file checks a 30% maximum."]],
-  params:["Example plant shipping target: 10%–20% SOC","PI 965 maximum: 30% SOC for UN 3480 shipped alone by air","Illustrative OCV-loss flag: 5 mV/week; actual criteria depend on chemistry, SOC, temperature and test duration"],
-  alts:["Test sequences and durations differ by manufacturer"],
-  qInf:["Cell handling"],
-  qFeat:["Low self-discharge","Low internal resistance","Constant capacity"],
-  sop:["Run the defined capacity test and record the result","Adjust the cell to the specified shipping SOC","Measure DC internal resistance","Run leakage and OCV checks","Assign a grade class","Apply the cell identification code","Verify the applicable transport instruction and pack"] }
-];
+    ["Vacuum oven","DRY","Daughter rolls on a goods carrier are pushed into the oven. 8–48 h at 60–150 °C under 0.07–1 000 mbar. Low pressure lets moisture evaporate at low temperature, so the binder is not damaged."],
+    ["Vacuum pump + inert gas","EVACUATE","Ovens can be run under inert gas to prevent corrosion of the foils. Many plants use the oven as an air lock into the dry room."],
+    ["Loaded shelves","BATCH","Section view: coils sit on shelves with clearance for gas flow. Constant heat supply and stable vacuum are the named quality influences."]],
+  params:["Working pressure: 0.07 mbar < p < 1 000 mbar","Drying time: 8–48 h per batch","Drying temperature: 60–150 °C","Inert gas supply"],
+  alts:["Continuous dryers — the web runs through a long facility instead of batch ovens","Infrared drying as a supplement"],
+  innov:["Continuous processes for post-drying — continuous ovens, coil baking and cell baking"],
+  qInf:["Constant heat supply and stable vacuum","Longer resting only possible in the dry room","Inert gas to prevent corrosion"],
+  qFeat:["Surface condition — cracks","Residual moisture: none wanted"],
+  sop:["Load coils with flow clearance between them","Close and evacuate to setpoint","Hold temperature and pressure for the recipe time","Break vacuum with inert gas","Transfer directly to the dry room or vacuum pack","Log the batch against the coil IDs"] },
 
-/* =====================================================================
-   PROCESS MODEL — an illustrative simulator. One material state flows down the line and
-   every station transforms it, so a setpoint change reaches the cell.
-   ===================================================================== */
-/* Every knob in the plant lives in one state object. The right-hand rail
-   shows the eight headline setpoints; each station console shows its own
-   subset plus the knobs only that machine has. Both write the same S. */
-const CTL = {
-  /* headline — shown in the rail */
-  tC:      { label:"Cathode coat, per side", min:40,  max:80,   step:1,    unit:" µm",    def:65,   good:[40,80],      note:"PEM range 40–80 µm", ref:[1,2] },
-  tA:      { label:"Anode coat, per side",   min:50,  max:100,  step:1,    unit:" µm",    def:80,   good:[50,100],     note:"PEM range 50–100 µm", ref:[1,2] },
-  speed:   { label:"Coating line speed",     min:35,  max:80,   step:1,    unit:" m/min", def:60,   good:[35,80],      note:"PEM range 35–80 m/min", ref:[1] },
-  dryT:    { label:"Dryer peak temperature", min:50,  max:160,  step:1,    unit:" °C",    def:130,  good:[50,160],     note:"PEM zone range 50–160 °C", ref:[1] },
-  force:   { label:"Calender line force",    min:400, max:2500, step:25,   unit:" N/mm",  def:1700, good:[400,2300],   note:"PEM max 2 500 N/mm; above ≈2 300 it squeezes rather than compacts", ref:[1,4] },
-  vac:     { label:"Vacuum drying time",     min:8,   max:48,   step:1,    unit:" h",     def:22,   good:[16,48],      note:"PEM range 8–48 h per batch; below ≈16 h moisture is off target", ref:[1] },
-  cRate:   { label:"Formation first charge", min:0.1, max:0.5,  step:0.05, unit:" C",     def:0.25, good:[0.1,0.35],   note:"PEM range 0.1–0.5 C, stepped up over cycles", ref:[1,7] },
-  ageDays: { label:"Aging period",           min:3,   max:21,   step:1,    unit:" d",     def:14,   good:[10,21],      note:"PEM up to 3 weeks; under ≈10 d the screen stops working", ref:[1] },
-  /* station-local */
-  solid:   { label:"Slurry solid content",   min:40,  max:75,   step:1,    unit:" wt%",   def:58,   good:[50,68],      note:"Less solvent means less to dry — but viscosity climbs fast", ref:[2,8] },
-  mixMin:  { label:"Dispersing time",        min:30,  max:300,  step:10,   unit:" min",   def:120,  good:[60,300],     note:"PEM range 30 min – 5 h", ref:[1] },
-  mixT:    { label:"Mixer jacket temperature",min:20, max:40,   step:1,    unit:" °C",    def:25,   good:[20,40],      note:"PEM range 20–40 °C", ref:[1] },
-  gap:     { label:"Slot-die gap",           min:60,  max:300,  step:1,    unit:" µm",    def:155,  good:[120,200],    note:"Set it to the wet film the recipe needs", ref:[2] },
-  dryLen:  { label:"Dryer length",           min:20,  max:100,  step:5,    unit:" m",     def:60,   good:[20,100],     note:"PEM: dryers up to 100 m", ref:[1] },
-  rollT:   { label:"Calender roll temperature",min:20,max:120,  step:5,    unit:" °C",    def:60,   good:[20,120],     note:"Hot rolls compact more for the same force", ref:[4] },
-  knife:   { label:"Cutting method",         opts:["Rolling knives","Laser"],             def:0,    note:"PEM lists both; laser leaves no burr but adds a heat-affected edge", ref:[1] },
-  cutSpd:  { label:"Cutting speed",          min:80,  max:150,  step:5,    unit:" m/min", def:110,  good:[80,150],     note:"PEM: mechanical 80–150 m/min", ref:[1] },
-  wear:    { label:"Blade wear",             min:0,   max:100,  step:5,    unit:" %",     def:20,   good:[0,70],       note:"A worn knife smears rather than cuts — change it by 70%", ref:[1] },
-  vacT:    { label:"Vacuum drying temperature",min:60,max:150,  step:5,    unit:" °C",    def:120,  good:[60,140],     note:"PEM range 60–150 °C; PVDF softens above ≈140 °C", ref:[1] },
-  sepMode: { label:"Separation method",      opts:["Punching","Laser cutting"],           def:0,    note:"PEM: punching 0.2 s/sheet; laser is contact-free", ref:[1] },
-  stackAcc:{ label:"Positioning tolerance",  min:100, max:600,  step:20,   unit:" µm",    def:200,  good:[100,300],    note:"PEM: stacking accuracy 200–300 µm", ref:[1] },
-  webTens: { label:"Web tension",            min:20,  max:140,  step:5,    unit:" N",     def:60,   good:[40,90],      note:"Too little telescopes the roll, too much tears the foil", ref:[1] },
-  drawDepth:{label:"Pouch draw depth",       min:2,   max:10,   step:0.5,  unit:" mm",    def:6,    good:[2,8],        note:"PEM: deep drawing up to 10 mm; corners thin fastest past 8 mm", ref:[1] },
-  sealT:   { label:"Sealing temperature",    min:150, max:230,  step:5,    unit:" °C",    def:190,  good:[180,200],    note:"The PP sealant layer melts around 165 °C", ref:[1] },
-  doseFac: { label:"Electrolyte dose",       min:1,   max:1.6,  step:0.02, unit:" × pore volume", def:1.15, good:[1.05,1.35], note:"Under-dose and pores stay dry; over-dose and the cell gasses", ref:[1] },
-  fillP:   { label:"Wetting-cycle pressure", min:20, max:400, step:10, unit:" mbar", def:150, good:[50,250], note:"Separate from chamber evacuation; ≈150 mbar is the reference cycling setpoint", ref:[1] },
-  soak:    { label:"Wetting time",           min:1,   max:36,   step:1,    unit:" h",     def:12,   good:[6,36],       note:"Capillary action is slow — this is why cells queue here", ref:[1] },
-  pressP:  { label:"Roll-pressing pressure", min:0.1, max:1.2,  step:0.05, unit:" MPa",   def:0.4,  good:[0.2,0.8],    note:"Pouch route only — pushes electrolyte sideways into dry pores", ref:[1] },
-  formT:   { label:"Formation temperature",  min:15,  max:60,   step:1,    unit:" °C",    def:25,   good:[20,50],      note:"PEM: pre-treatment window 30–50 °C", ref:[1,7] },
-  vMax:    { label:"Upper cut-off voltage",  min:4,   max:4.4,  step:0.05, unit:" V",     def:4.2,  good:[4,4.25],     note:"Reference graphite/NMC teaching limit: oxidation risk rises above about 4.25 V; actual limits depend on materials and protocol", ref:[7] },
-  degP:    { label:"Degassing vacuum",       min:1,   max:60,   step:1,    unit:" mbar",  def:5,    good:[1,10],       note:"Pouch only — gas out, then the final seal", ref:[1] },
-  ageSOC:  { label:"Aging state of charge",  min:20,  max:90,   step:5,    unit:" %",     def:50,   good:[30,80],      note:"PEM range 30–80% SOC", ref:[1] },
-  ageHiT:  { label:"High-temperature stage", min:25,  max:60,   step:1,    unit:" °C",    def:40,   good:[30,50],      note:"PEM range 30–50 °C", ref:[1] },
-  shipSOC: { label:"Final shipping state of charge", min:5, max:60, step:5, unit:" %", def:15, good:[5,30], note:"Example plant target 10%–20%; PI 965 maximum 30% for UN 3480 shipped alone by air", ref:[11,10] }
-};
-const HEAD = ["tC","tA","speed","dryT","force","vac","cRate","ageDays"];
-const DEFAULTS = Object.fromEntries(Object.entries(CTL).map(([k, c]) => [k, c.def]));
+{ id:"separation", no:"07", phase:"Cell assembly", title:"Separation", machine:"separation", routes:"pouch",
+  env:{iso:"min. ISO 7", dew:"very dry, −30…−60 °C", temp:"22 ± 2 °C"}, cost:"€ 20–30 M (separation)", takt:"≈0.2 s per sheet",
+  purpose:"Cut individual anode and cathode sheets out of the daughter rolls — the pouch route only.",
+  inp:"Daughter rolls", out:"Single electrode sheets",
+  parts:[
+    ["Daughter roll","INFEED","Dried coils are unwound and fed to the separation tool."],
+    ["Intermittent-coated web","MATERIAL","The blank edge left by intermittent coating becomes the welding area for the cell tab. Cut position is referenced to the coating pattern, not the foil edge."],
+    ["Punching unit","CUT","A shear cut in a continuous process, about 0.2 s per sheet. Tolerance ±200 µm in width and length. Punch wear directly degrades edge quality."],
+    ["Separated sheets","SORT","Anode and cathode sheets are stored in magazines or handed straight to stacking."],
+    ["Electrode stack","OUTPUT","Sheets ready for stacking. Cutting dust is extracted at the tool — it must not travel with the sheet."]],
+  params:["Separation time when punching: 0.2 s per sheet","Separation tool: very precise edge quality, judged against wear resistance","Tolerance requirement: approximately ±200 µm"],
+  alts:["Laser ablation to expose the tab area at chosen points","Laser cutting instead of a punching tool"],
+  innov:["Increase in tool utilisation times, for example through coating","Increase in cutting and punching speed"],
+  qInf:["Heat-affected zone and suction of evaporated material when laser cutting","Tool finish","Cutting speed"],
+  qFeat:["Cutting edge geometry — smearing of active material over the edge","Thermal and mechanical stress during cutting"],
+  sop:["Confirm dry-room dew point before opening a coil","Reference the cut to the coating pattern","Check the first sheets for burr and smear","Verify sheet dimensions against tolerance","Confirm dust extraction at the tool","Transfer magazines without stacking damage"] },
 
-/* Reference chemistry for all calculated relationships: graphite negative electrode / NMC positive electrode. */
-const GEOM = {
-  pouch: { name:"Pouch",       area:200,  layers:18, factor:1,     unit:"cm² per sheet · 18 double-sided layers" },
-  cyl:   { name:"Cylindrical", area:1300, layers:1,  factor:1,     unit:"cm² of wound cathode (21700 class)" },
-  prism: { name:"Prismatic",   area:12000,layers:1,  factor:1,     unit:"cm² of wound cathode" }
-};
+{ id:"stacking", no:"08", phase:"Cell assembly", title:"Stacking", machine:"stacking", routes:"pouch",
+  env:{iso:"min. ISO 7", dew:"very dry, −30…−60 °C", temp:"22 ± 2 °C"}, cost:"€ 25–60 M (stacking)", takt:"≈1 s per sheet",
+  purpose:"Build the repeating anode / separator / cathode / separator stack that becomes the cell.",
+  inp:"Electrode sheets + separator tape", out:"Fixed stack, up to 120 layers",
+  parts:[
+    ["Input magazines","FEED","Anode sheets, cathode sheets and the separator reel. Separator arrives as an endless tape."],
+    ["Position recognition","ALIGN","Optical position detection before every placement. Exact positioning of the individual sheets is <em>the</em> central quality criterion for this station."],
+    ["Vacuum gripper","PLACE","Grippers of different sizes handle anode and cathode. Stacking accuracy ±200–300 µm."],
+    ["Z-folding","WEAVE","The classic variant: the separator is folded into a Z and sheets are inserted alternately from left and right. The tape is cut only after stacking finishes."],
+    ["Finished stack","OUTPUT","Up to 120 layers, fixed with adhesive tape. Anode tabs to one side, cathode tabs to the other."]],
+  params:["Stacking speed: under 1 s per sheet for Z-folding and single-sheet stacking","Stacking accuracy: under 200–300 µm","Mechanical separator preload","Z-folding: sheets placed laterally into the folded separator web"],
+  alts:["Single-sheet stacking","Lamination — electrode sheets laminated with the separator","Pocket stacking — cathode placed in a separator pocket, then stacked with the anode"],
+  innov:["Growth of stacking speed in sheets per second while stacking accuracy also improves","New stacking technologies to reduce cycle times","Handling of large-format electrode sheets"],
+  qInf:["Position detection and alignment of different sheet sizes with a vacuum gripper","Mechanical pre-tensioning of the separator"],
+  qFeat:["Positioning accuracy of anode and cathode sheets","Damage-free electrode surfaces and edges","Avoidance of electrostatic charging"],
+  sop:["Verify dew point and static control","Load magazines, confirm polarity per side","Calibrate vision to the sheet datum","Set separator pre-tension","Stack and verify layer count","Tape the stack and hand over"] },
 
-let S = { ...DEFAULTS };
-let route = "pouch";
-let running = true;
-let current = null;      /* null = overview */
-let hotIndex = 0;
+{ id:"winding", no:"08", phase:"Cell assembly", title:"Winding", machine:"winding", routes:"cyl prism",
+  env:{iso:"min. ISO 7", dew:"very dry, −30…−60 °C", temp:"22 ± 2 °C"}, cost:"€ 20–30 M (winding)", takt:"up to 30 cells/min (cyl)",
+  purpose:"Wind anode, cathode and two separators into a jelly roll — the cylindrical and prismatic route.",
+  inp:"Daughter rolls, 4 webs", out:"Jelly roll, taped",
+  parts:[
+    ["Four webs","FEED","Cathode, anode and two separator webs are drawn off together. The sequence is the same as the stacking order, just continuous."],
+    ["Winding mandrel","WIND","A centre pin for cylindrical cells, a flat mandrel for prismatic. The flat mandrel is the only reason a prismatic jelly roll is prismatic."],
+    ["Taping","FIX","An adhesive strip secures the final turn so the roll cannot unwind during handling."],
+    ["Jelly roll","OUTPUT","Up to 30 cells/min cylindrical, up to 6 cells/min prismatic. Tab welding is often integrated into the winder for cylindrical cells."]],
+  params:["Up to 30 cells/min (cylindrical)","Up to 6 cells/min (prismatic)","Tab welding integrated in the cylindrical winder"],
+  alts:["Reference route shown; equipment configuration varies by manufacturer"],
+  innov:["Increasing machine throughput","Increasing the winding diameter","Functional integration of the centre pin, for example as heat dissipation","Integration of the notching process"],
+  qInf:["Winding speed","Web tension","Web edge control","Avoidance of electrostatic charging"],
+  qFeat:["Positioning accuracy of anode and cathode foils","Damage-free electrode surfaces and edges"],
+  sop:["Thread all four webs and confirm the order","Set individual web tensions","Check edge alignment on the first roll","Confirm tab weld position","Verify roll diameter and tape","Transfer without radial load"] },
 
-function model() {
-  const g = GEOM[route], pouch = route === "pouch";
-
-  /* --- electrode structure -------------------------------------------- */
-  /* calendering sets porosity: ~50% as dried, down towards 20% at full
-     line force. Heated rolls compact more for the same force. [1][4]      */
-  const por  = clamp(50 - (S.force / 2500) * 30 - (S.rollT - 60) * 0.06, 15, 55);
-  const solidFrac = 1 - por / 100;
-  /* areal capacity, mAh/cm² = thickness × solid fraction × density × specific capacity [2] */
-  const capC = S.tC * 1e-4 * solidFrac * 4.65 * 180;
-  const capA = S.tA * 1e-4 * solidFrac * 2.24 * 350;
-  const np   = capA / capC;
-  const cellAh = capC * g.area * (g.layers > 1 ? 2 * g.layers : 1) / 1000;
-
-  /* --- mixing ---------------------------------------------------------- */
-  const visc = 3000 * Math.exp(0.085 * (S.solid - 58)) * Math.pow(25 / S.mixT, 0.35);
-  const disp = clamp(100 - 40 * Math.exp(-(S.mixMin - 25) / 45));
-
-  /* --- coating --------------------------------------------------------- */
-  const volSolid = (S.solid / 100) * 0.72;            /* wt% → volume fraction */
-  const wetNeed  = S.tC / volSolid;                   /* wet film the recipe needs, µm */
+{ id:"packPouch", no:"09", phase:"Cell assembly", title:"Packaging — pouch", machine:"packPouch", routes:"pouch",
+  env:{iso:"min. ISO 7", dew:"very dry, −30…−60 °C", temp:"22 ± 2 °C"}, cost:"€ 20–35 M (packaging, pouch cells)", takt:"—",
+  purpose:"Weld the tabs, put the stack into deep-drawn aluminium composite foil and seal three of the four sides.",
+  inp:"Taped stack", out:"Pouch cell, one side open",
+  parts:[
+    ["Deep drawing","FORM","The pouch foil — polyamide / aluminium / polypropylene composite — is drawn up to 10 mm deep to make the cavity. Done in line or bought pre-drawn."],

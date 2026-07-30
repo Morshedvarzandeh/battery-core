@@ -1,0 +1,49 @@
+      S[b.dataset.seg] = Number(b.dataset.v); refresh();
+    }));
+  $("conReset").addEventListener("click", () => {
+    ctlsOf(o).forEach(k => S[k] = DEFAULTS[k]); renderSliders(); refresh();
+  });
+  $("conBreak").addEventListener("click", () => {
+    /* push this station's knobs to the edge that fails, so the failure mode is visible */
+    const BREAK = { tC:80, tA:50, speed:80, dryT:60, force:2500, vac:8, cRate:0.5, ageDays:3,
+      solid:75, mixMin:30, mixT:40, gap:280, dryLen:20, rollT:120, knife:0, cutSpd:150, wear:100,
+      vacT:60, sepMode:0, stackAcc:600, webTens:140, drawDepth:10, sealT:150, doseFac:1,
+      fillP:400, soak:1, pressP:1.2, preT:60, formT:60, vMax:4.4, degP:60, ageSOC:20, ageHiT:25, shipSOC:60,
+      dcLine:150, dcRollT:50, dcFib:20, dmTime:5, dmT:70, dcPrimer:1 };
+    ctlsOf(o).forEach(k => S[k] = BREAK[k]); renderSliders(); refresh();
+  });
+}
+
+/* ---------------------------------------------------------------------
+   navigation for the new views
+   ------------------------------------------------------------------- */
+function showView(id) {
+  $("overview").hidden = true; $("stationView").hidden = true; $("layerView").hidden = false;
+  const v = VIEWS.find(x => x.id === id) || VIEWS[0];
+  $("crumbTitle").textContent = v.label;
+  $("pillEnv").innerHTML = `<i></i><b>${esc(v.hint)}</b>`;
+  $("pillPos").textContent = "—";
+  ({ machine:renderMachineOverview, anatomy:renderAnatomy, flow:renderFlow, matrix:renderMatrix,
+     radar:renderRadar, factory:renderFactory, refs:renderRefs }[v.id])();
+}
+
+/* reference chips open the reference list at the right entry */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-ref]");
+  if (!b) return;
+  e.preventDefault();
+  go("view:refs");
+  setTimeout(() => {
+    const el = document.getElementById("ref-" + b.dataset.ref);
+    if (el) { el.scrollIntoView({ behavior:"smooth", block:"center" }); el.style.outline = "2px solid var(--primary)";
+      setTimeout(() => el.style.outline = "", 1800); }
+  }, 60);
+});
+
+/* ---------------- boot ---------------- */
+renderSliders();
+renderRail();
+go(null);
+</script>
+</body>
+</html>

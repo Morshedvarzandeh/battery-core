@@ -1,0 +1,167 @@
+    d:"You are standing at the head of a lithium-ion cell plant. A line of stations turns black powder into a packed cell. This tour walks you through in order — at each stop the machine on screen is the one you would actually be looking at." , pic:"line" },
+  { id:"view:machine", t:"The line on one screen",
+    d:"Before you walk it, see all of it. Every station in order with the material running through, one lamp per machine showing whether it is inside its window, and the four halls it all stands in drawn in plan. Every lamp comes from that station's own operator verdict, so when you push a setpoint out of range further into the tour, come back here and you will see which machine lit up.", pic:"line" },
+  { id:"view:anatomy", t:"First — what you are actually building",
+    d:"Before the machines, the product. A cell is a five-layer sandwich repeated up to 120 times, soaked in electrolyte and sealed in a barrier. Click any layer to see which stations are responsible for it. Only three of the nine components are made in this building." , pic:"stack" },
+  { id:"view:flow", t:"Materials and bought-in components converge",
+    d:"Active materials are transformed through the line, while bought-in foils, separator, electrolyte, tabs and housings join at defined stations. A mistake early in the chain can remain embedded in the finished cell, which is why traceability follows every material and component." , pic:"chain" },
+  { id:"mixing", proc:"wet", t:"The wet route starts with two black powders",
+    d:"Anode and cathode active materials arrive as powder and are nearly indistinguishable by eye. Contamination between them ruins a cell, so they are mixed in physically separate rooms. Hover the mixer to see the two-step dry-then-wet sequence." , pic:"powders" },
+  { id:"coating", t:"Slurry meets foil",
+    d:"A slot die meters slurry onto copper foil for the anode, aluminium for the cathode — both only 5–25 µm thick. Only one side is coated per pass. Scroll down to the black Operate this station panel: those are this machine's real knobs. Move the die gap away from the wet film the recipe needs and watch coat weight leave specification." , pic:"die" },
+  { id:"drying", t:"The longest machine in the building",
+    d:"Up to 100 metres of dryer in four temperature zones. Push the line speed up and the model will tell you the dryer needs more heat — run it under-heated and solvent stays in the coating." , pic:"dryer" },
+  { id:"drymix", proc:"dry", t:"The dry route begins without slurry",
+    d:"Dry mixing distributes the powders and mechanically draws the PTFE-based binder into a fibril network. The source does not provide one universal mixer recipe, so the controls here are explicitly illustrative and material-dependent.", pic:"powders" },
+  { id:"drycoat", proc:"dry", t:"Then form and laminate the dry film",
+    d:"The four wet-processing stages — wet mixing, slurry coating, drying and separate calendering — are replaced by two dry-processing stages: dry mixing/fibrillation and dry coating. The coating nip forms, laminates and compacts the film. The guide reports potential savings for the dry-coating process comparison, not a guaranteed complete-factory result.", pic:"drychain" },
+  { id:"calendering", proc:"wet", t:"Where energy density is decided",
+    d:"Two rollers press the coating from about 50% porosity down to 20–40%. This single setpoint drives capacity, wetting and crack risk at once. Slide the calender force and watch porosity, N/P ratio and yield all move." , pic:"nip" },
+  { id:"slitting", t:"The most dangerous burr in the plant",
+    d:"Rolling knives cut the wide roll into daughter rolls. A burr can damage or pierce the separator and create a latent internal-short risk, so blade condition, edge inspection and cleanliness are critical." , pic:"burr" },
+  { id:"vacdry", t:"Getting the water out",
+    d:"12 to 30 hours under vacuum. From here on the dew point falls station by station, because residual water can hydrolyse LiPF₆ and generate HF-containing species. Try dropping the vacuum drying time and watch the moisture score collapse." , pic:"water" },
+  { id:"stacking", t:"Building the sandwich",
+    d:"For pouch cells, sheets are stacked alternately into a Z-folded separator — up to 120 layers, one second per sheet, positioned to ±200 µm. Switch the format to cylindrical in the sidebar and this station is replaced by a winder." , pic:"stacker" },
+  { id:"fillPouch", t:"The driest room you will ever stand in",
+    d:"Filling happens in an evacuated chamber in a very dry environment — the guide quotes a working pressure of about 150 mbar. The dose is measured gravimetrically, then pressure and vacuum wetting cycles drive the electrolyte into the pores." , pic:"wetting" },
+  { id:"formation", t:"The cell's first controlled cycles",
+    d:"The reference guide shows stepped formation rates in the 0.1–0.5 C range. These first controlled cycles form the SEI, consume some cyclable lithium and can generate gas. Formation is capital- and time-intensive, and validated recipes are manufacturer-specific." , pic:"sei" },
+  { id:"aging", t:"Three weeks of watching",
+    d:"Cells are held hot, then at room temperature, while their open-circuit voltage is logged. Excessive OCV loss can indicate elevated self-discharge or an internal defect. The actual threshold depends on chemistry, SOC, temperature, duration and the manufacturer’s release procedure." , pic:"screen" },
+  { id:"eol", t:"Out the door",
+    d:"Run a defined capacity test, set the required shipping SOC, then grade, label and pack. Every station has an Operate panel, and every one of them feeds this number." , pic:"grade" },
+  { id:"view:matrix", t:"Who is responsible for what",
+    d:"One grid: every machine on the line down the side, nine cell components across the top. Read a row to see what a station is accountable for, a column to see how many hands a component passes through. Slitting builds nothing at all — its entire row is risk." , pic:"matrix" },
+  { id:"view:radar", t:"What replaces all this next",
+    d:"The guide tracks 44 technologies and scores each one against use in series production. The half above the line changes how the cell is made, the half below changes what the cell is, and distance from the centre is distance from the factory floor. Three selected solid-state families — polymer, sulfide and oxide — replace the conventional liquid-electrolyte-filled separator architecture and therefore require different process chains. Exact filling, wetting and gas-management steps depend on the chosen solid-state design.", pic:"radar" },
+  { id:"view:refs", t:"And where every number came from",
+    d:"Process parameters, room classes, machine investments and cycle times are from the 5th edition of the PEM RWTH Aachen and VDMA guide, February 2026. The physics linking them is from the peer-reviewed sources listed here. Every superscript number in this simulator opens the source it came from." , pic:"refs" }
+];
+let tourAt = -1;
+let tourReturnFocus = null;
+function closeTour() {
+  $("tour").dataset.open = "0";
+  const target = tourReturnFocus;
+  tourReturnFocus = null;
+  if (target && document.contains(target)) target.focus();
+}
+function focusTour() {
+  requestAnimationFrame(() => $("tourClose").focus());
+}
+function showTour(i) {
+  if ($("tour").dataset.open !== "1") tourReturnFocus = document.activeElement;
+  tourAt = i;
+  const s = TOUR[i];
+  /* some stops only exist on one electrode route — switch the line for them */
+  if (s.proc && s.proc !== proc) {
+    proc = s.proc;
+    document.querySelectorAll("#procOpts button").forEach(x =>
+      x.setAttribute("aria-pressed", x.dataset.proc === proc));
+    $("crumbProc").textContent = proc === "dry" ? "DRY" : "WET";
+    renderSliders();
+  }
+  go(s.id);
+  $("tour").dataset.open = "1";
+  $("tourStep").textContent = `STOP ${i + 1} OF ${TOUR.length}`;
+  $("tourTitle").textContent = s.t;
+  $("tourText").textContent = s.d;
+  $("tourPic").innerHTML = s.pic && TOURPIC[s.pic] ? TOURPIC[s.pic]() : "";
+  $("tourDots").innerHTML = TOUR.map((_, j) => `<i class="${j <= i ? "on" : ""}"></i>`).join("");
+  $("tourBack").disabled = i === 0;
+  $("tourNext").textContent = i === TOUR.length - 1 ? "Finish tour" : "Next stop →";
+  focusTour();
+}
+$("tourStart").addEventListener("click", () => showTour(0));
+$("tourNext").addEventListener("click", () => {
+  if (tourAt >= TOUR.length - 1) { closeTour(); return; }
+  showTour(tourAt + 1);
+});
+$("tourBack").addEventListener("click", () => { if (tourAt > 0) showTour(tourAt - 1); });
+$("tourClose").addEventListener("click", closeTour);
+document.addEventListener("keydown", e => {
+  if ($("tour").dataset.open !== "1") return;
+  if (e.key === "Escape") { e.preventDefault(); closeTour(); return; }
+  if (e.key === "ArrowRight") $("tourNext").click();
+  if (e.key === "ArrowLeft") $("tourBack").click();
+  if (e.key === "Tab") {
+    const focusable = [...$("tour").querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')];
+    if (!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+
+</script>
+<script>
+/* =====================================================================
+   THE BIG-PICTURE VIEWS + the interactive station console
+   ===================================================================== */
+const VIEWS = [
+  { id:"machine", label:"Machine overview",   hint:"the whole line, live" },
+  { id:"anatomy", label:"Cell anatomy",       hint:"every layer, and who builds it" },
+  { id:"flow",    label:"Material flow",      hint:"powder to graded cell" },
+  { id:"matrix",  label:"Process ↔ component",hint:"which station touches what" },
+  { id:"radar",   label:"Technology radar",   hint:"what is coming, and how soon" },
+  { id:"factory", label:"Factory & environment", hint:"the building, the air, the bill" },
+  { id:"refs",    label:"References",         hint:"every number, sourced" }
+];
+let layerPick = "cathode";
+
+function renderLayerNav() {
+  $("layerNav").innerHTML = VIEWS.map(v => `
+    <button type="button" class="stage-btn" data-go="view:${v.id}" aria-current="${current === "view:" + v.id}">
+      <b>◆</b><em>${v.label}</em><i style="background:var(--primary);opacity:.5"></i></button>`).join("");
+}
+
+/* ---------------------------------------------------------------------
+   1 · CELL ANATOMY — an exploded repeat unit, plus the cell it lives in
+   ------------------------------------------------------------------- */
+function anatomySVG(pick) {
+  /* the repeat unit is the five-layer sandwich; the SEI is a film grown on
+     the anode surface; electrolyte fills the whole thing; tabs and housing
+     belong to the cell on the left, not to the sandwich.                  */
+  const SANDWICH = ["alfoil", "cathode", "sep", "anode", "cufoil"];
+  const bars = SANDWICH.map(id => compMap[id]);
+  const GAP = 12, TOP = 62, H = 300;
+  const unit = (H - GAP * (bars.length - 1)) / bars.reduce((a, c) => a + c.h, 0);
+  let y = TOP, rows = "";
+  bars.forEach(c => {
+    const h = Math.max(13, c.h * unit), on = c.id === pick;
+    rows += `<g class="hot" data-layer="${c.id}" tabindex="0" role="button"
+      aria-label="${esc(c.name)}, ${esc(c.spec)}">
+      <rect x="338" y="${y}" width="286" height="${h}" rx="2" fill="${c.col}"
+        stroke="${on ? "var(--primary)" : "color-mix(in srgb,var(--foreground) 18%,transparent)"}" stroke-width="${on ? 3 : 1}"/>
+      <text class="mTxt" x="638" y="${y + h / 2 - 1}">${esc(c.short)}</text>
+      <text class="mTxtS" x="638" y="${y + h / 2 + 12}">${esc(c.spec)}</text>
+      <rect class="hit" x="240" y="${y - GAP / 2}" width="480" height="${h + GAP}" fill="transparent"/>
+    </g>`;
+    /* the SEI sits on the anode surface, facing the separator */
+    if (c.id === "anode") {
+      const on2 = pick === "sei";
+      rows += `<g class="hot" data-layer="sei" tabindex="0" role="button" aria-label="Solid electrolyte interphase, 10–50 nm">
+        <rect x="338" y="${y - 1}" width="286" height="5" fill="${compMap.sei.col}"
+          stroke="${on2 ? "var(--primary)" : "none"}" stroke-width="${on2 ? 2.5 : 0}"/>
+        <path class="mLead" d="M338 ${y + 2}L312 ${y - 14}"/>
+        <text class="mTxtS" x="308" y="${y - 16}" text-anchor="end">SEI · 10–50 nm</text>
+        <rect class="hit" x="212" y="${y - 28}" width="100" height="30" fill="transparent"/></g>`;
+    }
+    y += h + GAP;
+  });
+  const eOn = pick === "elyte";
+  rows += `<g class="hot" data-layer="elyte" tabindex="0" role="button" aria-label="Electrolyte fills every pore">
+    <rect x="332" y="${TOP - 8}" width="298" height="${y - TOP - GAP + 16}" rx="7" fill="none"
+      stroke="${eOn ? "var(--primary)" : "var(--elyte)"}" stroke-width="${eOn ? 3 : 1.5}" stroke-dasharray="6 5"/>
+    <text class="mTxtS" x="481" y="${TOP - 18}" text-anchor="middle" fill="var(--elyte)">Electrolyte fills every pore inside this frame</text>
+    <rect class="hit" x="332" y="${TOP - 32}" width="298" height="24" fill="transparent"/></g>`;
+
+  /* the cell this repeat unit lives in — housing and tabs are hotspots too */
+  const cOn = pick === "case" ? 3 : 1, tOn = pick === "tabs" ? 3 : 1;
+  const ring = k => k === 3 ? `stroke="var(--primary)" stroke-width="3"` : "";
+  const cell = route === "pouch"
+    ? `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Pouch housing">
+         <rect x="52" y="96" width="150" height="212" rx="10" class="mSteel2" ${ring(cOn)}/>
+         <rect class="hit" x="46" y="90" width="162" height="224" fill="transparent"/></g>
+       <rect x="64" y="110" width="126" height="184" rx="5" fill="var(--card)"/>
+       ${[0,1,2,3,4,5,6].map(i => `<rect x="72" y="${118 + i * 25}" width="110" height="8" rx="1"
