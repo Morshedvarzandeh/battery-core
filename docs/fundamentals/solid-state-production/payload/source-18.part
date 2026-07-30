@@ -1,0 +1,197 @@
+      acc.y = y + h + 4;
+      return acc;
+    }, { y: 24, s: "" }).s}
+  <rect x="18" y="20" width="148" height="94" rx="5" fill="none" stroke="var(--elyte)"
+    stroke-width="1.4" stroke-dasharray="5 4"/>
+  ${T(268, 40, "stacked in", "mTxt")}${T(268, 54, "series", "mTxt")}
+  ${T(268, 72, "voltage multiplies,", "mTxtS")}${T(268, 84, "collectors shared", "mTxtS")}
+  ${[0, 1, 2].map(i => `<rect x="${292 + i * 5}" y="${96 + i * 3}" width="56" height="${26 - i * 5}"
+     rx="3" fill="none" stroke="var(--border-strong)"/>`).join("")}`),
+
+/* three electrolyte classes, three different lines */
+routes: () => pic(`
+  ${[["Oxide",   "var(--elyte)",       32, "sintered, hard",     14],
+     ["Halide",  "var(--destructive)", 56, "ductile, air-stable", 14],
+     ["Sulfide", "var(--sep)",         80, "conductive, soft",   13],
+     ["Polymer", "var(--jelly)",      104, "deformable, warm",   13]].map(([n, c, y, d, k]) => `
+    <rect x="14" y="${y - 10}" width="12" height="12" rx="3" fill="${c}"/>
+    ${T(32, y, n, "mTxt")}${T(84, y, d, "mTxtS")}
+    ${[...Array(14)].map((_, i) => `<rect x="${196 + i * 12}" y="${y - 9}" width="9" height="11" rx="1.5"
+       fill="${c}" opacity="${i < k ? 0.6 : 0.13}"/>`).join("")}
+    ${T(366, y, String(k), "mTxtS", "end")}`).join("")}
+  ${T(196, 20, "stations each class needs", "mTxtS")}`),
+
+/* lithium metal against graphite */
+lithium: () => pic(`
+  ${R(24, 40, 60, 62, "mAn", 3)}
+  ${T(24, 116, "lithium metal", "mTxtS")}
+  ${T(24, 34, "3 860 mAh/g", "mTxt")}
+  ${R(150, 84, 60, 18, "mCa", 3)}
+  ${T(150, 116, "graphite", "mTxtS")}
+  ${T(150, 78, "372 mAh/g", "mTxt")}
+  ${T(250, 46, "about ten times", "mTxt")}
+  ${T(250, 62, "the capacity per gram —", "mTxtS")}
+  ${T(250, 76, "and only usable because", "mTxtS")}
+  ${T(250, 90, "a solid electrolyte can", "mTxtS")}
+  ${T(250, 104, "resist the dendrites", "mTxtS")}
+  ${T(250, 118, "a liquid cannot.", "mTxtS")}`),
+
+/* two foils becoming one */
+laminate: () => pic(`
+  ${REEL(48, 42, 17, "mAl")}${T(20, 22, "lithium foil", "mTxtS")}
+  ${REEL(48, 104, 17, "mCu")}${T(20, 128, "collector foil", "mTxtS")}
+  ${P("M66 44q60 6 96 22", "mAl")}
+  ${P("M66 102q60 -6 96 -22", "mCu")}
+  ${ROLLER(190, 54, 20)}${ROLLER(190, 96, 20)}
+  ${T(150, 26, "tempered rollers", "mTxtS")}
+  ${R(224, 68, 118, 7, "mAl", 1)}${R(224, 75, 118, 8, "mCu", 1)}
+  ${T(224, 62, "negative electrode", "mTxtS")}
+  ${T(224, 100, "heat, not just pressure,", "mTxtS")}
+  ${T(224, 114, "makes this bond", "mTxtS")}`),
+
+/* three ways to prepare the electrolyte */
+prep: () => pic(`
+  <g class="spin">${C(56, 62, 26, "mGlass")}</g>
+  <g class="bob">${[0,1,2,3].map(i => C(44 + i * 9, 74 - (i % 2) * 6, 4, "mSteel")).join("")}</g>
+  ${T(22, 108, "ball mill · oxide", "mTxtS")}
+  ${R(148, 42, 56, 44, "mGlass", 5)}
+  <g class="spin">${R(164, 60, 24, 6, "mDark", 3)}</g>${P("M176 40l0 24", "mDark")}
+  ${T(140, 108, "planetary mixer", "mTxtS")}
+  ${R(252, 52, 100, 26, "mHot", 4)}
+  <g class="spin">${[...Array(5)].map((_, i) =>
+    `<ellipse cx="${268 + i * 20}" cy="65" rx="7" ry="12" fill="none" stroke="var(--alu)" stroke-width="2.4"/>`).join("")}</g>
+  ${T(252, 108, "twin-screw · polymer", "mTxtS")}
+  ${T(22, 30, "the class decides the machine", "mTxtS")}`),
+
+/* three ways to lay the layer down */
+layer: () => pic(`
+  ${P("M40 30l30 0l-9 26l-12 0z", "mSteel2")}${P("M49 56l12 0l-2 10l-8 0z", "mAcc")}
+  ${R(24, 74, 76, 8, "mCa", 1)}${T(20, 100, "tape casting", "mTxtS")}
+  ${P("M156 30l26 0l-6 22l-14 0z", "mSteel")}
+  ${[...Array(7)].map((_, i) => `<path class="mLine" d="M${169 + (i - 3) * 1} 52l${(i - 3) * 3} 20"/>`).join("")}
+  ${R(140, 74, 66, 8, "mCa", 1)}${R(140, 70, 66, 4, "mSep", 1)}
+  ${T(136, 100, "aerosol deposition", "mTxtS")}
+  ${P("M250 40l52 0l22 18l-22 18l-52 0z", "mSteel2")}
+  ${R(324, 52, 34, 6, "mCa", 1)}${R(324, 58, 34, 5, "mSep", 1)}
+  ${T(246, 100, "co-extrusion", "mTxtS")}
+  ${T(20, 24, "the cathode is the substrate for the electrolyte", "mTxtS")}`),
+
+/* two ways to make an interface */
+dense: () => pic(`
+  ${ROLLER(90, 44, 22)}${ROLLER(90, 96, 22)}
+  ${R(22, 64, 60, 12, "mCa", 1)}${R(114, 66, 60, 8, "mCa", 1)}
+  ${T(20, 118, "calendering · sulfide, polymer", "mTxtS")}
+  ${T(20, 30, "pressure and heat", "mTxtS")}
+  ${R(226, 40, 130, 56, "mHot", 4)}
+  ${[...Array(6)].map((_, i) => C(240 + i * 24, 34, 5, "mHot")).join("")}
+  ${R(248, 62, 86, 12, "mCa", 2)}
+  ${T(224, 118, "sintering · oxide", "mTxtS")}
+  ${T(224, 30, "500–2 000 °C", "mTxtS")}
+  ${T(186, 72, "or", "mTxt", "middle")}`),
+
+/* the cut that can weld the cell shut */
+cut: () => pic(`
+  ${R(60, 24, 24, 34, "mDark", 3)}${P("M72 58l0 24", "mHot")}${C(72, 88, 7, "mHot")}
+  ${R(24, 96, 96, 7, "mCa", 1)}${R(24, 103, 96, 5, "mSep", 1)}${R(24, 108, 96, 7, "mAn", 1)}
+  ${T(20, 128, "too little energy — ragged edge", "mTxtS")}
+  ${R(228, 24, 24, 34, "mDark", 3)}${P("M240 58l0 24", "mHot")}${C(240, 88, 9, "mHot")}
+  ${R(192, 96, 96, 7, "mCa", 1)}${R(192, 103, 96, 5, "mSep", 1)}${R(192, 108, 96, 7, "mAn", 1)}
+  ${R(232, 96, 18, 19, "mHotSoft", 1)}
+  ${T(188, 128, "too much — the layers melt together", "mTxtS")}
+  ${T(298, 56, "melted layers", "mTxtS")}
+  ${T(298, 70, "are an", "mTxtS")}${T(298, 84, "electrical", "mTxtS")}
+  ${T(298, 98, "connection —", "mTxtS")}
+  ${T(298, 116, "a short.", "mTxt")}`),
+
+/* pressure making the interface */
+press: () => pic(`
+  ${R(30, 26, 130, 12, "mSteel", 3)}${R(30, 106, 130, 12, "mSteel", 3)}
+  <path class="mArrow" d="M95 42l0 14l-5 -5l5 5l5 -5z"/>
+  ${[0,1,2].map(i => `
+    ${R(46, 48 + i * 20, 98, 6, "mCa", 1)}
+    ${R(46, 54 + i * 20, 98, 4, "mSep", 1)}
+    ${R(46, 58 + i * 20, 98, 6, "mAn", 1)}`).join("")}
+  ${T(26, 132, "no liquid to wet the gaps", "mTxtS")}
+  <path class="mLine" d="M212 108l0 -74M212 108l140 0" stroke="var(--border-strong)"/>
+  <path d="M212 104C246 82 290 58 352 44" fill="none" stroke="var(--primary)" stroke-width="2.4"/>
+  ${T(212, 28, "current the cell survives", "mTxtS")}
+  ${T(212, 124, "0", "mTxtS")}${T(352, 124, "40 MPa", "mTxtS", "end")}
+  ${T(232, 68, "pressure is", "mTxt")}${T(232, 82, "the only tool", "mTxt")}`),
+
+/* the station that is not there */
+nofill: () => pic(`
+  ${R(30, 34, 120, 76, "mSteel2", 5)}
+  ${[...Array(4)].map((_, i) => R(44, 44 + i * 16, 92, 10, i % 2 ? "mAn" : "mCa", 1)).join("")}
+  ${T(26, 128, "sealed — and finished", "mTxtS")}
+  ${R(214, 34, 130, 76, "mGlass", 5)}
+  <path class="mLine" d="M228 46l102 52M330 46l-102 52" stroke="var(--destructive)" stroke-width="2"/>
+  ${T(214, 128, "electrolyte filling · not required", "mTxtS")}
+  ${T(214, 22, "in a lithium-ion plant this is a", "mTxtS")}
+  ${T(214, 10, "dry room and hours of queue", "mTxtS")}`),
+
+/* lithium growing through */
+dendrite: () => pic(`
+  ${R(28, 34, 300, 18, "mAn", 2)}${T(24, 30, "lithium metal", "mTxtS")}
+  ${R(28, 52, 300, 26, "mSep", 2)}${T(24, 98, "solid electrolyte", "mTxtS")}
+  ${R(28, 78, 300, 16, "mCa", 2)}
+  <path d="M92 52l6 10l-5 6l8 10" fill="none" stroke="var(--anode)" stroke-width="2.6"/>
+  <path d="M206 52l-5 9l7 7l-4 10" fill="none" stroke="var(--anode)" stroke-width="2.6"/>
+  <path d="M286 52l5 12l-6 6l7 8" fill="none" stroke="var(--destructive)" stroke-width="3"/>
+  ${T(24, 120, "below the critical current density it stops; above it, it does not", "mTxtS")}`),
+
+/* the responsibility grid */
+matrix: () => pic(`
+  ${[...Array(5)].map((_, rr) => [...Array(8)].map((_, c) => {
+    const k = (rr * 8 + c * 5) % 7;
+    const f = k === 0 ? "var(--primary)" : k === 1 ? "var(--destructive)" : k === 2 ? "var(--green)" : null;
+    return f ? `<rect x="${104 + c * 30}" y="${34 + rr * 17}" width="19" height="11" rx="3"
+      fill="${f}" opacity=".55"/>` : "";
+  }).join("")).join("")}
+  ${[...Array(5)].map((_, rr) => T(18, 44 + rr * 17, ["extrusion", "mixing", "tape casting", "slitting", "stacking"][rr], "mTxtS")).join("")}
+  ${T(104, 28, "the parts of the cell →", "mTxtS")}
+  ${T(18, 126, "● builds it   ▲ can ruin it   ◆ checks it", "mTxtS")}`),
+
+/* the sources */
+refs: () => pic(`
+  ${[0, 1, 2].map(i => `<rect x="${24 + i * 14}" y="${30 + i * 8}" width="120" height="76" rx="5"
+     fill="var(--card)" stroke="var(--border-strong)"/>`).join("")}
+  ${[...Array(5)].map((_, i) => `<rect x="66" y="${58 + i * 11}" width="${86 - (i % 2) * 24}" height="4" rx="2"
+     fill="var(--border-strong)"/>`).join("")}
+  ${T(66, 52, "PEM / VDMA, 2nd ed.", "mTxtS onpanel")}
+  ${T(200, 44, "+ peer-reviewed sources", "mTxt")}
+  ${T(200, 62, "for conductivity, stack pressure,", "mTxtS")}
+  ${T(200, 76, "critical current density", "mTxtS")}
+  ${T(200, 98, "every superscript number", "mTxtS")}
+  ${T(200, 112, "opens its source", "mTxtS")}`)
+};
+
+/* ---------------- guided tour ---------------- */
+const TOUR = [
+  { id:null, pic:"line", t:"Welcome to the solid-state pilot line",
+    d:"The guide's process chain for a solid-state cell. Which stations exist depends on the electrolyte you choose, so the sidebar switch does not change a format — it changes the line. This tour walks the sulfide route; switch to oxide afterwards and watch four stations appear and disappear." },
+  { id:"view:anatomy", pic:"cell", t:"First — what you are actually building",
+    d:"An elementary cell is collector, lithium metal, solid electrolyte, catholyte, collector. No liquid, no porous separator. Because there is no liquid to short between them, the elementary cells can be stacked in series inside one pouch." },
+  { id:"view:flow", pic:"routes", t:"Four classes, four different plants",
+    d:"Oxide is hard and has to be sintered. Sulfide is conductive and soft, so it is pressed. Polymer is deformable and wants to be warm. That single material choice decides which machines you buy — this is the central message of the guide." },
+  { id:"view:machine", pic:"line", t:"The line on one screen",
+    d:"Before you walk it, see all of it. Every station in order, one lamp per machine showing whether it is inside its window, and the three production areas drawn in plan. The bar chart underneath is the guide's transferability score — how much of a lithium-ion plant's knowledge carries over to each step. Grinding, mixing and the back end score high. The lithium metal anode, sintering and compacting score one out of five." },
+  { id:"view:compare", pic:"routes", t:"And why the line looks like this",
+    d:"There is no standard process sequence for a solid-state cell, because there is no standard electrolyte. Four classes, seven properties, and every one of them is good at something and bad at something else. Oxides are stable but must be sintered; sulfides conduct best but react with air; halides are the newcomer in this edition, strong on voltage stability and processability but weak as a separator; polymers deform beautifully and conduct badly at room temperature. Pick one in the sidebar and the line rebuilds around it." },
+  { id:"extrusion", pic:"lithium", t:"It starts with a lithium ingot",
+    d:"Not a coating line — an extruder. Lithium metal is pressed through a slot nozzle into a foil and calendered to thickness. It carries about ten times the capacity per gram of graphite, and it is adhesive, reactive, and impossible to cut mechanically. Try the passivation switch: it decides whether the whole line downstream needs inert gas or only a dry room." },
+  { id:"lamination", pic:"laminate", t:"Two foils, one electrode",
+    d:"The lithium foil is laminated onto a current collector between tempered rollers. Adhesion is the entire output of this station, and heat contributes as much as pressure — move the roller temperature and watch the bond index before you reach for more force." },
+  { id:"mixing", pic:"prep", t:"The electrolyte, prepared three ways",
+    d:"Oxide is ground dry in a ball mill. Sulfide and oxide are dispersed in a planetary mixer. Polymer is compounded in a twin-screw extruder. Sulfidic materials are sensitive to polar solvents and to moisture, which sharply limits what you can even mix them with." },
+  { id:"tape", pic:"layer", t:"Laying the layers down",
+    d:"A slot die meters slurry onto the substrate — and the substrate for the electrolyte layer is the cathode itself. Set the gap away from the wet film the recipe needs and watch thickness scatter leave specification." },
+  { id:"calender", pic:"dense", t:"Two ways to make an interface",
+    d:"Sulfide and polymer are calendered: pressure and temperature densify the composite. Oxide is sintered instead, at 500 to 2 000 °C, because it is not pressed after stacking and has to win its interface in the furnace. Switch to oxide and this station disappears entirely." },
+  { id:"separation", pic:"cut", t:"The cut that can short the cell",
+    d:"Elementary cells are cut out by laser or punched. The guide is explicit: the layer materials must not be melted, because melting them connects the layers electrically. Push the laser power up and watch the melt risk climb." },
+  { id:"stacking", pic:"press", t:"Pressure is how a solid cell makes contact",
+    d:"There is no liquid to soak into the pores, so the only way to make an interface is to press the surfaces together. Published work on lithium against a sulfide electrolyte found the critical current density rose fivefold as stack pressure went from 3 to 7 MPa. Slide the pressure and watch both the contact and the dendrite margin move." },
+  { id:"contacting", pic:"nofill", t:"And then nothing else happens",
+    d:"Conductors welded, pouch drawn, seam sealed. In a lithium-ion plant the next station is electrolyte filling in a dry room at a −50 °C dew point, followed by hours of wetting. Here that station does not exist. It is the clearest process saving of the whole solid-state route." },
+  { id:"formation", pic:"dendrite", t:"The first cycle, and the limit it must respect",
+    d:"The cell arrives already charged, because its anode is lithium metal. The first cycles grow the interface layers. Push the rate and the current density crosses the value the electrolyte can survive — and lithium starts growing through it. There is no standard way to measure that limit, which is itself worth knowing." },

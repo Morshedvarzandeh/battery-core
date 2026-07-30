@@ -1,0 +1,160 @@
+    url:"https://www.vdma.eu/viewer/-/v2article/render/49015418" },
+  { n:14, tag:"ISO 14644-1:2015", txt:"ISO 14644-1:2015, <em>Cleanrooms and associated controlled environments — Part 1: Classification of air cleanliness by particle concentration</em>, 2nd ed.; International Organization for Standardization: Geneva, 2015.",
+    use:"What a clean-room class means as a particle count, where the guide names one.",
+    url:"https://www.iso.org/standard/53394.html" }
+];
+const refMap = Object.fromEntries(REFS.map(r => [r.n, r]));
+const r = (...ns) => `<sup class="rf">` +
+  ns.map(n => `<button type="button" data-ref="${n}" title="${esc(refMap[n] ? refMap[n].tag : "")}">${n}</button>`).join("") +
+  `</sup>`;
+
+/* which sources back each station's numbers */
+const SRC = {
+  drycoat:[1], ald:[1], compacting:[1],
+  extrusion:[1,4,9], lamination:[1,4], ballmill:[1,11,14], mixing:[1,10], compounding:[1,13],
+  tape:[1,7], aerosol:[1,7], coex:[1,13], calender:[1,7], slitting:[1,7],
+  separation:[1,7], sintering:[1,11], stacking:[1,5,6], contacting:[1,2], formation:[1,4,8]
+};
+
+/* ---------------- 2 · the cell, layer by layer ---------------- */
+const COMPONENTS = [
+  { id:"collector", name:"Current collector", short:"Collector", col:"var(--copper)", h:9,
+    spec:"foil, µm scale", mat:"Copper on the anode side, aluminium on the cathode side",
+    src:"Bought in — laminated here",
+    role:"Carries electrons in and out of the electrode it is bonded to.",
+    why:`In a bipolar stack the internal collectors are shared between adjacent cells, and only the two outer conductors leave the housing. That removes collectors, tabs and welds from the bill of materials.${r(1,2)}`,
+    made:["lamination","coex","contacting"], risk:["lamination","slitting"], checks:["formation"],
+    riskWhy:"A weak lamination bond or a delaminated cut edge shows up as resistance." },
+
+  { id:"lithium", name:"Lithium metal anode", short:"Li metal", col:"var(--anode)", h:22,
+    spec:"20–120 µm foil", mat:"Metallic lithium, extruded and calendered",
+    src:"Made here, over two stations",
+    role:"The negative electrode. Not a host that lithium enters — the metal itself.",
+    why:`This is the whole point of a solid-state cell. Lithium metal has about ten times the specific capacity of graphite, and it is only usable because a solid electrolyte can mechanically resist the dendrites that a liquid cannot. It is also adhesive, reactive, and cannot be cut mechanically — which is why extrusion and lamination replace coating and calendering here.${r(4,9)}`,
+    made:["extrusion","lamination"], risk:["extrusion","lamination","formation"], checks:["formation"],
+    riskWhy:"Lithium sticks to everything it touches and reacts with almost any atmosphere." },
+
+  { id:"passiv", name:"Passivation layer", short:"Passivation", col:"var(--alu)", h:5,
+    spec:"thin surface coating", mat:"Applied by coating nozzles after extrusion",
+    src:"Optional, applied at extrusion",
+    role:"Protects the lithium surface so the foil can be handled outside an inert-gas envelope.",
+    why:`A small layer with a large facility consequence: with it, the downstream line can be a dry room instead of a full inert-gas enclosure. The guide lists it as optional, which makes it a genuine engineering choice rather than a given.${r(1)}`,
+    made:["extrusion"], risk:["extrusion","lamination"], checks:[],
+    riskWhy:"Damage it in the lamination nip and the protection is gone." },
+
+  { id:"sse", name:"Solid electrolyte layer", short:"Electrolyte", col:"var(--sep)", h:12,
+    spec:"5–80 µm", mat:"Oxide ceramic, sulfide glass-ceramic, or a polymer with a lithium salt",
+    src:"Made here — cast, sprayed or co-extruded",
+    role:"Conducts lithium ions and separates the electrodes. It does the job of both the separator and the liquid electrolyte in a lithium-ion cell.",
+    why:`One layer replaces two components. There is no porous membrane and no liquid to wet it, so there is no filling station, no wetting queue and no dry pore. In exchange, every interface it touches has to be made mechanically — by pressure, by heat, or by sintering.${r(2,3)}`,
+    made:["ballmill","mixing","compounding","tape","aerosol","coex","calender","sintering","drycoat","compacting"],
+    risk:["slitting","separation","stacking","formation","drycoat","compacting"], checks:["formation"],
+    riskWhy:"It is the only barrier against a short, and in the oxide case it is brittle." },
+
+  { id:"catholyte", name:"Catholyte", short:"Catholyte", col:"var(--cathode)", h:26,
+    spec:"40–160 µm per cell", mat:"Cathode active material mixed with solid electrolyte, plus binder and conductive additive",
+    src:"Made here, over three to four stations",
+    role:"Holds the lithium when the cell is discharged, and conducts ions through its own thickness.",
+    why:`In a lithium-ion cell the liquid electrolyte soaks into the cathode and reaches every particle. Here it cannot. The solid electrolyte has to be mixed into the cathode itself — that mixture is the catholyte, and it is a new compound with no equivalent in lithium-ion production.${r(1,3)}`,
+    made:["mixing","compounding","tape","coex","calender","sintering","drycoat"],
+    risk:["calender","sintering","compacting"], checks:["formation"],
+    riskWhy:"Compress it too hard and brittle electrolyte cracks; sinter it wrong and the phases fight each other." },
+
+  { id:"interface", name:"Interface layer", short:"Interface", col:"var(--jelly)", h:5,
+    spec:"nanometre scale", mat:"Grown between electrolyte and electrodes during the first cycles",
+    src:"Grown inside the finished cell at formation",
+    role:"The boundary layer that decides how easily ions cross from electrolyte to electrode.",
+    why:`The solid-state analogue of the SEI, and the same kind of problem: it cannot be bought, inspected or reworked, and it significantly influences ionic conductivity and therefore cell performance. Unlike a liquid cell it forms against a rigid surface, so how well the two solids were pressed together beforehand largely decides what you get.${r(1,4)}`,
+    made:["formation","ald"], risk:["formation","stacking","ald","compacting"], checks:["formation"],
+    riskWhy:"A poorly contacted interface cannot be fixed by cycling." },
+
+  { id:"bipolar", name:"Bipolar connection", short:"Bipolar", col:"var(--elyte)", h:0,
+    spec:"series stacking inside one housing", mat:"Shared collectors between adjacent elementary cells",
+    src:"Created at stacking",
+    role:"Puts elementary cells in series inside a single package.",
+    why:`Only possible because there is no liquid to short between cells. The stack voltage multiplies — a stack of eight elementary cells at 3.8 V is a 30 V cell — and the packaging effort drops because only the outer collectors are needed.${r(1,2)}`,
+    made:["stacking","contacting"], risk:["stacking"], checks:["formation"],
+    riskWhy:"A misplaced sheet in a series stack shorts more than one cell." },
+
+  { id:"housing", name:"Housing", short:"Housing", col:"var(--alu)", h:14,
+    spec:"deep-drawn pouch, under 10 mm", mat:"Metal–plastic composite foil, electrically insulated",
+    src:"Formed and sealed at contacting and packaging",
+    role:"Holds the stack, keeps the environment out, and carries the two outer conductors.",
+    why:`Sealed completely with impulse or contact seals — and then nothing else is added. No electrolyte filling follows, which is the single clearest process saving of the whole solid-state route.${r(1)}`,
+    made:["contacting"], risk:["contacting"], checks:["formation"],
+    riskWhy:"Volume changes during cycling work on the seam for the life of the cell." },
+
+  { id:"absent", name:"What is no longer there", short:"Absent", col:"var(--muted-foreground)", h:0,
+    spec:"liquid electrolyte, porous separator, filling station", mat:"—",
+    src:"Removed by the solid electrolyte",
+    role:"The components and stations a solid electrolyte deletes.",
+    why:`No liquid electrolyte, so no LiPF₆, no hydrofluoric acid chemistry, no flammable solvent, and no filling or wetting station. No porous polymer separator, so one bought-in component and one placement step disappear. In a lithium-ion plant, filling and wetting occupy a dry room at a −50 °C dew point and hours of queue time; here that whole area does not exist.${r(1,2)}`,
+    made:[], risk:[], checks:[],
+    riskWhy:"" }
+];
+const compMap = Object.fromEntries(COMPONENTS.map(c => [c.id, c]));
+
+/* ---------------- 3 · one material chain ---------------- */
+const FLOW = [
+  { id:"ingot", by:null, name:"Lithium ingot and raw powders", state:"Solid, as delivered",
+    note:"Metallic lithium on one side, electrolyte and cathode raw materials on the other. Two completely different processing routes start here and do not meet until stacking." },
+  { id:"foil", by:"extrusion", name:"Lithium foil", state:"Extruded and calendered",
+    note:"Pressed through a slot nozzle and rolled to thickness. Optionally passivated, which decides whether everything downstream needs inert gas or only a dry room." },
+  { id:"anode", by:"lamination", name:"Negative electrode", state:"Bonded to its collector",
+    note:"The lithium foil laminated onto a current collector under tempered rollers. Heat, not just pressure, makes this bond." },
+  { id:"powder", by:"ballmill|mixing|compounding", name:"Electrolyte feedstock", state:"Powder, slurry or melt",
+    note:"Ground in a ball mill for oxide, dispersed in a planetary mixer, or compounded in a twin-screw extruder for polymer. Which one you use is decided entirely by the electrolyte class." },
+  { id:"layer", by:"tape|aerosol|coex", name:"Cathode and electrolyte layers", state:"Applied to a substrate",
+    note:"Tape casting through a slot die, aerosol deposition at up to 1 000 m/s, or co-extrusion of two melts in one tool. The cathode is used as the substrate for the electrolyte layer." },
+  { id:"dense", by:"calender|sintering", name:"Densified composite", state:"Compacted or sintered",
+    note:"Sulfide and polymer are calendered with pressure and heat. Oxide is sintered at 500–2 000 °C instead, because it is not pressed after stacking and has to win its interface here." },
+  { id:"strip", by:"slitting", name:"Electrode strips", state:"Cut to width",
+    note:"The last step of electrode production. Laser is contactless and avoids deflection and delamination; a rolling knife is faster but works against the composite." },
+  { id:"elem", by:"separation", name:"Elementary cells", state:"Discrete, trimmed",
+    note:"The smallest cell: one anode, one electrolyte, one cathode. The cut must not melt the layers together, because melted layers are an electrical connection." },
+  { id:"stack", by:"stacking", name:"Bipolar stack", state:"Pressed, in series",
+    note:"Elementary cells placed on top of each other and pressed. No separator is stacked. The series connection is internal, so the stack voltage is a multiple of one cell." },
+  { id:"sealed", by:"contacting", name:"Sealed cell", state:"Welded and closed",
+    note:"Conductors laser-welded, stack sealed into a deep-drawn pouch. And then nothing else — there is no electrolyte to add." },
+  { id:"formed", by:"formation", name:"Formed and aged cell", state:"Released or scrapped",
+    note:"First cycles grow the interface layers. Because the anode is lithium metal, the assembled cell was already charged before formation began — a different starting point from a lithium-ion cell." }
+];
+</script>
+<script>
+/* =====================================================================
+   OPERATOR CONSOLES — one per station
+   The knobs are the parameters the guide lists for that machine.
+   They all write the same S, so a change here is felt downstream and
+   in the cell at the end of the line.
+   ===================================================================== */
+const ok   = (v, lo, hi) => v >= lo && v <= hi ? "ok" : "bad";
+const band = (v, lo, hi, soft) => v >= lo && v <= hi ? "ok" : (v >= lo - soft && v <= hi + soft ? "warn" : "bad");
+const V    = (label, value, state, hint) => ({ label, value, state: state || "ok", hint: hint || "" });
+
+const OPS = {
+
+drycoat: {
+  lead:"You are at the dry coater. There is no solvent here — shear has to turn a loose powder into a film that stands up on its own, and the same pass has to set its thickness.",
+  ctl:["dcFib","dcT","sseTh"],
+  read:m => [
+    V("Fibrillation", m.fibril.toFixed(0) + "%", m.fibril >= 55 ? (m.fibril <= 95 ? "ok" : "warn") : "bad", "binder drawn into a fibre network"),
+    V("Film quality", m.dryFilmQ.toFixed(0) + "%", m.dryFilmQ >= 90 ? "ok" : m.dryFilmQ >= 80 ? "warn" : "bad", "thickness and homogeneity"),
+    V("Roll temperature", S.dcT + " °C", ok(S.dcT, 20, 200), "guide range RT–200 °C"),
+    V("Solvent to remove", "none", "ok", "no drying section behind this machine")],
+  verdict:m => m.fibril < 55 ? ["bad", "No self-supporting film",
+      `Shear at ${S.dcFib}%. Without a fibre network the blend leaves the nip as powder, and there is nothing to laminate or stack.`]
+    : m.dryFilmQ < 80 ? ["bad", "Film outside its window",
+      "Layer thickness and position are the two challenges the guide names for this process, and both are drifting."]
+    : m.fibril > 95 ? ["warn", "Over-sheared",
+      "Past about 95% the mix agglomerates instead of knitting, and the structure stops being homogeneous."]
+    : ["ok", "Dry film formed",
+      `Film quality ${m.dryFilmQ.toFixed(0)}% at ${S.dcT} °C, with no solvent anywhere in the step.`],
+  viz:m => ({ fill: clamp(m.dryFilmQ) })
+},
+
+ald: {
+  lead:"You are at the atomic layer deposition line. Thickness is not set by a gap here — it is set by how many self-limiting cycles the web sees, which means by how fast it moves.",
+  ctl:["aldSpd","aldT"],
+  read:m => [
+    V("Film thickness", m.aldNm.toFixed(1) + " nm", m.aldNm >= 0.8 && m.aldNm <= 22 ? "ok" : "warn", "≈1 nm at 30 m/min, ≈10 nm at 10 m/min"),
+    V("Process temperature", S.aldT + " °C", m.aldOK ? "ok" : "bad", "guide window 100–250 °C"),

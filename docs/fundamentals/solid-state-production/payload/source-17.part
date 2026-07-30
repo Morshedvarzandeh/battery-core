@@ -1,0 +1,291 @@
+        </ul>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--destructive)"></i>What is different from a lithium-ion line</h4>
+        <ul>
+          <li><b>Interfaces replace wetting.</b> There is no liquid to soak into pores, so every interface has to be made mechanically — by pressure, heat, or sintering. Contact is a process variable here, not a consequence.${r(4,5)}</li>
+          <li><b>Lithium metal is not a coating.</b> It is extruded and laminated, it cannot be cut mechanically, and until it is passivated the whole line needs an inert-gas atmosphere rather than a dry room.${r(1,9)}</li>
+          <li><b>Two stations disappear.</b> No electrolyte filling and no separator placement — and with them the dry room at −50 °C and the wetting queue.${r(1,2)}</li>
+          <li><b>Dendrites are a process limit, not just a chemistry one.</b> The current a cell survives rises with stack pressure, and the published critical value has no standard measurement protocol.${r(6,12)}</li>
+        </ul>
+      </div>
+    </div>`;
+}
+
+/* ---------------- station ---------------- */
+function renderStation(st) {
+  const list = active(), n = list.indexOf(st) + 1, m = model(), col = phaseColor(st.phase);
+  $("stationView").innerHTML = `
+    <div class="machine ${running ? "is-run" : ""}" id="machineWrap">
+      <div class="machine-head">
+        <h3>${String(n).padStart(2, "0")} · ${esc(st.title)}</h3>
+        <div class="tag">
+          <span>${esc(st.env.iso)}</span>
+          ${st.env.dew !== "—" ? `<span>Dew point ${esc(st.env.dew)}</span>` : ""}
+          <span>${esc(st.env.temp)}</span>
+          <span>${esc(st.takt)}</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 980 318" role="img" aria-label="${esc(st.title)} machine schematic"
+           style="${machineStyle(st, m)}">${M[st.machine]()}</svg>
+      <div class="readout" id="readout"></div>
+    </div>
+
+    <div class="card card-pad">
+      <span class="eyebrow" style="color:${col}">${esc(st.phase)}</span>
+      <h2 style="font-size:20px;letter-spacing:-.02em;margin:5px 0 7px">${esc(st.purpose)}</h2>
+      <div class="flow" style="margin-top:12px">
+        <div class="flow-box"><small>Arrives as</small><strong>${esc(st.inp)}</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box"><small>Leaves as</small><strong>${esc(st.out)}</strong></div>
+      </div>
+      <div class="env" style="margin-top:12px">
+        <div><small>Clean room${r(1,9)}</small><b>${esc(st.env.iso)}</b></div>
+        <div><small>Dry room${r(1,5)}</small><b>${esc(st.env.dew)}</b></div>
+        <div><small>Temperature${r(1)}</small><b>${esc(st.env.temp)}</b></div>
+        <div><small>Machine investment${r(1)}</small><b>${esc(st.cost)}</b></div>
+      </div>
+      ${madeHTML(st)}
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>Process parameters &amp; requirements</h4>
+        <ul>${st.params.map(p => `<li>${p}</li>`).join("")}</ul>
+        <div class="srcline">Sources for this station: ${(SRC[st.id] || [1]).map(n =>
+          `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--jelly)"></i>Technology alternatives</h4>
+        <ul>${st.alts.map(p => `<li>${p}</li>`).join("")}</ul>
+        ${(st.chall || []).length ? `
+        <h4 style="margin-top:14px"><i style="background:var(--destructive)"></i>Challenges${r(1)}</h4>
+        <ul>${st.chall.map(p => `<li>${p}</li>`).join("")}</ul>` : ""}
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--warning)"></i>Quality influences</h4>
+        <ul>${st.qInf.map(p => `<li>${p}</li>`).join("")}</ul>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--elyte)"></i>Quality features</h4>
+        <ul>${st.qFeat.map(p => `<li>${p}</li>`).join("")}</ul>
+      </div>
+    </div>
+
+    ${renderConsole(st, m)}
+
+    <div class="card card-pad block">
+      <h4><i style="background:var(--foreground)"></i>Standard operating sequence</h4>
+      <ol class="sop">${st.sop.map(p => `<li>${p}</li>`).join("")}</ol>
+    </div>
+
+`;
+
+  bindHotspots(st);
+  bindConsole(st);
+  setHot(st, 0);
+}
+
+/* which parts of the finished cell this station is responsible for */
+function madeHTML(st) {
+  const makes  = COMPONENTS.filter(c => c.made.includes(st.id));
+  const risks  = COMPONENTS.filter(c => c.risk.includes(st.id) && !c.made.includes(st.id));
+  const checks = COMPONENTS.filter(c => (c.checks || []).includes(st.id)
+                   && !c.made.includes(st.id) && !c.risk.includes(st.id));
+  const TITLE = { make:"Built or shaped here", risk:"Most easily ruined here", check:"Measured or screened here" };
+  const SUF   = { make:"", risk:" ▲", check:" ◆" };
+  const chip = (c, kind) => `<button class="chipc" data-goview="${c.id}" title="${TITLE[kind]}">
+      <i style="background:${c.col}"></i>${esc(c.short)}${SUF[kind]}</button>`;
+  if (!makes.length && !risks.length && !checks.length) return "";
+  const label = makes.length ? "PART OF THE CELL THIS STATION IS RESPONSIBLE FOR"
+                             : "PART OF THE CELL THIS STATION CHECKS";
+  return `<div style="margin-top:14px;padding-top:13px;border-top:1px solid var(--border)">
+    <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint)">${label}</small>
+    <div class="makes">${makes.map(c => chip(c, "make")).join("")}${risks.map(c => chip(c, "risk")).join("")}${checks.map(c => chip(c, "check")).join("")}</div>
+    <p style="margin-top:7px;font-size:10.5px;color:var(--faint)">${makes.length ? "● built or shaped here" : ""}${risks.length ? (makes.length ? " · " : "") + "▲ most easily ruined here" : ""}${checks.length ? ((makes.length || risks.length) ? " · " : "") + "◆ measured or screened here" : ""} — click any chip to open it in the cell anatomy.</p>
+  </div>`;
+}
+
+function bindHotspots(st) {
+  document.querySelectorAll("#machineWrap .hot").forEach(g => {
+    const k = Number(g.dataset.k);
+    const go = () => setHot(st, k);
+    g.addEventListener("mouseenter", go);
+    g.addEventListener("focus", go);
+    g.addEventListener("click", go);
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    const p = st.parts[k];
+    if (p) g.setAttribute("aria-label", p[0] + " — " + p[1]);
+  });
+}
+function setHot(st, k) {
+  const p = st.parts[k];
+  if (!p) return;
+  hotIndex = k;
+  document.querySelectorAll("#machineWrap .hot").forEach(g =>
+    g.setAttribute("aria-current", Number(g.dataset.k) === k));
+  $("readout").innerHTML =
+    `<div class="num">${String(k + 1).padStart(2, "0")}</div>
+     <div><strong>${esc(p[0])}</strong><span>${p[2]}</span><em>${esc(p[1])}</em></div>`;
+}
+
+/* ---------------- rail ---------------- */
+function renderSliders() {
+  $("sliders").innerHTML = HEAD.map(k => {
+    const c = CTL[k], dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+    return `<div class="slider" id="sw-${k}" data-in="${inWindow(k)}">
+      <label for="sl-${k}">${c.label}<b id="v-${k}">${S[k].toFixed(dec)}${c.unit}</b></label>
+      <input id="sl-${k}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${S[k]}"
+             aria-label="${c.label}">
+      <div id="wb-${k}">${windowBar(k)}</div>
+      <small>${c.note}</small>
+    </div>`;
+  }).join("");
+  HEAD.forEach(k => $("sl-" + k).addEventListener("input", e => {
+    S[k] = Number(e.target.value);
+    refresh();
+  }));
+}
+/* keep the rail in step when a station console moves a headline setpoint */
+function syncSliders() {
+  HEAD.forEach(k => {
+    const c = CTL[k], dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+    const inp = $("sl-" + k), lab = $("v-" + k), wb = $("wb-" + k), wrap = $("sw-" + k);
+    if (inp) inp.value = S[k];
+    if (lab) lab.textContent = S[k].toFixed(dec) + c.unit;
+    if (wb) wb.innerHTML = windowBar(k);
+    if (wrap) wrap.dataset.in = inWindow(k);
+  });
+}
+function renderRail() {
+  const m = model();
+  $("gauge").style.setProperty("--v", m.yieldPct.toFixed(0));
+  $("yieldVal").textContent = m.yieldPct.toFixed(1);
+  const set = (t, b, v) => { $(t).textContent = Math.round(v) + "%"; $(b).style.width = clamp(v) + "%"; };
+  set("mUniT", "mUniB", m.uniformity);
+  set("mMoiT", "mMoiB", m.interfaces);
+  set("mSafT", "mSafB", m.safety);
+  const a = $("advice");
+  a.dataset.level = m.level;
+  a.innerHTML = `<strong>${esc(m.head)}</strong><span>${m.body}</span>`;
+  const g = GEOM[route];
+  $("cellKpi").innerHTML = `
+    <div><small>Capacity</small><b>${m.cellAh.toFixed(1)}</b><span>Ah · elementary cell</span></div>
+    <div><small>Resistance</small><b>${m.rTot.toFixed(0)}</b><span>Ω·cm², total</span></div>
+    <div><small>Contact</small><b>${m.contact.toFixed(0)}%</b><span>at ${S.stackF.toFixed(1)} MPa</span></div>
+    <div><small>Stack</small><b>${m.vCell.toFixed(1)} V</b><span>${S.layers} cells in series</span></div>`;
+}
+
+/* ---------------- navigation ---------------- */
+function go(id) {
+  current = id;
+  if (typeof id === "string" && id.startsWith("view:")) {
+    showView(id.slice(5));
+    renderNav();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  $("layerView").hidden = true;
+  const st = STATIONS.find(s => s.id === id);
+  if (!st) {
+    $("overview").hidden = false; $("stationView").hidden = true;
+    $("crumbTitle").textContent = "Factory overview";
+    $("pillEnv").innerHTML = `<i></i><b>Line ready</b>`;
+    $("pillPos").textContent = "—";
+    renderOverview();
+  } else {
+    $("overview").hidden = true; $("stationView").hidden = false;
+    $("crumbTitle").textContent = st.title;
+    $("pillEnv").innerHTML = `<i></i><b>${esc(st.env.iso)}${st.env.dew !== "—" ? " · " + esc(st.env.dew) : ""}</b>`;
+    $("pillPos").textContent = (active().indexOf(st) + 1) + " of " + active().length;
+    renderStation(st);
+  }
+  renderNav();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function refresh() {
+  renderRail();
+  pushHistory();
+  syncSliders();
+  if (typeof current === "string" && current.startsWith("view:")) { showView(current.slice(5)); return; }
+  if (current) { const st = STATIONS.find(s => s.id === current); if (st) { renderStation(st); setHot(st, hotIndex); } }
+  else renderOverview();
+}
+document.addEventListener("click", e => {
+  const v = e.target.closest("[data-goview]");
+  if (v) { layerPick = v.dataset.goview; go("view:anatomy"); return; }
+  const b = e.target.closest("[data-go]");
+  if (b) go(b.dataset.go);
+});
+
+/* route switch — rebuilds the line */
+$("routeOpts").addEventListener("click", e => {
+  const b = e.target.closest("[data-route]");
+  if (!b) return;
+  route = b.dataset.route;
+  document.querySelectorAll("#routeOpts button").forEach(x =>
+    x.setAttribute("aria-pressed", x.dataset.route === route));
+  $("crumbRoute").textContent = GEOM[route].name.toUpperCase();
+  const st = typeof current === "string" && !current.startsWith("view:") ? STATIONS.find(s => s.id === current) : null;
+  if (st && !st.routes.includes(route)) current = null;
+  go(current);
+});
+
+/* run / pause */
+$("runBtn").addEventListener("click", () => {
+  running = !running;
+  $("runBtn").setAttribute("aria-pressed", running);
+  $("runBtn").textContent = running ? "⏸ Pause line" : "▶ Run line";
+  $("liveTag").textContent = running ? "● RUNNING" : "❚❚ HELD";
+  const w = $("machineWrap"); if (w) w.classList.toggle("is-run", running);
+});
+
+$("resetBtn").addEventListener("click", () => { S = { ...DEFAULTS }; renderSliders(); refresh(); });
+/* the machine schematic reacts to the setpoints that drive it */
+function machineStyle(st, m) {
+  const o = OPS[st.id];
+  return o && o.viz ? Object.entries(o.viz(m)).map(([k, v]) =>
+    `--${k}:${typeof v === "number" ? v.toFixed(1) : v}`).join(";") : "";
+}
+
+/* ---------------- guided tour ---------------- */
+/* =====================================================================
+   TOUR ILLUSTRATIONS
+   One small drawing per stop, made to carry the point of that stop.
+   Same primitives and the same material palette as the station
+   schematics, so a colour always means the same thing.
+   ===================================================================== */
+const PIC_W = 372, PIC_H = 132;
+/* a little headroom above y=13 so ascenders in the top caption are not clipped */
+const pic = body => `<svg viewBox="0 2 ${PIC_W} ${PIC_H - 2}" role="img" aria-hidden="true">${body}</svg>`;
+const pArrow = (x, y) => `<path class="mArrow" d="M${x} ${y}l10 0l-3 -3.5l7 3.5l-7 3.5l3 -3.5z"/>`;
+
+const TOURPIC = {
+
+/* the line, one block per station, coloured by phase */
+line: () => pic(`
+  ${[...Array(13)].map((_, i) => {
+    const col = i < 8 ? "var(--warning)" : i < 12 ? "var(--elyte)" : "var(--green)";
+    return `<rect x="${18 + i * 27}" y="${40 - (i % 3) * 3}" width="20" height="${44 + (i % 3) * 3}"
+      rx="3" fill="${col}" opacity="${0.35 + i * 0.045}"/>`;
+  }).join("")}
+  ${T(18, 104, "electrode & electrolyte", "mTxtS")}
+  ${T(226, 104, "assembly", "mTxtS")}
+  ${T(310, 104, "finishing", "mTxtS")}
+  <circle cx="22" cy="118" r="3.5" fill="var(--warning)"/>
+  <circle cx="230" cy="118" r="3.5" fill="var(--elyte)"/>
+  <circle cx="314" cy="118" r="3.5" fill="var(--green)"/>
+  ${T(18, 32, "12 to 15 stations — the electrolyte class decides", "mTxtS")}`),
+
+/* the elementary cell and the series stack */
+cell: () => pic(`
+  ${[["var(--copper)", 7, "collector"], ["var(--anode)", 20, "lithium metal"],
+     ["var(--sep)", 12, "solid electrolyte"], ["var(--cathode)", 22, "catholyte"],
+     ["var(--alu)", 7, "collector"]]
+    .reduce((acc, [c, h, n]) => {
+      const y = acc.y;
+      acc.s += `<rect x="22" y="${y}" width="140" height="${h}" rx="1.5" fill="${c}"/>` +
+               T(170, y + h / 2 + 3.5, n, "mTxtS");

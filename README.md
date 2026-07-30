@@ -29,7 +29,8 @@ with explicit assumptions and validation.
 2. **[Part 01B — Lithium-ion cell architecture](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)** — move from the five-layer stack to porous electrodes, pore electrolyte, molecules, ions, and transport paths.
 3. **[Part 02 — Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)** — connect capacity, current, C-rate, and ideal duration through tested calculations.
 4. **[Part 03 — Battery production](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/)** — follow a reference graphite/NMC route from slurry preparation to formation, aging, grading, and packing, with the solvent-free dry-electrode route alongside it.
-5. **[Part 04 — Battery aging](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb)** — work through the six degradation mechanisms that wear a cell out, and why temperature drives all of them.
+5. **[Part 03B — All-solid-state production](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/)** — compare oxide, sulfide, halide, and polymer electrolyte routes, and see how stack pressure, atmosphere, and interfaces reshape the line.
+6. **[Part 04 — Battery aging](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb)** — work through the six degradation mechanisms that wear a cell out, and why temperature drives all of them.
 
 Part 03 connects cell components and ratings to the process steps that create,
 assemble, activate, and screen a finished cell. Part 04 closes Chapter 1 by

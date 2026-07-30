@@ -1,0 +1,294 @@
+  ${T(340, 84, "Calender rollers", "mTxt")}
+  ${T(340, 98, "below 2 500 N/mm, tempered", "mTxtS")}`)}
+${H(2, 560, 40, 200, 110, `
+  ${C(640, 92, 18, "mSteel2")}
+  ${P("M626 106q-20 20 -34 26", "mAcc")}
+  ${[0,1,2].map(i => `<circle cx="${600 - i * 8}" cy="${134 + i * 6}" r="2.6" fill="var(--elyte)"/>`).join("")}
+  ${T(566, 60, "Solvent supply (optional)", "mTxtS")}`)}
+${H(3, 186, 190, 240, 108, `
+  ${[0,1].map(i => IDLER(226 + i * 60, 194, 15, 1)).join("")}
+  ${T(190, 288, "Support rollers keep the web flat", "mTxtS")}`)}
+${WEB([[122, 194], [438, 194]], "mLnCa", 9)}
+${R(122, 190, 274, 4, "mCu", 1)}
+${H(4, 496, 152, 444, 116, `
+  ${R(480, 186, 434, 8, "mCa", 1)}
+  ${R(480, 194, 434, 5, "mSep", 1)}
+  ${R(480, 199, 434, 6, "mCu", 1)}
+  ${T(528, 176, "Densified composite", "mTxt")}
+  ${T(528, 240, "oxide electrolytes are sintered instead — this station", "mTxtS")}
+  ${T(528, 254, "does not exist on the oxide route", "mTxtS")}`)}
+`;
+
+M.drycoat = () => `
+${T(30, 30, "Solvent-free — the binder is fibrillated, not dissolved", "mTxtS")}
+${H(0, 40, 60, 190, 138, `
+  ${R(70, 78, 140, 40, "mSteel2", 5)}
+  ${P("M84 118l40 26l24 0l48 -26z", "mDark")}
+  <g class="bob">${C(98, 96, 6, "mCa")}${C(124, 100, 5, "mSep")}${C(150, 94, 5, "mDark")}${C(176, 99, 6, "mCa")}</g>
+  ${T(46, 52, "Dry mix — fibrillated binder", "mTxtS")}`)}
+${H(1, 250, 96, 190, 150, `
+  ${NIP(300, 182, 30)}
+  ${T(256, 262, "Fibre-forming nip", "mTxt")}${T(256, 276, "RT–200 °C", "mTxtS")}`)}
+${H(2, 460, 96, 200, 150, `
+  ${ROLLER(520, 150, 32)}${ROLLER(520, 214, 32)}
+  ${T(566, 120, "Gap or pressure", "mTxt")}${T(566, 134, "sets layer thickness", "mTxtS")}
+  ${LEAD(562, 128, 552, 150)}`)}
+${H(3, 690, 110, 150, 120, `
+  ${R(720, 140, 66, 44, "mSteel2", 4)}${T(728, 168, "µm OK", "mTxtS onpanel")}
+  ${P("M753 184l0 20", "mLine")}
+  ${T(694, 236, "Thickness gauge", "mTxtS")}`)}
+${H(4, 858, 120, 110, 110, `${REEL(908, 182, 26, "mSep")}${T(862, 226, "Dry film", "mTxtS")}`)}
+${P("M210 136q36 26 60 46", "mLnSep")}
+${WEB([[330, 182], [520, 182]], "mWebS", 7)}
+${P("M552 182l332 0", "mWebS")}
+<path class="mWebS flowdash" stroke="var(--sep)" d="M552 182l332 0"/>
+${ARROW(236, 168)}${ARROW(676, 170)}
+${[400, 620, 760].map(x => ROLLER(x, 194, 10)).join("")}
+`;
+
+M.ald = () => `
+${T(30, 30, "One atomic layer at a time — self-limiting surface reactions", "mTxtS")}
+${H(0, 22, 118, 118, 112, `${REEL(76, 174, 28, "mAn")}${T(26, 222, "Cell layer in", "mTxtS")}`)}
+${H(1, 160, 48, 640, 192, `
+  ${R(176, 92, 610, 108, "mGlass", 6)}
+  ${[0, 1, 2, 3].map(q => R(206 + q * 152, 78, 96, 20, "mDark", 3)).join("")}
+  ${[0, 1, 2, 3].map(q => T(254 + q * 152, 62, ["precursor A", "purge", "precursor B", "purge"][q], "mTxtS", "middle")).join("")}
+  ${[0, 1, 2, 3].map(q => NOZZLES(216 + q * 152, 100, 4, 20)).join("")}
+  ${T(178, 216, "No vacuum required · 100–250 °C", "mTxtS")}`)}
+${H(2, 812, 118, 156, 112, `
+  ${REEL(866, 174, 26, "mAn")}
+  ${R(902, 150, 60, 38, "mSteel2", 4)}${T(908, 174, "1–10 nm", "mTxtS onpanel")}
+  ${T(816, 222, "Coated, out", "mTxtS")}`)}
+${P("M76 174l790 0", "mWebA")}
+<path class="mWebA flowdash" stroke="var(--anode)" d="M76 174l790 0"/>
+${P("M176 162l610 0", "mEl")}
+${ARROW(126, 152)}${ARROW(802, 152)}
+`;
+
+M.compacting = () => `
+${T(30, 30, "The stack is densified before it is joined — 5 to 600 MPa", "mTxtS")}
+${H(0, 30, 110, 150, 120, `${R(60, 152, 96, 40, "mSteel2", 4)}
+  ${[0, 1, 2, 3].map(q => R(66, 156 + q * 9, 84, 5, q % 2 ? "mCa" : "mSep", 1)).join("")}
+  ${T(34, 220, "Loose stack in", "mTxtS")}`)}
+${H(1, 220, 54, 300, 232, `
+  ${R(250, 80, 240, 26, "mDark", 4)}
+  ${R(250, 220, 240, 26, "mDark", 4)}
+  ${R(272, 130, 196, 62, "mHotSoft", 3)}
+  ${[0, 1, 2, 3, 4].map(q => R(280, 136 + q * 11, 180, 7, q % 2 ? "mCa" : "mSep", 1)).join("")}
+  ${P("M300 106l0 20M370 106l0 20M440 106l0 20", "mAcc")}
+  ${P("M300 220l0 -20M370 220l0 -20M440 220l0 -20", "mAcc")}
+  ${T(226, 70, "Isostatic press · RT–2 000 °C", "mTxtS")}
+  ${T(226, 276, "Holding time, seconds to hours", "mTxtS")}`)}
+${H(2, 556, 96, 200, 150, `
+  ${R(586, 140, 140, 60, "mHot", 3)}
+  ${[0, 1, 2, 3, 4].map(q => R(594, 145 + q * 11, 124, 7, q % 2 ? "mCa" : "mSep", 1)).join("")}
+  ${T(560, 224, "Densified — porosity down, contact up", "mTxtS")}`)}
+${H(3, 790, 110, 178, 120, `
+  ${R(820, 140, 66, 44, "mSteel2", 4)}${T(826, 168, "% dens.", "mTxtS onpanel")}
+  ${T(794, 224, "Density gauge", "mTxtS")}`)}
+${ARROW(192, 168)}${ARROW(532, 168)}
+`;
+
+M.slitting = () => `
+${T(30, 26, "Two ways to make the same cut — both act on the same web line", "mTxtS")}
+${H(0, 24, 120, 150, 112, `
+  ${REEL(90, 178, 36, "mSep")}
+  ${T(28, 250, "Wide coated web", "mTxtS")}`)}
+${H(3, 182, 176, 104, 60, `
+  ${IDLER(214, 178, 14, 1)}${IDLER(258, 178, 14, 1)}
+  ${T(184, 254, "Guide rollers", "mTxtS")}`)}
+${H(1, 300, 52, 168, 154, `
+  ${R(362, 66, 34, 52, "mDark", 4)}
+  ${P("M379 118l0 48", "mLnHot")}${C(379, 172, 7, "mHot")}
+  ${T(304, 46, "Laser — contactless", "mTxt")}
+  ${T(304, 202, "no deflection, no delamination", "mTxtS")}`)}
+${H(2, 494, 108, 150, 130, `
+  ${IDLER(556, 178, 22, -1)}
+  ${IDLER(556, 178, 13, 1)}
+  ${T(498, 128, "Rolling knife", "mTxt")}
+  ${T(498, 232, "the mechanical alternative", "mTxtS")}`)}
+${H(4, 664, 148, 132, 66, `
+  ${IDLER(700, 178, 12, 1)}
+  ${T(668, 142, "Strips at the required width", "mTxtS")}`)}
+${H(5, 856, 96, 112, 172, `
+  ${REEL(910, 130, 22, "mSep")}${REEL(910, 178, 22, "mSep")}${REEL(910, 226, 22, "mSep")}
+  ${T(858, 278, "Three daughter rolls", "mTxtS")}`)}
+${WEB([[126, 178], [676, 178]], "mWebS", 7)}
+${WEB([[712, 178], [800, 152], [888, 130]], "mWebS", 4)}
+${WEB([[712, 178], [888, 178]], "mWebS", 4)}
+${WEB([[712, 178], [800, 204], [888, 226]], "mWebS", 4)}
+<path class="mWebS flowdash" style="stroke-width:7;fill:none" d="M126 178L676 178"/>
+${ARROW(300, 158)}${ARROW(812, 158)}
+`;
+
+M.separation = () => `
+${H(0, 40, 40, 400, 130, `
+  ${R(196, 56, 28, 50, "mDark", 3)}
+  ${P("M210 106l0 34", "mLnHot")}${C(210, 146, 8, "mHot")}
+  ${T(46, 52, "Laser cut", "mTxt")}
+  ${T(240, 118, "energy set per material in the stack", "mTxtS")}`)}
+${H(1, 40, 130, 400, 110, `
+  ${R(66, 156, 130, 10, "mCa", 1)}${R(66, 166, 130, 7, "mSep", 1)}${R(66, 173, 130, 9, "mAn", 1)}
+  ${R(230, 156, 130, 10, "mCa", 1)}${R(230, 166, 130, 7, "mSep", 1)}${R(230, 173, 130, 9, "mAn", 1)}
+  ${T(66, 132, "Cutting zone — the layers must not melt", "mTxtS")}
+  ${T(66, 232, "melted layers touch, and that is a short", "mTxtS")}`)}
+${H(2, 520, 40, 400, 130, `
+  ${R(680, 52, 30, 46, "mSteel", 2)}
+  ${P("M683 98l24 0l-12 34z", "mSteel")}
+  ${T(526, 52, "Punching", "mTxt")}
+  ${T(716, 118, "the punch presses the film into the die", "mTxtS")}`)}
+${H(3, 520, 130, 400, 110, `
+  ${R(546, 156, 130, 10, "mCa", 1)}${R(546, 166, 130, 7, "mSep", 1)}${R(546, 173, 130, 9, "mAn", 1)}
+  ${R(712, 156, 130, 10, "mCa", 1)}${R(712, 166, 130, 7, "mSep", 1)}${R(712, 173, 130, 9, "mAn", 1)}
+  ${R(540, 186, 320, 8, "mSteel2", 1)}
+  ${T(546, 232, "Punching zone, on the cutting plate", "mTxtS")}`)}
+${H(4, 340, 240, 300, 66, `
+  ${R(392, 254, 200, 10, "mCa", 1)}${R(392, 264, 200, 7, "mSep", 1)}${R(392, 271, 200, 9, "mAn", 1)}
+  ${T(348, 300, "Elementary cell — anode, electrolyte, cathode", "mTxtS")}`)}
+`;
+
+M.sintering = () => `
+${H(0, 26, 150, 150, 110, `
+  ${R(46, 186, 120, 16, "mCa", 2)}
+  ${[...Array(5)].map((_, i) => IDLER(60 + i * 26, 202, 10, 1)).join("")}
+  ${T(30, 250, "Unsintered composite", "mTxtS")}`)}
+${H(1, 190, 46, 620, 70, `
+  ${R(200, 60, 600, 40, "mDark", 4)}
+  ${[...Array(11)].map((_, i) => C(232 + i * 54, 108, 7, "mHot")).join("")}
+  ${T(206, 54, "Heating elements", "mTxt")}`)}
+${H(2, 190, 108, 620, 110, `
+  ${R(200, 120, 600, 74, "mHot", 4)}
+  ${P("M300 156q34 -14 62 0t62 0t62 0", "mLine")}
+  ${T(206, 40, "High temperature zone · 500–2 000 °C", "mTxtS")}
+  ${T(600, 40, "mass transport thermally activated", "mTxtS")}`)}
+${H(3, 380, 176, 300, 60, `
+  ${R(420, 182, 220, 14, "mCa", 2)}
+  ${T(386, 306, "Sintered cathode–electrolyte layer", "mTxtS")}`)}
+${H(4, 190, 218, 620, 76, `
+  ${R(200, 230, 600, 46, "mDark", 4)}
+  ${[...Array(11)].map((_, i) => C(232 + i * 54, 212, 7, "mHot")).join("")}
+  ${T(206, 292, "Inert gas or vacuum — no reaction with the environment", "mTxtS")}`)}
+${H(5, 826, 150, 130, 110, `
+  ${[...Array(4)].map((_, i) => IDLER(848 + i * 26, 202, 10, 1)).join("")}
+  ${R(842, 186, 108, 16, "mCa", 2)}
+  ${T(830, 250, "Densified", "mTxtS")}`)}
+`;
+
+M.stacking = () => `
+${H(0, 26, 30, 230, 150, `
+  ${P("M60 60l0 -22l60 0", "mSteel")}
+  ${R(112, 30, 52, 18, "mSteel", 3)}
+  ${P("M138 48l0 34", "mDark")}
+  ${T(30, 26, "Gripper mechanics", "mTxtS")}`)}
+${H(1, 90, 78, 200, 90, `
+  ${R(104, 82, 74, 22, "mDark", 3)}
+  ${P("M112 104l0 12M132 104l0 12M152 104l0 12M170 104l0 12", "mLine")}
+  ${T(94, 140, "Vacuum gripper", "mTxtS")}
+  ${T(94, 154, "must not damage the surface", "mTxtS")}`)}
+${H(2, 60, 170, 300, 130, `
+  ${[...Array(5)].map((_, i) => `
+    ${R(96, 190 + i * 20, 180, 7, "mCa", 1)}
+    ${R(96, 197 + i * 20, 180, 5, "mSep", 1)}
+    ${R(96, 202 + i * 20, 180, 7, "mAn", 1)}`).join("")}
+  ${T(66, 300, "Cell stack — no separator is stacked", "mTxtS")}`)}
+${H(3, 420, 40, 300, 260, `
+  ${R(448, 60, 240, 22, "mSteel", 3)}
+  ${R(448, 236, 240, 22, "mSteel", 3)}
+  ${P("M560 82l0 26", "mDark")}${ARROW(560, 100)}
+  <path class="mArrow" d="M560 96l0 16l-5 -6l5 6l5 -6z"/>
+  ${[...Array(5)].map((_, i) => `
+    ${R(476, 116 + i * 22, 184, 8, "mCa", 1)}
+    ${R(476, 124 + i * 22, 184, 5, "mSep", 1)}
+    ${R(476, 129 + i * 22, 184, 8, "mAn", 1)}`).join("")}
+  ${T(426, 52, "Press · pressure and heat laminate the stack", "mTxtS")}
+  ${T(426, 282, "grain-boundary resistance falls, conductivity rises", "mTxtS")}`)}
+${H(4, 760, 60, 200, 200, `
+  ${[...Array(4)].map((_, i) => `
+    ${R(790, 96 + i * 34, 130, 9, "mCu", 1)}
+    ${R(790, 105 + i * 34, 130, 8, "mCa", 1)}
+    ${R(790, 113 + i * 34, 130, 6, "mSep", 1)}
+    ${R(790, 119 + i * 34, 130, 8, "mAn", 1)}`).join("")}
+  ${T(766, 88, "Bipolar stacking", "mTxt")}
+  ${T(766, 250, "series inside the housing —", "mTxtS")}
+  ${T(766, 264, "voltage multiplies, only the", "mTxtS")}
+  ${T(766, 278, "outer collectors are needed", "mTxtS")}`)}
+`;
+
+M.contacting = () => `
+${H(0, 200, 30, 200, 140, `
+  ${R(276, 44, 30, 46, "mDark", 3)}
+  ${P("M291 90l0 40", "mLnHot")}${C(291, 136, 8, "mHot")}
+  ${T(206, 40, "Laser welder · under 4 000 W", "mTxtS")}`)}
+${H(1, 26, 120, 340, 150, `
+  ${[...Array(4)].map((_, i) => `
+    ${R(66, 150 + i * 26, 240, 8, "mCu", 1)}
+    ${R(66, 158 + i * 26, 240, 7, "mCa", 1)}
+    ${R(66, 165 + i * 26, 240, 5, "mSep", 1)}
+    ${R(66, 170 + i * 26, 240, 7, "mAn", 1)}`).join("")}
+  ${R(40, 148, 26, 12, "mAl", 2)}${R(40, 240, 26, 12, "mCu", 2)}
+  ${T(30, 274, "Bipolar stack — only the outer conductors leave", "mTxtS")}`)}
+${H(2, 470, 40, 300, 130, `
+  ${P("M496 150l0 -70l220 0l0 70", "mSteel")}
+  ${T(476, 70, "Deep-drawn film · under 10 mm", "mTxtS")}
+  ${T(476, 168, "metal–plastic composite, insulated", "mTxtS")}`)}
+${H(3, 470, 150, 300, 140, `
+  ${R(496, 168, 220, 100, "mSteel2", 4)}
+  ${[...Array(4)].map((_, i) => R(514, 180 + i * 22, 184, 14, i % 2 ? "mAn" : "mCa", 1)).join("")}
+  ${R(486, 168, 12, 100, "mAcc", 2)}${R(714, 168, 12, 100, "mAcc", 2)}
+  ${T(476, 286, "Sealing — impulse or contact seals", "mTxtS")}`)}
+${H(4, 800, 90, 160, 150, `
+  ${R(830, 122, 100, 76, "mGlass", 5)}
+  ${P("M846 160l68 0M880 126l0 68", "mLine")}
+  ${T(806, 114, "No filling port", "mTxt")}
+  ${T(806, 218, "the electrolyte filling that", "mTxtS")}
+  ${T(806, 232, "follows sealing in lithium-ion", "mTxtS")}
+  ${T(806, 246, "production is not required", "mTxtS")}`)}
+`;
+
+M.formation = () => `
+${H(0, 26, 40, 200, 170, `
+  ${P("M56 60l0 130M196 60l0 130", "mSteel")}
+  ${[...Array(4)].map((_, i) => `<path class="mLine" d="M64 ${80 + i * 30}q14 -10 28 0"/>
+     <path class="mLine" d="M100 ${80 + i * 30}q14 -10 28 0"/>`).join("")}
+  ${T(30, 36, "Spring contact probes", "mTxtS")}`)}
+${H(1, 26, 200, 200, 100, `
+  ${R(56, 216, 140, 62, "mDark", 4)}
+  ${P("M72 262l0 -34l24 24l24 -40l24 50", "mAcc")}
+  ${T(30, 296, "Power electronics", "mTxtS")}`)}
+${H(2, 250, 60, 220, 210, `
+  ${[...Array(5)].map((_, i) => `
+    ${R(280, 90 + i * 32, 160, 9, "mCa", 1)}
+    ${R(280, 99 + i * 32, 160, 6, "mSep", 1)}
+    ${R(280, 105 + i * 32, 160, 9, "mAn", 1)}`).join("")}
+  ${R(272, 84, 176, 4, "mAcc", 1)}
+  ${T(256, 80, "Interface layer forms here", "mTxtS")}
+  ${T(256, 286, "it sets the ion conductivity of the cell", "mTxtS")}`)}
+${H(3, 500, 40, 300, 240, `
+  ${R(520, 56, 260, 210, "mGlass", 6)}
+  ${[...Array(5)].map((_, i) => `${R(540, 74 + i * 40, 220, 26, "mSteel2", 3)}
+     ${[...Array(4)].map((_, j) => R(552 + j * 54, 80 + i * 40, 44, 14, "mCa", 2)).join("")}`).join("")}
+  ${T(506, 50, "Aging rack · controlled atmosphere", "mTxtS")}
+  ${T(506, 288, "open-circuit voltage measured at interval", "mTxtS")}`)}
+${H(4, 820, 40, 140, 120, `
+  ${R(846, 66, 80, 76, "mSteel", 5)}
+  ${R(858, 54, 18, 14, "mAl", 2)}${R(896, 54, 18, 14, "mCu", 2)}
+  ${T(824, 160, "Already charged", "mTxt")}
+  ${T(824, 174, "a lithium metal anode means", "mTxtS")}
+  ${T(824, 188, "the assembled cell starts full", "mTxtS")}`)}
+${H(5, 820, 200, 150, 100, `
+  ${P("M846 268l0 -46l24 30l22 -46l26 62", "mAcc")}
+  ${T(824, 288, "Shorter than lithium-ion", "mTxt")}
+  ${T(824, 302, "less formation time is expected", "mTxtS")}`)}
+`;
+</script>
+<script>
+/* =====================================================================
+   STATION MASTER DATA — all-solid-state battery cell
+   Process steps, atmospheres, parameters, quality features, challenges,
+   technology alternatives and the LIB-transferability rating are taken
+   from the PEM RWTH Aachen / VDMA guide. Stations the 3rd edition describes
+   in detail carry its own figures; the rest come from the 2nd edition.
+   `parts` indices line up with the hotspot data-k values in the machine.
+   ===================================================================== */
+
+/* shared helpers — defined first so every later block can use them */

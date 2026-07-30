@@ -1,0 +1,144 @@
+}
+
+function renderRefs() {
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">Sources</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Where every number came from</h2>
+      <p class="lede" style="max-width:80ch">Process parameters, environment classes, machine investments and cycle times
+      are from the PEM RWTH Aachen and VDMA process guide. The physics that links them — porosity, areal capacity,
+      N/P balance, moisture, SEI — is from the peer-reviewed sources below. The superscript numbers throughout this
+      simulator link here.</p>
+      <p class="lede" style="max-width:80ch;margin-top:10px"><b>What is modelled rather than cited:</b> the chain that
+      connects one setpoint to the next is a teaching model, fitted so the defaults land near the reference plant. Use it
+      to understand direction and sensitivity, not to size real equipment.</p>
+    </div>
+    <div class="card card-pad">
+      <div class="reflist">
+        ${REFS.map(x => `
+          <div class="refitem" id="ref-${x.n}">
+            <div class="rn">${x.n}</div>
+            <div>
+              <p>${x.txt}</p>
+              <span class="used"><b>Used for:</b> ${x.use}</span>
+              ${x.url ? `<a href="${x.url}" target="_blank" rel="noopener">${esc(x.url)}</a>` : ""}
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   THE OPERATOR CONSOLE
+   ------------------------------------------------------------------- */
+function inWindow(k) {
+  const c = CTL[k];
+  return !c || c.opts || !c.good ? true : (S[k] >= c.good[0] && S[k] <= c.good[1]);
+}
+function ctlHTML(k) {
+  const c = CTL[k], v = S[k];
+  if (c.opts) return `
+    <div class="ctl">
+      <label>${c.label}<b>${c.opts[v]}</b></label>
+      <div class="seg" role="group" aria-label="${c.label}">
+        ${c.opts.map((o, i) => `<button type="button" data-seg="${k}" data-v="${i}" aria-pressed="${i === v}">${o}</button>`).join("")}
+      </div>
+      <small>${c.note}${c.ref ? r(...c.ref) : ""}</small>
+    </div>`;
+  const dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+  return `
+    <div class="ctl" data-in="${inWindow(k)}">
+      <label for="cc-${k}">${c.label}<b id="cv-${k}">${v.toFixed(dec)}${c.unit}</b></label>
+      <input id="cc-${k}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${v}"
+             aria-label="${c.label}" data-ctl="${k}">
+      ${windowBar(k)}
+      <small>${c.note}${c.ref ? r(...c.ref) : ""}</small>
+    </div>`;
+}
+function renderConsole(st, m) {
+  const o = OPS[st.id];
+  if (!o) return "";
+  const [lv, head, body] = o.verdict(m);
+  return `
+    <div class="console" id="console">
+      <div class="console-head">
+        <strong>Operate this station</strong>
+        <span>${esc(o.lead)}</span>
+      </div>
+      <div class="console-body">
+        <div class="console-ctl">
+          <small>Your controls</small>
+          ${o.ctl.map(ctlHTML).join("")}
+        </div>
+        <div class="console-out">
+          <small>What happens</small>
+          <div class="outs">
+            ${o.read(m).map(x => `<div class="out" data-s="${x.state}">
+              <small>${esc(x.label)}</small><b>${esc(x.value)}</b>
+              ${x.hint ? `<i>${esc(x.hint)}</i>` : ""}</div>`).join("")}
+          </div>
+          <div class="verdict" data-l="${lv}"><strong>${esc(head)}</strong><span>${esc(body)}</span></div>
+          ${renderCharts(st)}
+        </div>
+      </div>
+      <div class="console-foot">
+        <span>Anything you change here is felt by every station downstream — watch the yield gauge on the right.</span>
+        <button type="button" id="conReset">Reset this station</button>
+        <button type="button" id="conBreak">Break it</button>
+      </div>
+    </div>`;
+}
+function bindConsole(st) {
+  const o = OPS[st.id];
+  if (!o || !$("console")) return;
+  $("console").querySelectorAll("input[data-ctl]").forEach(el =>
+    el.addEventListener("input", e => { S[e.target.dataset.ctl] = Number(e.target.value); refresh(); }));
+  $("console").querySelectorAll("button[data-seg]").forEach(el =>
+    el.addEventListener("click", e => {
+      const b = e.currentTarget;
+      S[b.dataset.seg] = Number(b.dataset.v); refresh();
+    }));
+  $("conReset").addEventListener("click", () => {
+    o.ctl.forEach(k => S[k] = DEFAULTS[k]); renderSliders(); refresh();
+  });
+  $("conBreak").addEventListener("click", () => {
+    /* push this station's knobs to the edge that fails, so the failure mode is visible */
+    const BREAK = { tC:80, tA:50, speed:80, dryT:60, force:2500, vac:8, cRate:0.5, ageDays:3,
+      solid:75, mixMin:30, mixT:40, gap:280, dryLen:20, rollT:120, knife:0, cutSpd:150, wear:100,
+      vacT:60, sepMode:0, stackAcc:600, webTens:140, drawDepth:10, sealT:150, doseFac:1,
+      fillP:400, soak:1, pressP:1.2, formT:60, vMax:4.4, degP:60, ageSOC:20, ageHiT:25, shipSOC:60 };
+    o.ctl.forEach(k => S[k] = BREAK[k]); renderSliders(); refresh();
+  });
+}
+
+/* ---------------------------------------------------------------------
+   navigation for the new views
+   ------------------------------------------------------------------- */
+function showView(id) {
+  $("overview").hidden = true; $("stationView").hidden = true; $("layerView").hidden = false;
+  const v = VIEWS.find(x => x.id === id) || VIEWS[0];
+  $("crumbTitle").textContent = v.label;
+  $("pillEnv").innerHTML = `<i></i><b>${esc(v.hint)}</b>`;
+  $("pillPos").textContent = "—";
+  ({ machine:renderMachineOverview, anatomy:renderAnatomy, flow:renderFlow, matrix:renderMatrix,
+     compare:renderCompare, proctech:renderProcTech, refs:renderRefs }[v.id])();
+}
+
+/* reference chips open the reference list at the right entry */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-ref]");
+  if (!b) return;
+  e.preventDefault();
+  go("view:refs");
+  setTimeout(() => {
+    const el = document.getElementById("ref-" + b.dataset.ref);
+    if (el) { el.scrollIntoView({ behavior:"smooth", block:"center" }); el.style.outline = "2px solid var(--primary)";
+      setTimeout(() => el.style.outline = "", 1800); }
+  }, 60);
+});
+
+/* ---------------- boot ---------------- */
+renderSliders();
+renderRail();
+go(null);
+</script>

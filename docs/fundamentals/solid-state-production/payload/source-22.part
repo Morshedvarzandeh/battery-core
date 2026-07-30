@@ -1,0 +1,224 @@
+      </div>
+      <div class="hmiTrend">
+        ${spark(HIST.oee, "var(--primary)", "Line condition", "%", 100)}
+        ${spark(HIST.scrap, "var(--destructive)", "Scrap", "%", 12)}
+        ${spark(HIST.off, "var(--warning)", "Alarm load", "", 6)}
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <h4><i style="background:var(--primary)"></i>${esc(g.name)} line — ${k.list.length} stations</h4>
+      <div class="hmiScroll">${lineSVG()}</div>
+      ${alarmList(m, k)}
+      <div class="hmiKey">
+        <span><i style="background:var(--green)"></i>inside its window</span>
+        <span><i style="background:var(--warning)"></i>drifting</span>
+        <span><i style="background:var(--destructive)"></i>outside its window</span>
+        <span><i style="background:var(--sep)"></i>electrode and electrolyte</span>
+        <span><i style="background:var(--elyte)"></i>cells</span>
+        <span>T1–T5 · transferability from lithium-ion</span>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <h4><i style="background:var(--elyte)"></i>How much of a lithium-ion plant carries over${r(1)}</h4>
+      <p class="lede" style="max-width:86ch;margin-bottom:6px">The guide scores every process for how far existing
+      lithium-ion knowledge transfers to it, on a scale of one to five. Read it as a conversion map: the green rows are
+      machines and know-how a lithium-ion plant already has, the red rows are the ones that have to be learned or bought
+      from scratch. Grinding, mixing and the back end transfer well; the lithium metal anode, sintering and compacting
+      transfer barely at all. Solid bars are the 3rd edition's own scores; hatched bars marked with an asterisk are
+      carried over from the 2nd edition, for stations the current one no longer describes in detail.${r(15)}</p>
+      ${transSVG()}
+    </div>
+
+    <div class="card card-pad">
+      <h4><i style="background:var(--warning)"></i>And where it all stands</h4>
+      <p class="lede" style="max-width:86ch;margin-bottom:6px">The same machines placed on the floor, grouped into the
+      three areas the guide names. Unlike the lithium-ion guide, this one publishes no factory concept — there is no
+      standard sequence yet, so there is no standard building either. What you see is the process structure laid out in
+      plan, not a proposed plant layout.</p>
+      <div class="hmiScroll">${floorSVG()}</div>
+    </div>
+
+    <div class="card card-pad">
+      <p class="lede" style="max-width:96ch;font-size:12px;opacity:.85"><b>What is real here and what is not.</b> The
+      station set and the three-phase split are from the 3rd edition of the process guide.${r(1)} Transferability scores
+      are its own where the station has a page there, and carried over from the 2nd edition otherwise.${r(15)} The lamps come
+      from this simulator's own process windows. The line-condition, availability and interface figures are illustrative
+      constructions on top of the teaching model — no solid-state line is in series production to measure them against.
+      Read them as a way of seeing the line react, not as numbers to quote.</p>
+    </div>`;
+
+  $("layerView").querySelectorAll(".hmiSt, .alarmRows button").forEach(el => {
+    el.addEventListener("click", () => go(el.dataset.go));
+    el.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(el.dataset.go); }
+    });
+  });
+}
+
+/* =====================================================================
+   ELECTROLYTE COMPARISON — the four classes, on the seven axes the
+   guide judges them by. No numeric scale is printed in the source, so
+   these are the guide's relative positions, not measured values. [1]
+   ===================================================================== */
+const SSE_AXES = [
+  "HV stability", "Air stability", "Processability", "Stability against lithium metal",
+  "Ionic conductivity", "Suitability as a catholyte", "Suitability as a separator"
+];
+const SSE_CLASSES = [
+  { id:"oxide",   name:"Oxides",   col:"var(--elyte)",
+    v:[5, 5, 2, 4, 2, 2, 4],
+    plus:"A broad electrochemical stability window, and they can be processed under low atmospheric requirements.",
+    minus:"Manufactured by sintering at high temperature over long periods, and difficult to handle mechanically because they are brittle." },
+  { id:"sulfide", name:"Sulfides", col:"var(--warning)",
+    v:[2, 1, 4, 2, 5, 5, 4],
+    plus:"High ionic conductivity and good deformability.",
+    minus:"Limited stability against the lithium anode and the cathode active materials, and pronounced reactivity in normal air to toxic, corrosive H₂S." },
+  { id:"halide",  name:"Halides",  col:"var(--destructive)",
+    v:[5, 4, 4, 2, 4, 5, 2],
+    plus:"High high-voltage stability and ionic conductivity with good processability, and no protective atmosphere is needed.",
+    minus:"Stability with respect to lithium metal and suitability as a separator are both limited." },
+  { id:"polymer", name:"Polymers", col:"var(--green)",
+    v:[2, 4, 5, 4, 1, 2, 4],
+    plus:"High deformability, which gives pronounced interface contact and simplified processing.",
+    minus:"Low ionic conductivity at room temperature and a limited electrochemical stability window." }
+];
+
+function spider(cls, size, on) {
+  const cx = size / 2, cy = size / 2 + 4, R = size / 2 - 34, N = SSE_AXES.length;
+  const pt = (i, f) => {
+    const a = -Math.PI / 2 + i * 2 * Math.PI / N;
+    return [cx + Math.cos(a) * R * f, cy + Math.sin(a) * R * f];
+  };
+  let g = "";
+  for (let ring = 1; ring <= 5; ring++) {
+    const d = Array.from({ length: N }, (_, i) => pt(i, ring / 5))
+      .map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join("") + "Z";
+    g += `<path d="${d}" fill="none" stroke="color-mix(in srgb,var(--foreground) ${ring === 5 ? 20 : 9}%,transparent)"/>`;
+  }
+  for (let i = 0; i < N; i++) {
+    const [x, y] = pt(i, 1);
+    g += `<path d="M${cx} ${cy}L${x.toFixed(1)} ${y.toFixed(1)}" stroke="color-mix(in srgb,var(--foreground) 9%,transparent)"/>`;
+  }
+  const d = cls.v.map((v, i) => pt(i, v / 5)).map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join("") + "Z";
+  g += `<path d="${d}" fill="${cls.col}" opacity=".26" stroke="${cls.col}" stroke-width="2"/>`;
+  g += cls.v.map((v, i) => { const [x, y] = pt(i, v / 5);
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${cls.col}"/>`; }).join("");
+  if (on) g += SSE_AXES.map((ax, i) => {
+    const [x, y] = pt(i, 1.2);
+    const anc = Math.abs(x - cx) < 12 ? "middle" : x > cx ? "start" : "end";
+    return `<text x="${x.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="${anc}" class="axLab">${esc(ax)}</text>`;
+  }).join("");
+  return `<svg viewBox="${on ? -118 : -6} 0 ${size + (on ? 236 : 12)} ${size + 12}" role="img"
+    aria-label="${esc(cls.name)} on seven properties">${g}</svg>`;
+}
+
+function renderCompare() {
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Four electrolytes, seven properties, no free lunch</h2>
+      <p class="lede" style="max-width:86ch">There is no standard process sequence for a solid-state cell because there is
+      no standard electrolyte. Each class is good at something and bad at something else, and the plant you would build
+      follows from that choice more than from anything else.${r(1)} The class you have selected in the sidebar is drawn
+      first, with its axes labelled.</p>
+      <p class="lede" style="max-width:86ch;margin-top:10px"><b>Read the shapes, not the numbers.</b> The source prints
+      these as relative positions on unscaled axes, so the rings here carry no units. A bigger shape is better across the
+      board; a spiky shape is a material that will make you choose.</p>
+    </div>
+    <div class="cmpGrid">
+      ${[...SSE_CLASSES].sort((a, b) => (a.id === route ? -1 : 0) - (b.id === route ? -1 : 0)).map(c => `
+        <div class="card card-pad cmpCard ${c.id === route ? "on" : ""}">
+          <div class="cmpHead">
+            <b style="color:${c.col}">${esc(c.name)}</b>
+            ${c.id === route ? `<em>this line</em>`
+              : `<button type="button" class="cmpGo" data-cls="${c.id}">switch the line to this</button>`}
+          </div>
+          ${spider(c, c.id === route ? 300 : 208, c.id === route)}
+          <p class="cmpP"><i style="color:var(--green)">+</i> ${esc(c.plus)}</p>
+          <p class="cmpP"><i style="color:var(--destructive)">−</i> ${esc(c.minus)}</p>
+        </div>`).join("")}
+    </div>
+    <div class="card card-pad">
+      <div class="cmpTable">
+        <b class="etH">Property</b>${SSE_CLASSES.map(c => `<b class="etH">${esc(c.name)}</b>`).join("")}
+        ${SSE_AXES.map((ax, i) => `<span class="etStep">${esc(ax)}</span>` +
+          SSE_CLASSES.map(c => `<span><i class="pips">${
+            Array.from({ length: 5 }, (_, q) => `<u style="background:${q < c.v[i] ? c.col : "color-mix(in srgb,var(--foreground) 12%,transparent)"}"></u>`).join("")
+          }</i></span>`).join("")).join("")}
+      </div>
+    </div>`;
+  $("layerView").querySelectorAll(".cmpGo").forEach(el =>
+    el.addEventListener("click", () => {
+      const b = document.querySelector(`#routeOpts [data-route="${el.dataset.cls}"]`);
+      if (b) b.click();
+      go("view:compare");
+    }));
+}
+
+/* =====================================================================
+   PROCESS TECHNOLOGIES — the guide's own matrix of what could do each
+   job, with the ones it goes on to describe in detail marked. [1]
+   ===================================================================== */
+const PROCTECH = [
+  { step:"Grinding",   ph:"Electrode & electrolyte production",
+    opts:[["Agitator ball mill", 1, "ballmill"], ["Vibrating mill", 0], ["Planetary mill", 0]] },
+  { step:"Mixing",     ph:"Electrode & electrolyte production",
+    opts:[["Planetary mixer", 1, "mixing"], ["Intensive mixer", 1, "mixing"],
+          ["Magnetic stirring (laboratory use)", 0], ["Ultrasonic mixing (laboratory use)", 0]] },
+  { step:"Compounding", ph:"Electrode & electrolyte production",
+    opts:[["Single-screw extrusion", 0], ["Twin-screw extrusion", 1, "compounding"]] },
+  { step:"Coating viscous mixtures", ph:"Electrode & electrolyte production",
+    opts:[["Lamination", 1, "lamination"], ["Slot-die coating", 0, "tape"], ["Piston extrusion", 0, "extrusion"],
+          ["Strip casting", 0, "tape"], ["Electrophoretic deposition", 0], ["Additive manufacturing", 0],
+          ["Co-extrusion", 0, "coex"], ["Cold extrusion", 0], ["Hot extrusion", 1]] },
+  { step:"Coating via powders & gases", ph:"Electrode & electrolyte production",
+    opts:[["Physical vapour deposition", 1], ["Chemical vapour deposition", 1],
+          ["Aerosol deposition", 0, "aerosol"], ["Atomic layer deposition", 1, "ald"], ["Dry coating", 0, "drycoat"]] },
+  { step:"Drying",     ph:"Electrode & electrolyte production",
+    opts:[["Induction drying", 0], ["Convective drying", 0], ["Infrared drying", 0], ["Laser drying", 0]] },
+  { step:"Compacting", ph:"Electrode & electrolyte production",
+    opts:[["Sintering", 1, "sintering"], ["Isostatic pressing", 1, "compacting"], ["Annealing", 0], ["Calendering", 0, "calender"]] },
+  { step:"Slitting",   ph:"Electrode & electrolyte production",
+    opts:[["Laser slitting", 0, "slitting"], ["Rotary knife cutting", 0, "slitting"]] },
+  { step:"Cutting",    ph:"Cell assembly",
+    opts:[["Punching", 0, "separation"], ["Laser cutting", 0, "separation"], ["Laser punching", 0]] },
+  { step:"Stacking",   ph:"Cell assembly",
+    opts:[["Single-sheet stacking", 0, "stacking"], ["Z-folding", 0, "stacking"], ["(Flat winding)", 0]] }
+];
+
+function renderProcTech() {
+  const list = active();
+  const live = id => id && list.some(s => s.id === id);
+  const deep = PROCTECH.reduce((a, r) => a + r.opts.filter(o => o[1]).length, 0);
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">There is no standard process sequence yet</h2>
+      <p class="lede" style="max-width:88ch">That sentence is the guide's own, and it is the reason this page exists.
+      For each job on a solid-state line there are several technologies that could do it, and which one you pick depends
+      on the electrolyte, the format and what your plant already owns. ${deep} of them are singled out for a detailed
+      description — those are outlined below. The ones this simulator has built as stations on your current line are
+      marked, and you can click straight through to them.${r(1)}</p>
+    </div>
+    <div class="card card-pad">
+      <div class="ptGrid">
+        ${PROCTECH.map(row => `
+          <div class="ptStep"><b>${esc(row.step)}</b><small>${esc(row.ph)}</small></div>
+          <div class="ptOpts">${row.opts.map(([name, dd, id]) => {
+            const cls = "ptChip" + (dd ? " deep" : "") + (live(id) ? " live" : "");
+            return id && live(id)
+              ? `<button type="button" class="${cls}" data-go="${id}">${esc(name)}</button>`
+              : `<span class="${cls}">${esc(name)}</span>`;
+          }).join("")}</div>`).join("")}
+      </div>
+      <div class="ptKey">
+        <span><i class="ptChip deep" style="padding:2px 8px">outlined</i> described in detail in the guide</span>
+        <span><i class="ptChip live" style="padding:2px 8px">filled</i> built as a station on this line — click it</span>
+      </div>
+      <p class="lede" style="margin-top:12px;font-size:12px;opacity:.85">After stacking, the chain closes with contacting,
+      sealing, formation and aging — the four steps the guide lists separately because they are common to every route.</p>
+    </div>`;
+  $("layerView").querySelectorAll(".ptChip[data-go]").forEach(el =>
+    el.addEventListener("click", () => go(el.dataset.go)));

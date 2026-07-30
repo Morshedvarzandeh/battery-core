@@ -1,0 +1,176 @@
+  read:m => [
+    V("Extrusion pressure", S.extP + " bar", band(S.extP, 40, 160, 25)),
+    V("Melt temperature difference", S.meltDT + " K", S.meltDT <= 25 ? "ok" : "bad", "the central challenge of this station"),
+    V("Layer alignment", m.coatErr <= 2 ? "good" : "drifting", m.coatErr <= 2 ? "ok" : "warn"),
+    V("Bond", "polymer chains interlock", "ok", "heat and pressure at the rollers"),
+    V("Catholyte", S.cathTh + " µm", band(S.cathTh, 60, 130, 20)),
+    V("Electrolyte", S.sseTh + " µm", band(S.sseTh, 15, 50, 10))],
+  verdict:m => S.meltDT > 25 ? ["bad", "The two melts want different temperatures",
+      `${S.meltDT} K apart. One is too cold to flow or the other is too hot and degrading. This is exactly the challenge the guide names for co-extrusion.`]
+    : m.coatErr > 2 ? ["warn", "Layers drifting out of alignment",
+      "Alignment and uniform thickness across the width are two of the four quality features here."]
+    : ["ok", "Composite extruded",
+      `${S.cathTh} µm catholyte on ${S.sseTh} µm electrolyte, ${S.meltDT} K apart. The rollers do the rest.`],
+  viz:m => ({ dT: clamp(100 - S.meltDT * 3) })
+},
+
+calender: {
+  lead:"You are at the calender. Pressure and temperature turn a loose composite into one that conducts across its interfaces.",
+  ctl:["calP","calT","sseTh"],
+  read:m => [
+    V("Layer density", m.layerDens.toFixed(0) + "%", m.layerDens >= 88 ? "ok" : m.layerDens >= 78 ? "warn" : "bad"),
+    V("Line pressure", fmt(S.calP) + " N/mm", S.calP <= 2500 ? "ok" : "bad", "2nd ed. limit below 2 500 N/mm"),
+    V("Temperature", S.calT + " °C", band(S.calT, 40, 140, 20), "tempering is what saves brittle layers"),
+    V("Bulk resistance", m.rBulk.toFixed(0) + " Ω·cm²", m.rBulk < 30 ? "ok" : m.rBulk < 70 ? "warn" : "bad", "electrolyte thickness ÷ conductivity"),
+    V("Cracking risk", S.calP > 2200 && S.calT < 60 ? "high" : S.calP > 2200 ? "moderate" : "low", S.calP > 2200 && S.calT < 60 ? "bad" : S.calP > 2200 ? "warn" : "ok"),
+    V("Oxide route", "sinters instead", "ok", "this station does not exist there")],
+  verdict:m => (S.calP > 2200 && S.calT < 60) ? ["bad", "Cold-pressing a brittle layer",
+      "High compressive stress on an inorganic electrolyte layer without tempering is the named challenge here. Warm the rollers before you raise the pressure."]
+    : m.layerDens < 78 ? ["warn", "Composite not dense enough",
+      `${m.layerDens.toFixed(0)}%. Ductile sulfidic and polymeric electrolytes need this step to reach their performance — that is the reason the station exists.`]
+    : ["ok", "Composite densified",
+      `${m.layerDens.toFixed(0)}% density at ${fmt(S.calP)} N/mm and ${S.calT} °C. Bulk resistance ${m.rBulk.toFixed(0)} Ω·cm².`],
+  viz:m => ({ dens: m.layerDens })
+},
+
+slitting: {
+  lead:"You are at the slitter. Two ways to make the same cut, and each fails differently.",
+  ctl:["cutMode","laserP","cutSpd"],
+  read:m => [
+    V("Method", S.cutMode ? "Rolling knife" : "Laser", "ok"),
+    V("Line energy", m.lineE.toFixed(2) + " J/mm", S.cutMode ? "ok" : band(m.lineE, 0.6, 1.1, 0.3)),
+    V("Edge quality", m.edgeQ.toFixed(0) + "%", m.edgeQ >= 82 ? "ok" : m.edgeQ >= 70 ? "warn" : "bad"),
+    V("Melting the layers together", m.meltRisk.toFixed(0) + "%", m.meltRisk < 25 ? "ok" : m.meltRisk < 55 ? "warn" : "bad", "melted layers touch — that is a short"),
+    V("Delamination", m.delam.toFixed(0) + "%", m.delam < 30 ? "ok" : m.delam < 55 ? "warn" : "bad"),
+    V("Maintenance", S.cutMode ? "blade changes" : "low — contactless", S.cutMode ? "warn" : "ok")],
+  verdict:m => (!S.cutMode && m.meltRisk > 55) ? ["bad", "Laser is melting the composite",
+      "Too much line energy. The layer materials melt together and connect electrically — you are building a short circuit at the slitter."]
+    : (S.cutMode && m.delam > 55) ? ["bad", "The knife is delaminating the coating",
+      "Forces from the rolling knife deflect the substrate and separate the layers. This is the reason the guide lists laser first."]
+    : m.edgeQ < 82 ? ["warn", "Edge quality marginal",
+      "Clean cut edge, narrow evaporation notch and a low heat-affected zone are the three graded features. You are missing at least one."]
+    : ["ok", "Strips cut cleanly",
+      `Edge quality ${m.edgeQ.toFixed(0)}% by ${S.cutMode ? "rolling knife" : "laser"} at ${S.cutSpd} m/min.`],
+  viz:m => ({ edge: m.edgeQ })
+},
+
+separation: {
+  lead:"You are at sheet separation. One cut turns a web into elementary cells — and the same cut can short them.",
+  ctl:["sepMode","laserP","cutSpd"],
+  read:m => [
+    V("Method", S.sepMode ? "Punching" : "Laser cut", "ok"),
+    V("Edge quality", m.edgeSep.toFixed(0) + "%", m.edgeSep >= 82 ? "ok" : m.edgeSep >= 70 ? "warn" : "bad"),
+    V("Layers melted together", S.sepMode ? "not applicable" : m.meltSep.toFixed(0) + "%",
+      S.sepMode ? "ok" : m.meltSep < 25 ? "ok" : "bad", "this is how the cut makes a short"),
+    V("Deflection and cracks", m.delamSep.toFixed(0) + "%", m.delamSep < 35 ? "ok" : m.delamSep < 55 ? "warn" : "bad"),
+    V("Dimensions", "graded here", "ok", "a quality feature at this station and not at slitting"),
+    V("Different settings per material", S.sepMode ? "n/a" : "required", S.sepMode ? "ok" : "warn")],
+  verdict:m => (!S.sepMode && m.meltSep > 40) ? ["bad", "The cut is connecting the layers",
+      "It is essential that the layer materials are not melted. Melting them creates an electrical connection between anode and cathode across the cut edge."]
+    : (S.sepMode && m.delamSep > 55) ? ["warn", "Punching is deflecting the film",
+      "Deflections, cracks and delamination of the film are the named challenges for the mechanical route."]
+    : ["ok", "Elementary cells trimmed",
+      `Edge quality ${m.edgeSep.toFixed(0)}%. Each unit is one anode, one electrolyte and one cathode, ready to stack.`],
+  viz:m => ({ edge: m.edgeSep })
+},
+
+sintering: {
+  lead:"You are at the sintering furnace. Oxide cells are not pressed after stacking, so this is where their interfaces have to be won.",
+  ctl:["sintT","sintH","sseTh"],
+  read:m => [
+    V("Sintering temperature", fmt(S.sintT) + " °C", m.grainOK ? "ok" : "bad", "high 1 000–2 000 °C, low 500–800 °C"),
+    V("Hold time", S.sintH.toFixed(1) + " h", ok(S.sintH, 1, 12), "guide: usually several hours"),
+    V("Layer density", m.layerDens.toFixed(0) + "%", m.layerDens >= 88 ? "ok" : m.layerDens >= 78 ? "warn" : "bad", "final strength and density"),
+    V("Interfacial resistance", m.rInt.toFixed(0) + " Ω·cm²", m.rInt < 40 ? "ok" : m.rInt < 90 ? "warn" : "bad", "what densification is for"),
+    V("Energy input", S.sintT > 1600 ? "very high" : S.sintT > 1200 ? "high" : "moderate", S.sintT > 1600 ? "bad" : S.sintT > 1200 ? "warn" : "ok"),
+    V("Atmosphere", "inert gas or vacuum", "ok", "no reaction with the environment at temperature")],
+  verdict:m => !m.grainOK ? ["bad", "Outside the useful sintering band",
+      S.sintT < 900 ? "Too cool — mass transport is not activated enough for the particles to grow together, so the layer stays porous and resistive."
+                    : "Too hot — grains coarsen and the different sintering kinetics of the materials start working against each other."]
+    : m.rInt > 90 ? ["warn", "Interface still resistive",
+      "Densification reduces the resistance between the electrolyte and the electrode. Longer, or hotter within the band — this is the only chance the oxide route gets."]
+    : ["ok", "Composite sintered",
+      `${m.layerDens.toFixed(0)}% density, interfacial resistance ${m.rInt.toFixed(0)} Ω·cm², after ${S.sintH.toFixed(1)} h at ${fmt(S.sintT)} °C.`],
+  viz:m => ({ heat: clamp((S.sintT - 500) / 1500 * 100) })
+},
+
+stacking: {
+  lead:"You are at the stacker and press. Placement decides whether the cell works; pressure decides whether the interfaces exist at all.",
+  ctl:["stackF","stackAcc","layers","stackSpd"],
+  read:m => [
+    V("Stack pressure", S.stackF.toFixed(1) + " MPa", band(S.stackF, 2, 20, 3), "roughly 5 MPa gave 1 000 h of stable cycling"),
+    V("Interface contact", m.contact.toFixed(0) + "%", m.contact >= 75 ? "ok" : m.contact >= 60 ? "warn" : "bad", "no liquid to wet the pores — pressure is all you have"),
+    V("Interfacial resistance", m.rInt.toFixed(0) + " Ω·cm²", m.rInt < 40 ? "ok" : m.rInt < 90 ? "warn" : "bad"),
+    V("Positioning accuracy", S.stackAcc + " µm", S.stackAcc <= 300 ? "ok" : "bad", "guide limit under 300 µm"),
+    V("Stack voltage", m.vCell.toFixed(1) + " V", "ok", S.layers + " elementary cells in series"),
+    V("Separator", "none is stacked", "ok", "the electrolyte already is one")],
+  verdict:m => S.stackAcc > 300 ? ["bad", "Placement outside the limit",
+      "Position detection and alignment with a vacuum gripper is the named challenge, and short circuits during stacking are the named risk. In a bipolar stack one bad sheet damages more than one cell."]
+    : m.contact < 60 ? ["bad", "Interfaces are not touching",
+      `Contact ${m.contact.toFixed(0)}% at ${S.stackF.toFixed(1)} MPa. A solid cell has no liquid to fill the gaps — if the surfaces are not pressed together, the ions have no path.`]
+    : S.stackF > 25 ? ["warn", "Very high stack pressure",
+      "It helps the interface, but a fixture that holds tens of MPa for the life of a pack is heavy, expensive and eats the energy density you gained."]
+    : ["ok", "Stack pressed",
+      `${m.contact.toFixed(0)}% contact at ${S.stackF.toFixed(1)} MPa, ${S.layers} layers in series for ${m.vCell.toFixed(1)} V.`],
+  viz:m => ({ press: clamp(S.stackF / 40 * 100) })
+},
+
+contacting: {
+  lead:"You are at contacting and packaging. Weld the conductors, draw the pouch, seal it — and then you are done. There is nothing to fill.",
+  ctl:["weldP","sealT","drawD","layers"],
+  read:m => [
+    V("Weld quality", m.weldQ.toFixed(0) + "%", m.weldQ >= 90 ? "ok" : m.weldQ >= 78 ? "warn" : "bad", "low contact resistance, low thermal stress"),
+    V("Laser power", fmt(S.weldP) + " W", S.weldP <= 4000 ? "ok" : "bad", "2nd ed. limit under 4 000 W"),
+    V("Seal quality", m.sealQ.toFixed(0) + "%", m.sealQ >= 92 ? "ok" : m.sealQ >= 80 ? "warn" : "bad"),
+    V("Draw depth", S.drawD.toFixed(1) + " mm", S.drawD <= 10 ? "ok" : "bad", "2nd ed. limit under 10 mm"),
+    V("Conductors leaving the housing", "2", "ok", `${S.layers} cells in series, only the outer collectors`),
+    V("Electrolyte filling", "not required", "ok", "the clearest saving of the solid-state route")],
+  verdict:m => S.weldP > 3200 ? ["bad", "Weld energy too high",
+      "Possible damage during welding is the named challenge. Above about 3 200 W you are putting mechanical and thermal stress into a stack that has no liquid to absorb it."]
+    : m.sealQ < 80 ? ["bad", "Seal outside its window",
+      S.sealT < 175 ? "Too cold — the seam never fully bonds and the cell breathes."
+                    : "Too hot — the sealant thins and the barrier is compromised."]
+    : m.weldQ < 78 ? ["warn", "Weld resistance high",
+      "Low contact resistance of the welds to the electrical contacts is a graded feature. End-of-line testing will find this."]
+    : ["ok", "Cell closed",
+      `Weld ${m.weldQ.toFixed(0)}%, seal ${m.sealQ.toFixed(0)}%, ${S.drawD.toFixed(1)} mm draw. No filling step follows.`],
+  viz:m => ({ seal: m.sealQ })
+},
+
+formation: {
+  lead:"You are at formation and aging. The cell arrives already charged, because its anode is lithium metal. The first cycles build the interface layers.",
+  ctl:["cRate","cellT","ageDays","ageT","ageSOC"],
+  read:m => [
+    V("First cycle rate", S.cRate.toFixed(2) + " C", band(S.cRate, 0.02, 0.2, 0.08), "increased successively after this"),
+    V("Current density", m.jArea.toFixed(2) + " mA/cm²", m.jArea < m.jCrit * 0.7 ? "ok" : m.jArea < m.jCrit ? "warn" : "bad"),
+    V("Critical current density", m.jCrit.toFixed(2) + " mA/cm²", "ok", "rises with pressure and temperature"),
+    V("Dendrite margin", (100 - m.dendrite).toFixed(0) + "%", m.dendrite < 60 ? "ok" : m.dendrite < 100 ? "warn" : "bad", "above 100% lithium grows through"),
+    V("Interface layer quality", m.interQ.toFixed(0) + "%", m.interQ >= 88 ? "ok" : m.interQ >= 75 ? "warn" : "bad"),
+    V("Screen sensitivity", m.screen.toFixed(0) + "%", m.screen >= 88 ? "ok" : m.screen >= 72 ? "warn" : "bad", `${S.ageDays} d at ${S.ageT} °C`)],
+  verdict:m => m.dendrite > 100 ? ["bad", "Lithium is growing through the electrolyte",
+      `${m.jArea.toFixed(2)} mA/cm² against a critical value near ${m.jCrit.toFixed(2)}. Slow the first cycle, raise the stack pressure, or thicken the electrolyte. Critical current density rose fivefold between 3 and 7 MPa in the published work.`]
+    : m.dendrite > 60 ? ["warn", "Close to the dendrite limit",
+      `Margin ${(100 - m.dendrite).toFixed(0)}%. The published critical current density has no standard measurement protocol and varies widely — leaving little margin is not a safe position.`]
+    : m.screen < 72 ? ["warn", "Aging screen too short to trust",
+      "Self-discharge and interface instability need time and temperature to become a measurable voltage drift."]
+    : ["ok", "Cell formed and released",
+      `Interface quality ${m.interQ.toFixed(0)}%, dendrite margin ${(100 - m.dendrite).toFixed(0)}%, screened ${S.ageDays} d at ${S.ageT} °C.`],
+  viz:m => ({ sei: m.interQ })
+}
+};
+</script>
+<script>
+/* =====================================================================
+   RESPONSE CHARTS
+   Every curve below is produced by actually re-running the process model
+   across a setpoint's whole range — it is not a drawing. Move the knob and
+   the dot moves along the same curve the model just computed.
+   ===================================================================== */
+
+function sweep(key, get, n = 60) {
+  const c = CTL[key], old = S[key], out = [];
+  for (let i = 0; i <= n; i++) {
+    const v = c.min + (c.max - c.min) * i / n;
+    S[key] = c.step >= 1 ? Math.round(v) : v;
+    out.push([S[key], get(model())]);
+  }

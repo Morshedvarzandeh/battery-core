@@ -15,6 +15,7 @@ written specifically for this repository.
 | 01B | [Lithium-ion cell architecture](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/) | Available — launch online | Interactive browser tutorial |
 | 02 | [Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb) | Available — launch notebook | Python API and Jupyter notebook |
 | 03 | [Battery production — materials to finished cell](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/) | Available — launch online | Interactive production simulator |
+| 03B | [All-solid-state production](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/) | Available — launch online | Interactive production simulator |
 | 04 | [Battery aging — how a cell wears out](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb) | Available — launch notebook | Interactive Jupyter notebook |
 
 Part 01 introduces the cell components and charge/discharge paths. Part 01B moves
@@ -30,6 +31,12 @@ The production simulator uses published process sequences and operating ranges,
 but its capacity, throughput, wetting, process-health, interphase, and risk-control
 outputs are illustrative teaching relationships rather than calibrated factory
 predictions.
+
+Part 03B carries the same process question into all-solid-state cells, across
+oxide, sulfide, halide, and polymer electrolytes. Its limitation is stronger
+than Part 03's: no all-solid-state line is in series production, so there is no
+generally applicable process chain to calibrate against, and every computed
+figure is an illustrative construction on a teaching model.
 
 Part 04 turns from making a cell to losing it. It covers six degradation
 mechanisms — SEI growth, gas generation, crystal formation, dendrites, volume
