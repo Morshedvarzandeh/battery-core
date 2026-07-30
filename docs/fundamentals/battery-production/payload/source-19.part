@@ -1,0 +1,246 @@
+    .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="4.5" fill="var(--background)"
+      stroke="${i < 4 ? "var(--primary)" : i < 8 ? "var(--elyte)" : "var(--jelly)"}" stroke-width="1.6"/>`).join("")}
+  ${T(132, 40, "44 technologies", "mTxt")}
+  ${T(132, 56, "process above the line —", "mTxtS")}
+  ${T(132, 68, "how the cell is made", "mTxtS")}
+  ${T(132, 84, "product below it —", "mTxtS")}
+  ${T(132, 96, "what the cell is", "mTxtS")}
+  ${T(132, 114, "centre = already in production", "mTxtS")}
+`),
+
+
+/* the whole line, one block per station, coloured by phase */
+line: () => pic(`
+  ${[...Array(15)].map((_, i) => {
+    const col = i < 6 ? "var(--warning)" : i < 10 ? "var(--elyte)" : "var(--green)";
+    const x = 16 + i * 23;
+    return `<rect x="${x}" y="${44 - (i % 3) * 3}" width="17" height="${40 + (i % 3) * 3}" rx="3"
+      fill="${col}" opacity="${0.35 + i * 0.04}"/>`;
+  }).join("")}
+  ${T(16, 34, "15 stations, 3 phases", "mTxt")}
+  ${T(16, 106, "electrode manufacturing", "mTxtS")}
+  ${T(150, 106, "assembly", "mTxtS")}
+  ${T(246, 106, "finishing", "mTxtS")}
+  <circle cx="20" cy="118" r="3.5" fill="var(--warning)"/>
+  <circle cx="154" cy="118" r="3.5" fill="var(--elyte)"/>
+  <circle cx="250" cy="118" r="3.5" fill="var(--green)"/>
+`),
+
+/* the five-layer repeat unit */
+stack: () => pic(`
+  ${[["var(--alu)", 10, "Al foil"], ["var(--cathode)", 22, "cathode"], ["var(--sep)", 12, "separator"],
+     ["var(--anode)", 26, "anode"], ["var(--copper)", 9, "Cu foil"]]
+    .reduce((acc, [c, h, n]) => {
+      const y = acc.y;
+      acc.s += `<rect x="24" y="${y}" width="150" height="${h}" rx="1.5" fill="${c}"/>` +
+               T(182, y + h / 2 + 3.5, n, "mTxtS");
+      acc.y = y + h + 4;
+      return acc;
+    }, { y: 16, s: "" }).s}
+  <rect x="20" y="12" width="158" height="99" rx="5" fill="none" stroke="var(--elyte)"
+    stroke-width="1.4" stroke-dasharray="5 4"/>
+  ${T(262, 44, "repeated", "mTxt")}${T(262, 58, "up to 120×", "mTxt")}
+  ${T(262, 76, "electrolyte fills", "mTxtS")}${T(262, 88, "every pore", "mTxtS")}
+  ${[0, 1, 2].map(i => `<rect x="${300 + i * 6}" y="${20 + i * 3}" width="52" height="${34 - i * 6}"
+     rx="3" fill="none" stroke="var(--border-strong)"/>`).join("")}`),
+
+/* powder → slurry → coated web → cell */
+chain: () => pic(`
+  ${C(34, 54, 15, "mSteel2")}
+  <g class="bob">${C(29, 52, 4, "mAn")}${C(38, 57, 3.5, "mCa")}${C(34, 48, 3, "mDark")}</g>
+  ${T(16, 90, "powder", "mTxtS")}
+  ${pArrow(56, 54)}
+  ${R(78, 40, 34, 28, "mGlass", 4)}<path class="mLine" d="M78 50q17 7 34 0"/>
+  ${T(78, 90, "slurry", "mTxtS")}
+  ${pArrow(120, 54)}
+  ${REEL(158, 54, 15, "mCu")}<path class="mWeb" d="M173 54l38 0"/>
+  ${T(140, 90, "coated web", "mTxtS")}
+  ${pArrow(214, 54)}
+  ${R(238, 34, 30, 40, "mSteel2", 4)}
+  ${[0, 1, 2, 3].map(i => `<rect x="242" y="${39 + i * 8}" width="22" height="3" rx="1"
+     fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>`).join("")}
+  ${T(232, 90, "stack", "mTxtS")}
+  ${pArrow(274, 54)}
+  ${R(298, 30, 40, 48, "mSteel", 6)}${R(310, 22, 16, 9, "mAl", 2)}
+  ${T(296, 90, "packed cell", "mTxtS")}
+  ${T(16, 20, "one material, changed at every station", "mTxt")}`),
+
+/* two powders, kept apart */
+powders: () => pic(`
+  ${R(24, 36, 116, 62, "mSteel2", 6)}
+  <g class="bob">${C(56, 62, 8, "mAn")}${C(82, 70, 7, "mAn")}${C(106, 60, 6, "mAn")}</g>
+  ${T(32, 112, "graphite · negative", "mTxtS")}
+  ${R(230, 36, 116, 62, "mSteel2", 6)}
+  <g class="bob">${C(262, 62, 8, "mCa")}${C(288, 70, 7, "mCa")}${C(312, 60, 6, "mCa")}</g>
+  ${T(238, 112, "NMC · positive", "mTxtS")}
+  <path class="mLead" d="M186 34l0 72" stroke-dasharray="4 4"/>
+  ${T(186, 66, "separate", "mTxtS", "middle")}${T(186, 80, "rooms", "mTxtS", "middle")}`),
+
+/* slot die laying a film on foil */
+die: () => pic(`
+  ${P("M120 32l58 0l-20 40l-18 0z", "mSteel2")}
+  ${P("M138 70l22 0l-3 12l-16 0z", "mAcc")}
+  ${T(120, 28, "slot die", "mTxtS")}
+  ${ROLLER(160, 96, 22)}
+  ${REEL(46, 96, 18, "mCu")}
+  ${P("M64 96q30 -10 74 -14l190 0", "mWeb")}
+  <path class="mWeb flowdash" stroke="var(--copper)" d="M64 96q30 -10 74 -14l190 0"/>
+  ${T(24, 124, "bare foil", "mTxtS")}
+  ${R(238, 68, 74, 12, "mAn", 2)}
+  ${T(238, 62, "wet film", "mTxtS")}
+  ${T(238, 124, "coated", "mTxtS")}`),
+
+/* four heated chambers over a web */
+dryer: () => pic(`
+  ${[0, 1, 2, 3].map(i => `${R(20 + i * 84, 34, 74, 56, "mHot", 4)}
+     ${T(57 + i * 84, 66, [50, 100, 160, 90][i] + " °C", "mTxtW", "middle")}`).join("")}
+  ${P("M14 62l340 0", "mWebA")}
+  <path class="mWebA flowdash" stroke="var(--anode)" d="M14 62l340 0"/>
+  ${T(16, 108, "solvent out, recovered", "mTxtS")}
+  ${T(232, 108, "too hot cracks the coating", "mTxtS")}`),
+
+/* the nip: thick porous in, thin dense out */
+nip: () => pic(`
+  ${ROLLER(150, 44, 26)}${ROLLER(150, 100, 26)}
+  ${R(20, 62, 104, 20, "mAn", 2)}
+  ${[...Array(9)].map((_, i) => `<circle cx="${28 + i * 12}" cy="72" r="3.4" fill="var(--background)"/>`).join("")}
+  ${T(20, 56, "≈50% porosity", "mTxtS")}
+  ${R(178, 66, 104, 12, "mAn", 2)}
+  ${[...Array(9)].map((_, i) => `<circle cx="${186 + i * 12}" cy="72" r="1.9" fill="var(--background)"/>`).join("")}
+  ${T(178, 60, "20–35% porosity", "mTxtS")}
+  ${T(20, 124, "thinner and denser", "mTxtS")}
+  ${T(296, 72, "→ capacity", "mTxtS")}${T(296, 86, "→ less room", "mTxtS")}
+  ${T(296, 100, "   for electrolyte", "mTxtS")}`),
+
+/* the burr, against a separator */
+burr: () => pic(`
+  ${R(20, 40, 130, 26, "mCu", 2)}
+  ${P("M150 40l0 26", "mLine")}
+  ${[0, 1, 2].map(i => `${P(`M${24 + i * 44} 78l36 0`, "mLine")}${T(24 + i * 44, 96, "strip", "mTxtS")}`).join("")}
+  ${T(20, 34, "mother roll cut into strips", "mTxtS")}
+  ${R(206, 52, 140, 12, "mCu", 1)}
+  ${P("M346 52l8 -14l4 14z", "mDark")}
+  ${T(206, 46, "burr left on the edge", "mTxtS")}
+  ${R(206, 74, 148, 9, "mSep", 1)}
+  ${T(206, 100, "separator, only 12–25 µm", "mTxtS")}
+  ${T(206, 114, "taller than this and the cell shorts", "mTxtS")}`),
+
+/* water leaving under vacuum */
+water: () => pic(`
+  ${R(24, 36, 150, 74, "mSteel2", 6)}${R(24, 36, 150, 12, "mDark", 3)}
+  ${[0, 1].map(r => [0, 1].map(c => REEL(66 + c * 66, 66 + r * 30, 12, "mCu")).join("")).join("")}
+  ${T(28, 126, "12–48 h under vacuum", "mTxtS")}
+  <g class="puff">${[0, 1, 2, 3].map(i => `<circle cx="${196 + i * 15}" cy="${52 - (i % 2) * 10}" r="4"
+     fill="var(--elyte)" opacity=".55"/>`).join("")}</g>
+  ${T(196, 82, "H₂O + LiPF₆ → HF", "mTxt")}
+  ${T(196, 98, "which attacks the cathode", "mTxtS")}
+  ${T(196, 112, "and the aluminium", "mTxtS")}`),
+
+/* z-folded separator with sheets dropping in */
+stacker: () => pic(`
+  ${P("M24 44q26 34 52 0t52 0t52 0", "mWebS")}
+  ${P("M24 80q26 34 52 0t52 0t52 0", "mWebS")}
+  ${[0, 1, 2].map(i => `${R(38 + i * 52, 52, 34, 7, "mCa", 1)}${R(38 + i * 52, 88, 34, 7, "mAn", 1)}`).join("")}
+  ${T(24, 118, "cathode, separator, anode, separator …", "mTxtS")}
+  ${R(246, 34, 100, 76, "mSteel2", 5)}
+  ${[...Array(7)].map((_, i) => `<rect x="256" y="${40 + i * 10}" width="80" height="4" rx="1"
+     fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>
+     <rect x="256" y="${45 + i * 10}" width="80" height="2" rx="1" fill="var(--sep)"/>`).join("")}
+  ${T(246, 124, "up to 120 layers", "mTxtS")}`),
+
+/* electrolyte finding its way into pores */
+wetting: () => pic(`
+  ${R(22, 36, 96, 76, "mSteel2", 5)}
+  ${[...Array(6)].map((_, i) => `<rect x="30" y="${42 + i * 12}" width="80" height="6" rx="1"
+     fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>`).join("")}
+  ${P("M70 30l0 -14", "mPipe")}<path class="mPipe flowdash" stroke="var(--elyte)" d="M70 30l0 -14"/>
+  ${T(22, 126, "dosed under vacuum", "mTxtS")}
+  ${R(160, 40, 90, 60, "mSteel2", 4)}
+  ${[...Array(4)].map((_, i) => [...Array(6)].map((_, j) =>
+     `<circle cx="${172 + j * 14}" cy="${52 + i * 14}" r="4" fill="${(i + j) % 3 ? "var(--elyte)" : "var(--background)"}"
+      stroke="var(--border-strong)" stroke-width=".8"/>`).join("")).join("")}
+  ${T(160, 116, "a dry pore is dead area", "mTxtS")}
+  ${T(160, 130, "for the life of the cell", "mTxtS")}
+  ${T(272, 60, "capillary", "mTxtS")}${T(272, 74, "action is slow", "mTxtS")}`),
+
+/* first charge and the film it grows */
+sei: () => pic(`
+  <path class="mLine" d="M24 106l0 -70M24 106l124 0" stroke="var(--border-strong)"/>
+  <path d="M24 104C56 62 74 46 92 44l56 0" fill="none" stroke="var(--primary)" stroke-width="2.4"/>
+  <rect x="24" y="36" width="34" height="70" fill="var(--jelly)" opacity=".16"/>
+  ${T(26, 30, "SEI forms here", "mTxtS")}
+  ${T(24, 122, "0 h", "mTxtS")}${T(148, 122, "up to 15 h", "mTxtS", "end")}
+  ${R(196, 42, 26, 62, "mAn", 2)}
+  <rect x="222" y="42" width="5" height="62" fill="var(--jelly)"/>
+  ${R(227, 42, 40, 62, "mGlass", 2)}
+  ${T(196, 36, "graphite", "mTxtS")}${T(238, 36, "electrolyte", "mTxtS")}
+  ${T(196, 120, "the SEI is 10–50 nm and permanent", "mTxtS")}
+  ${T(282, 60, "5–15% of the", "mTxtS")}${T(282, 74, "lithium is spent", "mTxtS")}
+  ${T(282, 88, "building it", "mTxtS")}`),
+
+/* two cells drifting apart */
+screen: () => pic(`
+  <path class="mLine" d="M28 108l0 -66M28 108l180 0" stroke="var(--border-strong)"/>
+  <path d="M28 106C60 96 120 88 208 84" fill="none" stroke="var(--primary)" stroke-width="2.2"/>
+  <path d="M28 106C68 88 130 62 208 44" fill="none" stroke="var(--destructive)" stroke-width="2.2"/>
+  <path class="mLead" d="M208 84l0 -40"/>
+  ${T(214, 66, "gap", "mTxt")}
+  ${T(28, 122, "0 d", "mTxtS")}${T(208, 122, "21 d", "mTxtS", "middle")}
+  ${T(28, 36, "mV lost", "mTxtS")}
+  ${T(252, 52, "> 5 mV/week", "mTxt")}
+  ${T(252, 66, "→ investigate", "mTxtS")}
+  ${T(252, 88, "stable", "mTxt")}
+  ${T(252, 102, "→ release checks", "mTxtS")}`),
+
+/* graded and packed */
+grade: () => pic(`
+  ${[0, 1, 2].map(i => `${R(24 + i * 62, 44, 50, 56, "mSteel2", 4)}
+    ${R(34 + i * 62, 54, 30, 10, "mDark", 2)}
+    ${T(49 + i * 62, 86, "class " + (i + 1), "mTxtS", "middle")}`).join("")}
+  ${T(24, 118, "graded on capacity and resistance", "mTxtS")}
+  ${R(232, 40, 62, 64, "mCu", 4)}
+  ${[...Array(3)].map((_, i) => `<rect x="240" y="${48 + i * 18}" width="46" height="12" rx="2" fill="var(--elyte)"/>`).join("")}
+  ${T(232, 118, "packed at shipping SOC", "mTxtS")}
+  ${T(308, 62, "air freight", "mTxtS")}${T(308, 76, "caps this at", "mTxtS")}${T(308, 90, "30%", "mTxt")}`),
+
+/* the responsibility grid */
+matrix: () => pic(`
+  ${[...Array(5)].map((_, r) => [...Array(9)].map((_, c) => {
+    const k = (r * 9 + c * 5) % 7;
+    const f = k === 0 ? "var(--primary)" : k === 1 ? "var(--destructive)" : k === 2 ? "var(--green)" : null;
+    return f ? `<rect x="${96 + c * 26}" y="${36 + r * 17}" width="17" height="11" rx="3"
+      fill="${f}" opacity=".55"/>` : "";
+  }).join("")).join("")}
+  ${[...Array(5)].map((_, r) => T(16, 46 + r * 17, ["mixing", "coating", "calendering", "slitting", "formation"][r], "mTxtS")).join("")}
+  ${T(96, 30, "the nine parts of the cell →", "mTxtS")}
+  ${T(16, 126, "● builds it   ▲ can ruin it   ◆ checks it", "mTxtS")}`),
+
+/* the sources */
+refs: () => pic(`
+  ${[0, 1, 2].map(i => `<rect x="${24 + i * 14}" y="${36 + i * 8}" width="120" height="76" rx="5"
+     fill="var(--card)" stroke="var(--border-strong)"/>`).join("")}
+  ${[...Array(5)].map((_, i) => `<rect x="66" y="${64 + i * 11}" width="${86 - (i % 2) * 24}" height="4" rx="2"
+     fill="var(--border-strong)"/>`).join("")}
+  ${T(66, 58, "PEM / VDMA, 5th ed.", "mTxtS")}
+  ${T(200, 50, "+ peer-reviewed sources", "mTxt")}
+  ${T(200, 68, "for porosity, N/P balance,", "mTxtS")}
+  ${T(200, 82, "moisture, SEI, dry rooms", "mTxtS")}
+  ${T(200, 104, "every superscript number", "mTxtS")}
+  ${T(200, 118, "opens its source", "mTxtS")}`)
+};
+
+const TOUR = [
+  { id:null, t:"Welcome to Line A-17",
+    d:"You are standing at the head of a lithium-ion cell plant. A line of stations turns black powder into a packed cell. This tour walks you through in order — at each stop the machine on screen is the one you would actually be looking at." , pic:"line" },
+  { id:"view:machine", t:"The line on one screen",
+    d:"Before you walk it, see all of it. Every station in order with the material running through, one lamp per machine showing whether it is inside its window, and the four halls it all stands in drawn in plan. Every lamp comes from that station's own operator verdict, so when you push a setpoint out of range further into the tour, come back here and you will see which machine lit up.", pic:"line" },
+  { id:"view:anatomy", t:"First — what you are actually building",
+    d:"Before the machines, the product. A cell is a five-layer sandwich repeated up to 120 times, soaked in electrolyte and sealed in a barrier. Click any layer to see which stations are responsible for it. Only three of the nine components are made in this building." , pic:"stack" },
+  { id:"view:flow", t:"Materials and bought-in components converge", 
+    d:"Active materials are transformed through the line, while bought-in foils, separator, electrolyte, tabs and housings join at defined stations. A mistake early in the chain can remain embedded in the finished cell, which is why traceability follows every material and component." , pic:"chain" },
+  { id:"mixing", proc:"wet", t:"The wet route starts with two black powders",
+    d:"Anode and cathode active materials arrive as powder and are nearly indistinguishable by eye. Contamination between them ruins a cell, so they are mixed in physically separate rooms. Hover the mixer to see the two-step dry-then-wet sequence." , pic:"powders" },
+  { id:"coating", t:"Slurry meets foil",
+    d:"A slot die meters slurry onto copper foil for the anode, aluminium for the cathode — both only 5–25 µm thick. Only one side is coated per pass. Scroll down to the black Operate this station panel: those are this machine's real knobs. Move the die gap away from the wet film the recipe needs and watch coat weight leave specification." , pic:"die" },
+  { id:"drying", t:"The longest machine in the building",
+    d:"Up to 100 metres of dryer in four temperature zones. Push the line speed up and the model will tell you the dryer needs more heat — run it under-heated and solvent stays in the coating." , pic:"dryer" },

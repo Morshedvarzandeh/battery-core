@@ -1,241 +1,201 @@
-  showTour(tourAt + 1);
-});
-$("tourBack").addEventListener("click", () => { if (tourAt > 0) showTour(tourAt - 1); });
-$("tourClose").addEventListener("click", closeTour);
-document.addEventListener("keydown", e => {
-  const tour = $("tour");
-  if (tour.dataset.open !== "1") return;
-  if (e.key === "Escape") { e.preventDefault(); closeTour(); return; }
-  if (e.key === "ArrowRight") { e.preventDefault(); $("tourNext").click(); return; }
-  if (e.key === "ArrowLeft") { e.preventDefault(); $("tourBack").click(); return; }
-  if (e.key === "Tab") {
-    const focusable = [...tour.querySelectorAll('button:not([disabled])')];
-    if (!focusable.length) return;
-    const first = focusable[0], last = focusable[focusable.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  }
-});
-
+  const inside = S[k] >= c.good[0] && S[k] <= c.good[1];
+  const full = c.good[0] <= c.min && c.good[1] >= c.max;
+  if (full && S[k] >= c.good[0] && S[k] <= c.good[1]) return "";   /* nothing to warn about */
+  const dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+  return `<div class="winbar" title="Recommended window ${c.good[0]}–${c.good[1]}${c.unit || ""}">
+      <i style="left:${p(c.good[0])}%;width:${(p(c.good[1]) - p(c.good[0])).toFixed(1)}%"></i>
+      <b data-in="${inside}" style="left:${p(S[k])}%"></b>
+    </div>
+    <small class="winmsg" data-in="${inside}">${inside
+      ? (full ? "whole range is inside the recommended window"
+              : `inside the recommended window, ${c.good[0].toFixed(dec)}–${c.good[1].toFixed(dec)}${c.unit || ""}`)
+      : `outside the recommended window of ${c.good[0].toFixed(dec)}–${c.good[1].toFixed(dec)}${c.unit || ""} — expect trouble`}</small>`;
+}
 </script>
 <script>
 /* =====================================================================
-   THE BIG-PICTURE VIEWS + the interactive station console
+   RENDERING + INTERACTION
    ===================================================================== */
-const VIEWS = [
-  { id:"anatomy", label:"Cell anatomy",       hint:"every layer, and who builds it" },
-  { id:"flow",    label:"Material flow",      hint:"powder to graded cell" },
-  { id:"matrix",  label:"Process ↔ component",hint:"which station touches what" },
-  { id:"refs",    label:"References",         hint:"every number, sourced" }
-];
-let layerPick = "cathode";
 
-function renderLayerNav() {
-  $("layerNav").innerHTML = VIEWS.map(v => `
-    <button class="stage-btn" data-go="view:${v.id}" aria-current="${current === "view:" + v.id}">
-      <b>◆</b><em>${v.label}</em><i style="background:var(--primary);opacity:.5"></i></button>`).join("");
+/* ---------------- sidebar ---------------- */
+function renderNav() {
+  renderLayerNav();
+  const list = active();
+  $("nav").innerHTML = PHASES.map(([p, col]) => {
+    const items = list.filter(s => s.phase === p);
+    if (!items.length) return "";
+    return `<div class="phase"><div class="phase-title"><i style="background:${col}"></i>${p}</div>` +
+      items.map(s => {
+        const n = list.indexOf(s) + 1;
+        return `<button type="button" class="stage-btn" data-go="${s.id}" aria-current="${current === s.id}">
+          <b>${String(n).padStart(2, "0")}</b><em>${esc(s.title)}</em>
+          <i style="background:${col}"></i></button>`;
+      }).join("") + `</div>`;
+  }).join("");
 }
 
-/* ---------------------------------------------------------------------
-   1 · CELL ANATOMY — an exploded repeat unit, plus the cell it lives in
-   ------------------------------------------------------------------- */
-function anatomySVG(pick) {
-  /* the repeat unit is the five-layer sandwich; the SEI is a film grown on
-     the anode surface; electrolyte fills the whole thing; tabs and housing
-     belong to the cell on the left, not to the sandwich.                  */
-  const SANDWICH = ["alfoil", "cathode", "sep", "anode", "cufoil"];
-  const bars = SANDWICH.map(id => compMap[id]);
-  const GAP = 12, TOP = 62, H = 300;
-  const unit = (H - GAP * (bars.length - 1)) / bars.reduce((a, c) => a + c.h, 0);
-  let y = TOP, rows = "";
-  bars.forEach(c => {
-    const h = Math.max(13, c.h * unit), on = c.id === pick;
-    rows += `<g class="hot" data-layer="${c.id}" tabindex="0" role="button"
-      aria-label="${esc(c.name)}, ${esc(c.spec)}">
-      <rect x="338" y="${y}" width="286" height="${h}" rx="2" fill="${c.col}"
-        stroke="${on ? "var(--primary)" : "color-mix(in srgb,var(--foreground) 18%,transparent)"}" stroke-width="${on ? 3 : 1}"/>
-      <text class="mTxt" x="638" y="${y + h / 2 - 1}">${esc(c.short)}</text>
-      <text class="mTxtS" x="638" y="${y + h / 2 + 12}">${esc(c.spec)}</text>
-      <rect class="hit" x="240" y="${y - GAP / 2}" width="480" height="${h + GAP}" fill="transparent"/>
-    </g>`;
-    /* the SEI sits on the anode surface, facing the separator */
-    if (c.id === "anode") {
-      const on2 = pick === "sei";
-      rows += `<g class="hot" data-layer="sei" tabindex="0" role="button" aria-label="Solid electrolyte interphase, 10–50 nm">
-        <rect x="338" y="${y - 1}" width="286" height="5" fill="${compMap.sei.col}"
-          stroke="${on2 ? "var(--primary)" : "none"}" stroke-width="${on2 ? 2.5 : 0}"/>
-        <path class="mLead" d="M338 ${y + 2}L312 ${y - 14}"/>
-        <text class="mTxtS" x="308" y="${y - 16}" text-anchor="end">SEI · 10–50 nm</text>
-        <rect class="hit" x="212" y="${y - 28}" width="100" height="30" fill="transparent"/></g>`;
-    }
-    y += h + GAP;
-  });
-  const eOn = pick === "elyte";
-  rows += `<g class="hot" data-layer="elyte" tabindex="0" role="button" aria-label="Electrolyte fills every pore">
-    <rect x="332" y="${TOP - 8}" width="298" height="${y - TOP - GAP + 16}" rx="7" fill="none"
-      stroke="${eOn ? "var(--primary)" : "var(--elyte)"}" stroke-width="${eOn ? 3 : 1.5}" stroke-dasharray="6 5"/>
-    <text class="mTxtS" x="481" y="${TOP - 18}" text-anchor="middle" fill="var(--elyte)">Electrolyte fills every pore inside this frame</text>
-    <rect class="hit" x="332" y="${TOP - 32}" width="298" height="24" fill="transparent"/></g>`;
-
-  /* the cell this repeat unit lives in — housing and tabs are hotspots too */
-  const cOn = pick === "case" ? 3 : 1, tOn = pick === "tabs" ? 3 : 1;
-  const ring = k => k === 3 ? `stroke="var(--primary)" stroke-width="3"` : "";
-  const cell = route === "pouch"
-    ? `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Pouch housing">
-         <rect x="52" y="96" width="150" height="212" rx="10" class="mSteel2" ${ring(cOn)}/>
-         <rect class="hit" x="46" y="90" width="162" height="224" fill="transparent"/></g>
-       <rect x="64" y="110" width="126" height="184" rx="5" fill="var(--card)"/>
-       ${[0,1,2,3,4,5,6].map(i => `<rect x="72" y="${118 + i * 25}" width="110" height="8" rx="1"
-          fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>
-          <rect x="72" y="${127 + i * 25}" width="110" height="4" rx="1" fill="var(--sep)"/>`).join("")}
-       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Tabs">
-         <rect x="80" y="76" width="28" height="22" rx="3" class="mAl" ${ring(tOn)}/>
-         <rect x="148" y="76" width="28" height="22" rx="3" class="mCu" ${ring(tOn)}/>
-         <rect class="hit" x="74" y="70" width="110" height="34" fill="transparent"/></g>
-       <text class="mTxtS" x="127" y="330" text-anchor="middle">Pouch — stacked sheets</text>`
-    : route === "cyl"
-    ? `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Cylindrical can">
-         <rect x="82" y="86" width="94" height="222" rx="14" class="mSteel2" ${ring(cOn)}/>
-         <rect class="hit" x="76" y="80" width="106" height="234" fill="transparent"/></g>
-       <g class="spin"><circle cx="129" cy="200" r="44" class="mAn"/><circle cx="129" cy="200" r="33" class="mSep"/>
-         <circle cx="129" cy="200" r="21" class="mCa"/><circle cx="129" cy="200" r="8" class="mSteel"/></g>
-       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Terminal">
-         <rect x="116" y="66" width="26" height="22" rx="4" class="mAl" ${ring(tOn)}/>
-         <rect class="hit" x="110" y="60" width="38" height="34" fill="transparent"/></g>
-       <text class="mTxtS" x="129" y="330" text-anchor="middle">Cylindrical — wound jelly roll</text>`
-    : `<g class="hot" data-layer="case" tabindex="0" role="button" aria-label="Prismatic can">
-         <rect x="56" y="92" width="146" height="216" rx="6" class="mSteel2" ${ring(cOn)}/>
-         <rect class="hit" x="50" y="86" width="158" height="228" fill="transparent"/></g>
-       <rect x="68" y="104" width="122" height="192" rx="3" fill="var(--card)"/>
-       <g class="spin"><ellipse cx="129" cy="200" rx="52" ry="36" class="mAn"/>
-         <ellipse cx="129" cy="200" rx="36" ry="23" class="mSep"/>
-         <ellipse cx="129" cy="200" rx="20" ry="11" class="mCa"/></g>
-       <g class="hot" data-layer="tabs" tabindex="0" role="button" aria-label="Terminals">
-         <rect x="76" y="72" width="28" height="22" rx="3" class="mAl" ${ring(tOn)}/>
-         <rect x="154" y="72" width="28" height="22" rx="3" class="mCu" ${ring(tOn)}/>
-         <rect class="hit" x="70" y="66" width="120" height="34" fill="transparent"/></g>
-       <text class="mTxtS" x="129" y="330" text-anchor="middle">Prismatic — wound, in a hard can</text>`;
-
-  return `<svg viewBox="0 0 760 396" role="img" aria-label="Exploded lithium-ion cell layers">
-    ${cell}
-    <path class="mLead" d="M204 200 C 250 200, 258 212, 330 212"/>
-    <text class="mTxtS" x="214" y="192">one repeat unit →</text>
-    <text class="mTxtS" x="214" y="236" fill="var(--faint)">repeated up to 120×</text>
-    ${rows}</svg>`;
-}
-
-function renderAnatomy() {
-  const c = compMap[layerPick];
-  const stationChip = id => {
-    const st = STATIONS.find(x => x.id === id);
-    if (!st || !st.routes.includes(route)) return "";
-    const col = phaseColor(st.phase);
-    return `<button class="chipc" data-go="${st.id}"><i style="background:${col}"></i>${esc(st.title)}</button>`;
-  };
-  $("layerView").innerHTML = `
+/* ---------------- overview ---------------- */
+const WORD = {12:"Twelve", 13:"Thirteen", 14:"Fourteen", 15:"Fifteen"};
+function renderOverview() {
+  const m = model(), list = active(), g = GEOM[route];
+  $("overview").innerHTML = `
     <div class="card card-pad">
-      <span class="eyebrow">The big picture · 1 of 3</span>
-      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">What you are actually building</h2>
-      <p class="lede" style="max-width:80ch">A lithium-ion cell is a sandwich repeated tens of times, soaked in liquid and
-      wrapped in a barrier. Nine components, only three of which the plant makes itself. Pick any layer to see what it is,
-      why it is that thickness, and which stations on the line are responsible for it.</p>
+      <span class="eyebrow">Production simulator · ${g.name.toLowerCase()} line</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Walk the line from powder to packed cell</h2>
+      <p class="lede" style="max-width:78ch">${WORD[list.length] || list.length} stations, drawn as the machines you would actually stand next to. Pick any
+      station to open its machine, hover any part to learn what it does, and use the setpoint lab on the right —
+      every change updates the teaching relationships and reference-line estimates shown below.</p>
     </div>
 
-    <div class="card card-pad">
-      <div class="anat">
-        <div>
-          <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint);margin-bottom:9px">THE REPEAT UNIT</small>
-          <div class="layerlist">
-            ${COMPONENTS.map(x => `
-              <button class="layer" data-layer="${x.id}" aria-current="${x.id === layerPick}">
-                <i style="background:${x.col}"></i>
-                <span><strong>${esc(x.name)}</strong><small>${esc(x.spec)}</small></span>
-                <em>${x.made.filter(id => (STATIONS.find(s => s.id === id) || {routes:""}).routes.includes(route)).length} stations</em>
-              </button>`).join("")}
-          </div>
-        </div>
-        <div>${anatomySVG(layerPick)}</div>
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>Reference recipe</h4>
+        <p class="lede"><b>Graphite negative electrode · NMC positive electrode.</b> The material properties, voltage guidance and simplified capacity relationships apply only to this reference chemistry. LFP, silicon-rich, sodium and solid-state routes require different inputs and process windows. The wet and dry electrode routes are both modelled, but both on this same chemistry.</p>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--elyte)"></i>Model scope</h4>
+        <p class="lede">Published sources support the process sequence and displayed operating ranges. Capacity, throughput, wetting, process-health and risk-control outputs are illustrative teaching relationships. They are not calibrated plant predictions, equipment-sizing calculations or release criteria.</p>
       </div>
     </div>
 
-    <div class="card card-pad anat">
-      <div class="anat-detail" style="grid-column:1/-1">
-        <span class="eyebrow" style="color:${c.col}">${esc(c.src)}</span>
-        <h3 style="margin-top:4px">${esc(c.name)}</h3>
-        <div class="anat-spec">
-          <div><small>Thickness / size</small><b>${esc(c.spec)}</b></div>
-          <div><small>Material</small><b>${esc(c.mat)}</b></div>
-          <div><small>Its job</small><b>${esc(c.role)}</b></div>
-        </div>
-        <p>${c.why}</p>
-        <p style="margin-top:9px"><b>Where it is easiest to ruin:</b> ${esc(c.riskWhy)}</p>
-        <div style="margin-top:13px">
-          <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint);margin-bottom:7px">STATIONS THAT BUILD OR SHAPE IT</small>
-          <div class="makes">${c.made.map(stationChip).join("") || '<span style="font-size:11px;color:var(--faint)">Bought in complete</span>'}</div>
-        </div>
-        <div style="margin-top:12px">
-          <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint);margin-bottom:7px">STATIONS WHERE IT IS MOST AT RISK</small>
-          <div class="makes">${c.risk.map(stationChip).join("")}</div>
-        </div>
-        ${(c.checks || []).length ? `<div style="margin-top:12px">
-          <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint);margin-bottom:7px">WHERE IT IS MEASURED OR SCREENED</small>
-          <div class="makes">${c.checks.map(stationChip).join("")}</div>
-        </div>` : ""}
+    <div class="card card-pad">
+      <h4><i style="background:var(--primary)"></i>What the 5th edition changed${r(1)}</h4>
+      <p class="lede" style="max-width:84ch;margin-bottom:10px">This simulator follows the February 2026 edition of the
+      PEM RWTH Aachen and VDMA process guide. Four things in it are new here.</p>
+      <div class="newRow">
+        <button type="button" class="newCard" data-go="view:machine">
+          <b>The line on one screen</b>
+          <span>A control-room view of every station at once, with a lamp per machine, plus the four halls in plan so
+          you can see where each one physically stands.</span><u>Open the machine overview →</u></button>
+        <button type="button" class="newCard" data-newgo="proc:dry">
+          <b>A second electrode route</b>
+          <span>Dry coating is now a station of its own. Switch the line from Wet to Dry in the sidebar and four wet-processing stages
+          are replaced by two dry stages — no process solvent or dryer, with a reported potential 45% process-energy reduction.</span>
+          <u>Switch to the dry route →</u></button>
+        <button type="button" class="newCard" data-go="view:radar">
+          <b>A technology radar</b>
+          <span>44 technologies scored against use in series production, split between what changes the process and what
+          changes the product.</span><u>Open the radar →</u></button>
+        <button type="button" class="newCard" data-go="view:factory">
+          <b>What the machines cost</b>
+          <span>A machinery and equipment investment range for every station, against a 10 GWh reference plant — plus
+          the building and the air each phase needs.</span><u>Open the cost view →</u></button>
+        <button type="button" class="newCard" data-go="${proc === "dry" ? "drymix" : "mixing"}">
+          <b>Updated recipes and windows</b>
+          <span>Electrode formulations, mixing time, aging state of charge, deep-draw depth and formation duration all
+          moved. Every station carries an Innovations and trends box.</span><u>Start at ${proc === "dry" ? "dry mixing" : "wet mixing"} →</u></button>
       </div>
-    </div>`;
-
-  /* bind both the list and the SVG */
-  $("layerView").querySelectorAll("[data-layer]").forEach(el => {
-    const act = () => { layerPick = el.dataset.layer; renderAnatomy(); };
-    el.addEventListener("click", act);
-    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); } });
-  });
-}
-
-/* ---------------------------------------------------------------------
-   2 · MATERIAL FLOW
-   ------------------------------------------------------------------- */
-function renderFlow() {
-  const m = model();
-  /* live values tied to the state at that point in the chain */
-  const live = {
-    slurry:`${m.visc.toFixed(0)} mPa·s · ${m.disp.toFixed(0)}% dispersed`,
-    wet:`${m.wetNeed.toFixed(0)} µm wet film · ±${m.coatErr.toFixed(1)} g/m²`,
-    dryel:`dryer needs ${m.needT.toFixed(0)} °C · set ${S.dryT} °C`,
-    comp:`${m.por.toFixed(0)}% porosity · ${m.capC.toFixed(2)} mAh/cm²`,
-    daughter:`${m.burrSlit.toFixed(1)} µm burr`,
-    dry:`${m.ppm.toFixed(0)} ppm H₂O`,
-    stack: route === "pouch" ? `±${S.stackAcc} µm alignment` : `${S.webTens} N web tension`,
-    filled:`${m.wetting.toFixed(0)}% wetted`,
-    formed:`${m.seiQ.toFixed(0)}% illustrative SEI score · ${m.liLoss.toFixed(1)}% simplified cyclable-Li loss`,
-    aged:`${m.screenSens.toFixed(0)}% screen sensitivity`,
-    graded:`${m.cellAh.toFixed(1)} Ah · ${m.yieldPct.toFixed(1)}% process-health score`
-  };
-  $("layerView").innerHTML = `
-    <div class="card card-pad">
-      <span class="eyebrow">The big picture · 2 of 3</span>
-      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">The product changes state, one station at a time</h2>
-      <p class="lede" style="max-width:80ch">This is the central idea of cell manufacturing. Electrode materials are transformed through successive stations while bought-in foils, separator, electrolyte, tabs and housing components are introduced at defined assembly stages. A mistake at the second station can remain embedded in the product all the way to end-of-line testing. Every value shown in a dark badge is live from your current setpoints.</p>
     </div>
+
     <div class="card card-pad">
-      <div class="chain">
-        ${FLOW.map((f, i) => {
-          const by = f.by ? f.by.split("|").find(id => (STATIONS.find(s => s.id === id) || {routes:""}).routes.includes(route)) : null;
-          const st = by ? STATIONS.find(s => s.id === by) : null;
-          return `<div class="chain-row">
-            <div class="chain-by">
-              ${st ? `<button data-go="${st.id}"><small>${String(active().indexOf(st) + 1).padStart(2,"0")} · made by</small>${esc(st.title)}</button>`
-                   : `<small>${i === 0 ? "material arrives" : ""}</small>`}
-            </div>
-            <div class="chain-spine"><i></i></div>
-            <div class="chain-state">
-              <strong>${esc(f.name)}</strong>
-              <em>${esc(f.state)}</em>
-              ${live[f.id] ? `<em style="background:var(--foreground);color:var(--primary);border-color:var(--foreground)">${esc(live[f.id])}</em>` : ""}
-              <span>${esc(f.note)}</span>
-            </div>
-          </div>`;
+      <span class="eyebrow">The line</span>
+      <div class="map" style="margin-top:10px">
+        ${PHASES.map(([p, col]) => {
+          const items = list.filter(s => s.phase === p);
+          if (!items.length) return "";
+          return `<div><div style="font-size:9px;font-weight:900;letter-spacing:.13em;color:var(--faint);margin-bottom:6px">
+            <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${col};margin-right:6px"></span>${p.toUpperCase()}</div>
+            <div class="map-row">${items.map(s => {
+              const n = list.indexOf(s) + 1;
+              return `<button type="button" class="map-node" data-go="${s.id}">
+                <b>${String(n).padStart(2, "0")}</b><strong>${esc(s.title)}</strong>
+                <small>${esc(s.env.iso)}${s.env.dew !== "—" ? " · " + esc(s.env.dew) : ""}</small>
+                <i style="background:${col}"></i></button>`;
+            }).join("")}</div></div>`;
         }).join("")}
       </div>
+    </div>
+
+    <div class="card card-pad">
+      <span class="eyebrow">Illustrative reference-line estimates</span>
+      <div class="kpi" style="margin-top:10px">
+        <div><small>Reference capacity estimate</small><b>${m.cellAh.toFixed(1)} Ah</b><span>${g.unit}</span></div>
+        <div><small>Illustrative cells per day</small><b>${fmt(m.cellsDay)}</b><span>assumes one 1 m line and 85% uptime</span></div>
+        <div><small>Illustrative annual output</small><b>${m.gwh.toFixed(1)} GWh</b><span>simplified geometry and uptime estimate</span></div>
+        <div><small>Process-health score</small><b>${m.yieldPct.toFixed(1)}%</b><span>teaching score, not a factory-yield prediction</span></div>
+        <div><small>Coating porosity</small><b>${m.por.toFixed(0)}%</b><span>set by calender line force</span></div>
+        <div><small>N/P ratio</small><b>${m.np.toFixed(2)}</b><span>anode capacity ÷ cathode capacity</span></div>
+      </div>
+      <div class="srcline">Cell geometry, foil thicknesses and plant-scale assumptions follow ${
+        [1,2,13].map(n => `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>How to read this simulator</h4>
+        <ul>
+          <li><b>Every station is a real machine.</b> The schematics follow the PEM RWTH Aachen process figures — unwinders, slot die, four-chamber dryer, calender nip, punching unit, Z-folder, formation racks.</li>
+          <li><b>Hover or tab any part</b> of a machine to get its job, its setpoints and why it matters.</li>
+          <li><b>The setpoint lab is live.</b> Coat thickness, line speed, dryer temperature, calender force, vacuum drying time, formation C-rate and aging period all feed one model.</li>
+          <li><b>Change the cell format</b> in the sidebar and the line itself changes — the pouch route separates and stacks sheets, the can routes wind a jelly roll instead.</li>
+          <li><b>Change the electrode route</b> and it changes again. The wet line coats a slurry and then dries and calenders it; the dry line fibrillates the binder and does all three in one nip. Four stations become one.</li>
+          <li><b>Start with the big picture.</b> <button type="button" data-go="view:machine" style="color:var(--green);font-weight:800;text-decoration:underline">Machine overview</button> puts the whole line on one screen; <button type="button" data-go="view:anatomy" style="color:var(--green);font-weight:800;text-decoration:underline">cell anatomy</button> shows what you are building and who builds each layer; <button type="button" data-go="view:flow" style="color:var(--green);font-weight:800;text-decoration:underline">material flow</button> follows one material through every state; <button type="button" data-go="view:matrix" style="color:var(--green);font-weight:800;text-decoration:underline">process ↔ component</button> maps every station onto every part of the cell; the <button type="button" data-go="view:radar" style="color:var(--green);font-weight:800;text-decoration:underline">technology radar</button> shows what is coming next, and <button type="button" data-go="view:factory" style="color:var(--green);font-weight:800;text-decoration:underline">factory &amp; environment</button> covers the building, the air and the bill.</li>
+        </ul>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--destructive)"></i>Three major defect drivers</h4>
+        <ul>
+          <li><b>Particles and burrs.</b> A burr from slitting or a particle rolled in at the calender can pierce the separator. A severe internal short can create local heating that external controls may not stop; prevention depends on cleanliness, edge quality, separator integrity and screening.</li>
+          <li><b>Water.</b> Residual water can hydrolyse LiPF₆ and generate HF-containing species that degrade electrolyte and interfaces. That is why the dew point drops station by station to −50…−70 °C at electrolyte filling.</li>
+          <li><b>Cross-contamination.</b> Anode and cathode powders look identical and are both black. Mixing rooms are commonly separated to reduce this risk.</li>
+        </ul>
+      </div>
     </div>`;
 }
+
+/* ---------------- station ---------------- */
+function renderStation(st) {
+  const list = active(), n = list.indexOf(st) + 1, m = model(), col = phaseColor(st.phase);
+  $("stationView").innerHTML = `
+    <div class="machine ${running ? "is-run" : ""}" id="machineWrap">
+      <div class="machine-head">
+        <h3>${String(n).padStart(2, "0")} · ${esc(st.title)}</h3>
+        <div class="tag">
+          <span>${esc(st.env.iso)}</span>
+          ${st.env.dew !== "—" ? `<span>Dew point ${esc(st.env.dew)}</span>` : ""}
+          <span>${esc(st.env.temp)}</span>
+          <span>${esc(st.takt)}</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 980 318" role="img" aria-label="${esc(st.title)} machine schematic"
+           style="${machineStyle(st, m)}">${M[st.machine]()}</svg>
+      <div class="readout" id="readout"></div>
+    </div>
+
+    <div class="card card-pad">
+      <span class="eyebrow" style="color:${col}">${esc(st.phase)}</span>
+      <h2 style="font-size:20px;letter-spacing:-.02em;margin:5px 0 7px">${esc(st.purpose)}</h2>
+      <div class="flow" style="margin-top:12px">
+        <div class="flow-box"><small>Arrives as</small><strong>${esc(st.inp)}</strong></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box"><small>Leaves as</small><strong>${esc(st.out)}</strong></div>
+      </div>
+      <div class="env" style="margin-top:12px">
+        <div><small>Clean room${r(1,9)}</small><b>${esc(st.env.iso)}</b></div>
+        <div><small>Dry room${r(1,5)}</small><b>${esc(st.env.dew)}</b></div>
+        <div><small>Temperature${r(1)}</small><b>${esc(st.env.temp)}</b></div>
+        <div><small>Machine investment${r(1)}</small><b>${esc(st.cost)}</b></div>
+      </div>
+      ${madeHTML(st)}
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--green)"></i>Process parameters &amp; requirements</h4>
+        <ul>${st.params.map(p => `<li>${p}</li>`).join("")}</ul>
+        <div class="srcline">Sources for this station: ${(SRC[st.id] || [1]).map(n =>
+          `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
+      </div>
+      <div class="card card-pad block">
+        <h4><i style="background:var(--jelly)"></i>Technology alternatives</h4>
+        <ul>${st.alts.map(p => `<li>${p}</li>`).join("")}</ul>
+        ${(st.innov || []).length ? `
+        <h4 style="margin-top:14px"><i style="background:var(--primary)"></i>Innovations &amp; trends${r(1)}</h4>
+        <ul>${st.innov.map(p => `<li>${p}</li>`).join("")}</ul>` : ""}
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card card-pad block">
+        <h4><i style="background:var(--warning)"></i>Quality influences</h4>
+        <ul>${st.qInf.map(p => `<li>${p}</li>`).join("")}</ul>

@@ -1,232 +1,288 @@
-            <div class="chain-spine"><i></i></div>
-            <div class="chain-state">
-              <strong>${esc(f.name)}</strong>
-              <em>${esc(f.state)}</em>
-              ${live[f.id] ? `<em style="background:var(--foreground);color:var(--primary);border-color:var(--foreground)">${esc(live[f.id])}</em>` : ""}
-              <span>${esc(f.note)}</span>
-            </div>
-          </div>`).join("")}
-      </div>
-    </div>`;
-}
-
-/* ---------------------------------------------------------------------
-   3 · PROCESS ↔ COMPONENT MATRIX
-   ------------------------------------------------------------------- */
-function cellRole(st, comp) {
-  const made = comp.made.includes(st.id), risk = comp.risk.includes(st.id);
-  if (made && risk) return "both";
-  if (made) return "make";
-  if (risk) return "risk";
-  if ((comp.checks || []).includes(st.id)) return "check";
-  return "";
-}
-function renderMatrix() {
-  const list = active();
-  const mark = { make:"●", both:"◉", risk:"▲", check:"◆" };
-  const word = { make:"builds or shapes", both:"builds it — and is where it is most easily ruined",
-                 risk:"main risk to", check:"measures or screens" };
-  $("layerView").innerHTML = `
-    <div class="card card-pad">
-      <span class="eyebrow">The big picture · 3 of 3</span>
-      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Which station touches which part of the cell</h2>
-      <p class="lede" style="max-width:80ch">Read a row to see what one machine is responsible for. Read a column to see
-      how many hands a single component passes through before it is finished. Click any mark to jump straight to that
-      station. The table rebuilds when you change the cell format, because the line does.</p>
-    </div>
-    <div class="card card-pad">
-      <div class="mtxwrap">
-        <table class="mtx">
-          <thead><tr><th class="rowh">Station</th>
-            ${COMPONENTS.map(c => `<th><i style="background:${c.col}"></i>${esc(c.short)}</th>`).join("")}
-          </tr></thead>
-          <tbody>
-            ${list.map((st, i) => `
-              <tr>
-                <th class="rowh"><span style="color:var(--faint);font-weight:900;font-size:9px">${String(i + 1).padStart(2, "0")}</span>
-                  &nbsp;${esc(st.title)}</th>
-                ${COMPONENTS.map(c => {
-                  const k = cellRole(st, c);
-                  return k ? `<td data-k="${k}"><button data-go="${st.id}" title="${esc(st.title)} — ${esc(c.name)}"
-                        aria-label="${esc(st.title)}, ${esc(c.name)}, ${word[k]}">${mark[k]}</button></td>`
-                    : `<td></td>`;
-                }).join("")}
-              </tr>`).join("")}
-          </tbody>
-        </table>
-      </div>
-      <div class="legend">
-        <span><b style="background:color-mix(in srgb,var(--primary) 15%,transparent);color:var(--primary)">●</b> builds or shapes this component</span>
-        <span><b style="background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 19%,transparent) 50%,color-mix(in srgb,var(--destructive) 19%,transparent) 50%);color:var(--foreground)">◉</b> builds it — and is where it is most easily ruined</span>
-        <span><b style="background:color-mix(in srgb,var(--destructive) 15%,transparent);color:var(--destructive)">▲</b> where this component is most easily ruined</span>
-        <span><b style="background:color-mix(in srgb,var(--elyte) 15%,transparent);color:var(--elyte)">◆</b> where it is measured or screened</span>
-        <span>blank — the component passes through untouched</span>
-      </div>
-    </div>
-    <div class="grid2">
-      <div class="card card-pad block">
-        <h4><i style="background:var(--green)"></i>Reading it down a column</h4>
-        <ul>
-          <li><b>The two coatings pass through five stations each</b> before they are finished — mixing, coating, drying, calendering, vacuum drying. Nothing about an electrode is settled until the last of them.</li>
-          <li><b>The separator is introduced during stacking or winding.</b> Damage at this stage can create latent short-circuit risk, so cleanliness, alignment and edge quality are critical.${r(2,3)}</li>
-          <li><b>The SEI is formed during formation.</b> It is not installed as a conventional part, and its properties depend on the full formation and cleanliness history.${r(7)}</li>
-        </ul>
       </div>
       <div class="card card-pad block">
-        <h4><i style="background:var(--destructive)"></i>Reading it across a row</h4>
-        <ul>
-          <li><b>Calendering appears against four components at once</b> — both coatings and both foils. That is why one setpoint there moves capacity, wetting and crack risk together.${r(4)}</li>
-          <li><b>Most stations that build a component are also where it is most easily ruined</b> — the ◉ marks. The calender that gives the cathode its density is the same nip that cracks its particles; the stacker that places the separator is where the separator gets pierced.</li>
-          <li><b>Slitting shapes, but never adds.</b> It cuts foil to width and takes material away; nothing new enters the cell here. Everything else this station can do to the product is negative, and the burr it leaves is the classic separator-piercing defect.${r(1)}</li>
-          <li><b>Vacuum drying protects a component it never touches</b> — the electrolyte, four stations later, via the water it removes now.${r(6)}</li>
-        </ul>
+        <h4><i style="background:var(--elyte)"></i>Quality features</h4>
+        <ul>${st.qFeat.map(p => `<li>${p}</li>`).join("")}</ul>
       </div>
-    </div>`;
-}
-
-/* ---------------------------------------------------------------------
-   4 · REFERENCES
-   ------------------------------------------------------------------- */
-function renderRefs() {
-  $("layerView").innerHTML = `
-    <div class="card card-pad">
-      <span class="eyebrow">Sources</span>
-      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Where every number came from</h2>
-      <p class="lede" style="max-width:80ch">Process parameters, environment classes, machine investments and cycle times
-      are from the PEM RWTH Aachen and VDMA process guide. The physics that links them — porosity, areal capacity,
-      N/P balance, moisture, SEI — is from the peer-reviewed sources below. The superscript numbers throughout this
-      simulator link here.</p>
-      <p class="lede" style="max-width:80ch;margin-top:10px"><b>What is modelled rather than cited:</b> the chain that
-      connects one setpoint to the next is a teaching model, fitted so the defaults land near the reference plant. Use it
-      to understand direction and sensitivity, not to size real equipment.</p>
     </div>
-    <div class="card card-pad">
-      <div class="reflist">
-        ${REFS.map(x => `
-          <div class="refitem" id="ref-${x.n}">
-            <div class="rn">${x.n}</div>
-            <div>
-              <p>${x.txt}</p>
-              <span class="used"><b>Used for:</b> ${x.use}</span>
-              ${x.url ? `<a href="${x.url}" target="_blank" rel="noopener">${esc(x.url)}</a>` : ""}
-            </div>
-          </div>`).join("")}
+
+    ${st.id === "drycoat" ? dryVsWet() : ""}
+
+    ${renderConsole(st, m)}
+
+    <div class="card card-pad block">
+      <h4><i style="background:var(--foreground)"></i>Standard operating sequence</h4>
+      <ol class="sop">${st.sop.map(p => `<li>${p}</li>`).join("")}</ol>
+    </div>
+
+`;
+
+  bindHotspots(st);
+  bindConsole(st);
+  setHot(st, 0);
+}
+
+/* the wet chain against the dry chain, and what the change is worth [1][16] */
+const SAVING = [
+  { k:"CapEx",             v:35, note:"no dryer, no solvent-recovery plant" },
+  { k:"Energy consumption",v:45, note:"drying is the single largest energy demand on a wet line" },
+  { k:"Space",             v:55, note:"a 100 m dryer disappears" },
+  { k:"Emissions",         v:70, note:"no NMP to burn off or recover" }
+];
+function dryVsWet() {
+  const chain = (t, steps, on) => `
+    <div class="pchain ${on ? "on" : ""}">
+      <small>${t}</small>
+      <div>${steps.map(x => `<i>${esc(x)}</i>`).join(`<b>→</b>`)}</div>
+    </div>`;
+  return `
+    <div class="card card-pad block">
+      <h4><i style="background:var(--primary)"></i>Why this station replaces four${r(1)}</h4>
+      <p class="lede" style="max-width:86ch;margin-bottom:12px">Taking the solvent out does not just delete the dryer.
+      The multi-stage wet dispersion becomes a single, often continuous dry mix; and because the coating nip already
+      compacts the film, the calender that normally follows is usually not needed either.</p>
+      ${chain("Wet processing", ["Dry mixing", "Disperse", "Coating", "Drying", "Calendering"], proc === "wet")}
+      ${chain("Dry processing", ["Dry mixing / fibrillation", "Coating"], proc === "dry")}
+      <div class="savRow">
+        ${SAVING.map(x => `<div class="sav">
+          <b>−${x.v}%</b><span>${esc(x.k)}</span>
+          <div class="savBar"><i style="width:${x.v}%"></i></div>
+          <em>${esc(x.note)}</em></div>`).join("")}
       </div>
+      <div class="grid2" style="margin-top:12px">
+        <div><h4><i style="background:var(--green)"></i>Benefits</h4>
+          <ul><li>Lower investment costs</li><li>Lower energy costs</li><li>Less space required</li><li>Reduced process time</li></ul></div>
+        <div><h4><i style="background:var(--destructive)"></i>Challenges</h4>
+          <ul><li>Material restrictions</li><li>Technical purity and dust generation</li><li>Limited industrial experience</li><li>Lower adhesion</li></ul></div>
+      </div>
+      <p class="lede" style="margin-top:12px;font-size:12px;opacity:.85">The four figures are the guide's own comparison
+      against a wet coating line. Independent life-cycle work broadly agrees on the energy number at the manufacturing
+      stage — around 41% less — but the saving shrinks to a few percent once the whole cradle-to-grave life cycle is
+      counted, because cell production is only part of it.${r(16)}</p>
     </div>`;
 }
 
-/* ---------------------------------------------------------------------
-   THE OPERATOR CONSOLE
-   ------------------------------------------------------------------- */
-function inWindow(k) {
-  const c = CTL[k];
-  return !c || c.opts || !c.good ? true : (S[k] >= c.good[0] && S[k] <= c.good[1]);
+/* which parts of the finished cell this station is responsible for */
+function madeHTML(st) {
+  const makes  = COMPONENTS.filter(c => c.made.includes(st.id));
+  const risks  = COMPONENTS.filter(c => c.risk.includes(st.id) && !c.made.includes(st.id));
+  const checks = COMPONENTS.filter(c => (c.checks || []).includes(st.id)
+                   && !c.made.includes(st.id) && !c.risk.includes(st.id));
+  const TITLE = { make:"Built or shaped here", risk:"Most easily ruined here", check:"Measured or screened here" };
+  const SUF   = { make:"", risk:" ▲", check:" ◆" };
+  const chip = (c, kind) => `<button type="button" class="chipc" data-goview="${c.id}" title="${TITLE[kind]}">
+      <i style="background:${c.col}"></i>${esc(c.short)}${SUF[kind]}</button>`;
+  if (!makes.length && !risks.length && !checks.length) return "";
+  const label = makes.length ? "PART OF THE CELL THIS STATION IS RESPONSIBLE FOR"
+                             : "PART OF THE CELL THIS STATION CHECKS";
+  return `<div style="margin-top:14px;padding-top:13px;border-top:1px solid var(--border)">
+    <small style="display:block;font-size:8.5px;font-weight:900;letter-spacing:.14em;color:var(--faint)">${label}</small>
+    <div class="makes">${makes.map(c => chip(c, "make")).join("")}${risks.map(c => chip(c, "risk")).join("")}${checks.map(c => chip(c, "check")).join("")}</div>
+    <p style="margin-top:7px;font-size:10.5px;color:var(--faint)">${makes.length ? "● built or shaped here" : ""}${risks.length ? (makes.length ? " · " : "") + "▲ most easily ruined here" : ""}${checks.length ? ((makes.length || risks.length) ? " · " : "") + "◆ measured or screened here" : ""} — click any chip to open it in the cell anatomy.</p>
+  </div>`;
 }
-function ctlHTML(k) {
-  const c = CTL[k], v = S[k];
-  if (c.opts) return `
-    <div class="ctl">
-      <label>${c.label}<b>${c.opts[v]}</b></label>
-      <div class="seg" role="group" aria-label="${c.label}">
-        ${c.opts.map((o, i) => `<button type="button" data-seg="${k}" data-v="${i}" aria-pressed="${i === v}">${o}</button>`).join("")}
-      </div>
-      <small>${c.note}${c.ref ? r(...c.ref) : ""}</small>
-    </div>`;
-  const dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
-  return `
-    <div class="ctl" data-in="${inWindow(k)}">
-      <label for="cc-${k}">${c.label}<b id="cv-${k}">${v.toFixed(dec)}${c.unit}</b></label>
-      <input id="cc-${k}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${v}"
-             aria-label="${c.label}" data-ctl="${k}">
-      ${windowBar(k)}
-      <small>${c.note}${c.ref ? r(...c.ref) : ""}</small>
-    </div>`;
-}
-function renderConsole(st, m) {
-  const o = OPS[st.id];
-  if (!o) return "";
-  const [lv, head, body] = o.verdict(m);
-  return `
-    <div class="console" id="console">
-      <div class="console-head">
-        <strong>Operate this station</strong>
-        <span>${esc(o.lead)}</span>
-      </div>
-      <div class="console-body">
-        <div class="console-ctl">
-          <small>Your controls</small>
-          ${o.ctl.map(ctlHTML).join("")}
-        </div>
-        <div class="console-out">
-          <small>What happens</small>
-          <div class="outs">
-            ${o.read(m).map(x => `<div class="out" data-s="${x.state}">
-              <small>${esc(x.label)}</small><b>${esc(x.value)}</b>
-              ${x.hint ? `<i>${esc(x.hint)}</i>` : ""}</div>`).join("")}
-          </div>
-          <div class="verdict" data-l="${lv}"><strong>${esc(head)}</strong><span>${esc(body)}</span></div>
-          ${renderCharts(st)}
-        </div>
-      </div>
-      <div class="console-foot">
-        <span>Anything you change here updates the downstream teaching relationships — watch the process-health gauge on the right.</span>
-        <button type="button" id="conReset">Reset this station</button>
-        <button type="button" id="conBreak">Break it</button>
-      </div>
-    </div>`;
-}
-function bindConsole(st) {
-  const o = OPS[st.id];
-  if (!o || !$("console")) return;
-  $("console").querySelectorAll("input[data-ctl]").forEach(el =>
-    el.addEventListener("input", e => { S[e.target.dataset.ctl] = Number(e.target.value); refresh(); }));
-  $("console").querySelectorAll("button[data-seg]").forEach(el =>
-    el.addEventListener("click", e => {
-      const b = e.currentTarget;
-      S[b.dataset.seg] = Number(b.dataset.v); refresh();
-    }));
-  $("conReset").addEventListener("click", () => {
-    o.ctl.forEach(k => S[k] = DEFAULTS[k]); renderSliders(); refresh();
-  });
-  $("conBreak").addEventListener("click", () => {
-    /* push this station's knobs to the edge that fails, so the failure mode is visible */
-    const BREAK = { tC:80, tA:50, speed:80, dryT:60, force:2500, vac:8, cRate:0.5, ageDays:3,
-      solid:75, mixMin:30, mixT:40, gap:280, dryLen:20, rollT:120, knife:0, cutSpd:150, wear:100,
-      vacT:60, sepMode:0, stackAcc:600, webTens:140, drawDepth:10, sealT:150, doseFac:1,
-      fillP:400, soak:1, pressP:1.2, formT:60, vMax:4.4, degP:60, ageSOC:20, ageHiT:25, shipSOC:60 };
-    o.ctl.forEach(k => S[k] = BREAK[k]); renderSliders(); refresh();
+
+function bindHotspots(st) {
+  document.querySelectorAll("#machineWrap .hot").forEach(g => {
+    const k = Number(g.dataset.k);
+    const go = () => setHot(st, k);
+    g.addEventListener("mouseenter", go);
+    g.addEventListener("focus", go);
+    g.addEventListener("click", go);
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    const p = st.parts[k];
+    if (p) g.setAttribute("aria-label", p[0] + " — " + p[1]);
   });
 }
-
-/* ---------------------------------------------------------------------
-   navigation for the new views
-   ------------------------------------------------------------------- */
-function showView(id) {
-  $("overview").hidden = true; $("stationView").hidden = true; $("layerView").hidden = false;
-  const v = VIEWS.find(x => x.id === id) || VIEWS[0];
-  $("crumbTitle").textContent = v.label;
-  $("pillEnv").innerHTML = `<i></i><b>${esc(v.hint)}</b>`;
-  $("pillPos").textContent = "—";
-  ({ anatomy:renderAnatomy, flow:renderFlow, matrix:renderMatrix, refs:renderRefs }[v.id])();
+function setHot(st, k) {
+  const p = st.parts[k];
+  if (!p) return;
+  hotIndex = k;
+  document.querySelectorAll("#machineWrap .hot").forEach(g =>
+    g.setAttribute("aria-current", Number(g.dataset.k) === k));
+  $("readout").innerHTML =
+    `<div class="num">${String(k + 1).padStart(2, "0")}</div>
+     <div><strong>${esc(p[0])}</strong><span>${p[2]}</span><em>${esc(p[1])}</em></div>`;
 }
 
-/* reference chips open the reference list at the right entry */
+/* ---------------- rail ---------------- */
+function renderSliders() {
+  $("sliders").innerHTML = HEAD().map(k => {
+    const c = CTL[k], dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+    return `<div class="slider" id="sw-${k}" data-in="${inWindow(k)}">
+      <label for="sl-${k}">${c.label}<b id="v-${k}">${S[k].toFixed(dec)}${c.unit}</b></label>
+      <input id="sl-${k}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${S[k]}"
+             aria-label="${c.label}">
+      <div id="wb-${k}">${windowBar(k)}</div>
+      <small>${c.note}</small>
+    </div>`;
+  }).join("");
+  HEAD().forEach(k => $("sl-" + k).addEventListener("input", e => {
+    S[k] = Number(e.target.value);
+    refresh();
+  }));
+}
+/* keep the rail in step when a station console moves a headline setpoint */
+function syncSliders() {
+  HEAD().forEach(k => {
+    const c = CTL[k], dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+    const inp = $("sl-" + k), lab = $("v-" + k), wb = $("wb-" + k), wrap = $("sw-" + k);
+    if (inp) inp.value = S[k];
+    if (lab) lab.textContent = S[k].toFixed(dec) + c.unit;
+    if (wb) wb.innerHTML = windowBar(k);
+    if (wrap) wrap.dataset.in = inWindow(k);
+  });
+}
+function renderRail() {
+  const m = model();
+  $("gauge").style.setProperty("--v", m.yieldPct.toFixed(0));
+  $("yieldVal").textContent = m.yieldPct.toFixed(1);
+  const set = (t, b, v) => { $(t).textContent = Math.round(v) + "%"; $(b).style.width = clamp(v) + "%"; };
+  set("mUniT", "mUniB", m.uniformity);
+  set("mMoiT", "mMoiB", m.moisture);
+  set("mSafT", "mSafB", m.safety);
+  const a = $("advice");
+  a.dataset.level = m.level;
+  a.innerHTML = `<strong>${esc(m.head)}</strong><span>${m.body}</span>`;
+  const g = GEOM[route];
+  $("cellKpi").innerHTML = `
+    <div><small>Capacity</small><b>${m.cellAh.toFixed(1)}</b><span>Ah · ${g.name.toLowerCase()}</span></div>
+    <div><small>Porosity</small><b>${m.por.toFixed(0)}%</b><span>after calendering</span></div>
+    <div><small>Moisture</small><b>${m.ppm.toFixed(0)}</b><span>ppm into the dry room</span></div>
+    <div><small>Output</small><b>${m.gwh.toFixed(1)}</b><span>GWh/a, this line</span></div>`;
+}
+
+/* ---------------- navigation ---------------- */
+function go(id) {
+  current = id;
+  if (typeof id === "string" && id.startsWith("view:")) {
+    showView(id.slice(5));
+    renderNav();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  $("layerView").hidden = true;
+  const st = STATIONS.find(s => s.id === id);
+  if (!st) {
+    $("overview").hidden = false; $("stationView").hidden = true;
+    $("crumbTitle").textContent = "Factory overview";
+    $("pillEnv").innerHTML = `<i></i><b>Line ready</b>`;
+    $("pillPos").textContent = "—";
+    renderOverview();
+  } else {
+    $("overview").hidden = true; $("stationView").hidden = false;
+    $("crumbTitle").textContent = st.title;
+    $("pillEnv").innerHTML = `<i></i><b>${esc(st.env.iso)}${st.env.dew !== "—" ? " · " + esc(st.env.dew) : ""}</b>`;
+    $("pillPos").textContent = (active().indexOf(st) + 1) + " of " + active().length;
+    renderStation(st);
+  }
+  renderNav();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function refresh() {
+  renderRail();
+  syncSliders();
+  pushHistory();
+  if (typeof current === "string" && current.startsWith("view:")) { showView(current.slice(5)); return; }
+  if (current) { const st = STATIONS.find(s => s.id === current); if (st) { renderStation(st); setHot(st, hotIndex); } }
+  else renderOverview();
+}
 document.addEventListener("click", e => {
-  const b = e.target.closest("[data-ref]");
-  if (!b) return;
-  e.preventDefault();
-  go("view:refs");
-  setTimeout(() => {
-    const el = document.getElementById("ref-" + b.dataset.ref);
-    if (el) { el.scrollIntoView({ behavior:"smooth", block:"center" }); el.style.outline = "2px solid var(--primary)";
-      setTimeout(() => el.style.outline = "", 1800); }
-  }, 60);
+  const v = e.target.closest("[data-goview]");
+  if (v) { layerPick = v.dataset.goview; go("view:anatomy"); return; }
+  const np = e.target.closest("[data-newgo]");
+  if (np) {
+    const want = np.dataset.newgo.split(":")[1];
+    if (want !== proc) $("procOpts").querySelector(`[data-proc="${want}"]`).click();
+    go("drycoat");
+    return;
+  }
+  const b = e.target.closest("[data-go]");
+  if (b) go(b.dataset.go);
 });
 
-/* ---------------- boot ---------------- */
-renderSliders();
-renderRail();
-go(null);
-</script>
-</body>
-</html>
+/* route switch — rebuilds the line */
+$("routeOpts").addEventListener("click", e => {
+  const b = e.target.closest("[data-route]");
+  if (!b) return;
+  route = b.dataset.route;
+  document.querySelectorAll("#routeOpts button").forEach(x =>
+    x.setAttribute("aria-pressed", x.dataset.route === route));
+  $("crumbRoute").textContent = GEOM[route].name.toUpperCase();
+  const st = typeof current === "string" && !current.startsWith("view:") ? STATIONS.find(s => s.id === current) : null;
+  if (st && !st.routes.includes(route)) current = null;
+  go(current);
+});
+
+/* electrode route switch — wet slurry line vs solvent-free dry line */
+$("procOpts").addEventListener("click", e => {
+  const b = e.target.closest("[data-proc]");
+  if (!b) return;
+  proc = b.dataset.proc;
+  document.querySelectorAll("#procOpts button").forEach(x =>
+    x.setAttribute("aria-pressed", x.dataset.proc === proc));
+  $("crumbProc").textContent = proc === "dry" ? "DRY" : "WET";
+  renderSliders();   /* the rail itself changes with the route */
+  const st = typeof current === "string" && !current.startsWith("view:") ? STATIONS.find(s => s.id === current) : null;
+  if (st && st.proc && st.proc !== proc) current = null;
+  go(current);
+});
+
+/* run / pause */
+$("runBtn").addEventListener("click", () => {
+  running = !running;
+  $("runBtn").setAttribute("aria-pressed", running);
+  $("runBtn").textContent = running ? "⏸ Pause line" : "▶ Run line";
+  $("liveTag").textContent = running ? "● RUNNING" : "❚❚ HELD";
+  const w = $("machineWrap"); if (w) w.classList.toggle("is-run", running);
+});
+
+$("resetBtn").addEventListener("click", () => { S = { ...DEFAULTS }; renderSliders(); refresh(); });
+/* the machine schematic reacts to the setpoints that drive it */
+function machineStyle(st, m) {
+  const o = OPS[st.id];
+  return o && o.viz ? Object.entries(o.viz(m)).map(([k, v]) =>
+    `--${k}:${typeof v === "number" ? v.toFixed(1) : v}`).join(";") : "";
+}
+
+/* ---------------- guided tour ---------------- */
+/* =====================================================================
+   TOUR ILLUSTRATIONS
+   One small drawing per stop, made to carry the point of that stop —
+   not a copy of the machine already on screen behind the panel.
+   Drawn with the same primitives and the same material palette as the
+   station schematics, so a colour always means the same substance.
+   ===================================================================== */
+const PIC_W = 372, PIC_H = 132;
+const pic = body => `<svg viewBox="0 13 ${PIC_W} ${PIC_H - 13}" role="img" aria-hidden="true">${body}</svg>`;
+/* a small arrow between stages */
+const pArrow = (x, y) => `<path class="mArrow" d="M${x} ${y}l10 0l-3 -3.5l7 3.5l-7 3.5l3 -3.5z"/>`;
+
+const TOURPIC = {
+
+/* the wet chain against the dry chain, with what the change is worth */
+drychain: () => pic(`
+  ${T(12, 26, "WET — FIVE STEPS", "mTxtS")}
+  ${["mix", "disperse", "coating", "drying", "calender"].map((n, i) =>
+    `<rect x="${12 + i * 72}" y="32" width="64" height="18" rx="3" fill="var(--warning)" opacity=".45"/>` +
+    T(44 + i * 72, 45, n, "mTxtS", "middle")).join("")}
+  ${T(12, 68, "DRY — TWO STEPS", "mTxtS")}
+  ${["dry mix / fibrillate", "coating"].map((n, i) =>
+    `<rect x="${12 + i * 136}" y="74" width="128" height="18" rx="3" fill="var(--primary)" opacity=".5"/>` +
+    T(76 + i * 136, 87, n, "mTxtS", "middle")).join("")}
+  ${[["35", "CapEx"], ["45", "energy"], ["55", "space"], ["70", "CO₂"]].map(([v, k], i) => {
+    const x = 12 + i * 90;
+    return T(x, 112, "−" + v + "%", "mTxt") + T(x + 44, 112, k, "mTxtS") +
+      `<rect x="${x}" y="118" width="78" height="5" rx="2.5"
+        fill="color-mix(in srgb,var(--foreground) 10%,transparent)"/>
+       <rect x="${x}" y="118" width="${78 * v / 100}" height="5" rx="2.5" fill="var(--primary)" opacity=".7"/>`;
+  }).join("")}
+`),
+
+
+/* the radar, reduced to its rings and a scatter of dots */
+radar: () => pic(`
+  ${[[52, "var(--jelly)", .10], [37, "var(--elyte)", .16], [22, "var(--primary)", .22]]
+    .map(([r, c, o]) => `<circle cx="72" cy="70" r="${r}" fill="${c}" opacity="${o}"
+      stroke="color-mix(in srgb,var(--foreground) 12%,transparent)"/>`).join("")}
+  <path d="M20 70l104 0" stroke="var(--foreground)" opacity=".45"/>
+  ${[[62,52],[84,56],[72,44],[96,66],[50,58],[104,80],[60,88],[86,92],[38,84],[112,52],[70,104],[46,44]]

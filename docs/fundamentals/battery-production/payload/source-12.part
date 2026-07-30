@@ -1,199 +1,148 @@
-  lead:"You are at the hard-case line. The jelly roll goes into a deep-drawn can, the lid carries the safety devices, and the whole thing is welded shut.",
-  ctl:["webTens","sealT"],
-  read:m => [
-    V("Housing", route === "cyl" ? "Deep-drawn can, 21700 class" : "Prismatic can and lid", "ok"),
-    V("Lid safety devices", "burst disc + current interrupt", "ok", "gas-handling and closure sequences vary by hard-case design"),
-    V("Weld energy proxy", S.sealT + " (index)", band(S.sealT, 180, 210, 20)),
-    V("Roll fit", S.webTens >= 40 && S.webTens <= 90 ? "clean insert" : "interference", S.webTens >= 40 && S.webTens <= 90 ? "ok" : "warn"),
-    V("Machine investment", route === "cyl" ? "€ 35–45 M" : "€ 45–60 M", "ok", "PEM figures")],
-  verdict:m => (S.sealT < 170 || S.sealT > 220) ? ["bad", "Weld energy outside its window",
-      S.sealT < 170 ? "Too little energy and the lid weld is porous — the cell breathes and dies within months."
-                    : "Too much and the weld blows through into the cell. Either way the housing has failed its one job."]
-    : (S.webTens < 40 || S.webTens > 90) ? ["warn", "Jelly roll is not fitting cleanly",
-      "Tension at the winder decides the roll diameter. Outside 40–90 N the insert force rises and the separator can scuff."]
-    : ["ok", "Cell closed",
-      "Can, lid, burst disc and current-interrupt device in place. Only the fill port is still open."],
-  viz:m => ({ seal: clamp(100 - Math.abs(S.sealT - 195)) })
-},
+    use:"Cost share of drying, solvent recovery and formation; the case for thicker electrodes and faster formation.",
+    url:"https://doi.org/10.1016/j.jpowsour.2014.11.019" },
+  { n:9, tag:"ISO 14644-1:2015", txt:"ISO 14644-1:2015, <em>Cleanrooms and associated controlled environments — Part 1: Classification of air cleanliness by particle concentration</em>, 2nd ed.; International Organization for Standardization: Geneva, 2015.",
+    use:"What ISO 7 and ISO 8 actually mean as particle counts.",
+    url:"https://www.iso.org/standard/53394.html" },
+  { n:10, tag:"UN 38.3", txt:"United Nations. <em>Manual of Tests and Criteria</em>, 8th revised ed. (ST/SG/AC.10/11/Rev.8), Part III, sub-section 38.3: Lithium metal and lithium ion batteries; United Nations: New York and Geneva, 2023 (Amendment 1, 2024).",
+    use:"The eight transport-safety tests (T.1–T.8) every cell design must pass before shipping.",
+    url:"https://unece.org/transport/dangerous-goods/rev8-files-manual-tests-and-criteria" },
+  { n:11, tag:"IATA DGR PI 965", txt:"International Air Transport Association. <em>Dangerous Goods Regulations</em>, Packing Instruction 965 (UN 3480, lithium-ion cells and batteries shipped alone).",
+    use:"The ≤30% SOC rule for UN 3480 cells and batteries shipped alone by air under PI 965. Other configurations use different packing instructions.",
+    url:"https://www.iata.org/en/publications/manuals/battery-shipping-regulations/" },
+  { n:12, tag:"IEC 62660-1:2018", txt:"IEC 62660-1:2018, <em>Secondary lithium-ion cells for the propulsion of electric road vehicles — Part 1: Performance testing</em>, Ed. 2.0; International Electrotechnical Commission: Geneva, 2018.",
+    use:"Capacity, power and internal-resistance test definitions behind end-of-line grading.",
+    url:"https://webstore.iec.ch/publication/28965" },
+  { n:13, tag:"ANL BatPaC v5.0", txt:"Knehr, K. W.; Kubal, J. J.; Nelson, P. A.; Ahmed, S. <em>A Manual for BatPaC v5.0: Battery Performance and Cost Modeling for Electric Vehicles</em>, ANL/CSE-22/1; Argonne National Laboratory: Lemont, IL, 2022.",
+    use:"Current-collector foil thicknesses, cell-level mass and cost breakdown, plant-scale assumptions.",
+    url:"https://www.anl.gov/partnerships/batpac-battery-manufacturing-cost-estimation" },
+  { n:14, tag:"Chem. Sci. 2025", txt:"Park, J.; Kim, J.; Kim, J.; Kim, M.; Song, T.; Paik, U. Sustainable and Cost-Effective Electrode Manufacturing for Advanced Lithium Batteries: The Roll-to-Roll Dry Coating Process. <em>Chem. Sci.</em> <b>2025</b>, <em>16</em> (16), 6598–6619.",
+    use:"PTFE fibrillation mechanism, roll-to-roll dry film formation, why dry films adhere by mechanical interlocking and therefore need an etched or carbon-primed collector.",
+    url:"https://doi.org/10.1039/D5SC00059A" },
+  { n:15, tag:"Front. Energy Res. 2024", txt:"Matthews, G. A. B.; Wheeler, S.; Ramírez-González, J.; Grant, P. S. Fabrication of dry-processed lithium-ion battery electrodes with hierarchical PTFE fibril networks. <em>Front. Energy Res.</em> <b>2024</b>, <em>11</em>, 1336344.",
+    use:"Experimental PTFE fibril network in a dry electrode; lab-scale calendering at 80 °C and 50 N/mm, well below the production range PEM quotes.",
+    url:"https://doi.org/10.3389/fenrg.2023.1336344" },
+  { n:16, tag:"CIRP Ann. 2025", txt:"Gu, Y.; Tao, R.; Yuan, C.; Zhang, H. C.; Hauschild, M. A Cradle-to-Grave Life-Cycle-Assessment of Dry-Processed Li-Ion Batteries for Electric Vehicles. <em>CIRP Ann.</em> <b>2025</b>, <em>74</em> (1), 73–76.",
+    use:"Independent check on the energy claim: 90.2 MJ/kg dry against 152.9 MJ/kg NMP at the manufacturing stage (−41%), but only −4.8% across the full life cycle.",
+    url:"https://doi.org/10.1016/j.cirp.2025.04.075" }
+];
+const refMap = Object.fromEntries(REFS.map(r => [r.n, r]));
+/* inline citation chips: r(1,2) → superscript buttons that open the source */
+const r = (...ns) => `<sup class="rf">` +
+  ns.map(n => `<button type="button" data-ref="${n}" title="${esc(refMap[n] ? refMap[n].tag : "")}">${n}</button>`).join("") +
+  `</sup>`;
 
-fillPouch: {
-  lead:"You are at the filling station, in the driest room in the building. Dosing is quick. Getting the liquid into every pore is not.",
-  ctl:["doseFac","fillP","soak"],
-  read:m => [
-    V("Dose", S.doseFac.toFixed(2) + " × pore volume", band(S.doseFac, 1.05, 1.35, 0.1)),
-    V("Wetting-cycle pressure", S.fillP + " mbar", ok(S.fillP, 20, 400), "separate from the ≈0.01 mbar chamber-evacuation step"),
-    V("Wetting reached", m.wetting.toFixed(0) + "%", m.wetting >= 96 ? "ok" : m.wetting >= 90 ? "warn" : "bad"),
-    V("Wetting time", S.soak + " h", "ok", "capillary action is slow"),
-    V("Free electrolyte", m.excess > 0 ? "yes — will gas" : "none", m.excess > 0 ? "warn" : "ok"),
-    V("Porosity available", m.por.toFixed(0) + "%", m.por >= 22 ? "ok" : "warn", "set at the calender")],
-  verdict:m => m.wetting < 90 ? ["bad", "Cell is not fully wetted",
-      `${m.wetting.toFixed(0)}%. Incomplete wetting can create nonuniform regions. Increase wetting time or review pressure cycling and dose; do not rely on formation to correct an inadequate filling process.`]
-    : m.excess > 0 ? ["warn", "Over-dosed",
-      "Electrolyte beyond the pore volume has nowhere to sit. It decomposes at the electrode surface and gasses during formation."]
-    : ["ok", "Filled and wetted",
-      `${m.wetting.toFixed(0)}% wetted at ${S.doseFac.toFixed(2)} × pore volume. Ready for pre-treatment.`],
-  viz:m => ({ wet: m.wetting })
-},
+/* ---------------- 2 · the cell, layer by layer ---------------- */
+/* made  = stations that create or shape this component
+   risk  = stations where this component is most easily ruined
+   Order is the physical order through one repeat unit of the stack.     */
+const COMPONENTS = [
+  { id:"alfoil", name:"Aluminium current collector", short:"Al foil", col:"var(--alu)", h:9,
+    spec:"12–20 µm", mat:"Aluminium ≥ 99.5%", src:"Bought in — not made in the cell plant",
+    role:"Carries electrons between the cathode coating and the positive tab.",
+    why:`Aluminium is used on the positive side because it forms a passive oxide that survives the high potential there; copper would dissolve above about 3.5 V. It also sets the mechanical limit of the whole web — everything downstream pulls on this foil.${r(13,2)}`,
+    made:["coating","drycoat","calendering","slitting","separation","winding"],
+    risk:["slitting","separation"], checks:["eol"],
+    riskWhy:"A burr on a cut edge is the classic separator-piercing defect." },
 
-fillHard: {
-  lead:"You are at the can filling station. Same chemistry, tighter geometry — a wound roll wets more slowly than a stack.",
-  ctl:["doseFac","fillP","soak"],
-  read:m => [
-    V("Dose", S.doseFac.toFixed(2) + " × pore volume", band(S.doseFac, 1.05, 1.35, 0.1)),
-    V("Wetting-cycle pressure", S.fillP + " mbar", ok(S.fillP, 20, 400), "separate from chamber evacuation"),
-    V("Wetting reached", m.wetting.toFixed(0) + "%", m.wetting >= 96 ? "ok" : m.wetting >= 90 ? "warn" : "bad"),
-    V("Wetting time", S.soak + " h", "ok"),
-    V("Port closure", "sealed after wetting", "ok"),
-    V("Reference route", "no pouch-style roll pressing", "warn", "wetting time and vacuum/pressure cycling are the controls shown here; equipment varies")],
-  verdict:m => m.wetting < 90 ? ["bad", "Roll not fully wetted",
-      `${m.wetting.toFixed(0)}%. This reference route relies on wetting time and vacuum/pressure cycling; review those conditions and the filling procedure.`]
-    : ["ok", "Filled and wetted",
-      `${m.wetting.toFixed(0)}% after ${S.soak} h at ${S.fillP} mbar.`],
-  viz:m => ({ wet: m.wetting })
-},
+  { id:"cathode", name:"Cathode coating", short:"Cathode", col:"var(--cathode)", h:26,
+    spec:"40–80 µm per side", mat:"Li(NiMnCo)O₂ 95 wt%, conductive carbon 1 wt%, PVDF 4 wt%, in NMP",
+    src:"Made here, over five stations",
+    role:"Holds the lithium when the cell is discharged. Its areal capacity sets the cell's capacity.",
+    why:`Everything upstream exists to put this layer down evenly. A common working target is no more than about ±2 g/m² dry, because thickness variation becomes capacity variation becomes a cell that fails grading.${r(2)}`,
+    made:["mixing","drymix","coating","drycoat","drying","calendering","vacdry"],
+    risk:["drying","calendering","drycoat"], checks:["eol"],
+    riskWhy:"Over-drying cracks it and drags binder to the surface; over-calendering fractures the particles." },
 
-rollpress: {
-  lead:"You are at the roll press. The cell is already filled — this is purely about pushing electrolyte sideways into pores that time alone would take days to reach.",
-  ctl:["pressP","soak"],
-  read:m => [
-    V("Pressure", S.pressP.toFixed(2) + " MPa", band(S.pressP, 0.2, 0.8, 0.2)),
-    V("Wetting reached", m.wetting.toFixed(0) + "%", m.wetting >= 96 ? "ok" : "warn"),
-    V("Time saved vs soaking alone", (S.pressP * 14).toFixed(0) + " h", "ok"),
-    V("Separator stress", S.pressP > 0.9 ? "high" : "acceptable", S.pressP > 0.9 ? "bad" : "ok"),
-    V("Cycle", "2–5 s per cell", "ok")],
-  verdict:m => S.pressP > 0.9 ? ["bad", "Pressing too hard",
-      "Above roughly 0.9 MPa you are pressing a wet stack against a 12–25 µm separator. Any particle inside becomes a puncture."]
-    : m.wetting >= 96 ? ["ok", "Electrolyte distributed",
-      `${m.wetting.toFixed(0)}% wetted in the teaching model. Near-complete wetting supports more uniform formation conditions.`]
-    : ["warn", "Still short of full wetting",
-      "Raise the pressure a little or leave the cell longer before formation."],
-  viz:m => ({ press: clamp(S.pressP / 1.2 * 100) })
-},
+  { id:"sep", name:"Separator", short:"Separator", col:"var(--sep)", h:12,
+    spec:"12–25 µm", mat:"Polyolefin — PE, PP, or a PP/PE/PP trilayer, often ceramic-coated",
+    src:"Bought in as an endless tape",
+    role:"Keeps the electrodes apart while letting lithium ions through the electrolyte in its pores.",
+    why:`It physically separates the electrodes while supporting ionic transport. Because severe internal shorts can create local heating that external controls may not stop, cleanliness, edge quality, separator integrity and screening are essential. Some multilayer separator designs include a PE shutdown layer whose pores can close as temperature rises. Shutdown behaviour depends on construction and does not guarantee prevention of thermal runaway.${r(2,3)}`,
+    made:["stacking","winding"],
+    risk:["stacking","winding","rollpress"], checks:["aging"],
+    riskWhy:"Any particle or burr rolled against it here becomes a short later." },
 
-formation: {
-  lead:"You are at formation — one of the most capital- and time-intensive stages in the reference line. The first controlled cycles form the SEI; rate, temperature, voltage limits, pressure and cleanliness all influence the result.",
-  ctl:["cRate","formT","vMax"],
-  read:m => [
-    V("First charge", S.cRate.toFixed(2) + " C", ok(S.cRate, 0.1, 0.5), "PEM: 0.1–0.5 C"),
-    V("Illustrative SEI score", m.seiQ.toFixed(0) + "%", m.seiQ >= 90 ? "ok" : m.seiQ >= 80 ? "warn" : "bad", "teaching score, not a measured film property"),
-    V("Illustrative cyclable-Li loss", m.liLoss.toFixed(1) + "%", m.liLoss < 12 ? "ok" : "warn", "simplified irreversible-loss estimate for this teaching model"),
-    V("Time on the rack", (13 / (S.cRate / 0.25)).toFixed(1) + " h", (13 / (S.cRate / 0.25)) <= 15 ? "ok" : "warn", "PEM: up to 15 h"),
-    V("Cell temperature", S.formT + " °C", band(S.formT, 20, 50, 8)),
-    V("Upper cut-off", S.vMax.toFixed(2) + " V", S.vMax <= 4.25 ? "ok" : "bad")],
-  verdict:m => S.cRate > 0.42 ? ["bad", "Charging too fast",
-      "An overly aggressive first charge can promote less uniform or more resistive interphase formation and increase lithium-plating risk. The reference guide shows 0.1–0.5 C stepped over successive cycles."]
-    : S.vMax > 4.3 ? ["bad", "Cut-off too high",
-      "Electrolyte oxidation and interfacial degradation become more likely, which can increase gas generation and impedance."]
-    : m.seiQ >= 90 ? ["ok", "SEI forming well",
-      `${m.seiQ.toFixed(0)}% illustrative SEI score and ${m.liLoss.toFixed(1)}% simplified cyclable-lithium loss estimate. Actual values require cell-specific measurements.`]
-    : ["warn", "Illustrative SEI score below target",
-      "Slow the first charge or bring the cell temperature into the 25–45 °C window."],
-  viz:m => ({ sei: m.seiQ, rate: clamp((S.cRate - 0.1) / 0.4 * 100) })
-},
+  { id:"anode", name:"Anode coating", short:"Anode", col:"var(--anode)", h:30,
+    spec:"50–100 µm per side", mat:"Graphite 95 wt%, conductive carbon 1 wt%, CMC 2 wt%, SBR 2 wt%, in deionised water",
+    src:"Made here, over five stations",
+    role:"Receives the lithium during charge. Deliberately oversized relative to the cathode.",
+    why:`The anode is typically designed with more usable capacity than the cathode. The target N/P ratio is design- and protocol-dependent; insufficient anode capacity raises the risk of lithium plating during charge.${r(2,7)}`,
+    made:["mixing","drymix","coating","drycoat","drying","calendering","vacdry"],
+    risk:["calendering","formation","drycoat"], checks:["eol"],
+    riskWhy:"Compress it too hard, or charge it too fast the first time, and lithium plates instead of intercalating." },
 
-degassing: {
-  lead:"You are at degassing — pouch cells only. Formation made gas inside a bag that cannot vent, so you cut the pocket open, pull the gas out and re-seal.",
-  ctl:["degP","cRate"],
-  read:m => [
-    V("Vacuum level", S.degP + " mbar", S.degP <= 10 ? "ok" : "warn"),
-    V("Gas remaining", m.gasLeft.toFixed(1) + "%", m.gasLeft < 6 ? "ok" : m.gasLeft < 12 ? "warn" : "bad"),
-    V("Gas generated at formation", (S.cRate * 34).toFixed(0) + " (index)", S.cRate <= 0.35 ? "ok" : "warn", "gentler formation makes less gas"),
-    V("Final seal", "made after evacuation", "ok"),
-    V("Cell thickness after", m.gasLeft < 6 ? "nominal" : "swollen", m.gasLeft < 6 ? "ok" : "warn")],
-  verdict:m => m.gasLeft > 12 ? ["bad", "Gas left in the cell",
-      "A pouch with trapped gas has layers that are not touching. Those areas do not work, and the cell swells further in service."]
-    : ["ok", "Degassed and re-sealed",
-      `${m.gasLeft.toFixed(1)}% residual gas at ${S.degP} mbar. Hard-case gas-management and closure sequences vary by design; pressure-relief devices do not replace controlled formation-gas management.`],
-  viz:m => ({ gas: clamp(100 - m.gasLeft * 6) })
-},
+  { id:"cufoil", name:"Copper current collector", short:"Cu foil", col:"var(--copper)", h:8,
+    spec:"6–15 µm", mat:"Electrodeposited copper",
+    src:"Bought in — not made in the cell plant",
+    role:"Carries electrons between the anode coating and the negative tab.",
+    why:`Copper is used on the negative side because it stays stable at the low potential of graphite. It is heavier and more expensive than aluminium, so cell makers push it as thin as the web tension allows — production foils have gone from about 18 µm to under 8 µm.${r(13,2)}`,
+    made:["coating","drycoat","calendering","slitting","separation","winding"],
+    risk:["slitting","calendering","drycoat"], checks:["eol"],
+    riskWhy:"Thin copper tears at the calender if tension or force is wrong." },
 
-aging: {
-  lead:"You are at aging. The cell is rested and monitored for OCV drift and other release indicators. This screen can reveal elevated self-discharge or latent internal defects, but it is not a standalone proof of cell safety.",
-  ctl:["ageDays","ageHiT","ageSOC"],
-  read:m => [
-    V("Total period", S.ageDays + " d", ok(S.ageDays, 3, 21), "PEM: up to 3 weeks"),
-    V("High-temperature stage", S.ageHiT + " °C", ok(S.ageHiT, 30, 50), "PEM: 30–50 °C"),
-    V("State of charge", S.ageSOC + "%", ok(S.ageSOC, 30, 80), "PEM: 30–80%"),
-    V("Screen sensitivity", m.screenSens.toFixed(0) + "%", m.screenSens >= 88 ? "ok" : m.screenSens >= 72 ? "warn" : "bad"),
-    V("Defects that would escape", (Math.max(0, 100 - m.screenSens) * 0.06).toFixed(2) + "%", m.screenSens >= 88 ? "ok" : "warn"),
-    V("Floor space cost", (S.ageDays * 3.6).toFixed(0) + " (index)", S.ageDays <= 16 ? "ok" : "warn", "weeks of inventory standing still")],
-  verdict:m => m.screenSens < 72 ? ["bad", "Screen too short to be trusted",
-      "A slow self-discharge fault needs time and controlled temperature to appear as measurable voltage drift. Shortening the screen can reduce sensitivity."]
-    : S.ageDays > 18 ? ["warn", "Very long — this is inventory",
-      "Every extra day is finished cells sitting in a heated warehouse. Aging and formation together dominate cell-finishing cost."]
-    : ["ok", "Screen adequate",
-      `${S.ageDays} days, ${S.ageHiT} °C stage, ${m.screenSens.toFixed(0)}% illustrative sensitivity using a 5 mV/week teaching flag.`],
-  viz:m => ({ screen: m.screenSens })
-},
+  { id:"elyte", name:"Electrolyte", short:"Electrolyte", col:"var(--elyte)", h:0,
+    spec:"1 M LiPF₆ in EC / EMC / DMC + additives (VC, FEC)", mat:"Liquid — fills every pore in both coatings and the separator",
+    src:"Added at filling, distributed by wetting",
+    role:"The ion path. Without it the cell is an open circuit.",
+    why:`This is why porosity matters: the pores you leave at the calender are the volume the electrolyte has to live in. It is also why the dry room exists — Residual water can hydrolyse LiPF₆ and generate HF-containing species that degrade the electrolyte, interfaces and aluminium collector.${r(6,1)}`,
+    made:["fillPouch","fillHard","rollpress"],
+    risk:["vacdry","fillPouch","fillHard"], checks:["aging"],
+    riskWhy:"Any residual water arrives with the electrode and turns into HF here." },
 
-eol: {
-  lead:"You are at end of line. Run the defined performance tests, grade the cell, set the required shipping SOC, verify the applicable transport instruction, label and pack it.",
-  ctl:["shipSOC","ageDays"],
-  read:m => [
-    V("Reference capacity estimate", m.cellAh.toFixed(1) + " Ah", "ok", "the actual capacity test requires a defined charge/rest/discharge protocol"),
-    V("Example plant target", S.shipSOC + "% SOC", band(S.shipSOC, 10, 20, 10), "illustrative target; manufacturer-specific"),
-    V("PI 965 air-shipping check", m.shipOK ? "≤30% — pass" : ">30% — fail", m.shipOK ? "ok" : "bad", "UN 3480 cells/batteries shipped alone by air; other shipment configurations use different instructions"),
-    V("Process-health score", m.yieldPct.toFixed(1) + "%", m.yieldPct >= 95 ? "ok" : m.yieldPct >= 90 ? "warn" : "bad"),
-    V("Cells per day, this line", fmt(m.cellsDay), "ok"),
-    V("Annual output, this line", m.gwh.toFixed(1) + " GWh", "ok"),
-    V("Grading spread", "±" + (m.coatErr * 1.4).toFixed(1) + "% capacity", m.coatErr <= 2 ? "ok" : "warn", "coating scatter arrives here")],
-  verdict:m => !m.shipOK ? ["bad", "Above the air-freight limit",
-      "For this UN 3480 shipped-alone air scenario, PI 965 limits state of charge to 30%. Other shipment configurations and transport modes use different requirements."]
-    : m.yieldPct < 90 ? ["warn", "Illustrative process-health score is low",
-      "Walk back up the line — the advice panel names the worst problem, and it is almost always upstream of here."]
-    : ["ok", "Cells graded and released",
-      `${m.cellAh.toFixed(1)} Ah at ${m.yieldPct.toFixed(1)}% process-health score, packed at ${S.shipSOC}% SOC.`],
-  viz:m => ({ grade: m.yieldPct })
-}
+  { id:"sei", name:"Solid electrolyte interphase", short:"SEI", col:"var(--jelly)", h:5,
+    spec:"roughly 10–50 nm", mat:"Li₂CO₃, LiF, semi-carbonates — grown, not applied",
+    src:"Grown inside the finished cell during formation",
+    role:"A passivating film on the graphite that lets lithium ions through but stops further electrolyte decomposition.",
+    why:`The SEI is formed in situ during the first controlled cycles and cannot be inspected or reworked like a conventional manufactured part. It consumes a chemistry- and process-dependent fraction of cyclable lithium; formation rate, temperature, voltage limits and cleanliness all influence its properties and plating risk.${r(7,3)}`,
+    made:["formation"],
+    risk:["formation","vacdry"], checks:["aging","eol"],
+    riskWhy:"Too high a first-charge rate, or water in the cell, and the film forms badly." },
+
+  { id:"tabs", name:"Tabs and current conductors", short:"Tabs", col:"var(--alu)", h:10,
+    spec:"Al tab on the cathode, Ni or Ni-plated Cu on the anode", mat:"Ultrasonically or laser welded to the uncoated foil windows",
+    src:"Welded during assembly",
+    role:"Collects current from every layer in the stack and brings it out through the housing.",
+    why:"The uncoated windows the tabs weld to are created much earlier — either by coating intermittently or by cutting a contact lug at separation. A weld defect here shows up as resistance, which end-of-line grading catches.",
+    made:["coating","separation","stacking","winding","packPouch","packHard"],
+    risk:["packPouch","packHard"], checks:["eol"],
+    riskWhy:"A cold weld or a whisker at the tab is a resistance fault and a puncture risk." },
+
+  { id:"case", name:"Housing", short:"Housing", col:"var(--alu)", h:14,
+    spec:"Pouch: aluminium composite film, deep-drawn up to 10 mm. Can: deep-drawn steel or aluminium with a lid",
+    mat:"Al/PP laminate film, or metal can plus vent and current-interrupt device",
+    src:"Formed and sealed during packaging",
+    role:"Holds the stack, holds the electrolyte, and keeps water out for the cell's whole life.",
+    why:`A pouch is light and cheap but has no vent — it swells. A hard can carries a burst disc and a current-interrupt device, which is why prismatic and cylindrical cells do not need a degassing station.${r(1)}`,
+    made:["packPouch","packHard","degassing"],
+    risk:["packPouch","packHard","degassing"], checks:["eol"],
+    riskWhy:"The final seal is made after formation gas is removed; a weak seal lets moisture in for years." }
+];
+const compMap = Object.fromEntries(COMPONENTS.map(c => [c.id, c]));
+
+/* which sources back each station's numbers */
+const SRC = {
+  mixing:[1,2], drymix:[1,14,15], coating:[1,2,8],   drying:[1,8],      calendering:[1,2,4],
+  drycoat:[1,14,15,16],
+  slitting:[1,2],    vacdry:[1,5,6],    separation:[1],    stacking:[1,9],
+  winding:[1],       packPouch:[1],     packHard:[1],      fillPouch:[1,5,6],
+  fillHard:[1,5,6],  rollpress:[1],     formation:[1,7,3], degassing:[1],
+  aging:[1,3],       eol:[1,10,11,12]
 };
-</script>
-<script>
-/* =====================================================================
-   RESPONSE CHARTS
-   Every curve below is produced by actually re-running the process model
-   across a setpoint's whole range — it is not a drawing. Move the knob and
-   the dot moves along the same curve the model just computed.
-   ===================================================================== */
 
-function sweep(key, get, n = 60) {
-  const c = CTL[key], old = S[key], out = [];
-  for (let i = 0; i <= n; i++) {
-    const v = c.min + (c.max - c.min) * i / n;
-    S[key] = c.step >= 1 ? Math.round(v) : v;
-    out.push([S[key], get(model())]);
-  }
-  S[key] = old;
-  return out;
-}
-
-const W = 340, HH = 168, PL = 46, PR = 12, PT = 22, PB = 30;
-
-function chartSVG(cf) {
-  const c = CTL[cf.x];
-  const runs = cf.series.map(s => sweep(cf.x, s.y));
-  const all = runs.flat().map(p => p[1]).filter(v => isFinite(v));
-  let lo = cf.lo != null ? cf.lo : Math.min(...all);
-  let hi = cf.hi != null ? cf.hi : Math.max(...all);
-  if (cf.good) { lo = Math.min(lo, cf.good[0]); hi = Math.max(hi, cf.good[1]); }
-  if (cf.limit != null) { lo = Math.min(lo, cf.limit); hi = Math.max(hi, cf.limit); }
-  if (hi - lo < 1e-9) hi = lo + 1;
-  const pad = (hi - lo) * 0.1; lo -= pad; hi += pad;
-
-  const px = v => PL + (v - c.min) / (c.max - c.min) * (W - PL - PR);
-  const py = v => PT + (1 - (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo)) * (HH - PT - PB);
-  const dp = cf.dp != null ? cf.dp : 0;
-
-  /* the band of outcomes you are allowed to land in */
-  let band = "";
-  if (cf.good) {
-    const y1 = py(Math.min(cf.good[1], hi)), y2 = py(Math.max(cf.good[0], lo));
-    band = `<rect x="${PL}" y="${y1}" width="${W - PL - PR}" height="${Math.max(1, y2 - y1)}"
-      fill="color-mix(in srgb,var(--primary) 10%,transparent)"/>
-      <text class="cLab" x="${W - PR - 3}" y="${y1 + 11}" text-anchor="end" fill="var(--primary)">${esc(cf.goodLabel || "acceptable")}</text>`;
-  }
-  let limit = "";
-  if (cf.limit != null) limit = `<line x1="${PL}" y1="${py(cf.limit)}" x2="${W - PR}" y2="${py(cf.limit)}"
-      stroke="var(--destructive)" stroke-width="1.4" stroke-dasharray="4 3"/>
-      <text class="cLab" x="${PL + 3}" y="${py(cf.limit) - 4}" fill="var(--destructive)">${esc(cf.limitLabel || "limit")}</text>`;
-  /* a hard boundary on the setpoint itself, e.g. a regulatory ceiling */
-  let xmark = "";
+/* ---------------- 3 · one material chain ---------------- */
+/* the dry route replaces four wet-processing stages with dry mixing/fibrillation and dry coating */
+const FLOW_DRY = [
+  { id:"fibril", by:"drymix", name:"Fibrillated dry mix", state:"Solid, no solvent",
+    note:"Shear draws the PTFE binder into fibrils that knit the powder together. There is no solvent at any point, so there is nothing to evaporate later." },
+  { id:"film", by:"drycoat", name:"Free-standing film on foil", state:"Compacted, 20–35% porosity",
+    note:"The powder leaves the nip as a self-supporting film and is pressed onto the primed collector in the same pass. Because the nip compacts it, no separate calender follows." }
+];
+const FLOW = [
+  { id:"powder", by:null, name:"Active powder", state:"Solid, free-flowing",
+    note:"Graphite and NMC reference powders, carbon black and binder. Anode and cathode materials are handled in physically separate rooms." },
+  { id:"slurry", by:"mixing", name:"Slurry", state:"Liquid, 2 000–6 000 mPa·s",
+    note:"Solvent added and the agglomerates broken up. The batch is filtered and released only on viscosity and particle size." },
+  { id:"wet", by:"coating", name:"Wet film on foil", state:"Liquid on metal",
+    note:"Metered onto the current collector at a controlled wet thickness. Nothing about the electrode is fixed yet." },
+  { id:"dryel", by:"drying", name:"Dried electrode", state:"Porous solid, ≈50% porosity",
+    note:"Solvent driven off through a multi-zone dryer and recovered. The coating is now a fragile, very open structure." },

@@ -1,0 +1,260 @@
+  const cx = bx + bw / 2, cy = (byT + byB) / 2;
+  const R0 = Math.min(13, bw * 0.115);
+  const shell = (cls = "mSteel2") => R(bx, byT, bw, byB - byT, cls, 3);
+  const at = f => bx + bw * f;
+  let g = shell();
+  switch (st.machine) {
+    case "drymix":
+      g += R(at(.12), byT + 7, bw * .25, 11, "mDark", 2) +
+           R(at(.45), byT + 3, bw * .32, byB - byT - 9, "mSteel2", 4) +
+           P(`M${at(.61)} ${byT + 10}L${at(.61)} ${byB - 12}`, "mDark") +
+           `<g class="spin">${R(at(.48), byB - 16, bw * .26, 6, "mDark", 3)}</g>` +
+           P(`M${at(.78)} ${cy}L${at(.94)} ${cy}`, "mLine");
+      break;
+    case "mixing":
+      g += R(at(.34), byT - 8, bw * .32, 8, "mDark", 2) +
+           P(`M${cx} ${byT + 4}L${cx} ${byB - 14}`, "mDark") +
+           `<g class="spin">${R(cx - bw * .16, byB - 17, bw * .32, 6, "mDark", 3)}</g>` +
+           C(cx, byB - 14, 3.5, "mSteel");
+      break;
+    case "coating":
+      g += P(`M${at(.2)} ${byT + 7}l13 0l-5 17l-3 0z`, "mDark") +
+           ROLLER(at(.52), cy + 6, R0) + P(`M${at(.1)} ${cy + 6 + R0}L${at(.9)} ${cy + 6 + R0}`, "mLine") +
+           R(at(.74), byT + 8, bw * .14, 12, "mDark", 2);
+      break;
+    case "drying":
+      g += [0, 1, 2, 3].map(q => R(at(.14 + q * .2), byT - 10, bw * .08, 10, "mDark", 2)).join("") +
+           P(`M${at(.06)} ${cy}L${at(.94)} ${cy}`, "mLine") +
+           [0, 1, 2].map(q => P(`M${at(.24 + q * .24)} ${byT + 8}l0 ${bw * .05 + 6}`, "mAcc")).join("") +
+           R(at(.06), byB - 9, bw * .88, 5, "mDark", 2);
+      break;
+    case "drycoat":
+      g += R(at(.1), byT + 4, bw * .3, 9, "mDark", 2) + R(at(.1), byB - 13, bw * .3, 9, "mDark", 2) +
+           ROLLER(at(.56), byT + 16, R0 * .8) + ROLLER(at(.56), byB - 16, R0 * .8) +
+           ROLLER(at(.82), cy, R0 * .9) + P(`M${at(.06)} ${cy}L${at(.94)} ${cy}`, "mLine");
+      break;
+    case "calendering":
+      g += ROLLER(cx, cy - R0 * .95, R0) + ROLLER(cx, cy + R0 * .95, R0) +
+           P(`M${at(.06)} ${cy}L${at(.94)} ${cy}`, "mLine") +
+           R(at(.06), byT + 5, bw * .12, byB - byT - 10, "mDark", 2) +
+           R(at(.82), byT + 5, bw * .12, byB - byT - 10, "mDark", 2);
+      break;
+    case "slitting":
+      g += REEL(at(.24), cy, R0, "mAn") + REEL(at(.82), cy, R0 * .8, "mAn") +
+           [0, 1, 2].map(q => P(`M${at(.46 + q * .11)} ${cy - 13}l0 26`, "mAcc")).join("") +
+           P(`M${at(.24)} ${cy}L${at(.82)} ${cy}`, "mLine");
+      break;
+    case "vacdry":
+      g = shell("mGlass") + R(at(.1), byT + 8, bw * .66, 5, "mDark", 2) +
+          R(at(.1), cy - 2, bw * .66, 5, "mDark", 2) + R(at(.1), byB - 15, bw * .66, 5, "mDark", 2) +
+          C(at(.87), byT + 13, 5, "mSteel") + P(`M${at(.87)} ${byT + 18}l0 ${byB - byT - 26}`, "mLine");
+      break;
+    case "separation":
+      g += R(cx - bw * .2, byT + 6, bw * .4, 12, "mDark", 2) +
+           P(`M${cx - bw * .12} ${byT + 18}l0 10M${cx + bw * .12} ${byT + 18}l0 10`, "mLine") +
+           R(cx - bw * .26, byB - 16, bw * .52, 6, "mSteel", 2) +
+           R(cx - bw * .1, byB - 26, bw * .2, 8, "mAn", 1);
+      break;
+    case "stacking":
+      g += [0, 1, 2, 3, 4].map(q =>
+        R(cx - bw * .26, byB - 12 - q * 6, bw * .52, 4, q % 2 ? "mCa" : "mAn", 1)).join("") +
+           R(cx - bw * .3, byT + 6, bw * .6, 7, "mDark", 2);
+      break;
+    case "winding":
+      g += REEL(cx, cy + 2, R0 * 1.25, "mSep") + R(at(.06), byT + 5, bw * .1, byB - byT - 10, "mDark", 2) +
+           R(at(.84), byT + 5, bw * .1, byB - byT - 10, "mDark", 2);
+      break;
+    case "packPouch":
+      g += R(cx - bw * .27, cy - 12, bw * .54, 24, "mAl", 3) +
+           P(`M${cx - bw * .27} ${cy - 5}l${bw * .54} 0`, "mAcc") +
+           R(cx - bw * .09, byT + 5, bw * .18, 7, "mDark", 2);
+      break;
+    case "packHard":
+      g += R(cx - bw * .16, cy - 12, bw * .32, 26, "mSteel", 4) +
+           R(cx - bw * .19, cy - 17, bw * .38, 6, "mDark", 2) +
+           R(cx - bw * .05, byT + 5, bw * .1, 7, "mDark", 2);
+      break;
+    case "fillPouch": case "fillHard":
+      g = shell("mGlass") + P(`M${cx - 3} ${byT + 7}l6 0l0 12l-3 7l-3 -7z`, "mEl") +
+          C(cx, cy + 4, 4.5, "mEl") + R(cx - bw * .24, byB - 14, bw * .48, 7, "mAl", 2);
+      break;
+    case "rollpress":
+      g += R(cx - bw * .28, cy - 14, bw * .56, 6, "mDark", 2) +
+           R(cx - bw * .28, cy + 8, bw * .56, 6, "mDark", 2) +
+           R(cx - bw * .21, cy - 5, bw * .42, 10, "mAl", 2);
+      break;
+    case "formation":
+      g += [0, 1, 2].map(rr => [0, 1, 2, 3].map(cc =>
+        R(at(.1) + cc * bw * .21, byB - 13 - rr * 12, bw * .15, 8, "mAl", 1)).join("")).join("") +
+           P(`M${at(.06)} ${byT + 8}L${at(.94)} ${byT + 8}`, "mAcc");
+      break;
+    case "degassing":
+      g = shell("mGlass") + R(cx - bw * .22, cy - 4, bw * .44, 16, "mAl", 2) +
+          C(at(.84), byT + 12, 5, "mSteel") + P(`M${at(.7)} ${cy - 6}L${at(.84)} ${byT + 17}`, "mLine") +
+          C(at(.72), cy - 8, 3, "mDark");
+      break;
+    case "aging":
+      g += [0, 1, 2, 3].map(rr => P(`M${at(.08)} ${byB - 9 - rr * 11}L${at(.92)} ${byB - 9 - rr * 11}`, "mLine")).join("") +
+           [0, 1, 2, 3].map(cc => [0, 1, 2].map(rr =>
+             R(at(.13) + cc * bw * .2, byB - 18 - rr * 11, bw * .13, 7, "mAl", 1)).join("")).join("");
+      break;
+    default: /* eol */
+      g += C(at(.26), cy - 2, Math.min(8, bw * .1), "mGlass") +
+           P(`M${at(.26)} ${cy + 6}l0 8`, "mLine") +
+           [["var(--green)", 0], ["var(--warning)", 1], ["var(--destructive)", 2]].map(([c, q]) =>
+             `<rect x="${at(.5) + q * bw * .16}" y="${byB - 16}" width="${bw * .12}" height="11" rx="1.5"
+               fill="${c}" opacity=".8"/>`).join("");
+  }
+  return g;
+}
+
+function lineSVG() {
+  const m = model(), k = kpis(m);
+  const list = k.list;
+  const rows = [
+    { p:"Electrode manufacturing", items: list.filter(s => s.phase === "Electrode manufacturing") },
+    { p:"Cell assembly + finishing", items: list.filter(s => s.phase !== "Electrode manufacturing") }
+  ];
+  const W = 1240, L = 26, RW = W - L * 2;
+  const ROWY = [178, 388];
+  let g = "";
+
+  rows.forEach((row, ri) => {
+    const n = row.items.length, w = RW / n, yb = ROWY[ri];
+    /* the floor the machines stand on */
+    g += `<path d="M${L} ${yb + 1}L${W - L} ${yb + 1}" stroke="color-mix(in srgb,var(--foreground) 24%,transparent)" stroke-width="2"/>`;
+    /* the material web, threaded through every station on this row */
+    const web = row.items.map((st, i) => {
+      const x = L + i * w;
+      return `${i ? "L" : "M"}${(x + w * .04).toFixed(0)} ${yb - 24 - (i % 2) * 6}L${(x + w * .96).toFixed(0)} ${yb - 24 - ((i + 1) % 2) * 6}`;
+    }).join("");
+    g += `<path d="${web}" stroke="${ri ? "var(--jelly)" : "var(--copper)"}" stroke-width="3" fill="none" opacity=".55"/>
+      <path class="flowdash" d="${web}" stroke="${ri ? "var(--jelly)" : "var(--copper)"}" stroke-width="3" fill="none"/>`;
+
+    row.items.forEach((st, i) => {
+      const x = L + i * w, lv = stationLevel(st, m), col = phaseColor(st.phase);
+      const on = current === st.id;
+      g += `<g class="hmiSt ${on ? "on" : ""}" data-go="${st.id}" tabindex="0" role="button"
+          aria-label="${esc(st.title)}, ${lv === "ok" ? "in window" : lv === "warn" ? "warning" : "out of window"}">
+        <rect class="hmiHit" x="${x + 2}" y="${yb - 96}" width="${w - 4}" height="132" rx="8"/>
+        ${glyph(st, x, w, yb)}
+        <rect x="${x + w * .12}" y="${yb + 10}" width="${w * .76}" height="19" rx="3"
+          fill="var(--background)" stroke="color-mix(in srgb,var(--foreground) 22%,transparent)"/>
+        <text x="${x + w / 2}" y="${yb + 23}" text-anchor="middle" class="hmiLab"
+          style="font-size:${w < 118 ? 9.5 : 11}px">${esc(shortTitle(st))}</text>
+        <circle cx="${x + w * .12 + 7}" cy="${yb - 88}" r="4.5" fill="${LEVEL_COL[lv]}"/>
+        <text x="${x + w * .12 + 17}" y="${yb - 84}" class="hmiNo">${String(list.indexOf(st) + 1).padStart(2, "0")}</text>
+        <rect x="${x + w * .12}" y="${yb - 78}" width="${w * .76}" height="2.5" rx="1.5" fill="${col}" opacity=".7"/>
+      </g>`;
+    });
+    g += `<text x="${L}" y="${yb - 104}" class="hmiPhase">${esc(row.p).toUpperCase()}</text>`;
+  });
+
+  /* the row-one web continues on row two — marked, not drawn as a loop */
+  g += `<g opacity=".6">
+      <path d="M${W - L - 4} ${ROWY[0] - 27}l14 0l0 26l-8 0l8 10l8 -10l-8 0" fill="none"
+        stroke="var(--copper)" stroke-width="2" stroke-linejoin="round"/>
+      <text x="${W - L - 4}" y="${ROWY[0] + 46}" text-anchor="end" class="hmiNo">continues below</text>
+      <path d="M${L - 10} ${ROWY[1] - 44}l0 12l-6 0l8 10l8 -10l-6 0l0 -12" fill="none"
+        stroke="var(--jelly)" stroke-width="2" stroke-linejoin="round"/>
+    </g>`;
+  return `<svg viewBox="0 0 ${W} 430" role="img"
+    aria-label="Complete line overview, every station">${g}</svg>`;
+}
+
+/* ---------------- the building, in plan ---------------- */
+/* zone 1 slurry, zone 2 electrode, zone 3 assembly, zone 4 finishing —
+   footprints and heights after the factory-concept figure                */
+function floorSVG() {
+  const m = model(), k = kpis(m);
+  const iso = (x, y, z) => [(x - y) * 0.866, (x + y) * 0.5 - z];
+  /* Two bays of two halls, so the plant reads as a block. In this projection
+     +x runs down-right and +y down-left, so the corner nearest the viewer is
+     (x+w, y+d) — the two faces that meet there are the ones we draw.        */
+  /* the bays need enough separation that a tall hall at the back does not
+     paint over the hall in front of it — hence the deep y gap. */
+  const D = 122, GAP_X = 76, GAP_Y = 132;
+  const HALLS = [
+    { n:1, t:"Slurry production",    ph:"Electrode manufacturing", w:118, h:104, bay:0, col:0,
+      sub:"multi-storey — gravimetric dosing", ids:["mixing","drymix"] },
+    { n:2, t:"Electrode production", ph:"Electrode manufacturing", w:250, h:70,  bay:0, col:1,
+      sub:"tall single-storey — exhaust and solvent recovery",
+      ids:["coating","drying","drycoat","calendering","slitting","vacdry"] },
+    { n:3, t:"Cell assembly",        ph:"Cell assembly",           w:250, h:48,  bay:1, col:0,
+      sub:"low, sealed dry room, modular",
+      ids:["separation","stacking","winding","packPouch","packHard","fillPouch","fillHard"] },
+    { n:4, t:"Cell finishing",       ph:"Cell finishing",          w:250, h:104, bay:1, col:1,
+      sub:"12 m high bay under air conditioning",
+      ids:["rollpress","formation","degassing","aging","eol"] }
+  ];
+  HALLS.forEach(h => {
+    const lead = HALLS.find(o => o.bay === h.bay && o.col === 0);
+    h.x0 = h.col === 0 ? 0 : lead.w + GAP_X;
+    h.y0 = h.bay * (D + GAP_Y);
+  });
+
+  const box = [];
+  const face = (pts, fill, op) => {
+    pts.forEach(pp => box.push(pp));
+    return `<path d="${pts.map(([a, b], q) => `${q ? "L" : "M"}${a.toFixed(1)} ${b.toFixed(1)}`).join("")}Z"
+      fill="${fill}" opacity="${op}" stroke="color-mix(in srgb,var(--foreground) 20%,transparent)" stroke-width=".9"/>`;
+  };
+  /* a = back corner, c = front corner */
+  const prism = (x0, y0, w, d, z) => ({
+    a: iso(x0, y0, 0), b: iso(x0 + w, y0, 0), c: iso(x0 + w, y0 + d, 0), d: iso(x0, y0 + d, 0),
+    A: iso(x0, y0, z), B: iso(x0 + w, y0, z), C: iso(x0 + w, y0 + d, z), D: iso(x0, y0 + d, z)
+  });
+  /* the two walls that meet at the front corner, then the roof */
+  const solid = (p, col, o1, o2, o3) =>
+    face([p.b, p.c, p.C, p.B], col, o1) + face([p.c, p.d, p.D, p.C], col, o2) +
+    face([p.A, p.B, p.C, p.D], col, o3);
+
+  const machinesOf = hall => k.list.filter(s => hall.ids.includes(s.id));
+
+  /* 1 · every floor slab first — all at ground level, so no occlusion */
+  let floors = "";
+  HALLS.forEach(hall => {
+    const p = prism(hall.x0, hall.y0, hall.w, D, 0);
+    floors += face([p.a, p.b, p.c, p.d], "color-mix(in srgb,var(--foreground) 8%,transparent)", 1);
+  });
+
+  /* 2 · material walking hall to hall, painted on the ground */
+  const edge = (fx, fy, tx, ty, dash) => {
+    const a = iso(fx, fy, 0), b = iso(tx, ty, 0);
+    return `<path d="M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}"
+      stroke="var(--primary)" stroke-width="2.6" opacity=".85" stroke-linecap="round"
+      ${dash ? 'stroke-dasharray="7 5"' : ""}/>
+      <circle cx="${b[0].toFixed(1)}" cy="${b[1].toFixed(1)}" r="3.6" fill="var(--primary)"/>`;
+  };
+  const H = Object.fromEntries(HALLS.map(h => [h.n, h]));
+  const flows =
+    edge(H[1].x0 + H[1].w + 3, H[1].y0 + D / 2, H[2].x0 - 3, H[2].y0 + D / 2, 0) +
+    edge(H[2].x0 + 34, H[2].y0 + D + 3, H[3].x0 + H[3].w - 34, H[3].y0 - 3, 1) +
+    edge(H[3].x0 + H[3].w + 3, H[3].y0 + D / 2, H[4].x0 - 3, H[4].y0 + D / 2, 0);
+
+  /* 3 · halls back to front; within a hall, machines back to front too */
+  let bodies = "", labels = "";
+  [...HALLS].sort((a, b) => (a.x0 + a.y0) - (b.x0 + b.y0)).forEach(hall => {
+    const on = machinesOf(hall), col = phaseColor(hall.ph);
+    const cols = Math.max(1, Math.min(on.length, Math.round(hall.w / 66)));
+    const rowsN = Math.ceil(on.length / cols);
+    const spanX = hall.w - 52, spanY = D - 56;
+    const placed = on.map((st, q) => {
+      const rr = Math.floor(q / cols), cc = q % cols;
+      return { st,
+        mx: hall.x0 + 26 + (cols === 1 ? spanX / 2 : cc * spanX / (cols - 1)) - 13,
+        my: hall.y0 + 28 + (rowsN === 1 ? spanY / 2 : rr * spanY / (rowsN - 1)) };
+    }).sort((a, b) => (a.mx + a.my) - (b.mx + b.my));
+
+    placed.forEach(({ st, mx, my }) => {
+      const q4 = prism(mx, my, 26, 26, 22), lv = stationLevel(st, m);
+      const mid = [(q4.A[0] + q4.C[0]) / 2, (q4.A[1] + q4.C[1]) / 2];
+      bodies += `<g class="hmiSt" data-go="${st.id}" tabindex="0" role="button"
+          aria-label="${esc(st.title)} in ${esc(hall.t)}">
+        ${solid(q4, col, .58, .42, .85)}
+        <circle cx="${mid[0].toFixed(1)}" cy="${mid[1].toFixed(1)}" r="3.8" fill="${LEVEL_COL[lv]}"
+          stroke="var(--background)" stroke-width="1.3"/>
+        <title>${esc(st.title)}</title></g>`;
+    });
+
+    /* the shell over them, translucent, so the hall reads as a building */

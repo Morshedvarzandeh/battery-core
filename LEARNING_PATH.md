@@ -20,7 +20,10 @@ Part 01 introduces the cell components and charge/discharge paths. Part 01B move
 through the structural scales inside a lithium-ion cell. Part 02 introduces the
 first quantitative battery-rating relationships. Part 03 follows a reference
 graphite/NMC production route through electrode manufacturing, assembly,
-formation, aging, grading, and final testing.
+formation, aging, grading, and final testing. It follows the February 2026
+edition of the PEM RWTH Aachen and VDMA process guide, and it models the
+solvent-free dry-electrode route alongside the conventional wet route, together
+with plant-level factory, machine, and technology-comparison views.
 
 The production simulator uses published process sequences and operating ranges,
 but its capacity, throughput, wetting, process-health, interphase, and risk-control

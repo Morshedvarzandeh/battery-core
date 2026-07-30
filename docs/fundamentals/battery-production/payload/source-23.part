@@ -1,0 +1,217 @@
+  { g:"Cell finishing", rows:[["EoL testing"]], iso:"—", dew:"—", temp:"22 ± 2 °C", note:"" }
+];
+
+/* machinery and equipment investment, € million, 5th edition [1] */
+const CAPEX = [
+  { t:"Wet mixing and dispersing", lo:30, hi:55, ph:"Electrode manufacturing", when:() => proc === "wet" },
+  { t:"Dry mixing / fibrillation", lo:null, hi:null, ph:"Electrode manufacturing", when:() => proc === "dry", note:"not separately quoted" },
+  { t:"Coating and drying",     lo:35, hi:65, ph:"Electrode manufacturing", when:() => proc === "wet" },
+  { t:"Dry coating",            lo:45, hi:60, ph:"Electrode manufacturing", when:() => proc === "dry" },
+  { t:"Calendering and slitting", lo:10, hi:15, ph:"Electrode manufacturing", when:() => proc === "wet" },
+  { t:"Slitting share of combined range", lo:null, hi:null, ph:"Electrode manufacturing", when:() => proc === "dry", note:"not separable from calendering in source" },
+  { t:"Vacuum drying",          lo:5,  hi:15, ph:"Electrode manufacturing", when:() => true },
+  { t:"Separation",             lo:20, hi:30, ph:"Cell assembly", when:() => route === "pouch" },
+  { t:"Stacking",               lo:25, hi:60, ph:"Cell assembly", when:() => route === "pouch" },
+  { t:"Winding",                lo:20, hi:30, ph:"Cell assembly", when:() => route !== "pouch" },
+  { t:"Packaging, pouch",       lo:20, hi:35, ph:"Cell assembly", when:() => route === "pouch" },
+  { t:"Packaging, cylindrical", lo:35, hi:45, ph:"Cell assembly", when:() => route === "cyl" },
+  { t:"Packaging, prismatic",   lo:45, hi:60, ph:"Cell assembly", when:() => route === "prism" },
+  { t:"Electrolyte filling",    lo:35, hi:45, ph:"Cell assembly", when:() => true },
+  { t:"High-temperature soaking", lo:5, hi:15, ph:"Cell finishing", when:() => true },
+  { t:"Formation",              lo:65, hi:95, ph:"Cell finishing", when:() => true },
+  { t:"Degassing",              lo:10, hi:15, ph:"Cell finishing", when:() => route === "pouch" },
+  { t:"Aging",                  lo:15, hi:45, ph:"Cell finishing", when:() => true },
+  { t:"EoL test",               lo:5,  hi:15, ph:"Cell finishing", when:() => true }
+];
+
+function capexSVG() {
+  const rows = CAPEX.filter(x => x.when());
+  const W = 900, RH = 26, TOP = 34, L = 214, RIGHT = 74;
+  const maxV = 100, sc = (W - L - RIGHT) / maxV;
+  let g = `<text class="cxHead" x="${L}" y="20">machinery and equipment investment, € million</text>`;
+  [0, 25, 50, 75, 100].forEach(v => {
+    const x = L + v * sc;
+    g += `<path d="M${x} ${TOP - 8}L${x} ${TOP + rows.length * RH - 6}" stroke="color-mix(in srgb,var(--foreground) 9%,transparent)"/>
+          <text class="cxTick" x="${x}" y="${TOP + rows.length * RH + 10}" text-anchor="middle">${v}</text>`;
+  });
+  rows.forEach((x, i) => {
+    const y = TOP + i * RH, col = phaseColor(x.ph);
+    g += `<text class="cxLab" x="${L - 12}" y="${y + 8}" text-anchor="end">${esc(x.t)}</text>`;
+    if (Number.isFinite(x.lo) && Number.isFinite(x.hi)) {
+      g += `<rect x="${L + x.lo * sc}" y="${y}" width="${Math.max(2, (x.hi - x.lo) * sc)}" height="11" rx="3"
+          fill="${col}" opacity=".82"/>
+        <circle cx="${L + x.lo * sc}" cy="${y + 5.5}" r="3.4" fill="${col}"/>
+        <circle cx="${L + x.hi * sc}" cy="${y + 5.5}" r="3.4" fill="${col}"/>
+        <text class="cxVal" x="${L + x.hi * sc + 10}" y="${y + 9}">${x.lo}–${x.hi}</text>`;
+    } else {
+      g += `<path d="M${L} ${y + 5.5}L${W - RIGHT} ${y + 5.5}" stroke="${col}" stroke-dasharray="5 5" opacity=".45"/>
+        <text class="cxVal" x="${L + 10}" y="${y + 9}">${esc(x.note || "not quoted")}</text>`;
+    }
+  });
+  return `<svg viewBox="0 0 ${W} ${TOP + rows.length * RH + 22}" role="img"
+    aria-label="Machinery investment by station">${g}</svg>`;
+}
+
+function renderFactory() {
+  const rows = CAPEX.filter(x => x.when());
+  const knownRows = rows.filter(x => Number.isFinite(x.lo) && Number.isFinite(x.hi));
+  const lo = knownRows.reduce((a, c) => a + c.lo, 0), hi = knownRows.reduce((a, c) => a + c.hi, 0);
+  const mid = x => (x.lo + x.hi) / 2, tot = knownRows.reduce((a, c) => a + mid(c), 0);
+  const finShare = proc === "wet" ? Math.round(knownRows.filter(x => x.t === "Formation" || x.t === "Aging")
+                     .reduce((a, c) => a + mid(c), 0) / tot * 100) : null;
+  const biggest = knownRows.reduce((a, c) => mid(c) > mid(a) ? c : a, knownRows[0]);
+  const name = GEOM[route].name.toLowerCase();
+
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">The building, the air, and the bill</h2>
+      <p class="lede" style="max-width:84ch">Every figure on this page is quoted against one reference plant:
+      <b>10 GWh per year, roughly 30 000 000 pouch cells per year, 80 Ah per cell.</b> Change the format or the
+      electrode route in the sidebar and the investment list below follows the line you are actually looking at.${r(1)}</p>
+    </div>
+
+    <div class="card card-pad">
+      <h4><i style="background:var(--primary)"></i>Factory concept — four zones, four different buildings</h4>
+      <p class="lede" style="max-width:84ch;margin-bottom:12px">The process chain does not sit in one hall. Each phase
+      imposes its own structural requirement, and the roof line follows the process.</p>
+      <div class="zoneRow">
+        ${ZONES.map(z => `<div class="zone">
+          <div class="zbar" style="height:${z.h}px;background:${phaseColor(
+            z.n === 1 || z.n === 2 ? "Electrode manufacturing" : z.n === 3 ? "Cell assembly" : "Cell finishing")}"></div>
+          <b>${z.n} · ${esc(z.t)}</b><span>${esc(z.d)}</span></div>`).join("")}
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <h4><i style="background:var(--elyte)"></i>Production environment along the chain</h4>
+      <p class="lede" style="max-width:84ch;margin-bottom:12px">Dry air is one of the most expensive utilities in the plant,
+      so it is bought only where it is needed. Notice where the requirement drops away — and the single step in finishing
+      where it comes back.</p>
+      <div class="envTable">
+        <b class="etH">Process step</b><b class="etH">Clean-room class</b>
+        <b class="etH">Drying room, dew point</b><b class="etH">Temperature</b>
+        ${ENVROWS.map(b => b.rows.map((rw, i) => `
+          <span class="etStep">${esc(rw[0])}</span>
+          ${i === 0 ? `<span style="grid-row:span ${b.rows.length}">${b.iso}</span>
+            <span style="grid-row:span ${b.rows.length}">${b.dew}</span>
+            <span style="grid-row:span ${b.rows.length}">${b.temp}</span>` : ""}`).join("")
+          + (b.note ? `<p class="etNote">${esc(b.note)}</p>` : "")).join("")}
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <h4><i style="background:var(--warning)"></i>What the machines cost — ${esc(name)}, ${proc === "dry" ? "dry" : "wet"} electrode route</h4>
+      <p class="lede" style="max-width:84ch;margin-bottom:6px">Formation is the single largest line item, and aging is
+      not far behind — between them they can account for as much as the whole of electrode manufacturing. That is the
+      reason so much of the technology radar's finishing half is about shortening or predicting them.</p>
+      ${capexSVG()}
+      <div class="totRow">
+        <div><small>Stations on this line</small><b>${rows.length}</b></div>
+        <div><small>Machinery and equipment, total</small><b>${proc === "wet" ? `€ ${lo}–${hi} M` : "Not available from source"}</b></div>
+        <div><small>Formation and aging share</small><b>${proc === "wet" ? finShare + "%" : "Not calculated"}</b></div>
+        <div><small>Largest quoted range</small><b>${esc(biggest.t)}</b></div>
+      </div>
+      <p class="lede" style="margin-top:10px;font-size:12px;opacity:.8">Published ranges cover machinery and equipment only — not building, utilities, dry-room plant or land. For the wet route, the displayed total is the arithmetic sum of quoted station ranges. A complete dry-route total is deliberately not calculated because the guide does not separately quote dry mixing/fibrillation or split slitting from the combined calendering-and-slitting range. The reported 35% CapEx reduction is a potential process comparison for dry coating, not a guaranteed complete-factory reduction.</p>
+    </div>`;
+}
+
+/* =====================================================================
+   7 · MACHINE OVERVIEW — the whole line as one drawing, the way a
+   control-room screen shows it, and the building it stands in.
+   ===================================================================== */
+
+/* a short rolling history, so the trend strips are real rather than decorative */
+const HIST = { oee: [], scrap: [], off: [] };
+const HIST_MAX = 72;
+function pushHistory() {
+  const k = kpis(model());
+  HIST.oee.push(k.oee); HIST.scrap.push(100 - k.q); HIST.off.push(k.off);
+  Object.values(HIST).forEach(a => { while (a.length > HIST_MAX) a.shift(); });
+}
+
+/* every station already knows whether it is happy — reuse its own verdict */
+function stationLevel(st, m) {
+  const o = OPS[st.id];
+  if (!o) return "ok";
+  try { return o.verdict(m)[0]; } catch (e) { return "ok"; }
+}
+const LEVEL_COL = { ok:"var(--green)", warn:"var(--warning)", bad:"var(--destructive)" };
+
+/* OEE, in the shape a plant would recognise. Illustrative, not measured. */
+function kpis(m) {
+  const list = active();
+  const lv = list.map(st => stationLevel(st, m));
+  const bad = lv.filter(x => x === "bad").length, warn = lv.filter(x => x === "warn").length;
+  const a = clamp(99 - bad * 9 - warn * 3);                     /* availability  */
+  const e = clamp(72 + (S.speed - 35) / 45 * 26 - bad * 6);     /* performance   */
+  const q = clamp(m.yieldPct);                                  /* quality       */
+  return { a, e, q, oee: a * e * q / 10000, bad, warn, off: bad * 2 + warn, list, lv };
+}
+
+/* a deterministic lot number, so it is stable until a setpoint moves */
+function lotId() {
+  const s = JSON.stringify(S) + route + proc;
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return (route === "pouch" ? "PC" : route === "cyl" ? "CY" : "PR") +
+         (proc === "dry" ? "D" : "W") + String(h % 100000000).padStart(8, "0");
+}
+const gradeOf = y => y >= 98.5 ? "A" : y >= 97 ? "B" : y >= 95 ? "C" : "REWORK";
+
+/* ---------------- small HMI parts ---------------- */
+function donut(pct, label, size, col) {
+  const r = size / 2 - 5, C0 = 2 * Math.PI * r, off = C0 * (1 - clamp(pct) / 100);
+  return `<div class="dnut" style="width:${size + 4}px">
+    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img"
+         aria-label="${esc(label)} ${pct.toFixed(0)} percent">
+      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none"
+        stroke="color-mix(in srgb,var(--foreground) 9%,transparent)" stroke-width="6"/>
+      <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${col}" stroke-width="6"
+        stroke-linecap="round" stroke-dasharray="${C0.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"
+        transform="rotate(-90 ${size / 2} ${size / 2})"/>
+      <text x="${size / 2}" y="${size / 2 + 1}" text-anchor="middle" class="dnutV"
+        style="font-size:${size > 90 ? 21 : 13}px">${pct.toFixed(0)}</text>
+      <text x="${size / 2}" y="${size / 2 + (size > 90 ? 17 : 12)}" text-anchor="middle" class="dnutU">%</text>
+    </svg><small>${esc(label)}</small></div>`;
+}
+
+function spark(arr, col, title, unit, hi) {
+  const W = 230, H = 62, P = 4;
+  if (arr.length < 2) return `<div class="trend"><small>${esc(title)}</small>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><text x="${W / 2}" y="${H / 2 + 4}"
+    text-anchor="middle" class="cxTick">move a setpoint to start the trace</text></svg></div>`;
+  const top = Math.max(hi, ...arr) * 1.08 || 1;
+  const step = (W - 2 * P) / (HIST_MAX - 1), n = arr.length;
+  /* newest sample on the right, so a short history reads as a trace that has
+     only just started rather than as a stub stretched across the window     */
+  const pts = arr.map((v, i) => [W - P - (n - 1 - i) * step, H - P - v / top * (H - 2 * P)]);
+  const d = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join("");
+  const last = arr[arr.length - 1];
+  return `<div class="trend"><small>${esc(title)}<b>${last.toFixed(1)}${unit}</b></small>
+    <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)} trend">
+      ${[0.25, 0.5, 0.75].map(f => `<path d="M${P} ${(P + f * (H - 2 * P)).toFixed(1)}L${W - P} ${(P + f * (H - 2 * P)).toFixed(1)}"
+        stroke="color-mix(in srgb,var(--foreground) 7%,transparent)"/>`).join("")}
+      <path d="${d}L${pts[pts.length - 1][0].toFixed(1)} ${H - P}L${pts[0][0].toFixed(1)} ${H - P}Z"
+        fill="${col}" opacity=".13"/>
+      <path d="${d}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="${pts[pts.length - 1][0].toFixed(1)}" cy="${pts[pts.length - 1][1].toFixed(1)}" r="3" fill="${col}"/>
+    </svg></div>`;
+}
+
+/* a dense row cannot carry "Electrolyte filling — pouch" under every machine */
+const SHORT = {
+  "Packaging — pouch":"Packaging", "Packaging — can":"Packaging",
+  "Electrolyte filling — pouch":"Filling", "Electrolyte filling — can":"Filling",
+  "End-of-line testing":"EoL test", "Vacuum drying":"Vacuum dry",
+  "Pre-treatment":"Pre-treat", "Winding":"Winding + tabs"
+};
+const shortTitle = st => SHORT[st.title] || st.title;
+
+/* ---------------- the line, drawn as one machine ---------------- */
+/* every station reduces to a housing plus a few marks, so the row reads as
+   one continuous machine rather than as a row of unrelated icons          */
+function glyph(st, x, w, yb) {
+  /* one housing per machine, and every mark stays inside it — a section of a
+     line, not an icon. Only the dryer stacks are allowed to break the roof. */
+  const bx = x + w * 0.09, bw = w * 0.82, byT = yb - 52, byB = yb - 2;

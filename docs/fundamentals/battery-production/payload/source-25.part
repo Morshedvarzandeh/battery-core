@@ -1,0 +1,261 @@
+    const p = prism(hall.x0, hall.y0, hall.w, D, hall.h);
+    bodies += solid(p, col, .14, .1, .2);
+    const lab = iso(hall.x0 + hall.w / 2, hall.y0 + D / 2, hall.h);
+    labels += `<text x="${lab[0].toFixed(1)}" y="${(lab[1] - 6).toFixed(1)}" text-anchor="middle" class="floorT">${hall.n} · ${esc(hall.t)}</text>
+      <text x="${lab[0].toFixed(1)}" y="${(lab[1] + 8).toFixed(1)}" text-anchor="middle" class="floorS">${on.length} station${on.length === 1 ? "" : "s"} · ${esc(hall.sub)}</text>`;
+  });
+
+  const xs = box.map(q => q[0]), ys = box.map(q => q[1]), PAD = 54;
+  const vx = Math.min(...xs) - PAD, vy = Math.min(...ys) - PAD;
+  const vw = Math.max(...xs) - Math.min(...xs) + PAD * 2;
+  const vh = Math.max(...ys) - Math.min(...ys) + PAD * 2;
+  return `<svg viewBox="${vx.toFixed(0)} ${vy.toFixed(0)} ${vw.toFixed(0)} ${vh.toFixed(0)}" role="img"
+    aria-label="Isometric plan of the four production halls">${floors}${flows}${bodies}${labels}</svg>`;
+}
+
+/* the alarm list — same verdicts as the lamps, in words */
+function alarmList(m, k) {
+  const rows = k.list.map(st => [st, stationLevel(st, m)])
+    .filter(([, lv]) => lv !== "ok")
+    .sort((a, b) => (a[1] === "bad" ? 0 : 1) - (b[1] === "bad" ? 0 : 1));
+  if (!rows.length) return `<div class="alarmBar" data-ok="1">
+    <i style="background:var(--green)"></i><b>Every station inside its window.</b>
+    <span>Push a setpoint out of range and the machine it belongs to will light up here.</span></div>`;
+  return `<div class="alarmBar">
+    <i style="background:${rows[0][1] === "bad" ? "var(--destructive)" : "var(--warning)"}"></i>
+    <b>${rows.length} station${rows.length === 1 ? "" : "s"} off window</b>
+    <div class="alarmRows">${rows.map(([st, lv]) => {
+      const v = OPS[st.id].verdict(m);
+      return `<button type="button" data-go="${st.id}" data-l="${lv}">
+        <em>${String(k.list.indexOf(st) + 1).padStart(2, "0")}</em>
+        <strong>${esc(st.title)}</strong><span>${esc(v[1])}</span></button>`;
+    }).join("")}</div></div>`;
+}
+
+/* ---------------- the view ---------------- */
+function renderMachineOverview() {
+  const m = model(), k = kpis(m), g = GEOM[route];
+  const grade = gradeOf(m.yieldPct);
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">The whole line on one screen</h2>
+      <p class="lede" style="max-width:86ch">This is the view a shift supervisor works from: every station in order, the
+      material running through them, and one lamp per machine telling you whether that station is inside its window right
+      now. The lamps come from the same verdict each station's own operator console gives — change a setpoint anywhere and
+      you will see it turn here. Click any machine to walk over to it.</p>
+    </div>
+
+    <div class="card card-pad hmiHead">
+      <div class="hmiOee">
+        <small>OEE — ILLUSTRATIVE</small>
+        <div class="hmiOeeRow">
+          ${donut(k.oee, "Overall", 104, k.oee >= 85 ? "var(--green)" : k.oee >= 70 ? "var(--warning)" : "var(--destructive)")}
+          <div class="hmiSub">
+            ${donut(k.a, "Availability", 62, "var(--primary)")}
+            ${donut(k.e, "Performance", 62, "var(--primary)")}
+            ${donut(k.q, "Quality", 62, "var(--primary)")}
+          </div>
+        </div>
+      </div>
+      <div class="hmiCur">
+        <small>CURRENT</small>
+        <div><span>Line</span><b>${esc(g.name)} · ${proc === "dry" ? "dry" : "wet"} electrode</b></div>
+        <div><span>Rate</span><b>${S.speed} m/min · ${fmt(m.cellsDay)} cells/day</b></div>
+        <div><span>Illustrative grade</span><b data-g="${grade}">${grade} · ${m.yieldPct.toFixed(1)}%</b></div>
+        <div><span>Lot ID</span><b class="mono">${lotId()}</b></div>
+        <div><span>Stations off window</span><b>${k.bad + k.warn} of ${k.list.length}</b></div>
+      </div>
+      <div class="hmiTrend">
+        ${spark(HIST.oee, "var(--primary)", "OEE", "%", 100)}
+        ${spark(HIST.scrap, "var(--destructive)", "Scrap", "%", 6)}
+        ${spark(HIST.off, "var(--warning)", "Alarm load", "", 6)}
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <h4><i style="background:var(--primary)"></i>Line ${esc(g.name.toLowerCase())} A-17 — ${k.list.length} stations,
+        ${proc === "dry" ? "solvent-free" : "slurry"} route</h4>
+      <div class="hmiScroll">${lineSVG()}</div>
+      ${alarmList(m, k)}
+      <div class="hmiKey">
+        <span><i style="background:var(--green)"></i>inside its window</span>
+        <span><i style="background:var(--warning)"></i>drifting</span>
+        <span><i style="background:var(--destructive)"></i>outside its window</span>
+        <span><i style="background:var(--copper)"></i>electrode web</span>
+        <span><i style="background:var(--jelly)"></i>cells</span>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <h4><i style="background:var(--elyte)"></i>And the building it stands in${r(1)}</h4>
+      <p class="lede" style="max-width:86ch;margin-bottom:6px">The same machines, placed on the floor. The process chain
+      does not sit in one hall — each phase imposes its own structure, so the roof line steps up and down along the
+      chain: gravimetric dosing wants height, the dryers want height for their exhaust and recovery plant, assembly wants
+      a low sealed dry room, and formation and aging want a twelve-metre high-bay full of cell positions.</p>
+      <div class="hmiScroll">${floorSVG()}</div>
+    </div>
+
+    <div class="card card-pad">
+      <p class="lede" style="max-width:96ch;font-size:12px;opacity:.85"><b>What is real here and what is not.</b> The station
+      order, the phase split, the four-hall factory concept and the environment each hall needs are from the process
+      guide.${r(1)} The lamps are real in the sense that they come from this simulator's own process windows. OEE,
+      availability and performance are illustrative constructions on top of the teaching model — a plant measures them
+      from run time, ideal cycle time and good count, none of which this simulator has. Read them as a way of seeing the
+      line react, not as a number to quote.</p>
+    </div>`;
+
+  $("layerView").querySelectorAll(".hmiSt").forEach(el => {
+    el.addEventListener("click", () => go(el.dataset.go));
+    el.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(el.dataset.go); }
+    });
+  });
+}
+
+function renderRefs() {
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">Sources</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Where every number came from</h2>
+      <p class="lede" style="max-width:80ch">Process parameters, environment classes, machine investments and cycle times
+      are from the PEM RWTH Aachen and VDMA process guide. The physics that links them — porosity, areal capacity,
+      N/P balance, moisture, SEI — is from the peer-reviewed sources below. The superscript numbers throughout this
+      simulator link here.</p>
+      <p class="lede" style="max-width:80ch;margin-top:10px"><b>What is modelled rather than cited:</b> the chain that
+      connects one setpoint to the next is a teaching model, fitted so the defaults land near the reference plant. Use it
+      to understand direction and sensitivity, not to size real equipment.</p>
+    </div>
+    <div class="card card-pad">
+      <div class="reflist">
+        ${REFS.map(x => `
+          <div class="refitem" id="ref-${x.n}">
+            <div class="rn">${x.n}</div>
+            <div>
+              <p>${x.txt}</p>
+              <span class="used"><b>Used for:</b> ${x.use}</span>
+              ${x.url ? `<a href="${x.url}" target="_blank" rel="noopener">${esc(x.url)}</a>` : ""}
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------------
+   THE OPERATOR CONSOLE
+   ------------------------------------------------------------------- */
+function inWindow(k) {
+  const c = CTL[k];
+  return !c || c.opts || !c.good ? true : (S[k] >= c.good[0] && S[k] <= c.good[1]);
+}
+function ctlHTML(k) {
+  const c = CTL[k], v = S[k];
+  if (c.opts) return `
+    <div class="ctl">
+      <label>${c.label}<b>${c.opts[v]}</b></label>
+      <div class="seg" role="group" aria-label="${c.label}">
+        ${c.opts.map((o, i) => `<button type="button" data-seg="${k}" data-v="${i}" aria-pressed="${i === v}">${o}</button>`).join("")}
+      </div>
+      <small>${c.note}${c.ref ? r(...c.ref) : ""}</small>
+    </div>`;
+  const dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
+  return `
+    <div class="ctl" data-in="${inWindow(k)}">
+      <label for="cc-${k}">${c.label}<b id="cv-${k}">${v.toFixed(dec)}${c.unit}</b></label>
+      <input id="cc-${k}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${v}"
+             aria-label="${c.label}" data-ctl="${k}">
+      ${windowBar(k)}
+      <small>${c.note}${c.ref ? r(...c.ref) : ""}</small>
+    </div>`;
+}
+const ctlsOf = o => typeof o.ctl === "function" ? o.ctl() : o.ctl;
+function renderConsole(st, m) {
+  const o = OPS[st.id];
+  if (!o) return "";
+  const [lv, head, body] = o.verdict(m);
+  return `
+    <div class="console" id="console">
+      <div class="console-head">
+        <strong>Operate this station</strong>
+        <span>${esc(o.lead)}</span>
+      </div>
+      <div class="console-body">
+        <div class="console-ctl">
+          <small>Your controls</small>
+          ${ctlsOf(o).map(ctlHTML).join("")}
+        </div>
+        <div class="console-out">
+          <small>What happens</small>
+          <div class="outs">
+            ${o.read(m).map(x => `<div class="out" data-s="${x.state}">
+              <small>${esc(x.label)}</small><b>${esc(x.value)}</b>
+              ${x.hint ? `<i>${esc(x.hint)}</i>` : ""}</div>`).join("")}
+          </div>
+          <div class="verdict" data-l="${lv}"><strong>${esc(head)}</strong><span>${esc(body)}</span></div>
+          ${renderCharts(st)}
+        </div>
+      </div>
+      <div class="console-foot">
+        <span>Anything you change here is felt by every station downstream — watch the yield gauge on the right.</span>
+        <button type="button" id="conReset">Reset this station</button>
+        <button type="button" id="conBreak">Break it</button>
+      </div>
+    </div>`;
+}
+function bindConsole(st) {
+  const o = OPS[st.id];
+  if (!o || !$("console")) return;
+  $("console").querySelectorAll("input[data-ctl]").forEach(el =>
+    el.addEventListener("input", e => { S[e.target.dataset.ctl] = Number(e.target.value); refresh(); }));
+  $("console").querySelectorAll("button[data-seg]").forEach(el =>
+    el.addEventListener("click", e => {
+      const b = e.currentTarget;
+      S[b.dataset.seg] = Number(b.dataset.v); refresh();
+    }));
+  $("conReset").addEventListener("click", () => {
+    ctlsOf(o).forEach(k => S[k] = DEFAULTS[k]); renderSliders(); refresh();
+  });
+  $("conBreak").addEventListener("click", () => {
+    /* push this station's knobs to the edge that fails, so the failure mode is visible */
+    const BREAK = { tC:80, tA:50, speed:80, dryT:60, force:2500, vac:8, cRate:0.5, ageDays:3,
+      solid:75, mixMin:30, mixT:40, gap:280, dryLen:20, rollT:120, knife:0, cutSpd:150, wear:100,
+      vacT:60, sepMode:0, stackAcc:600, webTens:140, drawDepth:10, sealT:150, doseFac:1,
+      fillP:400, soak:1, pressP:1.2, preT:60, formT:60, vMax:4.4, degP:60, ageSOC:20, ageHiT:25, shipSOC:60,
+      dcLine:150, dcRollT:50, dcFib:20, dmTime:5, dmT:70, dcPrimer:1 };
+    ctlsOf(o).forEach(k => S[k] = BREAK[k]); renderSliders(); refresh();
+  });
+}
+
+/* ---------------------------------------------------------------------
+   navigation for the new views
+   ------------------------------------------------------------------- */
+function showView(id) {
+  $("overview").hidden = true; $("stationView").hidden = true; $("layerView").hidden = false;
+  const v = VIEWS.find(x => x.id === id) || VIEWS[0];
+  $("crumbTitle").textContent = v.label;
+  $("pillEnv").innerHTML = `<i></i><b>${esc(v.hint)}</b>`;
+  $("pillPos").textContent = "—";
+  ({ machine:renderMachineOverview, anatomy:renderAnatomy, flow:renderFlow, matrix:renderMatrix,
+     radar:renderRadar, factory:renderFactory, refs:renderRefs }[v.id])();
+}
+
+/* reference chips open the reference list at the right entry */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-ref]");
+  if (!b) return;
+  e.preventDefault();
+  go("view:refs");
+  setTimeout(() => {
+    const el = document.getElementById("ref-" + b.dataset.ref);
+    if (el) { el.scrollIntoView({ behavior:"smooth", block:"center" }); el.style.outline = "2px solid var(--primary)";
+      setTimeout(() => el.style.outline = "", 1800); }
+  }, 60);
+});
+
+/* ---------------- boot ---------------- */
+renderSliders();
+renderRail();
+go(null);
+</script>
+</body>
+</html>

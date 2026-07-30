@@ -1,0 +1,215 @@
+  { n: 6, s:"em", ring:1, t:"Laser drying",                   go:"drying" },
+  { n: 7, s:"em", ring:2, t:"Roll-to-roll baking",            go:"vacdry" },
+  { n: 8, s:"em", ring:2, t:"Trajectory mixing",              go:"mixing" },
+  { n: 9, s:"em", ring:2, t:"Pre-lithiation" },
+  { n:10, s:"em", ring:2, t:"Electrode structuring",          go:"calendering" },
+  { n:11, s:"em", ring:2, t:"UV drying / curing",             go:"drying" },
+  { n:12, s:"em", ring:3, t:"Induction drying",               go:"drying" },
+  { n:13, s:"em", ring:3, t:"PVD process" },
+  { n:14, s:"em", ring:3, t:"CVD process" },
+  { n:15, s:"em", ring:3, t:"Atomic layer deposition (ALD)" },
+  { n:17, s:"ca", ring:1, t:"Mini-environments" },
+  { n:18, s:"ca", ring:1, t:"Drum-based stacking",            go:"stacking" },
+  { n:19, s:"ca", ring:1, t:"Parallel filling",               go:"fillPouch" },
+  { n:20, s:"ca", ring:2, t:"Smart wetting",                  go:"fillPouch" },
+  { n:21, s:"ca", ring:2, t:"Helix stacking",                 go:"stacking" },
+  { n:22, s:"cf", ring:1, t:"Model-based formation",          go:"formation" },
+  { n:23, s:"cf", ring:1, t:"Open formation",                 go:"formation" },
+  { n:24, s:"cf", ring:2, t:"Predictive aging",               go:"aging" },
+  { n:25, s:"cf", ring:2, t:"Predictive formation",           go:"formation" },
+  { n:26, s:"cf", ring:2, t:"External formation",             go:"formation" },
+  { n:27, s:"cd", ring:1, t:"Large-format cells" },
+  { n:28, s:"cd", ring:1, t:"Tabless design",                 go:"packHard" },
+  { n:29, s:"cd", ring:1, t:"Blade format" },
+  { n:30, s:"cd", ring:2, t:"Structure-supporting cell casings" },
+  { n:31, s:"cd", ring:2, t:"Multi-layer separators",         layer:"sep" },
+  { n:32, s:"cd", ring:2, t:"Fabric / composite current collector", layer:"cufoil" },
+  { n:33, s:"cd", ring:2, t:"Cell-integrated sensor technology" },
+  { n:34, s:"cd", ring:3, t:"Anode-free cells",               layer:"anode" },
+  { n:35, s:"cd", ring:3, t:"Bipolar cell architecture" },
+  { n:36, s:"ma", ring:1, t:"Manganese-rich cathodes",        layer:"cathode" },
+  { n:37, s:"ma", ring:1, t:"High-silicon anodes",            layer:"anode" },
+  { n:38, s:"ma", ring:1, t:"Ultra-high-nickel cathodes",     layer:"cathode" },
+  { n:39, s:"ma", ring:2, t:"Sodium-based cathodes" },
+  { n:40, s:"ma", ring:2, t:"Lithium metal anode",            layer:"anode" },
+  { n:41, s:"ma", ring:2, t:"Polymer solid-state battery",    ss:true },
+  { n:42, s:"ma", ring:2, t:"Cathode blending",               layer:"cathode" },
+  { n:43, s:"ma", ring:3, t:"Sulfur-based cathodes",          layer:"cathode" },
+  { n:44, s:"ma", ring:3, t:"Sulfide solid-state battery",    ss:true },
+  { n:45, s:"ma", ring:3, t:"Oxide solid-state battery",      ss:true }
+];
+
+let techPick = null;
+
+function radarSVG() {
+  const cx = 320, cy = 320, R = 268;
+  const rad = a => a * Math.PI / 180;
+  const pt = (a, r) => [cx + r * Math.cos(rad(a)), cy - r * Math.sin(rad(a))];
+  /* the bands start well away from the centre: sectors converge there and
+     the bubbles would pile up on each other. */
+  const RB = [[0.30, 0.56], [0.56, 0.79], [0.79, 1.00]];   /* ring bands, × R */
+
+  /* ring fills, outermost first so the inner ones sit on top */
+  let g = "";
+  [3, 2, 1].forEach(k => {
+    g += `<circle cx="${cx}" cy="${cy}" r="${(RB[k - 1][1] * R).toFixed(1)}"
+      fill="color-mix(in srgb, ${RINGS[k - 1].col} ${k === 1 ? 17 : k === 2 ? 11 : 6}%, transparent)"
+      stroke="color-mix(in srgb, var(--foreground) 12%, transparent)"/>`;
+  });
+  /* the hub — the technologies already in series production */
+  g += `<circle cx="${cx}" cy="${cy}" r="${(RB[0][0] * R).toFixed(1)}" fill="var(--card)"
+    stroke="color-mix(in srgb, var(--foreground) 14%, transparent)"/>
+    <text class="rdSec" x="${cx}" y="${cy - 6}" text-anchor="middle">in series</text>
+    <text class="rdSec" x="${cx}" y="${cy + 10}" text-anchor="middle">production</text>`;
+
+  /* sector dividers */
+  [0, 62, 118, 180, 270].forEach(a => {
+    const [x1, y1] = pt(a, R * 0.30), [x2, y2] = pt(a, R);
+    g += `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}"
+      stroke="color-mix(in srgb, var(--foreground) 22%, transparent)" stroke-width="1"
+      stroke-dasharray="6 3 2 3" fill="none"/>`;
+  });
+  /* the PROCESS / PRODUCT split */
+  g += `<path d="M${cx - R - 20} ${cy}L${cx + R + 20} ${cy}" stroke="var(--foreground)"
+    stroke-width="1.4" fill="none" opacity=".5"/>`;
+  /* PROCESS above the line, PRODUCT below — set as tabs down the left edge,
+     clear of the outermost bubbles. */
+  g += `<g transform="translate(${cx - R - 126}, ${cy - R * 0.52}) rotate(-90)">
+      <text class="rdAxis" x="0" y="0" text-anchor="middle">PROCESS — how it is made</text></g>
+    <g transform="translate(${cx - R - 126}, ${cy + R * 0.52}) rotate(-90)">
+      <text class="rdAxis" x="0" y="0" text-anchor="middle">PRODUCT — what it is</text></g>
+    <path d="M${cx - R - 118} ${cy - R * 0.95}L${cx - R - 118} ${cy - 10}" stroke="var(--primary)"
+      stroke-width="2" fill="none" opacity=".45"/>
+    <path d="M${cx - R - 118} ${cy + 10}L${cx - R - 118} ${cy + R * 0.95}" stroke="var(--jelly)"
+      stroke-width="2" fill="none" opacity=".45"/>`;
+
+  /* sector names, placed just outside the circle at the sector mid-angle */
+  SECTORS.forEach(sec => {
+    const mid = (sec.a0 + sec.a1) / 2;
+    const [x, y] = pt(mid, R + 30);
+    const anchor = Math.abs(Math.cos(rad(mid))) < 0.25 ? "middle" : (Math.cos(rad(mid)) > 0 ? "start" : "end");
+    g += `<text class="rdSec" x="${x.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="${anchor}">${esc(sec.label)}</text>`;
+  });
+
+  /* bubbles — spread evenly across the sector arc inside their ring band */
+  TECH.forEach(x => {
+    const sec = sectorMap[x.s];
+    const grp = TECH.filter(y => y.s === x.s && y.ring === x.ring);
+    const i = grp.indexOf(x), n = grp.length;
+    const pad = (sec.a1 - sec.a0) * 0.13;
+    const a = sec.a0 + pad + (sec.a1 - sec.a0 - 2 * pad) * (n === 1 ? 0.5 : i / (n - 1));
+    const band = RB[x.ring - 1];
+    /* stagger alternate bubbles radially so a crowded sector still reads */
+    const rr = R * (band[0] + (band[1] - band[0]) * (n > 3 ? (i % 2 ? 0.26 : 0.74) : 0.5));
+    const [px, py] = pt(a, rr);
+    const on = techPick === x.n;
+    g += `<g class="rdDot ${on ? "on" : ""}" data-tech="${x.n}" tabindex="0" role="button"
+        aria-label="${x.n}. ${esc(x.t)}, ${esc(RINGS[x.ring - 1].label)}">
+      <circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${on ? 15 : 12.5}"
+        fill="${on ? "var(--primary)" : "var(--background)"}"
+        stroke="${RINGS[x.ring - 1].col}" stroke-width="${on ? 3 : 2}"/>
+      <text x="${px.toFixed(1)}" y="${(py + 4).toFixed(1)}" text-anchor="middle"
+        class="rdNum" fill="${on ? "var(--primary-foreground)" : "var(--foreground)"}">${x.n}</text>
+    </g>`;
+  });
+  return `<svg viewBox="-172 0 860 700" role="img"
+    aria-label="Technology radar: 44 technologies by production phase and readiness">${g}
+    <g transform="translate(52,632)">
+      <text class="rdSec" x="0" y="4" text-anchor="start">Technology readiness:</text>
+      ${RINGS.map((rg, i) => `
+        <g transform="translate(${168 + i * 128},0)">
+          <circle cx="0" cy="0" r="9" fill="color-mix(in srgb, ${rg.col} 22%, transparent)" stroke="${rg.col}" stroke-width="2"/>
+          <text class="rdSec" x="16" y="4" text-anchor="start">${rg.label}</text>
+        </g>`).join("")}
+    </g></svg>`;
+}
+
+function renderRadar() {
+  const bySector = SECTORS.map(sec => {
+    const items = TECH.filter(x => x.s === sec.id);
+    return `<div class="rdGroup">
+      <h5>${esc(sec.label)}<em>${esc(sec.axis)}</em></h5>
+      ${items.map(x => {
+        const st = x.go ? STATIONS.find(s => s.id === x.go) : null;
+        const live = st && st.routes.includes(route) && (!st.proc || st.proc === proc);
+        return `<button type="button" class="rdItem ${techPick === x.n ? "on" : ""}" data-tech="${x.n}">
+          <i style="border-color:${RINGS[x.ring - 1].col}">${x.n}</i>
+          <span>${esc(x.t)}</span>
+          <b data-r="${x.ring}">${esc(RINGS[x.ring - 1].short)}</b>
+          ${live ? `<u>in this line</u>` : x.ss ? `<u class="ss">solid-state</u>` : ""}
+        </button>`;
+      }).join("")}
+    </div>`;
+  }).join("");
+
+  const p = techPick ? TECH.find(x => x.n === techPick) : null;
+  const st = p && p.go ? STATIONS.find(s => s.id === p.go) : null;
+  const detail = !p ? `<p class="lede">Pick a number on the radar, or in the list, to see what it is and where it lands on this line.</p>`
+    : `<span class="eyebrow">${esc(sectorMap[p.s].label)} · ${esc(sectorMap[p.s].axis)}</span>
+       <h3 style="font-size:19px;letter-spacing:-.02em;margin:5px 0 6px">${p.n} · ${esc(p.t)}</h3>
+       <p class="lede">Readiness for series production: <b>${esc(RINGS[p.ring - 1].label)}</b>.</p>
+       ${st ? `<p class="lede" style="margin-top:8px">This one has a station in the simulator.</p>
+         <button type="button" class="stage-btn" data-go="${st.id}" style="margin-top:8px">
+           <b>◆</b><em>Open ${esc(st.title)}</em><i style="background:${phaseColor(st.phase)}"></i></button>`
+        : p.layer ? `<p class="lede" style="margin-top:8px">It changes a layer of the cell rather than a machine.</p>
+         <button type="button" class="stage-btn" data-goview="${p.layer}" style="margin-top:8px">
+           <b>◆</b><em>Show it in the cell anatomy</em><i style="background:var(--primary)"></i></button>`
+        : p.ss ? `<p class="lede" style="margin-top:8px">This is a solid-state route. It replaces the liquid electrolyte and the
+           separator with a solid electrolyte, so filling, wetting and degassing all disappear — which is why it needs its own line
+           rather than a change to this one.</p>`
+        : `<p class="lede" style="margin-top:8px">Tracked by the guide, but not a station on this reference line.</p>`}`;
+
+  $("layerView").innerHTML = `
+    <div class="card card-pad">
+      <span class="eyebrow">The big picture</span>
+      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">What is coming, and how soon</h2>
+      <p class="lede" style="max-width:84ch">The 5th edition tracks 44 technologies across the whole chain. The half above
+      the line changes <b>how the cell is made</b>; the half below changes <b>what the cell is</b>. Distance from the centre is
+      distance from series production — the inner ring is inside two years, the outer ring is five years out or more.${r(1)}</p>
+      <p class="lede" style="max-width:84ch;margin-top:10px"><b>Disclaimer, from the source:</b> the radar is a snapshot of the
+      industry, judged against use in series production. It is an excerpt and does not claim to be exhaustive.</p>
+    </div>
+    <div class="radarWrap">
+      <div class="card card-pad">${radarSVG()}</div>
+      <div class="radarSide">
+        <div class="card card-pad" id="techDetail">${detail}</div>
+        <div class="card card-pad rdList">${bySector}</div>
+      </div>
+    </div>`;
+
+  $("layerView").querySelectorAll("[data-tech]").forEach(el =>
+    el.addEventListener("click", () => { techPick = +el.dataset.tech; renderRadar(); }));
+  $("layerView").querySelectorAll(".rdDot").forEach(el =>
+    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } }));
+}
+
+/* =====================================================================
+   6 · FACTORY & ENVIRONMENT — the building the line sits in, the air it
+   needs, and what the machines cost. [1]
+   ===================================================================== */
+const ZONES = [
+  { n:1, t:"Slurry production", h:112,
+    d:"Multi-storey construction, so powder and solvent can be dosed gravimetrically — the material falls to the mixer instead of being pumped up to it." },
+  { n:2, t:"Electrode production", h:72,
+    d:"Single-storey hall with increased building height, because the dryers need complex exhaust-air handling and solvent recovery above them." },
+  { n:3, t:"Cell assembly", h:50,
+    d:"Compact hall with low plant height, held in a dry-room environment and built as modules so it can be extended." },
+  { n:4, t:"Cell finishing", h:112,
+    d:"Up to twelve metres high, built as a high-bay warehouse: formation and aging need thousands of cell positions under defined air conditioning." }
+];
+
+const ENVROWS = [
+  { g:"Electrode manufacturing", rows:[
+    ["Mixing"], ["Coating"], ["Drying"], ["Calendering"], ["Slitting"], ["Vacuum drying"]],
+    iso:"ISO 7 – 8",
+    dew:"<div><b>Water-based electrodes:</b> controlled process conditions, semi-dry (+5 °C to −5 °C)<br><b>NMP-based electrodes:</b> dry (0 °C to −30 °C) to very dry (−40 °C to −60 °C)<br><b>Vacuum drying:</b> encapsulated process, vacuum or inert</div>",
+    temp:"22 ± 2 °C",
+    note:"Electrode production runs under clean-room conditions because foreign particles in the coating are removed later by cleaning methods such as suction — so they must not get in to begin with." },
+  { g:"Cell assembly", rows:[["Cutting"], ["Stacking / winding"], ["Packaging"], ["Electrolyte filling"]],
+    iso:"min. ISO 7", dew:"Very dry (−30 °C to −60 °C)", temp:"22 ± 2 °C",
+    note:"Assembly has to be dry. Water sealed inside the cell causes severe service-life loss and a safety risk — it reacts with the salt to form hydrofluoric acid." },
+  { g:"Cell finishing", rows:[["Soaking"], ["Formation"]], iso:"—", dew:"—", temp:"20 °C to 50 °C",
+    note:"Finishing runs in a normal environment. The cell is already sealed, so the particle and humidity requirements drop away." },
+  { g:"Cell finishing", rows:[["Degassing"]], iso:"min. ISO 7", dew:"Very dry (−40 °C to −60 °C)", temp:"22 ± 2 °C",
+    note:"The exception: the cell is opened here, so the dry room comes back for one step." },
+  { g:"Cell finishing", rows:[["Aging"]], iso:"—", dew:"—", temp:"20 °C to 50 °C", note:"" },

@@ -1,199 +1,187 @@
-    { x:"vacT", title:"Temperature does the same job faster", unit:" ppm", limit:50, limitLabel:"50 ppm target", lo:0, dp:0,
-      series:[{ y:m => m.ppm, label:"Residual moisture", col:"var(--elyte)" }] }],
-  separation: [
-    { x:"wear", title:"A worn punch is a burr generator", unit:" µm", limit:10, limitLabel:"pierces the separator", lo:0, dp:1,
-      series:[{ y:m => m.burrSep, label:"Burr from this cut", col:"var(--primary)" },
-              { y:m => m.burr,    label:"tallest in the cell", col:"var(--destructive)", dash:1 }] }],
-  stacking: [
-    { x:"stackAcc", title:"Alignment has a cliff, not a slope", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
-  winding: [
-    { x:"webTens", title:"Too loose telescopes, too tight tears", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] }],
-  packPouch: [
-    { x:"sealT", title:"The seal has one narrow window", unit:"%", good:[96,100], goodLabel:"sound seal", lo:40, hi:100, dp:0,
-      series:[{ y:m => m.sealQ, label:"Seal quality", col:"var(--primary)" }] },
-    { x:"drawDepth", title:"Depth costs barrier thickness", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
-  packHard: [
-    { x:"sealT", title:"Weld energy window", unit:"%", good:[96,100], goodLabel:"sound weld", lo:40, hi:100, dp:0,
-      series:[{ y:m => m.sealQ, label:"Weld quality index", col:"var(--primary)" }] }],
-  fillPouch: [
-    { x:"soak", title:"Wetting is slow, and then it is done", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
-      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] },
-    { x:"doseFac", title:"Under-dose starves it, over-dose gasses it", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
-  fillHard: [
-    { x:"soak", title:"A wound cell wets more slowly", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
-      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] },
-    { x:"fillP", title:"Wetting-cycle pressure changes infiltration", unit:"%", good:[96,100], goodLabel:"well wetted", lo:40, hi:100, dp:0,
-      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--elyte)" }] }],
-  rollpress: [
-    { x:"pressP", title:"Pressing buys time — up to a point", unit:"%", good:[96,100], goodLabel:"fully wetted", lo:40, hi:100, dp:0,
-      series:[{ y:m => m.wetting, label:"Wetting reached", col:"var(--primary)" }] }],
-  formation: [
-    { x:"cRate", title:"Formation rate strongly influences the SEI", unit:"%", good:[90,100], goodLabel:"good film", lo:40, hi:100, dp:0,
-      series:[{ y:m => m.seiQ, label:"Illustrative SEI score", col:"var(--primary)" }] },
-    { x:"cRate", title:"…and the lithium you never get back", unit:"%", limit:12, limitLabel:"12% — expensive", dp:1,
-      series:[{ y:m => m.liLoss, label:"Illustrative cyclable-Li loss", col:"var(--destructive)" }] }],
-  degassing: [
-    { x:"degP", title:"How much gas you leave behind", unit:"%", limit:6, limitLabel:"6% — cell swells", lo:0, dp:1,
-      series:[{ y:m => m.gasLeft, label:"Gas remaining", col:"var(--primary)" }] }],
-  aging: [
-    { x:"ageDays", title:"How much the screen can actually see", unit:"%", good:[88,100], goodLabel:"trustworthy screen", lo:30, hi:100, dp:0,
-      series:[{ y:m => m.screenSens, label:"Screen sensitivity", col:"var(--primary)" }] },
-    { x:"ageDays", title:"A shorter screen reduces defect sensitivity", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--elyte)" }] }],
-  eol: [
-    { x:"ageDays", title:"Process health is influenced upstream and summarised here", unit:"%", good:[95,99.6], goodLabel:"acceptable", dp:1,
-      series:[{ y:m => m.yieldPct, label:"Process-health score", col:"var(--primary)" }] },
-    { x:"shipSOC", title:"Energy in the box is what the regulator caps", unit:" Wh", dp:1,
-      xMark:30, xMarkLabel:"above IATA PI 965", lo:0,
-      series:[{ y:m => m.cellAh * 3.65 * S.shipSOC / 100, label:"Watt-hours per cell as shipped", col:"var(--elyte)" }] }]
-};
-const CUSTOM = { aging:agingOCVChart, formation:formationChart };
+      `${m.burr.toFixed(1)} µm is coming from separation, not from here. The tallest burr anywhere in the cell is the one that pierces.`]
+    : S.wear > 70 ? ["warn", "Knife due for change",
+      "A worn blade smears active material over the edge instead of cutting it, which is the other way this station makes shorts."]
+    : ["ok", "Edge quality acceptable",
+      `${m.burrSlit.toFixed(1)} µm burr at ${S.cutSpd} m/min. Keep logging blade hours — burr grows quietly.`],
+  viz:m => ({ burr: clamp(m.burrSlit / 16 * 100) })
+},
 
-function renderCharts(st) {
-  const list = (CHARTS[st.id] || []).map(chartSVG);
-  if (CUSTOM[st.id]) list.unshift(CUSTOM[st.id]());
-  if (!list.length) return "";
-  return `<div class="charts">${list.join("")}</div>`;
-}
+vacdry: {
+  lead:"You are at the vacuum ovens. This is the last chance to take water out of the electrode. After this the material never sees room air again.",
+  ctl:["vac","vacT"],
+  read:m => [
+    V("Residual moisture", m.ppm.toFixed(0) + " ppm", m.ppm < 50 ? "ok" : m.ppm < 120 ? "warn" : "bad", "target below 50 ppm"),
+    V("Batch time", S.vac + " h", ok(S.vac, 8, 48), "PEM 8–48 h per batch"),
+    V("Oven temperature", S.vacT + " °C", ok(S.vacT, 60, 150), "PEM 60–150 °C"),
+    V("Binder risk", S.vacT > 140 ? "PVDF softening" : "none", S.vacT > 140 ? "warn" : "ok"),
+    V("HF risk carried forward", m.ppm > 80 ? "elevated" : "low", m.ppm > 80 ? "warn" : "ok", "water + LiPF₆ → HF")],
+  verdict:m => m.ppm > 120 ? ["bad", "Too wet to release",
+      `${m.ppm.toFixed(0)} ppm. Water hydrolyses LiPF₆ to hydrofluoric acid, which attacks the cathode and the aluminium collector.`]
+    : m.ppm > 50 ? ["warn", "Above target, releasable under concession",
+      `${m.ppm.toFixed(0)} ppm. Longer or hotter, but watch the binder above 140 °C.`]
+    : ["ok", "Electrode dry",
+      `${m.ppm.toFixed(0)} ppm after ${S.vac} h at ${S.vacT} °C. Cleared for the dry room.`],
+  viz:m => ({ dryness: clamp(100 - m.ppm / 4) })
+},
 
-/* --- the process window bar under every control -------------------------
-   answers the plain question "am I allowed to set it here?" before any
-   of the physics gets a chance to answer it for you.                     */
-function windowBar(k) {
-  const c = CTL[k];
-  if (c.opts || !c.good) return "";
-  const p = v => Math.max(1.6, Math.min(98.4, (v - c.min) / (c.max - c.min) * 100)).toFixed(1);
-  const inside = S[k] >= c.good[0] && S[k] <= c.good[1];
-  const full = c.good[0] <= c.min && c.good[1] >= c.max;
-  if (full && S[k] >= c.good[0] && S[k] <= c.good[1]) return "";   /* nothing to warn about */
-  const dec = c.step < 1 ? String(c.step).split(".")[1].length : 0;
-  return `<div class="winbar" title="Recommended window ${c.good[0]}–${c.good[1]}${c.unit || ""}">
-      <i style="left:${p(c.good[0])}%;width:${(p(c.good[1]) - p(c.good[0])).toFixed(1)}%"></i>
-      <b data-in="${inside}" style="left:${p(S[k])}%"></b>
-    </div>
-    <small class="winmsg" data-in="${inside}">${inside
-      ? (full ? "whole range is inside the recommended window"
-              : `inside the recommended window, ${c.good[0].toFixed(dec)}–${c.good[1].toFixed(dec)}${c.unit || ""}`)
-      : `outside the recommended window of ${c.good[0].toFixed(dec)}–${c.good[1].toFixed(dec)}${c.unit || ""} — expect trouble`}</small>`;
-}
-</script>
-<script>
-/* =====================================================================
-   RENDERING + INTERACTION
-   ===================================================================== */
+separation: {
+  lead:"You are at the punching station. Each sheet is cut with its contact lug already on it — 0.2 seconds per sheet, and every one has four fresh edges.",
+  ctl:["sepMode","cutSpd","wear"],
+  read:m => [
+    V("Burr from this cut", m.burrSep.toFixed(1) + " µm", m.burrSep < 8 ? "ok" : "bad", "separator is only 12–25 µm"),
+    V("Tallest burr in the cell", m.burr.toFixed(1) + " µm", m.burr < 8 ? "ok" : m.burr < 10 ? "warn" : "bad", "slitting may still be worse"),
+    V("Contour tolerance", S.sepMode ? "±60 µm" : "±200 µm", "ok", "PEM: approx. ±200 µm for punching"),
+    V("Cycle", S.sepMode ? "≈0.5 s/sheet" : "0.2 s/sheet", "ok"),
+    V("Tool wear cost", S.sepMode ? "none — no contact" : "punch and die regrind", S.sepMode ? "ok" : "warn"),
+    V("Method", S.sepMode ? "Laser cutting" : "Punching", "ok")],
+  verdict:m => (!S.sepMode && m.burrSep > 8) ? ["bad", "Punch is making burrs",
+      "Regrind or replace the tool. A burr on the lug edge is directly across from the separator once the stack closes."]
+    : m.burr > 10 ? ["warn", "This cut is clean, but slitting is not",
+      `The tallest burr in the cell is ${m.burr.toFixed(1)} µm and it came from the slitter. A clean punch does not undo a bad slit.`]
+    : S.sepMode ? ["ok", "Laser cutting — no mechanical burr",
+      "Contact-free, tighter contour, no tool wear. You pay for it in cycle time and a heat-affected edge."]
+    : ["ok", "Punching within tolerance",
+      `${m.burrSep.toFixed(1)} µm burr, ±200 µm contour, 0.2 s per sheet. This is the throughput route.`],
+  viz:m => ({ burr: clamp(m.burrSep / 16 * 100) })
+},
 
-/* ---------------- sidebar ---------------- */
-function renderNav() {
-  renderLayerNav();
-  const list = active();
-  $("nav").innerHTML = PHASES.map(([p, col]) => {
-    const items = list.filter(s => s.phase === p);
-    if (!items.length) return "";
-    return `<div class="phase"><div class="phase-title"><i style="background:${col}"></i>${p}</div>` +
-      items.map(s => {
-        const n = list.indexOf(s) + 1;
-        return `<button class="stage-btn" data-go="${s.id}" aria-current="${current === s.id}">
-          <b>${String(n).padStart(2, "0")}</b><em>${esc(s.title)}</em>
-          <i style="background:${col}"></i></button>`;
-      }).join("") + `</div>`;
-  }).join("");
-}
+stacking: {
+  lead:"You are at the stacker. Anode, separator, cathode, separator — up to 120 times, about a second per sheet, and every sheet has to land in the same place.",
+  ctl:["stackAcc","tA","tC"],
+  read:m => [
+    V("Positioning tolerance", S.stackAcc + " µm", S.stackAcc <= 300 ? "ok" : "bad", "PEM: 200–300 µm"),
+    V("Anode overhang left", Math.max(0, (600 - S.stackAcc) / 2).toFixed(0) + " µm", S.stackAcc <= 400 ? "ok" : "warn", "cathode must never sit proud"),
+    V("Layers", "up to 120", "ok"),
+    V("Sheet rate", "≈1 s per sheet", "ok"),
+    V("Stack height", ((S.tA * 2 + S.tC * 2 + 40) * 18 / 1000).toFixed(1) + " mm", "ok", "18 double-sided layers")],
+  verdict:m => S.stackAcc > 400 ? ["bad", "Alignment outside the safe window",
+      "If a cathode edge ends up outside the anode, lithium arriving there has no graphite to enter and plates as metal."]
+    : S.stackAcc > 300 ? ["warn", "Alignment drifting",
+      "PEM specifies 200–300 µm. Beyond that the anode overhang that protects the cathode edge starts to disappear."]
+    : ["ok", "Stack building square",
+      `±${S.stackAcc} µm with the anode overhanging the cathode on every side.`],
+  viz:m => ({ align: clamp(100 - (S.stackAcc - 100) / 5) })
+},
 
-/* ---------------- overview ---------------- */
-const WORD = {12:"Twelve", 13:"Thirteen", 14:"Fourteen", 15:"Fifteen"};
-function renderOverview() {
-  const m = model(), list = active(), g = GEOM[route];
-  $("overview").innerHTML = `
-    <div class="card card-pad">
-      <span class="eyebrow">Production simulator · ${g.name.toLowerCase()} line</span>
-      <h2 style="font-size:22px;letter-spacing:-.02em;margin:6px 0 8px">Walk the line from powder to packed cell</h2>
-      <p class="lede" style="max-width:78ch">${WORD[list.length] || list.length} stations, drawn as the machines you would actually stand next to. Pick any
-      station to open its machine, hover any part to learn what it does, and use the setpoint lab on the right —
-      every change updates the teaching relationships and reference-line estimates shown below.</p>
-    </div>
+winding: {
+  lead:"You are at the winder. Four webs are pulled onto one mandrel at up to 30 cells a minute — tension is the whole game.",
+  ctl:["webTens","stackAcc"],
+  read:m => [
+    V("Web tension", S.webTens + " N", band(S.webTens, 40, 90, 20)),
+    V("Telescoping risk", S.webTens < 40 ? "high" : "low", S.webTens < 40 ? "bad" : "ok", "loose winding walks sideways"),
+    V("Foil tear risk", S.webTens > 100 ? "high" : S.webTens > 90 ? "some" : "low", S.webTens > 100 ? "bad" : S.webTens > 90 ? "warn" : "ok", "copper is only 6–15 µm"),
+    V("Edge alignment", S.stackAcc + " µm", S.stackAcc <= 300 ? "ok" : "warn"),
+    V("Throughput", route === "cyl" ? "up to 30 cells/min" : "up to 6 cells/min", "ok", "PEM: round vs prismatic")],
+  verdict:m => S.webTens > 100 ? ["bad", "Tension will tear the foil",
+      "Copper at 6–15 µm has very little to give. A break here stops the line and scraps the roll."]
+    : S.webTens < 40 ? ["bad", "Roll will telescope",
+      "Too little tension and the layers walk sideways as the roll grows. The jelly roll will not fit the can."]
+    : ["ok", "Winding stable",
+      `${S.webTens} N holds the webs flat without stressing the copper.`],
+  viz:m => ({ tight: clamp((S.webTens - 20) / 120 * 100) })
+},
 
-    <div class="grid2">
-      <div class="card card-pad block">
-        <h4><i style="background:var(--green)"></i>Reference recipe</h4>
-        <p class="lede"><b>Graphite negative electrode · NMC positive electrode.</b> The material properties, voltage guidance and simplified capacity relationships apply only to this reference chemistry. LFP, silicon-rich, dry-electrode and other routes require different inputs and process windows.</p>
-      </div>
-      <div class="card card-pad block">
-        <h4><i style="background:var(--elyte)"></i>Model scope</h4>
-        <p class="lede">Published sources support the process sequence and displayed operating ranges. Capacity, throughput, wetting, process-health and risk-control outputs are illustrative teaching relationships. They are not calibrated plant predictions, equipment-sizing calculations or release criteria.</p>
-      </div>
-    </div>
+packPouch: {
+  lead:"You are at the pouch line. Deep-draw the film, weld the tabs, seal three sides — and leave one side open for the electrolyte.",
+  ctl:["drawDepth","sealT"],
+  read:m => [
+    V("Draw depth", S.drawDepth.toFixed(1) + " mm", S.drawDepth <= 10 ? "ok" : "bad", "PEM: up to 10 mm"),
+    V("Film thinning at the corner", (S.drawDepth * 4.5).toFixed(0) + "%", S.drawDepth <= 8 ? "ok" : "warn"),
+    V("Sealing temperature", S.sealT + " °C", band(S.sealT, 180, 200, 15), "PP sealant melts around 165 °C"),
+    V("Seal quality", m.sealQ.toFixed(0) + "%", m.sealQ >= 96 ? "ok" : m.sealQ >= 90 ? "warn" : "bad"),
+    V("Moisture ingress over life", m.sealQ >= 96 ? "within spec" : "elevated", m.sealQ >= 96 ? "ok" : "warn")],
+  verdict:m => m.sealQ < 90 ? ["bad", "Seal outside its process window",
+      S.sealT < 180 ? "Too cold — the sealant never fully bonds and the pouch leaks slowly for years."
+                    : "Too hot — the sealant thins and the barrier layer is compromised."]
+    : S.drawDepth > 8 ? ["warn", "Deep draw near the film's limit",
+      "The corners thin fastest. Past about 8 mm you are trading barrier thickness for volume."]
+    : ["ok", "Pouch formed and sealed",
+      `${S.drawDepth.toFixed(1)} mm draw, sealed at ${S.sealT} °C, seal quality ${m.sealQ.toFixed(0)}%.`],
+  viz:m => ({ seal: m.sealQ })
+},
 
-    <div class="card card-pad">
-      <span class="eyebrow">The line</span>
-      <div class="map" style="margin-top:10px">
-        ${PHASES.map(([p, col]) => {
-          const items = list.filter(s => s.phase === p);
-          if (!items.length) return "";
-          return `<div><div style="font-size:9px;font-weight:900;letter-spacing:.13em;color:var(--faint);margin-bottom:6px">
-            <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${col};margin-right:6px"></span>${p.toUpperCase()}</div>
-            <div class="map-row">${items.map(s => {
-              const n = list.indexOf(s) + 1;
-              return `<button class="map-node" data-go="${s.id}">
-                <b>${String(n).padStart(2, "0")}</b><strong>${esc(s.title)}</strong>
-                <small>${esc(s.env.iso)}${s.env.dew !== "—" ? " · " + esc(s.env.dew) : ""}</small>
-                <i style="background:${col}"></i></button>`;
-            }).join("")}</div></div>`;
-        }).join("")}
-      </div>
-    </div>
+packHard: {
+  lead:"You are at the hard-case line. The jelly roll goes into a deep-drawn can, the lid carries the safety devices, and the whole thing is welded shut.",
+  ctl:["webTens","sealT"],
+  read:m => [
+    V("Housing", route === "cyl" ? "Deep-drawn can, 21700 class" : "Prismatic can and lid", "ok"),
+    V("Lid safety devices", "burst disc + current interrupt", "ok", "gas-handling and closure sequences vary by hard-case design"),
+    V("Weld energy proxy", S.sealT + " (index)", band(S.sealT, 180, 210, 20)),
+    V("Roll fit", S.webTens >= 40 && S.webTens <= 90 ? "clean insert" : "interference", S.webTens >= 40 && S.webTens <= 90 ? "ok" : "warn"),
+    V("Machine investment", route === "cyl" ? "€ 35–45 M" : "€ 45–60 M", "ok", "PEM figures")],
+  verdict:m => (S.sealT < 170 || S.sealT > 220) ? ["bad", "Weld energy outside its window",
+      S.sealT < 170 ? "Too little energy and the lid weld is porous — the cell breathes and dies within months."
+                    : "Too much and the weld blows through into the cell. Either way the housing has failed its one job."]
+    : (S.webTens < 40 || S.webTens > 90) ? ["warn", "Jelly roll is not fitting cleanly",
+      "Tension at the winder decides the roll diameter. Outside 40–90 N the insert force rises and the separator can scuff."]
+    : ["ok", "Cell closed",
+      "Can, lid, burst disc and current-interrupt device in place. Only the fill port is still open."],
+  viz:m => ({ seal: clamp(100 - Math.abs(S.sealT - 195)) })
+},
 
-    <div class="card card-pad">
-      <span class="eyebrow">Illustrative reference-line estimates</span>
-      <div class="kpi" style="margin-top:10px">
-        <div><small>Reference capacity estimate</small><b>${m.cellAh.toFixed(1)} Ah</b><span>${g.unit}</span></div>
-        <div><small>Illustrative cells per day</small><b>${fmt(m.cellsDay)}</b><span>assumes one 1 m line and 85% uptime</span></div>
-        <div><small>Illustrative annual output</small><b>${m.gwh.toFixed(1)} GWh</b><span>simplified geometry and uptime estimate</span></div>
-        <div><small>Process-health score</small><b>${m.yieldPct.toFixed(1)}%</b><span>teaching score, not a factory-yield prediction</span></div>
-        <div><small>Coating porosity</small><b>${m.por.toFixed(0)}%</b><span>set by calender line force</span></div>
-        <div><small>N/P ratio</small><b>${m.np.toFixed(2)}</b><span>anode capacity ÷ cathode capacity</span></div>
-      </div>
-      <div class="srcline">Cell geometry, foil thicknesses and plant-scale assumptions follow ${
-        [1,2,13].map(n => `<button type="button" data-ref="${n}">${n} · ${esc(refMap[n].tag)}</button>`).join("")}</div>
-    </div>
+fillPouch: {
+  lead:"You are at the filling station, in the driest room in the building. Dosing is quick. Getting the liquid into every pore is not.",
+  ctl:["doseFac","fillP","soak"],
+  read:m => [
+    V("Dose", S.doseFac.toFixed(2) + " × pore volume", band(S.doseFac, 1.05, 1.35, 0.1)),
+    V("Wetting-cycle pressure", S.fillP + " mbar", ok(S.fillP, 20, 400), "PEM working pressure ≈150 mbar"),
+    V("Wetting reached", m.wetting.toFixed(0) + "%", m.wetting >= 96 ? "ok" : m.wetting >= 90 ? "warn" : "bad"),
+    V("Wetting time", S.soak + " h", "ok", "capillary action is slow"),
+    V("Free electrolyte", m.excess > 0 ? "yes — will gas" : "none", m.excess > 0 ? "warn" : "ok"),
+    V("Porosity available", m.por.toFixed(0) + "%", m.por >= 22 ? "ok" : "warn", "set at the calender")],
+  verdict:m => m.wetting < 90 ? ["bad", "Cell is not fully wetted",
+      `${m.wetting.toFixed(0)}%. Incomplete wetting can create nonuniform regions. Increase wetting time or review pressure cycling and dose; do not rely on formation to correct an inadequate filling process.`]
+    : m.excess > 0 ? ["warn", "Over-dosed",
+      "Electrolyte beyond the pore volume has nowhere to sit. It decomposes at the electrode surface and gasses during formation."]
+    : ["ok", "Filled and wetted",
+      `${m.wetting.toFixed(0)}% wetted at ${S.doseFac.toFixed(2)} × pore volume. Ready for pre-treatment.`],
+  viz:m => ({ wet: m.wetting })
+},
 
-    <div class="grid2">
-      <div class="card card-pad block">
-        <h4><i style="background:var(--green)"></i>How to read this simulator</h4>
-        <ul>
-          <li><b>Every station is a real machine.</b> The schematics follow the PEM RWTH Aachen process figures — unwinders, slot die, four-chamber dryer, calender nip, punching unit, Z-folder, formation racks.</li>
-          <li><b>Hover or tab any part</b> of a machine to get its job, its setpoints and why it matters.</li>
-          <li><b>The setpoint lab is live.</b> Coat thickness, line speed, dryer temperature, calender force, vacuum drying time, formation C-rate and aging period all feed one model.</li>
-          <li><b>Change the cell format</b> in the sidebar and the line itself changes — the pouch route separates and stacks sheets, the can routes wind a jelly roll instead.</li>
-          <li><b>Start with the big picture.</b> <button type="button" data-go="view:anatomy" style="color:var(--green);font-weight:800;text-decoration:underline">Cell anatomy</button> shows what you are building and who builds each layer; <button type="button" data-go="view:flow" style="color:var(--green);font-weight:800;text-decoration:underline">material flow</button> follows one material through every state; <button type="button" data-go="view:matrix" style="color:var(--green);font-weight:800;text-decoration:underline">process ↔ component</button> maps every station onto every part of the cell.</li>
-        </ul>
-      </div>
-      <div class="card card-pad block">
-        <h4><i style="background:var(--destructive)"></i>Three major defect drivers</h4>
-        <ul>
-          <li><b>Particles and burrs.</b> A burr from slitting or a particle rolled in at the calender can pierce the separator. A severe internal short can create local heating that external controls may not stop; prevention depends on cleanliness, edge quality, separator integrity and screening.</li>
-          <li><b>Water.</b> Residual water can hydrolyse LiPF₆ and generate HF-containing species that degrade electrolyte and interfaces. That is why the dew point drops station by station to −50…−70 °C at electrolyte filling.</li>
-          <li><b>Cross-contamination.</b> Anode and cathode powders look identical and are both black. Mixing rooms are commonly separated to reduce this risk.</li>
-        </ul>
-      </div>
-    </div>`;
-}
+fillHard: {
+  lead:"You are at the can filling station. Same chemistry, tighter geometry — a wound roll wets more slowly than a stack.",
+  ctl:["doseFac","fillP","soak"],
+  read:m => [
+    V("Dose", S.doseFac.toFixed(2) + " × pore volume", band(S.doseFac, 1.05, 1.35, 0.1)),
+    V("Wetting-cycle pressure", S.fillP + " mbar", ok(S.fillP, 20, 400), "separate from chamber evacuation"),
+    V("Wetting reached", m.wetting.toFixed(0) + "%", m.wetting >= 96 ? "ok" : m.wetting >= 90 ? "warn" : "bad"),
+    V("Wetting time", S.soak + " h", "ok"),
+    V("Port closure", "sealed after wetting", "ok"),
+    V("No roll pressing available", "wound cells cannot be squeezed", "warn", "time and vacuum are your only tools")],
+  verdict:m => m.wetting < 90 ? ["bad", "Roll not fully wetted",
+      `${m.wetting.toFixed(0)}%. A wound cell has no route for mechanical help — you can only give it more time or deeper vacuum.`]
+    : ["ok", "Filled and wetted",
+      `${m.wetting.toFixed(0)}% after ${S.soak} h at ${S.fillP} mbar.`],
+  viz:m => ({ wet: m.wetting })
+},
 
-/* ---------------- station ---------------- */
-function renderStation(st) {
-  const list = active(), n = list.indexOf(st) + 1, m = model(), col = phaseColor(st.phase);
-  $("stationView").innerHTML = `
-    <div class="machine ${running ? "is-run" : ""}" id="machineWrap">
-      <div class="machine-head">
-        <h3>${String(n).padStart(2, "0")} · ${esc(st.title)}</h3>
-        <div class="tag">
-          <span>${esc(st.env.iso)}</span>
-          ${st.env.dew !== "—" ? `<span>Dew point ${esc(st.env.dew)}</span>` : ""}
-          <span>${esc(st.env.temp)}</span>
-          <span>${esc(st.takt)}</span>
-        </div>
-      </div>
-      <svg viewBox="0 0 980 318" role="img" aria-label="${esc(st.title)} machine schematic"
+rollpress: {
+  lead:"You are at pre-treatment. The cell is already filled — this station is about getting the electrolyte into pores that time alone would take days to reach. The guide gives it a 30–50 °C window and a soaking time, and lists roll pressing, a vibrating table and pre-charging as the ways of doing it.",
+  ctl:["pressP","soak","preT"],
+  read:m => [
+    V("Pressure", S.pressP.toFixed(2) + " MPa", band(S.pressP, 0.2, 0.8, 0.2)),
+    V("Wetting reached", m.wetting.toFixed(0) + "%", m.wetting >= 96 ? "ok" : "warn"),
+    V("Time saved vs soaking alone", (S.pressP * 14).toFixed(0) + " h", "ok"),
+    V("Separator stress", S.pressP > 0.9 ? "high" : "acceptable", S.pressP > 0.9 ? "bad" : "ok"),
+    V("Pre-treatment temperature", S.preT + " °C", ok(S.preT, 30, 50), "PEM pre-treatment window 30–50 °C")],
+  verdict:m => S.pressP > 0.9 ? ["bad", "Pressing too hard",
+      "Above the selected teaching window, pressure on a wet stack raises separator-stress and particle-driven puncture risk. Actual limits depend on separator, stack geometry, cleanliness and equipment validation."]
+    : m.wetting >= 96 ? ["ok", "Electrolyte distributed",
+      `${m.wetting.toFixed(0)}% illustrative wetting. More uniform electrolyte distribution supports more uniform formation, but this score does not prove that every pore is wetted.`]
+    : ["warn", "Still short of full wetting",
+      "Raise the pressure a little or leave the cell longer before formation."],
+  viz:m => ({ press: clamp(S.pressP / 1.2 * 100) })
+},
+
+formation: {
+  lead:"You are at formation — one of the most capital- and time-intensive stages in the reference line. The first controlled cycles form the SEI; rate, temperature, voltage limits, pressure and cleanliness all influence the result.",
+  ctl:["cRate","formT","vMax"],
+  read:m => [
+    V("First charge", S.cRate.toFixed(2) + " C", ok(S.cRate, 0.1, 0.5), "PEM: 0.1–0.5 C"),
+    V("Illustrative SEI score", m.seiQ.toFixed(0) + "%", m.seiQ >= 90 ? "ok" : m.seiQ >= 80 ? "warn" : "bad"),
+    V("Illustrative irreversible loss", m.liLoss.toFixed(1) + "%", m.liLoss < 12 ? "ok" : "warn", "teaching estimate of first-cycle cyclable-lithium consumption"),
+    V("Time on the rack", (13 / (S.cRate / 0.25)).toFixed(1) + " h", (13 / (S.cRate / 0.25)) <= 15 ? "ok" : "warn", "PEM: up to 15 h"),
+    V("Cell temperature", S.formT + " °C", band(S.formT, 20, 50, 8)),
+    V("Upper cut-off", S.vMax.toFixed(2) + " V", S.vMax <= 4.25 ? "ok" : "bad")],
+  verdict:m => S.cRate > 0.42 ? ["bad", "Charging too fast",
+      "The selected first-charge rate is near the upper end of the reference range. Faster formation can change interphase properties and raise plating risk under some conditions; validated recipes are chemistry- and design-specific."]
