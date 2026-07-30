@@ -4,6 +4,39 @@ All notable changes to `battery-core` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-07-30
+
+### Added
+
+- `battery_core.aging`, with the two rate laws that account for most of how a
+  cell wears out: `arrhenius_factor` for the temperature dependence of a
+  thermally activated process, and `parabolic_film_thickness` for
+  diffusion-limited film growth, where quadrupling the time doubles the film.
+
+  Both are keyword-only. Each takes two arguments of the same kind and unit —
+  two temperatures, two times — so a transposed positional call would return a
+  plausible wrong number rather than fail.
+
+  Neither function supplies chemistry-specific constants. An activation energy
+  and a reference thickness are inputs, exactly as the diffusion coefficient is
+  an input to Fick's first law. Fitted coefficients belong to a validated model
+  of a specific cell.
+
+- Chapter 1 course material: Part 03B, an all-solid-state production simulator,
+  and Part 04, an interactive battery-aging notebook. Part 03's lithium-ion
+  simulator is updated to the February 2026 PEM RWTH Aachen and VDMA edition,
+  which adds the solvent-free dry-electrode route and plant-level views.
+
+### Fixed
+
+- `ruff` and `mypy` now run in CI. They were configured in 0.2.0 but nothing
+  invoked them.
+- mypy no longer pins an analysis target older than the interpreter it runs
+  under, which made it reject NumPy's type stubs and abort before checking any
+  of this project's code.
+- The version test no longer imports `tomllib` unguarded, which broke the
+  Python 3.10 leg of the test matrix.
+
 ## [0.2.0] — 2026-07-30
 
 This release changes the capacity API in a way that breaks existing calls. See

@@ -72,4 +72,7 @@ learning material are ready.
 The repository also contains tested physics modules that can support later chapters:
 
 - Fick's first law for local diffusive flux;
-- its documentation, example, and transport notebook.
+- its documentation, example, and transport notebook;
+- the degradation rate laws behind Part 04: an Arrhenius temperature factor and
+  a parabolic film-growth law, both taking their coefficients as inputs rather
+  than assuming a chemistry.
