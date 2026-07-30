@@ -58,6 +58,13 @@ select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
 "notebooks/**/*.ipynb" = ["E501", "N803", "N806", "RUF001", "RUF002", "RUF003"]
 
 [tool.mypy]
-python_version = "3.10"
+# No python_version is pinned on purpose. mypy reads the type stubs of the
+# NumPy actually installed, and recent NumPy ships stubs written in syntax its
+# own minimum Python allows. Pinning an older target makes mypy reject those
+# stubs and abort before it checks this project at all. Letting mypy follow the
+# running interpreter keeps the target and the stubs consistent.
+#
+# The 3.10 floor is still enforced: ruff's target-version rejects newer syntax,
+# and the pytest matrix runs the suite on 3.10 itself.
 files = ["src"]
 strict = true
