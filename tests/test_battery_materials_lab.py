@@ -1,7 +1,6 @@
 from html.parser import HTMLParser
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = ROOT / "docs" / "labs" / "battery-materials-lab" / "index.html"
 

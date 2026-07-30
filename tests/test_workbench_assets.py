@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-
 WORKBENCH = (
     Path(__file__).resolve().parents[1]
     / "docs"

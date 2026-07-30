@@ -1,9 +1,8 @@
 """Static checks for the Battery Production learning simulator."""
 
+import re
 from html.parser import HTMLParser
 from pathlib import Path
-import re
-
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE = ROOT / "docs" / "fundamentals" / "battery-production"
@@ -44,7 +43,9 @@ def test_production_loader_and_payload_exist() -> None:
     assert LOADER.is_file()
     parts = _parts()
     assert all(path.is_file() for path in parts)
-    assert sorted(path.name for path in PAYLOAD.glob("source-*.part")) == sorted(EXPECTED_PARTS)
+    assert sorted(path.name for path in PAYLOAD.glob("source-*.part")) == sorted(
+        EXPECTED_PARTS
+    )
     html = HTML.read_text(encoding="utf-8")
     loader = LOADER.read_text(encoding="utf-8")
     assert 'src="loader.js"' in html
@@ -97,9 +98,17 @@ def test_production_scientific_qualifications_are_present() -> None:
     assert "does not guarantee prevention of thermal runaway" in source
     assert "formation should not be treated as a reliable correction" in source
     assert "Hard-case gas-management and closure sequences vary by design" in source
-    assert "actual criteria depend on chemistry, SOC, temperature and test duration" in source
-    assert "defined capacity test with specified charge, rest, discharge and cutoff conditions" in source
-    assert "Example plant shipping target: 10%–20% SOC" in source
+    assert (
+        "actual criteria depend on chemistry, SOC, temperature and test duration"
+        in source
+    )
+    assert (
+        "defined capacity test with specified charge, rest, discharge and cutoff"
+        " conditions" in source
+    )
+    # The en dash is the character the simulator renders, so it is load-bearing
+    # here and must not be normalised to a hyphen.
+    assert "Example plant shipping target: 10%–20% SOC" in source  # noqa: RUF001
     assert "PI 965 maximum: 30% SOC for UN 3480 shipped alone by air" in source
 
 
