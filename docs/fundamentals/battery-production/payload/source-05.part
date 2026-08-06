@@ -85,7 +85,7 @@ ${H(4, 780, 54, 166, 154, `
 `;
 
 M.coating = () => `
-${R(28, 42, 924, 232, "mFrame", 12)}
+${R(28, 42, 924, 268, "mFrame", 12)}
 ${P("M194 54V262M474 54V262M732 54V262", "mFloor")}
 ${P("M42 274H938", "mFloor")}
 ${T(50, 66, "SLURRY DELIVERY", "mFlowLabel")}
@@ -107,15 +107,14 @@ ${H(4, 202, 168, 112, 94, `
 ${H(2, 302, 76, 142, 112, `
   ${R(320, 92, 100, 30, "mSteel", 5)}${P("M328 122l26 58h34l24 -58z", "mDark")}
   ${P("M355 175h32l-4 12h-24z", "mAcc")}
-  ${T(370, 86, "Slot die", "mTxt", "middle")}${T(370, 202, "metered wet film", "mTxtS", "middle")}`)}
+  ${T(370, 86, "Slot die", "mTxt", "middle")}`)}
 ${H(3, 322, 174, 120, 86, `
   ${ROLLER(382, 222, 35)}${T(382, 268, "Backing roll", "mTxt", "middle")}`)}
-${P("M250 214Q308 214 350 222Q366 228 382 222H906", "mWeb")}
-<path class="mWeb flowdash" stroke="var(--copper)" d="M250 214Q308 214 350 222Q366 228 382 222H906"/>
-${P("M392 214H906", "mWebA")}
-<path class="mWebA flowdash" stroke="var(--anode)" d="M392 214H906"/>
+${P("M250 214Q308 214 350 222Q366 228 382 222H884", "mWeb")}
+<path class="mWeb flowdash" stroke="var(--copper)" d="M250 214Q308 214 350 222Q366 228 382 222H884"/>
+${P("M392 214H884", "mWebA")}
+<path class="mWebA flowdash" stroke="var(--anode)" d="M392 214H884"/>
 ${ARROW(284, 214)}${ARROW(456, 214)}${ARROW(690, 214)}${ARROW(824, 214)}
-${T(272, 198, "BARE FOIL", "mFlowLabel")}${T(436, 198, "WET COATED WEB", "mFlowLabel")}
 ${H(5, 492, 88, 190, 104, `
   ${R(510, 112, 154, 48, "mSteel2", 6)}
   ${R(520, 121, 34, 30, "mAn", 3)}${R(566, 121, 34, 30, "mAn", 3)}${R(612, 121, 34, 30, "mAn", 3)}
@@ -123,10 +122,15 @@ ${H(5, 492, 88, 190, 104, `
 ${H(6, 690, 82, 86, 172, `
   ${P("M718 106h30v52h-30z", "mAcc")}${P("M733 158v38", "mLead")}
   ${GAUGE(733, 218, "wet-film gauge")}${T(733, 262, "±2 g/m²", "mTxtS", "middle")}`)}
-${H(7, 814, 156, 132, 108, `
-  ${REEL(894, 214, 34, "mAn")}${T(894, 264, "One-side rewind", "mTxt", "middle")}`)}
+${H(7, 804, 156, 132, 108, `
+  ${REEL(884, 214, 34, "mAn")}${T(884, 264, "One-side rewind", "mTxt", "middle")}`)}
 ${R(790, 82, 138, 42, "mZone", 7)}${T(859, 99, "PASS 1 OF 2", "mFlowLabel", "middle")}
 ${T(859, 115, "reverse and coat side two", "mTxtS", "middle")}
+${R(202, 282, 100, 22, "mBadge", 11)}${T(252, 297, "BARE FOIL", "mFlowLabel", "middle")}
+${ARROW(312, 293)}
+${R(338, 282, 136, 22, "mBadge", 11)}${T(406, 297, "METERED WET FILM", "mFlowLabel", "middle")}
+${ARROW(484, 293)}
+${R(510, 282, 150, 22, "mBadge", 11)}${T(585, 297, "WET COATED WEB", "mFlowLabel", "middle")}
 `;
 
 M.drying = () => `
@@ -154,35 +158,38 @@ ${T(490, 298, "up to 100 m · supported by air · no web contact inside the hot 
 `;
 
 M.calendering = () => `
-${R(26, 46, 928, 238, "mFrame", 12)}${P("M40 284H944", "mFloor")}
-${P("M290 58V272M620 58V272M806 58V272", "mFloor")}
-${T(48, 70, "INFEED & CLEANING", "mFlowLabel")}${T(312, 70, "CONTROLLED NIP", "mFlowLabel")}
+${R(26, 46, 928, 260, "mFrame", 12)}${P("M40 306H944", "mFloor")}
+${P("M290 58V294M620 58V294M806 58V294", "mFloor")}
+${T(48, 70, "INFEED & CLEANING", "mFlowLabel")}
 ${T(642, 70, "CLOSED-LOOP QUALITY", "mFlowLabel")}${T(826, 70, "OUTFEED", "mFlowLabel")}
-${H(0, 42, 126, 112, 142, `${REEL(92, 178, 34, "mAn")}${T(92, 232, "Dried electrode", "mTxt", "middle")}${T(92, 248, "≈50% porosity", "mTxtS", "middle")}`)}
+${H(0, 42, 116, 112, 152, `${REEL(92, 169, 34, "mAn")}${T(92, 232, "Dried electrode", "mTxt", "middle")}${T(92, 248, "≈50% porosity", "mTxtS", "middle")}`)}
 ${H(1, 142, 112, 78, 148, `
   ${R(158, 124, 46, 28, "mSteel2", 5)}${P("M169 132l12 10l-9 2l12 8", "mAcc")}
-  ${ROLLER(181, 190, 12)}${T(181, 232, "Static", "mTxt", "middle")}${T(181, 247, "neutraliser", "mTxtS", "middle")}`)}
+  ${ROLLER(181, 181, 12)}${T(181, 232, "Static", "mTxt", "middle")}${T(181, 247, "neutraliser", "mTxtS", "middle")}`)}
 ${H(2, 214, 96, 86, 166, `
   ${P("M232 132l25 -34l25 34z", "mSteel2")}${P("M257 98V80", "mLine")}${ARROW(257, 82)}
-  ${ROLLER(257, 190, 12)}${T(257, 232, "Brush +", "mTxt", "middle")}${T(257, 247, "extraction", "mTxtS", "middle")}`)}
-${H(3, 320, 54, 280, 222, `
+  ${ROLLER(257, 181, 12)}${T(257, 232, "Brush +", "mTxt", "middle")}${T(257, 247, "extraction", "mTxtS", "middle")}`)}
+${H(3, 320, 54, 280, 246, `
   ${R(342, 64, 236, 20, "mDark", 5)}${R(354, 78, 14, 184, "mSteel", 4)}${R(552, 78, 14, 184, "mSteel", 4)}
-  ${ROLLER(460, 120, 49)}${ROLLER(460, 228, 49)}
-  ${P("M406 72v28M514 72v28", "mAcc")}${P("M400 92l6 8l6 -8M508 92l6 8l6 -8", "mAcc")}
+  ${T(460, 78, "CONTROLLED NIP", "mTxtW", "middle")}
+  ${ROLLER(460, 118, 43)}${ROLLER(460, 220, 43)}
+  ${P("M406 84v16M514 84v16", "mAcc")}${P("M400 92l6 8l6 -8M508 92l6 8l6 -8", "mAcc")}
   ${R(386, 86, 148, 25, "mBadge", 13)}${T(460, 103, "LINE FORCE ≤ 2 500 N/mm", "mFlowLabel", "middle")}
-  ${T(532, 139, "TOP ROLL", "mTxtS")}${T(532, 246, "BOTTOM ROLL", "mTxtS")}
-  ${T(460, 290, "gap sets final thickness and porosity", "mTxt", "middle")}`)}
-${P("M92 178H411", "mWebA")}<path class="mWebA flowdash" stroke="var(--anode)" stroke-width="11" d="M92 178H411"/>
-${P("M509 178H906", "mWebA")}<path class="mWebA flowdash" stroke="var(--anode)" stroke-width="6" d="M509 178H906"/>
-${ARROW(128, 178)}${ARROW(304, 178)}${ARROW(584, 178)}${ARROW(772, 178)}${ARROW(862, 178)}
-${T(320, 160, "THICK · OPEN", "mFlowLabel")}${T(526, 160, "THIN · DENSE", "mFlowLabel")}
+  ${R(298, 272, 92, 24, "mBadge", 12)}${T(344, 288, "THICK / OPEN", "mTxtS", "middle")}
+  ${ARROW(394, 284)}
+  ${R(416, 272, 92, 24, "mZone", 12)}${T(462, 288, "GAP → POROSITY", "mTxtS", "middle")}
+  ${ARROW(512, 284)}
+  ${R(534, 272, 80, 24, "mBadge", 12)}${T(574, 288, "THIN / DENSE", "mTxtS", "middle")}`)}
+${P("M92 169H411", "mWebA")}<path class="mWebA flowdash" stroke="var(--anode)" stroke-width="11" d="M92 169H411"/>
+${P("M509 169H886", "mWebA")}<path class="mWebA flowdash" stroke="var(--anode)" stroke-width="6" d="M509 169H886"/>
+${ARROW(128, 169)}${ARROW(304, 169)}${ARROW(584, 169)}${ARROW(772, 169)}${ARROW(862, 169)}
 ${H(4, 642, 92, 104, 174, `
   ${P("M666 116h56v70h-56z", "mSteel2")}${P("M678 130h32v42h-32z", "mGlass")}
   ${P("M694 186V208", "mLead")}${GAUGE(694, 228, "thickness")}${T(694, 270, "feedback", "mTxtS", "middle")}`)}
 ${H(5, 736, 96, 88, 166, `
   ${P("M754 132l26 -34l26 34z", "mSteel2")}${P("M780 98V80", "mLine")}
-  ${ROLLER(780, 190, 12)}${T(780, 232, "Final clean", "mTxt", "middle")}${T(780, 247, "+ suction", "mTxtS", "middle")}`)}
-${H(6, 832, 122, 112, 142, `${REEL(906, 178, 34, "mAn")}${T(906, 232, "Calendered roll", "mTxt", "middle")}${T(906, 248, "20–35% porosity", "mTxtS", "middle")}`)}
+  ${ROLLER(780, 181, 12)}${T(780, 232, "Final clean", "mTxt", "middle")}${T(780, 247, "+ suction", "mTxtS", "middle")}`)}
+${H(6, 818, 112, 126, 152, `${REEL(886, 169, 34, "mAn")}${T(886, 232, "Calendered roll", "mTxt", "middle")}${T(886, 248, "20–35% porosity", "mTxtS", "middle")}`)}
 `;
 
 M.drycoat = () => `

@@ -143,11 +143,15 @@ def test_focal_machine_diagrams_share_one_process_language() -> None:
         "CONTROLLED NIP",
         "Z-FOLD WORKING ZONE",
         "BARE FOIL",
+        "METERED WET FILM",
         "WET COATED WEB",
-        "THICK · OPEN",
-        "THIN · DENSE",
+        "THICK / OPEN",
+        "GAP → POROSITY",
+        "THIN / DENSE",
     ):
         assert label in source
     assert 'const PIC_W = 372, PIC_H = 140;' in source
     assert "airflow follows solvent load · vapour → recovery" in source
     assert "place · fold · place · fold" in source
+    assert 'T(272, 198, "BARE FOIL"' not in source
+    assert 'T(460, 290, "gap sets final thickness and porosity"' not in source
