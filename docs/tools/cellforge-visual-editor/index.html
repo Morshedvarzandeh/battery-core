@@ -1,0 +1,1367 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Cellforge Visual Editor</title>
+<style>:root {
+  color-scheme: light dark;
+  background-color: transparent !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --main-surface-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --red: light-dark(rgb(186 38 35), rgb(250 66 62));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 10px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E");
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-visualize-standalone] {
+  background-color: var(--background) !important;
+}
+
+/* Generic mobile code-block hosts provide light/dark mode but no series palette.
+   AppBlock hosts set all six variables themselves. */
+:root:not([data-app-block-surface]) {
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(#f3883b, #f59a56);
+  --viz-series-3: light-dark(#5dc977, #74d58b);
+  --viz-series-4: light-dark(#eb77b1, #f08fc0);
+  --viz-series-5: light-dark(#9b79ec, #aa91ef);
+  --viz-series-6: light-dark(#3ab9b1, #5acbc2);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html > body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+:root:not([data-app-block-surface]) > body {
+  padding: 12px;
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive > .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align="right"]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align="center"]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget > :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The bundled tooltip runtime owns [data-tooltip]. AppBlock's CSS-only
+   pseudo-tooltip can widen dense grids even while hidden. */
+main [data-tooltip]::after {
+  content: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls > .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls > .form-label > :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--interactive-label-primary-default, var(--primary-foreground));
+  background: var(--interactive-bg-primary-default, var(--foreground));
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(
+    in srgb,
+    var(--interactive-label-primary-default, var(--primary-foreground)) 50%,
+    transparent
+  );
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type="file"] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type="file"]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type="file"]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type="color"] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type="color"]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type="checkbox"]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: "";
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: "";
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed="true"],
+    [aria-selected="true"],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed="true"], [aria-selected="true"], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget > svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+</style>
+</head>
+<body>
+<div id="cellforge-layout-editor">
+  <div class="viz-controls" aria-label="Diagram selection and history">
+    <button type="button" class="btn btn-primary" data-station="coating" aria-pressed="true">Coating</button>
+    <button type="button" class="btn" data-station="calendering" aria-pressed="false">Calendering</button>
+    <button type="button" class="btn btn-ghost" id="cf-undo" disabled>Undo</button>
+    <button type="button" class="btn btn-ghost" id="cf-redo" disabled>Redo</button>
+    <button type="button" class="btn btn-ghost" id="cf-reset">Reset this diagram</button>
+  </div>
+
+  <div class="viz-controls" id="cf-properties" aria-label="Selected element controls">
+    <label class="form-label" for="cf-text">Selected text
+      <input class="form-control" id="cf-text" type="text" disabled value="Select a label or machine part">
+    </label>
+    <label class="form-label" for="cf-size">Size <span id="cf-size-value">100%</span>
+      <input class="form-range" id="cf-size" type="range" min="70" max="140" step="1" value="100" disabled>
+    </label>
+    <div class="viz-row" aria-label="Nudge selected element">
+      <button type="button" class="btn" data-nudge="-5,0" disabled>←</button>
+      <button type="button" class="btn" data-nudge="0,-5" disabled>↑</button>
+      <button type="button" class="btn" data-nudge="0,5" disabled>↓</button>
+      <button type="button" class="btn" data-nudge="5,0" disabled>→</button>
+    </div>
+    <label class="form-check form-switch">
+      <input class="form-check-input" id="cf-snap" type="checkbox" checked>
+      <span class="form-check-label">Snap to grid</span>
+    </label>
+  </div>
+
+  <div class="viz-controls cf-mobile-nav" id="cf-mobile-nav" hidden aria-label="Visible machine section">
+    <button type="button" class="btn" id="cf-prev">Previous section</button>
+    <span class="viz-badge" id="cf-segment">Section 1 of 3</span>
+    <button type="button" class="btn" id="cf-next">Next section</button>
+  </div>
+
+  <div class="card cf-canvas">
+    <svg id="cf-svg" viewBox="0 0 980 318" role="img" aria-label="Editable CellForge production machine diagram">
+      <title>Editable CellForge production machine diagram</title>
+      <desc>Select a label or machine component, drag it, edit its text, or resize it.</desc>
+    </svg>
+  </div>
+
+  <div class="viz-row cf-footer">
+    <span class="viz-badge" id="cf-selection">Nothing selected</span>
+    <span class="viz-badge" id="cf-check">Checking labels…</span>
+    <button type="button" class="btn btn-primary" id="cf-save">Save draft</button>
+    <button type="button" class="btn" id="cf-copy">Copy both layouts</button>
+  </div>
+
+  <div class="card" id="cf-export" hidden>
+    <label class="form-label" for="cf-export-text">Both layout changes
+      <textarea class="form-control" id="cf-export-text" rows="9" readonly></textarea>
+    </label>
+    <div class="viz-row">
+      <button type="button" class="btn btn-primary" id="cf-copy-again">Copy text</button>
+      <button type="button" class="btn" id="cf-download">Download JSON</button>
+      <button type="button" class="btn btn-ghost" id="cf-close-export">Close</button>
+      <span class="viz-badge" id="cf-export-status" role="status" aria-live="polite">Ready to copy</span>
+    </div>
+  </div>
+  <p class="sr-only" id="cf-a11y-status" aria-live="polite"></p>
+</div>
+
+<style>
+#cellforge-layout-editor{display:grid;gap:var(--space-3,12px);width:100%;color:var(--foreground)}
+#cellforge-layout-editor .cf-canvas{touch-action:none;overflow:hidden}
+#cellforge-layout-editor #cf-svg{display:block;width:100%;height:auto;aspect-ratio:980/318;background:
+  linear-gradient(180deg,color-mix(in srgb,var(--card) 46%,var(--background)) 0%,var(--background) 62%,color-mix(in srgb,var(--muted) 42%,var(--background)) 100%)}
+#cellforge-layout-editor .cf-grid{fill:url(#cf-grid-pattern);opacity:.42;pointer-events:none}
+#cellforge-layout-editor .cf-editable{cursor:grab}
+#cellforge-layout-editor .cf-editable:active{cursor:grabbing}
+#cellforge-layout-editor .cf-selected{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--primary) 70%,transparent))}
+#cellforge-layout-editor .cf-selected.cf-editable{outline:none}
+#cellforge-layout-editor .cf-selected-box{fill:none;stroke:var(--primary);stroke-width:2;stroke-dasharray:7 5;pointer-events:none}
+#cellforge-layout-editor text.cf-collision{fill:var(--destructive);paint-order:stroke fill;stroke:var(--background);stroke-width:4}
+#cellforge-layout-editor .mSteel{fill:color-mix(in srgb,var(--muted) 65%,var(--card));stroke:var(--muted-foreground);stroke-width:1.7}
+#cellforge-layout-editor .mSteel2{fill:var(--card);stroke:var(--muted-foreground);stroke-width:1.7}
+#cellforge-layout-editor .mDark{fill:var(--foreground);stroke:var(--muted-foreground);stroke-width:1.7}
+#cellforge-layout-editor .mGlass{fill:color-mix(in srgb,var(--viz-series-1) 14%,var(--card));stroke:var(--viz-series-1);stroke-width:1.5}
+#cellforge-layout-editor .mHot{fill:var(--viz-series-4);stroke:var(--destructive);stroke-width:1.5}
+#cellforge-layout-editor .mCu{fill:var(--viz-series-3);stroke:var(--muted-foreground);stroke-width:1.2}
+#cellforge-layout-editor .mAn{fill:var(--viz-series-2);stroke:var(--muted-foreground);stroke-width:1.2}
+#cellforge-layout-editor .mEl{fill:var(--viz-series-1);stroke:var(--muted-foreground);stroke-width:1.2}
+#cellforge-layout-editor .mAcc{fill:var(--primary);stroke:var(--ring);stroke-width:1.2}
+#cellforge-layout-editor .mLine{stroke:var(--muted-foreground);stroke-width:1.7;fill:none}
+#cellforge-layout-editor .mPipe{stroke:var(--viz-series-1);stroke-width:5;fill:none;stroke-linecap:round}
+#cellforge-layout-editor .mWeb,#cellforge-layout-editor .mWebC{stroke:var(--viz-series-3);stroke-width:5;fill:none;stroke-linecap:round}
+#cellforge-layout-editor .mWebA{stroke:var(--viz-series-2);stroke-width:6;fill:none;stroke-linecap:round}
+#cellforge-layout-editor .mTxt{fill:var(--foreground);font-size:var(--font-size-base);font-weight:500}
+#cellforge-layout-editor .mTxtS{fill:var(--muted-foreground);font-size:var(--font-size-small);font-weight:500}
+#cellforge-layout-editor .mTxtW{fill:var(--primary-foreground);font-size:var(--font-size-small);font-weight:500}
+#cellforge-layout-editor .mTxt,#cellforge-layout-editor .mTxtS{paint-order:stroke fill;stroke:var(--background);stroke-width:3.2;stroke-linejoin:round;stroke-linecap:round}
+#cellforge-layout-editor .mLead{stroke:var(--muted-foreground);stroke-width:1;fill:none}
+#cellforge-layout-editor .mArrow{fill:var(--primary)}
+#cellforge-layout-editor .mFloor{stroke:var(--border);stroke-width:2;fill:none}
+#cellforge-layout-editor .mFrame{fill:color-mix(in srgb,var(--card) 88%,transparent);stroke:var(--border);stroke-width:1.5}
+#cellforge-layout-editor .mZone{fill:color-mix(in srgb,var(--primary) 7%,transparent);stroke:color-mix(in srgb,var(--primary) 34%,var(--border));stroke-width:1.2}
+#cellforge-layout-editor .mFlowLabel{fill:var(--foreground);font-size:var(--font-size-small);font-weight:500;letter-spacing:.08em}
+#cellforge-layout-editor .mBadge{fill:var(--background);stroke:var(--border);stroke-width:1.2}
+#cellforge-layout-editor .flowdash{stroke-dasharray:9 7}
+#cellforge-layout-editor .hit,#cellforge-layout-editor .ring{display:none}
+#cellforge-layout-editor .cf-footer{justify-content:flex-end}
+@media(max-width:599px){
+  #cellforge-layout-editor #cf-svg{aspect-ratio:340/318}
+  #cellforge-layout-editor .cf-footer{justify-content:flex-start}
+}
+</style>
+
+<script>
+(function(){
+  "use strict";
+  const root=document.getElementById("cellforge-layout-editor");
+  const svg=root.querySelector("#cf-svg");
+  const NS="http://www.w3.org/2000/svg";
+  const T=(x,y,s,c="mTxt",a="start")=>`<text class="${c}" x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
+  const R=(x,y,w,h,c="mSteel",rx=3)=>`<rect class="${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}"/>`;
+  const C=(x,y,r,c="mSteel")=>`<circle class="${c}" cx="${x}" cy="${y}" r="${r}"/>`;
+  const P=(d,c="mLine")=>`<path class="${c}" d="${d}"/>`;
+  const H=(k,x,y,w,h,body)=>`<g class="hot" data-k="${k}">${body}<rect class="hit" x="${x}" y="${y}" width="${w}" height="${h}" rx="9"/><rect class="ring" x="${x}" y="${y}" width="${w}" height="${h}" rx="9"/></g>`;
+  const ROLLER=(x,y,r)=>`<g class="spin"><circle class="mDark" cx="${x}" cy="${y}" r="${r}"/><circle class="mSteel2" cx="${x}" cy="${y}" r="${Math.max(2,r*.34)}"/><rect class="mSteel2" x="${x-1}" y="${y-r+2}" width="2" height="${r*.5}" rx="1"/></g>`;
+  const REEL=(x,y,r,cls)=>`<g class="spin"><circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/><circle class="${cls}" cx="${x}" cy="${y}" r="${r*.66}" opacity=".55"/><circle class="mDark" cx="${x}" cy="${y}" r="${Math.max(2.5,r*.18)}"/></g>`;
+  const GAUGE=(x,y,label)=>`<g><circle class="mSteel2" cx="${x}" cy="${y}" r="15"/><path class="mLine" d="M${x} ${y}L${x+8} ${y-8}"/><circle class="mDark" cx="${x}" cy="${y}" r="2"/>${T(x,y+27,label,"mTxtS","middle")}</g>`;
+  const ARROW=(x,y,dir=1)=>`<path class="mArrow" d="M${x} ${y}l${14*dir} 0l${-4*dir} -4l${9*dir} 4l${-9*dir} 4l${4*dir} -4z"/>`;
+
+  const machines={
+    coating:()=>`
+      ${R(28,42,924,268,"mFrame",12)}
+      ${P("M194 54V262M474 54V262M732 54V262","mFloor")}${P("M42 274H938","mFloor")}
+      ${T(50,66,"SLURRY DELIVERY","mFlowLabel")}${T(214,66,"COATING HEAD","mFlowLabel")}${T(494,66,"INLINE QUALITY CONTROL","mFlowLabel")}${T(752,66,"OUTFEED","mFlowLabel")}
+      ${H(0,46,82,124,158,`${R(62,110,88,112,"mSteel2",8)}${R(68,102,76,14,"mDark",4)}${P("M72 142h68v70h-68z","mGlass")}${P("M78 177q28 12 56 0","mLine")}${P("M106 116v87","mLine")}<g class="spin">${P("M88 188h36","mDark")}</g>${T(106,236,"Stirred slurry tank","mTxt","middle")}`)}
+      ${H(1,112,72,86,86,`${C(158,94,19,"mEl")}${P("M151 84l16 10l-16 10z","mSteel2")}${T(158,128,"Precision pump","mTxtS","middle")}`)}
+      ${P("M106 102V94H139M177 94H328V118","mPipe")}<path class="mPipe flowdash" stroke="var(--primary)" d="M177 94H328V118"/>
+      ${H(4,202,168,112,94,`${REEL(250,214,31,"mCu")}${T(250,258,"Bare foil unwind","mTxt","middle")}`)}
+      ${H(2,302,76,142,112,`${R(320,92,100,30,"mSteel",5)}${P("M328 122l26 58h34l24 -58z","mDark")}${P("M355 175h32l-4 12h-24z","mAcc")}${T(370,86,"Slot die","mTxt","middle")}`)}
+      ${H(3,322,174,120,86,`${ROLLER(382,222,35)}${T(382,268,"Backing roll","mTxt","middle")}`)}
+      ${P("M250 214Q308 214 350 222Q366 228 382 222H884","mWeb")}<path class="mWeb flowdash" stroke="var(--viz-series-3)" d="M250 214Q308 214 350 222Q366 228 382 222H884"/>
+      ${P("M392 214H884","mWebA")}<path class="mWebA flowdash" stroke="var(--viz-series-2)" d="M392 214H884"/>
+      ${ARROW(284,214)}${ARROW(456,214)}${ARROW(690,214)}${ARROW(824,214)}
+      ${H(5,492,88,190,104,`${R(510,112,154,48,"mSteel2",6)}${R(520,121,34,30,"mAn",3)}${R(566,121,34,30,"mAn",3)}${R(612,121,34,30,"mAn",3)}${T(587,104,"Pattern camera · top view","mTxt","middle")}${T(587,178,"bare tab windows remain","mTxtS","middle")}`)}
+      ${H(6,690,82,86,172,`${P("M718 106h30v52h-30z","mAcc")}${P("M733 158v38","mLead")}${GAUGE(733,218,"wet-film gauge")}${T(733,262,"±2 g/m²","mTxtS","middle")}`)}
+      ${H(7,804,156,132,108,`${REEL(884,214,34,"mAn")}${T(884,264,"One-side rewind","mTxt","middle")}`)}
+      ${R(790,82,138,42,"mZone",7)}${T(859,99,"PASS 1 OF 2","mFlowLabel","middle")}${T(859,115,"reverse and coat side two","mTxtS","middle")}
+      ${R(202,282,100,22,"mBadge",11)}${T(252,297,"BARE FOIL","mFlowLabel","middle")}${ARROW(312,293)}
+      ${R(338,282,136,22,"mBadge",11)}${T(406,297,"METERED WET FILM","mFlowLabel","middle")}${ARROW(484,293)}
+      ${R(510,282,150,22,"mBadge",11)}${T(585,297,"WET COATED WEB","mFlowLabel","middle")}`,
+    calendering:()=>`
+      ${R(26,46,928,260,"mFrame",12)}${P("M40 306H944","mFloor")}${P("M290 58V294M620 58V294M806 58V294","mFloor")}
+      ${T(48,70,"INFEED &amp; CLEANING","mFlowLabel")}${T(642,70,"CLOSED-LOOP QUALITY","mFlowLabel")}${T(826,70,"OUTFEED","mFlowLabel")}
+      ${H(0,42,116,112,152,`${REEL(92,169,34,"mAn")}${T(92,232,"Dried electrode","mTxt","middle")}${T(92,248,"≈50% porosity","mTxtS","middle")}`)}
+      ${H(1,142,112,78,148,`${R(158,124,46,28,"mSteel2",5)}${P("M169 132l12 10l-9 2l12 8","mAcc")}${ROLLER(181,181,12)}${T(181,232,"Static","mTxt","middle")}${T(181,247,"neutraliser","mTxtS","middle")}`)}
+      ${H(2,214,96,86,166,`${P("M232 132l25 -34l25 34z","mSteel2")}${P("M257 98V80","mLine")}${ARROW(257,82)}${ROLLER(257,181,12)}${T(257,232,"Brush +","mTxt","middle")}${T(257,247,"extraction","mTxtS","middle")}`)}
+      ${H(3,320,54,280,246,`${R(342,64,236,20,"mDark",5)}${R(354,78,14,184,"mSteel",4)}${R(552,78,14,184,"mSteel",4)}${T(460,78,"CONTROLLED NIP","mTxtW","middle")}${ROLLER(460,118,43)}${ROLLER(460,220,43)}${P("M406 84v16M514 84v16","mAcc")}${P("M400 92l6 8l6 -8M508 92l6 8l6 -8","mAcc")}${R(386,86,148,25,"mBadge",13)}${T(460,103,"LINE FORCE ≤ 2 500 N/mm","mFlowLabel","middle")}${R(298,272,92,24,"mBadge",12)}${T(344,288,"THICK / OPEN","mTxtS","middle")}${ARROW(394,284)}${R(416,272,92,24,"mZone",12)}${T(462,288,"GAP → POROSITY","mTxtS","middle")}${ARROW(512,284)}${R(534,272,80,24,"mBadge",12)}${T(574,288,"THIN / DENSE","mTxtS","middle")}`)}
+      ${P("M92 169H411","mWebA")}<path class="mWebA flowdash" stroke="var(--viz-series-2)" stroke-width="11" d="M92 169H411"/>${P("M509 169H886","mWebA")}<path class="mWebA flowdash" stroke="var(--viz-series-2)" stroke-width="6" d="M509 169H886"/>
+      ${ARROW(128,169)}${ARROW(304,169)}${ARROW(584,169)}${ARROW(772,169)}${ARROW(862,169)}
+      ${H(4,642,92,104,174,`${P("M666 116h56v70h-56z","mSteel2")}${P("M678 130h32v42h-32z","mGlass")}${P("M694 186V208","mLead")}${GAUGE(694,228,"thickness")}${T(694,270,"feedback","mTxtS","middle")}`)}
+      ${H(5,736,96,88,166,`${P("M754 132l26 -34l26 34z","mSteel2")}${P("M780 98V80","mLine")}${ROLLER(780,181,12)}${T(780,232,"Final clean","mTxt","middle")}${T(780,247,"+ suction","mTxtS","middle")}`)}
+      ${H(6,818,112,126,152,`${REEL(886,169,34,"mAn")}${T(886,232,"Calendered roll","mTxt","middle")}${T(886,248,"20–35% porosity","mTxtS","middle")}`)}`
+  };
+
+  const state={station:"coating",selected:null,history:[],future:[],segment:0,drag:null};
+  const originals={coating:machines.coating(),calendering:machines.calendering()};
+  const saved={};
+  try{
+    const draft=JSON.parse(localStorage.getItem("cellforge-layout-draft")||"{}");
+    if(draft&&typeof draft==="object")Object.assign(saved,draft);
+  }catch(_error){}
+
+  function defs(){
+    return `<defs><pattern id="cf-grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="var(--border)" stroke-width="1"/></pattern></defs><rect class="cf-grid" x="0" y="0" width="980" height="318"/>`;
+  }
+  function currentMarkup(){return Array.from(svg.children).filter(el=>!el.matches("title,desc,defs,.cf-grid,.cf-selected-box")).map(el=>el.outerHTML).join("");}
+  function applyIds(){
+    let groupIndex=0,textIndex=0,shapeIndex=0;
+    Array.from(svg.children).forEach(el=>{
+      if(el.matches("title,desc,defs,.cf-grid,.cf-selected-box"))return;
+      if(el.matches("g.hot"))el.dataset.editId=`component-${groupIndex++}`;
+      else if(el.tagName.toLowerCase()==="text")el.dataset.editId=`label-${textIndex++}`;
+      else el.dataset.editId=`shape-${shapeIndex++}`;
+      el.classList.add("cf-editable");
+    });
+    svg.querySelectorAll("g.hot text").forEach((el,index)=>{
+      el.dataset.editId=`component-label-${el.closest("g.hot").dataset.k}-${index}`;
+      el.classList.add("cf-editable");
+    });
+  }
+  function render(markup){
+    state.selected=null;
+    svg.innerHTML=`<title>Editable ${state.station} machine diagram</title><desc>Select a label or machine component, drag it, edit its text, or resize it.</desc>${defs()}${markup}`;
+    svg.querySelectorAll(".cf-selected").forEach(el=>el.classList.remove("cf-selected"));
+    applyIds();
+    updateSelection();
+    setSegment(state.segment);
+    requestAnimationFrame(checkLabels);
+  }
+  function snapshot(){return {station:state.station,markup:currentMarkup()};}
+  function pushHistory(){state.history.push(snapshot());if(state.history.length>40)state.history.shift();state.future=[];updateHistory();}
+  function updateHistory(){root.querySelector("#cf-undo").disabled=!state.history.length;root.querySelector("#cf-redo").disabled=!state.future.length;}
+  function restore(entry){
+    saved[state.station]=currentMarkup();
+    state.station=entry.station;
+    root.querySelectorAll("[data-station]").forEach(btn=>{const on=btn.dataset.station===state.station;btn.classList.toggle("btn-primary",on);btn.setAttribute("aria-pressed",String(on));});
+    render(entry.markup);
+  }
+  function switchStation(name){if(name===state.station)return;saved[state.station]=currentMarkup();state.station=name;state.segment=0;render(saved[name]||originals[name]);root.querySelectorAll("[data-station]").forEach(btn=>{const on=btn.dataset.station===name;btn.classList.toggle("btn-primary",on);btn.setAttribute("aria-pressed",String(on));});}
+  function svgPoint(event){const pt=svg.createSVGPoint();pt.x=event.clientX;pt.y=event.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse());}
+  function editableTarget(target){if(target.tagName&&target.tagName.toLowerCase()==="text")return target;return target.closest("g.hot")||target.closest(".cf-editable");}
+  function select(el){if(!el||!svg.contains(el))return;state.selected=el;svg.querySelectorAll(".cf-selected").forEach(item=>item.classList.remove("cf-selected"));el.classList.add("cf-selected");drawSelectionBox();updateSelection();}
+  function describe(el){if(!el)return "Nothing selected";if(el.tagName.toLowerCase()==="text")return `Label · ${el.textContent}`;if(el.matches("g.hot")){const text=el.querySelector("text");return text?`Machine part · ${text.textContent}`:`Machine part ${el.dataset.k}`;}return `${el.tagName.toLowerCase()} · ${el.getAttribute("class")||"shape"}`;}
+  function dataNumber(el,name,fallback){const n=Number(el.dataset[name]);return Number.isFinite(n)?n:fallback;}
+  function transformSelected(){const el=state.selected;if(!el)return;const dx=dataNumber(el,"dx",0),dy=dataNumber(el,"dy",0),scale=dataNumber(el,"scale",1);let box;try{box=JSON.parse(el.dataset.baseBox||"");}catch(_error){box=null;}if(!box){const b=el.getBBox();box={x:b.x,y:b.y,w:b.width,h:b.height};el.dataset.baseBox=JSON.stringify(box);}const cx=box.x+box.w/2,cy=box.y+box.h/2;el.setAttribute("transform",`translate(${dx} ${dy}) translate(${cx} ${cy}) scale(${scale}) translate(${-cx} ${-cy})`);drawSelectionBox();requestAnimationFrame(checkLabels);}
+  function drawSelectionBox(){svg.querySelectorAll(".cf-selected-box").forEach(el=>el.remove());if(!state.selected)return;const b=state.selected.getBBox();const rect=document.createElementNS(NS,"rect");rect.setAttribute("class","cf-selected-box");rect.setAttribute("x",String(b.x-4));rect.setAttribute("y",String(b.y-4));rect.setAttribute("width",String(b.width+8));rect.setAttribute("height",String(b.height+8));const rootMatrix=svg.getScreenCTM(),itemMatrix=state.selected.getScreenCTM();if(rootMatrix&&itemMatrix){const t=rootMatrix.inverse().multiply(itemMatrix);rect.setAttribute("transform",`matrix(${t.a} ${t.b} ${t.c} ${t.d} ${t.e} ${t.f})`);}svg.appendChild(rect);}
+  function updateSelection(){
+    const el=state.selected,textInput=root.querySelector("#cf-text"),size=root.querySelector("#cf-size");
+    root.querySelector("#cf-selection").textContent=describe(el);
+    const isText=el&&el.tagName.toLowerCase()==="text";
+    textInput.disabled=!isText;textInput.value=isText?el.textContent:"Select a label to rewrite it";
+    size.disabled=!el;size.value=el?String(Math.round(dataNumber(el,"scale",1)*100)):"100";root.querySelector("#cf-size-value").textContent=`${size.value}%`;
+    root.querySelectorAll("[data-nudge]").forEach(btn=>btn.disabled=!el);
+  }
+  function nudge(dx,dy,record=true){const el=state.selected;if(!el)return;if(record)pushHistory();el.dataset.dx=String(dataNumber(el,"dx",0)+dx);el.dataset.dy=String(dataNumber(el,"dy",0)+dy);transformSelected();}
+  function checkLabels(){
+    svg.querySelectorAll("text.cf-collision").forEach(el=>el.classList.remove("cf-collision"));
+    const labels=Array.from(svg.querySelectorAll("text")).filter(el=>!el.closest("defs"));let count=0;
+    const boxes=labels.map(el=>({el,box:el.getBoundingClientRect()}));
+    for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){
+      const a=boxes[i],b=boxes[j];
+      const overlap=a.box.left<b.box.right-2&&a.box.right>b.box.left+2&&a.box.top<b.box.bottom-2&&a.box.bottom>b.box.top+2;
+      if(overlap){a.el.classList.add("cf-collision");b.el.classList.add("cf-collision");count++;}
+    }
+    const status=root.querySelector("#cf-check");status.textContent=count?`${count} label collision${count===1?"":"s"}`:"No label collisions";status.setAttribute("data-state",count?"warning":"clear");
+  }
+  function collectChanges(markup){
+    const parsed=new DOMParser().parseFromString(`<svg xmlns="${NS}">${markup}</svg>`,"image/svg+xml");
+    const changes=[];
+    parsed.querySelectorAll("[data-edit-id]").forEach(el=>{
+      const dx=dataNumber(el,"dx",0),dy=dataNumber(el,"dy",0),scale=dataNumber(el,"scale",1),isText=el.tagName.toLowerCase()==="text";
+      if(dx||dy||scale!==1||(isText&&el.dataset.originalText&&el.textContent!==el.dataset.originalText))changes.push({id:el.dataset.editId,dx,dy,scale,...(isText?{text:el.textContent}: {})});
+    });
+    return changes;
+  }
+  function compactChanges(){
+    saved[state.station]=currentMarkup();
+    return {version:1,layouts:{coating:collectChanges(saved.coating||""),calendering:collectChanges(saved.calendering||"")}};
+  }
+  function showExport(payload){
+    const panel=root.querySelector("#cf-export"),field=root.querySelector("#cf-export-text");
+    panel.hidden=false;field.value=payload;field.focus();field.select();
+  }
+  function fallbackCopy(){
+    const field=root.querySelector("#cf-export-text");
+    field.focus();field.select();
+    try{return Boolean(document.execCommand("copy"));}catch(_error){return false;}
+  }
+  async function copyVisibleText(){
+    const field=root.querySelector("#cf-export-text");
+    let copied=false;
+    if(navigator.clipboard&&typeof navigator.clipboard.writeText==="function"){
+      try{await navigator.clipboard.writeText(field.value);copied=true;}catch(_error){}
+    }
+    if(!copied)copied=fallbackCopy();
+    const message=copied?"Copied — paste it into the chat":"Clipboard blocked — select the text above and copy it";
+    root.querySelector("#cf-export-status").textContent=message;
+    root.querySelector("#cf-a11y-status").textContent=message;
+    return copied;
+  }
+  async function copyChanges(){
+    const payload=JSON.stringify(compactChanges(),null,2),button=root.querySelector("#cf-copy");
+    showExport(payload);
+    const copied=await copyVisibleText();
+    button.textContent=copied?"Copied — paste in chat":"Layout ready below";
+    setTimeout(()=>button.textContent="Copy both layouts",1800);
+  }
+  function downloadChanges(){
+    const field=root.querySelector("#cf-export-text");
+    if(!field.value)showExport(JSON.stringify(compactChanges(),null,2));
+    const blob=new Blob([field.value],{type:"application/json"}),url=URL.createObjectURL(blob),link=document.createElement("a");
+    link.href=url;link.download="cellforge-layout-changes.json";root.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    root.querySelector("#cf-export-status").textContent="JSON downloaded";
+  }
+  function closeExport(){root.querySelector("#cf-export").hidden=true;root.querySelector("#cf-copy").focus();}
+  function saveDraft(){saved[state.station]=currentMarkup();try{localStorage.setItem("cellforge-layout-draft",JSON.stringify(saved));root.querySelector("#cf-save").textContent="Draft saved";setTimeout(()=>root.querySelector("#cf-save").textContent="Save draft",1400);}catch(_error){root.querySelector("#cf-a11y-status").textContent="Draft could not be saved in this browser";}}
+  function setSegment(index){const narrow=root.clientWidth<600;const nav=root.querySelector("#cf-mobile-nav");nav.hidden=!narrow;if(!narrow){svg.setAttribute("viewBox","0 0 980 318");svg.style.aspectRatio="980 / 318";return;}state.segment=Math.max(0,Math.min(2,index));const x=[0,320,640][state.segment];svg.setAttribute("viewBox",`${x} 0 340 318`);svg.style.aspectRatio="340 / 318";root.querySelector("#cf-segment").textContent=`Section ${state.segment+1} of 3`;root.querySelector("#cf-prev").disabled=state.segment===0;root.querySelector("#cf-next").disabled=state.segment===2;}
+
+  svg.addEventListener("pointerdown",event=>{
+    const el=editableTarget(event.target);if(!el)return;event.preventDefault();select(el);pushHistory();const p=svgPoint(event);state.drag={el,start:p,dx:dataNumber(el,"dx",0),dy:dataNumber(el,"dy",0),moved:false};svg.setPointerCapture(event.pointerId);
+  });
+  svg.addEventListener("pointermove",event=>{if(!state.drag)return;const p=svgPoint(event),grid=root.querySelector("#cf-snap").checked?5:1;let dx=state.drag.dx+p.x-state.drag.start.x,dy=state.drag.dy+p.y-state.drag.start.y;dx=Math.round(dx/grid)*grid;dy=Math.round(dy/grid)*grid;state.drag.el.dataset.dx=String(dx);state.drag.el.dataset.dy=String(dy);state.drag.moved=true;transformSelected();});
+  svg.addEventListener("pointerup",()=>{if(!state.drag)return;if(!state.drag.moved)state.history.pop();state.drag=null;updateHistory();});
+  root.querySelectorAll("[data-station]").forEach(btn=>btn.addEventListener("click",()=>switchStation(btn.dataset.station)));
+  root.querySelectorAll("[data-nudge]").forEach(btn=>btn.addEventListener("click",()=>{const [dx,dy]=btn.dataset.nudge.split(",").map(Number);nudge(dx,dy);}));
+  root.querySelector("#cf-text").addEventListener("focus",()=>{const el=state.selected;if(el&&el.tagName.toLowerCase()==="text"&&!el.dataset.originalText)el.dataset.originalText=el.textContent;pushHistory();});
+  root.querySelector("#cf-text").addEventListener("input",event=>{if(state.selected&&state.selected.tagName.toLowerCase()==="text"){state.selected.textContent=event.target.value;delete state.selected.dataset.baseBox;transformSelected();}});
+  root.querySelector("#cf-size").addEventListener("pointerdown",pushHistory);
+  root.querySelector("#cf-size").addEventListener("input",event=>{if(!state.selected)return;state.selected.dataset.scale=String(Number(event.target.value)/100);root.querySelector("#cf-size-value").textContent=`${event.target.value}%`;transformSelected();});
+  root.querySelector("#cf-undo").addEventListener("click",()=>{if(!state.history.length)return;state.future.push(snapshot());restore(state.history.pop());updateHistory();});
+  root.querySelector("#cf-redo").addEventListener("click",()=>{if(!state.future.length)return;state.history.push(snapshot());restore(state.future.pop());updateHistory();});
+  root.querySelector("#cf-reset").addEventListener("click",()=>{pushHistory();saved[state.station]=originals[state.station];render(originals[state.station]);});
+  root.querySelector("#cf-save").addEventListener("click",saveDraft);root.querySelector("#cf-copy").addEventListener("click",copyChanges);
+  root.querySelector("#cf-copy-again").addEventListener("click",copyVisibleText);root.querySelector("#cf-download").addEventListener("click",downloadChanges);root.querySelector("#cf-close-export").addEventListener("click",closeExport);
+  root.querySelector("#cf-prev").addEventListener("click",()=>setSegment(state.segment-1));root.querySelector("#cf-next").addEventListener("click",()=>setSegment(state.segment+1));
+  root.addEventListener("keydown",event=>{if(!state.selected||event.target.matches("input, textarea"))return;const map={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};if(!map[event.key])return;event.preventDefault();const [dx,dy]=map[event.key];const multiplier=event.shiftKey?5:1;nudge(dx*multiplier,dy*multiplier);});
+  new ResizeObserver(()=>setSegment(state.segment)).observe(root);
+  render(saved.coating||originals.coating);updateHistory();
+})();
+</script>
+
+<script id="codex-visualization-floating-ui-core" src="https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js"></script>
+<script id="codex-visualization-floating-ui-dom" src="https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js"></script>
+<script id="codex-visualization-lucide" async src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"></script>
+<script id="codex-visualization-tooltip">/* oxlint-disable typescript/no-unsafe-argument, typescript/no-unsafe-call, typescript/no-unsafe-return */
+// Runs inside the visualization sandbox, not the host webview.
+(() => {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set(["top", "right", "bottom", "left"]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =>
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest("[data-tooltip]")
+      : null;
+  const containsTarget = (trigger, target) =>
+    target?.nodeType != null && trigger.contains(target);
+  const getContent = (trigger) =>
+    trigger.getAttribute("data-tooltip")?.trim() ?? "";
+  const getPlacement = (trigger) => {
+    const placement = trigger.getAttribute("data-tooltip-placement");
+    return tooltipPlacements.has(placement) ? placement : "top";
+  };
+  const getTooltip = () => {
+    if (tooltip == null) {
+      tooltip = document.createElement("div");
+      tooltip.id = tooltipId;
+      tooltip.className = "tooltip";
+      tooltip.setAttribute("role", "tooltip");
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) => {
+    const ids = new Set(
+      (trigger.getAttribute("aria-describedby") ?? "")
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute("aria-describedby");
+    } else {
+      trigger.setAttribute("aria-describedby", [...ids].join(" "));
+    }
+  };
+  const clearOpenTimeout = () => {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) => {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) => {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              "--tooltip-available-width",
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              "--tooltip-available-height",
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: "fixed",
+    })
+      .then(({ x, y }) => {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = "visible";
+      })
+      .catch(() => {
+        if (activeTrigger === trigger && request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) => {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = "hidden";
+    floating.style.transform = "translate(0, 0)";
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () => {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) => {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() < skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() => {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) => {
+    if (event.pointerType === "touch") {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) => {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(":focus-visible")) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) => {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () => {
+    closeTooltip(false);
+    document.removeEventListener("pointerover", handlePointerOpen);
+    document.removeEventListener("pointerout", handleLeave);
+    document.removeEventListener("focusin", handleFocusIn);
+    document.removeEventListener("focusout", handleLeave);
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("contextmenu", handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener("pointerover", handlePointerOpen);
+  document.addEventListener("pointerout", handleLeave);
+  document.addEventListener("focusin", handleFocusIn);
+  document.addEventListener("focusout", handleLeave);
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("contextmenu", handleContextMenu);
+  window.addEventListener("pagehide", destroy, { once: true });
+})();
+</script>
+<script id="codex-visualization-lucide-initialization">(() => {
+  const initialize = () => {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById("codex-visualization-lucide")
+    ?.addEventListener("load", initialize, { once: true });
+})();
+</script>
+</body>
+</html>
