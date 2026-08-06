@@ -1,8 +1,8 @@
    Drawn with the same primitives and the same material palette as the
    station schematics, so a colour always means the same substance.
    ===================================================================== */
-const PIC_W = 372, PIC_H = 132;
-const pic = body => `<svg viewBox="0 13 ${PIC_W} ${PIC_H - 13}" role="img" aria-hidden="true">${body}</svg>`;
+const PIC_W = 372, PIC_H = 140;
+const pic = body => `<svg viewBox="0 0 ${PIC_W} ${PIC_H}" role="img" aria-hidden="true">${body}</svg>`;
 /* a small arrow between stages */
 const pArrow = (x, y) => `<path class="mArrow" d="M${x} ${y}l10 0l-3 -3.5l7 3.5l-7 3.5l3 -3.5z"/>`;
 
@@ -115,39 +115,42 @@ powders: () => pic(`
 
 /* slot die laying a film on foil */
 die: () => pic(`
-  ${P("M120 32l58 0l-20 40l-18 0z", "mSteel2")}
-  ${P("M138 70l22 0l-3 12l-16 0z", "mAcc")}
-  ${T(120, 28, "slot die", "mTxtS")}
-  ${ROLLER(160, 96, 22)}
-  ${REEL(46, 96, 18, "mCu")}
-  ${P("M64 96q30 -10 74 -14l190 0", "mWeb")}
-  <path class="mWeb flowdash" stroke="var(--copper)" d="M64 96q30 -10 74 -14l190 0"/>
-  ${T(24, 124, "bare foil", "mTxtS")}
-  ${R(238, 68, 74, 12, "mAn", 2)}
-  ${T(238, 62, "wet film", "mTxtS")}
-  ${T(238, 124, "coated", "mTxtS")}`),
+  ${R(8, 20, 356, 94, "mFrame", 7)}
+  ${REEL(38, 78, 17, "mCu")}${ROLLER(136, 78, 22)}${REEL(334, 78, 17, "mAn")}
+  ${R(104, 24, 64, 18, "mSteel", 4)}${P("M112 42l14 31h18l16 -31z", "mDark")}${P("M127 69h18l-3 7h-13z", "mAcc")}
+  ${P("M38 78H314", "mWeb")}<path class="mWeb flowdash" stroke="var(--copper)" d="M38 78H314"/>
+  ${P("M145 73H314", "mWebA")}<path class="mWebA flowdash" stroke="var(--anode)" d="M145 73H314"/>
+  ${ARROW(72, 78)}${ARROW(198, 75)}${ARROW(274, 75)}
+  ${T(38, 108, "BARE FOIL", "mFlowLabel", "middle")}${T(136, 16, "SLOT DIE", "mFlowLabel", "middle")}
+  ${T(226, 108, "WET FILM", "mFlowLabel", "middle")}${T(334, 108, "REWIND", "mFlowLabel", "middle")}
+  ${R(198, 30, 102, 25, "mZone", 5)}${T(249, 47, "coat weight measured here", "mTxtS", "middle")}`),
 
 /* four heated chambers over a web */
 dryer: () => pic(`
-  ${[0, 1, 2, 3].map(i => `${R(20 + i * 84, 34, 74, 56, "mHot", 4)}
-     ${T(57 + i * 84, 66, [50, 100, 160, 90][i] + " °C", "mTxtW", "middle")}`).join("")}
-  ${P("M14 62l340 0", "mWebA")}
-  <path class="mWebA flowdash" stroke="var(--anode)" d="M14 62l340 0"/>
-  ${T(16, 108, "solvent out, recovered", "mTxtS")}
-  ${T(232, 108, "too hot cracks the coating", "mTxtS")}`),
+  ${R(8, 24, 356, 86, "mFrame", 7)}${R(34, 14, 304, 16, "mSteel", 4)}
+  ${[0, 1, 2, 3].map(i => {
+    const x = 28 + i * 82;
+    return `${R(x, 40, 70, 58, "mHot", 4)}${R(x + 14, 46, 42, 17, "mBadge", 9)}
+      ${T(x + 35, 59, [50,100,160,90][i] + " °C", "mTxt", "middle")}
+      ${T(x + 35, 82, ["RAMP","EVAP","PEAK","FINISH"][i], "mFlowLabel", "middle")}
+      ${P(`M${x + 35} 40V30`, "mLine")}`;
+  }).join("")}
+  ${P("M16 86H354", "mWebA")}<path class="mWebA flowdash" stroke="var(--anode)" d="M16 86H354"/>
+  ${ARROW(100, 86)}${ARROW(182, 86)}${ARROW(264, 86)}
+  ${T(186, 124, "airflow follows solvent load · vapour → recovery", "mTxtS", "middle")}`),
 
 /* the nip: thick porous in, thin dense out */
 nip: () => pic(`
-  ${ROLLER(150, 44, 26)}${ROLLER(150, 100, 26)}
-  ${R(20, 62, 104, 20, "mAn", 2)}
-  ${[...Array(9)].map((_, i) => `<circle cx="${28 + i * 12}" cy="72" r="3.4" fill="var(--background)"/>`).join("")}
-  ${T(20, 56, "≈50% porosity", "mTxtS")}
-  ${R(178, 66, 104, 12, "mAn", 2)}
-  ${[...Array(9)].map((_, i) => `<circle cx="${186 + i * 12}" cy="72" r="1.9" fill="var(--background)"/>`).join("")}
-  ${T(178, 60, "20–35% porosity", "mTxtS")}
-  ${T(20, 124, "thinner and denser", "mTxtS")}
-  ${T(296, 72, "→ capacity", "mTxtS")}${T(296, 86, "→ less room", "mTxtS")}
-  ${T(296, 100, "   for electrolyte", "mTxtS")}`),
+  ${R(8, 18, 356, 98, "mFrame", 7)}${R(130, 22, 112, 12, "mDark", 4)}
+  ${R(138, 30, 8, 80, "mSteel", 3)}${R(226, 30, 8, 80, "mSteel", 3)}
+  ${ROLLER(186, 48, 27)}${ROLLER(186, 102, 27)}
+  ${P("M20 76H159", "mWebA")}<path class="mWebA flowdash" stroke="var(--anode)" stroke-width="12" d="M20 76H159"/>
+  ${P("M213 76H350", "mWebA")}<path class="mWebA flowdash" stroke="var(--anode)" stroke-width="6" d="M213 76H350"/>
+  ${[...Array(8)].map((_, i) => `<circle cx="${30 + i * 15}" cy="76" r="3.2" fill="var(--background)"/>`).join("")}
+  ${[...Array(8)].map((_, i) => `<circle cx="${225 + i * 15}" cy="76" r="1.6" fill="var(--background)"/>`).join("")}
+  ${R(142, 34, 88, 18, "mBadge", 9)}${T(186, 47, "LINE FORCE", "mFlowLabel", "middle")}
+  ${T(66, 104, "≈50% · OPEN", "mFlowLabel", "middle")}${T(302, 104, "20–35% · DENSE", "mFlowLabel", "middle")}
+  ${T(186, 128, "the same mass becomes thinner; pore volume is the trade-off", "mTxtS", "middle")}`),
 
 /* the burr, against a separator */
 burr: () => pic(`
@@ -175,15 +178,15 @@ water: () => pic(`
 
 /* z-folded separator with sheets dropping in */
 stacker: () => pic(`
-  ${P("M24 44q26 34 52 0t52 0t52 0", "mWebS")}
-  ${P("M24 80q26 34 52 0t52 0t52 0", "mWebS")}
-  ${[0, 1, 2].map(i => `${R(38 + i * 52, 52, 34, 7, "mCa", 1)}${R(38 + i * 52, 88, 34, 7, "mAn", 1)}`).join("")}
-  ${T(24, 118, "cathode, separator, anode, separator …", "mTxtS")}
-  ${R(246, 34, 100, 76, "mSteel2", 5)}
-  ${[...Array(7)].map((_, i) => `<rect x="256" y="${40 + i * 10}" width="80" height="4" rx="1"
-     fill="${i % 2 ? "var(--anode)" : "var(--cathode)"}"/>
-     <rect x="256" y="${45 + i * 10}" width="80" height="2" rx="1" fill="var(--sep)"/>`).join("")}
-  ${T(246, 124, "up to 120 layers", "mTxtS")}`),
+  ${R(8, 18, 356, 98, "mFrame", 7)}${ROLLER(182, 34, 14)}
+  ${P("M182 48L136 61L226 76L136 91L226 106", "mWebS")}
+  <path class="mWebS flowdash" stroke="var(--sep)" d="M182 48L136 61L226 76L136 91L226 106"/>
+  ${R(58, 55, 104, 9, "mCa", 2)}${R(210, 70, 104, 9, "mAn", 2)}
+  ${R(58, 85, 104, 9, "mCa", 2)}${R(210, 100, 104, 9, "mAn", 2)}
+  ${ARROW(118, 59)}${ARROW(254, 74, -1)}${ARROW(118, 89)}${ARROW(254, 104, -1)}
+  ${T(58, 46, "CATHODE →", "mFlowLabel")}${T(314, 61, "← ANODE", "mFlowLabel", "end")}
+  ${T(182, 14, "ENDLESS SEPARATOR", "mFlowLabel", "middle")}
+  ${T(182, 128, "place · fold · place · fold — repeat to 120 layers within ±200 µm", "mTxtS", "middle")}`),
 
 /* electrolyte finding its way into pores */
 wetting: () => pic(`

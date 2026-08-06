@@ -195,6 +195,6 @@
 </head>
 <style>
 /* ---- machine schematic ---- */
-.mSteel{fill:light-dark(#e4e9ec,#3a4247);stroke:light-dark(#a9b6bd,#5d686e);stroke-width:1.5}
-.mSteel2{fill:light-dark(#f0f3f5,#454e54);stroke:light-dark(#b6c2c8,#6a757b);stroke-width:1.5}
-.mDark{fill:light-dark(#3f4a51,#8b979e);stroke:light-dark(#2c353a,#a7b2b8);stroke-width:1.5}
+.mSteel{fill:light-dark(#dfe6e9,#353e43);stroke:light-dark(#8c9ba2,#6a777d);stroke-width:1.7}
+.mSteel2{fill:light-dark(#f4f6f7,#465158);stroke:light-dark(#9fadb4,#748087);stroke-width:1.7}
+.mDark{fill:light-dark(#344047,#93a0a7);stroke:light-dark(#222b30,#b4bec3);stroke-width:1.7}

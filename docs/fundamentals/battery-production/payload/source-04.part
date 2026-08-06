@@ -8,15 +8,15 @@
 .mSep{fill:var(--sep);stroke:light-dark(#b8b183,#a49d76);stroke-width:1.2}
 .mEl{fill:var(--elyte);stroke:light-dark(#2b6485,#7ab6d6);stroke-width:1.2}
 .mAcc{fill:var(--primary);stroke:light-dark(#1f7fd6,#a9d5ff);stroke-width:1.2}
-.mLine{stroke:light-dark(#8b979e,#7d888e);stroke-width:1.4;fill:none}
+.mLine{stroke:light-dark(#77878f,#89959b);stroke-width:1.7;fill:none}
 .mPipe{stroke:var(--elyte);stroke-width:5;fill:none;stroke-linecap:round}
-.mWeb{stroke:var(--copper);stroke-width:4;fill:none;stroke-linecap:round}
-.mWebA{stroke:var(--anode);stroke-width:5;fill:none;stroke-linecap:round}
+.mWeb{stroke:var(--copper);stroke-width:5;fill:none;stroke-linecap:round}
+.mWebA{stroke:var(--anode);stroke-width:6;fill:none;stroke-linecap:round}
 .mWebC{stroke:var(--copper);stroke-width:5;fill:none;stroke-linecap:round}
 .mFilm{stroke:var(--cathode);stroke-width:6;fill:none;stroke-linecap:round;opacity:.9}
 .mWebS{stroke:var(--sep);stroke-width:3.5;fill:none;stroke-linecap:round}
-.mTxt{fill:var(--foreground);font-size:11px;font-weight:600}
-.mTxtS{fill:var(--muted-foreground);font-size:9.5px;font-weight:500}
+.mTxt{fill:var(--foreground);font-size:12px;font-weight:700}
+.mTxtS{fill:var(--muted-foreground);font-size:10.25px;font-weight:600}
 .mTxtW{fill:#fff;font-size:10px;font-weight:700}
 /* halo: lines, webs and selection rings duck behind every label */
 .mTxt,.mTxtS{paint-order:stroke fill;stroke:var(--background);stroke-width:3.2;
@@ -24,6 +24,11 @@
 .mTxt.onpanel,.mTxtS.onpanel{stroke:none}
 .mLead{stroke:light-dark(#9aa6ac,#77838a);stroke-width:1;fill:none}
 .mArrow{fill:var(--primary)}
+.mFloor{stroke:light-dark(#c7d0d4,#4f5b61);stroke-width:2;fill:none}
+.mFrame{fill:color-mix(in srgb,var(--card) 88%,transparent);stroke:var(--border-strong);stroke-width:1.5}
+.mZone{fill:color-mix(in srgb,var(--primary) 7%,transparent);stroke:color-mix(in srgb,var(--primary) 34%,var(--border));stroke-width:1.2}
+.mFlowLabel{fill:var(--foreground);font-size:10px;font-weight:750;letter-spacing:.08em}
+.mBadge{fill:var(--background);stroke:var(--border-strong);stroke-width:1.2}
 .spin{transform-box:fill-box;transform-origin:center}
 .is-run .spin{animation:mspin 2.6s linear infinite}
 .is-run .flowdash{animation:mdash 1.1s linear infinite}
