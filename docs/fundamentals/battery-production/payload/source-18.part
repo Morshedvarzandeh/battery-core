@@ -272,7 +272,7 @@ $("procOpts").addEventListener("click", e => {
 $("runBtn").addEventListener("click", () => {
   running = !running;
   $("runBtn").setAttribute("aria-pressed", running);
-  $("runBtn").textContent = running ? "⏸ Pause line" : "▶ Run line";
+  $("runBtn").textContent = running ? "Ⅱ Pause line" : "▶ Run line";
   $("liveTag").textContent = running ? "● RUNNING" : "❚❚ HELD";
   const w = $("machineWrap"); if (w) w.classList.toggle("is-run", running);
 });

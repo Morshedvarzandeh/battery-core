@@ -170,7 +170,7 @@
         <span class="pill"><b>Reference chemistry</b>&nbsp; graphite / NMC</span>
         <span class="pill" id="pillEnv"><i></i><b>—</b></span>
         <span class="pill">Station <b id="pillPos">—</b></span>
-        <button type="button" class="runbtn" id="runBtn" aria-pressed="true">⏸ Pause line</button>
+        <button type="button" class="runbtn" id="runBtn" aria-pressed="true">Ⅱ Pause line</button>
         <button type="button" class="mobile-tool" id="labBtn" aria-controls="processDrawer" aria-expanded="false">
           <span aria-hidden="true">⚙</span><span>Process lab</span>
         </button>

@@ -147,7 +147,8 @@
   .machine svg{min-width:760px}
   .machine-head,.readout{position:sticky;left:0;z-index:2}
   .runbtn{width:36px;min-width:36px;padding:0;font-size:0}
-  .runbtn::after{content:"\23EF";font-size:13px}
+  .runbtn[aria-pressed="true"]::after{content:"Ⅱ";font-size:13px;font-weight:700}
+  .runbtn[aria-pressed="false"]::after{content:"▶";font-size:12px}
 }
 
 @media(max-width:560px){

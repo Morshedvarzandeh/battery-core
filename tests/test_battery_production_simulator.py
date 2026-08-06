@@ -131,4 +131,5 @@ def test_responsive_workspace_keeps_the_process_model_attached() -> None:
     assert 'aria-controls="stationDrawer"' in source
     assert 'aria-controls="processDrawer"' in source
     assert 'window.matchMedia("(max-width: 1280px)")' in source
+    assert 'closeDrawer(false);\n}, true);' in source
     assert '.rail{grid-column:1/-1;position:static' not in source
