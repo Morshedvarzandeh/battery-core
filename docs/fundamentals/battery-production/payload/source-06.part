@@ -4,32 +4,40 @@ ${P("M84 176l90 -22", "mWeb")}${ARROW(340, 152)}${ARROW(524, 152)}${ARROW(786, 1
 `;
 
 M.stacking = () => `
-${H(0, 26, 60, 170, 190, `
-  ${R(48, 82, 126, 100, "mSteel2", 6)}
-  ${R(60, 96, 46, 34, "mCa", 3)}${R(116, 96, 46, 34, "mAn", 3)}${REEL(90, 158, 18, "mSep")}
-  ${T(48, 202, "Input magazines", "mTxt")}${T(48, 216, "anode · cathode · separator", "mTxtS")}`)}
-${H(1, 214, 40, 170, 120, `
-  ${R(238, 58, 122, 34, "mDark", 4)}
-  ${P("M299 92l-26 34M299 92l26 34", "mAcc")}
-  ${T(226, 150, "Position recognition", "mTxtS")}`)}
-${H(2, 214, 168, 170, 110, `
-  ${R(238, 196, 122, 22, "mSteel", 3)}
-  ${R(250, 218, 44, 16, "mCa", 2)}${R(304, 218, 44, 16, "mAn", 2)}
-  ${T(226, 262, "Vacuum gripper transfer", "mTxtS")}`)}
-${H(3, 404, 40, 300, 200, `
-  ${ROLLER(452, 92, 16)}${ROLLER(534, 92, 16)}
-  ${P("M436 108q40 40 80 0t80 0", "mWebS")}
-  ${P("M436 140q40 40 80 0t80 0", "mWebS")}
-  ${P("M436 172q40 40 80 0t80 0", "mWebS")}
-  <path class="mWebS flowdash" stroke="var(--sep)" d="M436 108q40 40 80 0t80 0"/>
-  ${T(432, 62, "Z-folded separator (endless tape)", "mTxtS")}
-  ${T(432, 226, "Anode and cathode enter from left and right", "mTxtS")}`)}
-${H(4, 724, 70, 236, 180, `
-  ${R(748, 92, 190, 118, "mSteel2", 6)}
-  ${[0, 1, 2, 3, 4, 5].map(i => `${R(760, 100 + i * 18, 160, 8, i % 2 ? "mAn" : "mCa", 1)}
-     ${R(760, 109 + i * 18, 160, 4, "mSep", 1)}`).join("")}
-  ${R(930, 96, 10, 40, "mCu", 2)}${R(930, 150, 10, 40, "mAl", 2)}
-  ${T(748, 232, "Stack · up to 120 layers · 1 s/sheet", "mTxtS")}`)}
+${R(26, 46, 928, 238, "mFrame", 12)}${P("M40 284H944", "mFloor")}
+${P("M232 58V272M414 58V272M770 58V272", "mFloor")}
+${T(48, 70, "MATERIAL FEED", "mFlowLabel")}${T(254, 70, "VISION & PICK", "mFlowLabel")}
+${T(436, 70, "Z-FOLD WORKING ZONE", "mFlowLabel")}${T(792, 70, "STACK OUT", "mFlowLabel")}
+${H(0, 42, 82, 174, 178, `
+  ${R(56, 96, 146, 112, "mSteel2", 7)}
+  ${R(68, 110, 54, 72, "mZone", 4)}${R(136, 110, 54, 72, "mZone", 4)}
+  ${[0,1,2,3].map(i => R(76, 120 + i * 13, 38, 7, "mCa", 1)).join("")}
+  ${[0,1,2,3].map(i => R(144, 120 + i * 13, 38, 7, "mAn", 1)).join("")}
+  ${T(95, 196, "CATHODE", "mFlowLabel", "middle")}${T(163, 196, "ANODE", "mFlowLabel", "middle")}
+  ${REEL(129, 230, 17, "mSep")}${T(129, 260, "endless separator", "mTxtS", "middle")}`)}
+${H(1, 252, 78, 142, 92, `
+  ${R(270, 88, 106, 36, "mDark", 5)}${C(323, 106, 10, "mGlass")}${P("M323 124l-32 30M323 124l32 30", "mAcc")}
+  ${T(323, 168, "Position camera", "mTxt", "middle")}`)}
+${H(2, 246, 148, 160, 116, `
+  ${R(260, 176, 132, 16, "mSteel", 4)}${P("M284 192v26M368 192v26", "mLine")}
+  ${R(266, 218, 52, 17, "mCa", 2)}${R(334, 218, 52, 17, "mAn", 2)}
+  ${C(292, 218, 5, "mGlass")}${C(360, 218, 5, "mGlass")}
+  ${T(326, 260, "Vacuum grippers", "mTxt", "middle")}`)}
+${H(3, 430, 78, 324, 180, `
+  ${ROLLER(548, 98, 18)}${T(576, 102, "separator reel", "mTxtS")}
+  ${P("M548 116L494 136L664 158L494 180L664 202L494 224L664 246", "mWebS")}
+  <path class="mWebS flowdash" stroke="var(--sep)" d="M548 116L494 136L664 158L494 180L664 202L494 224L664 246"/>
+  ${R(448, 140, 108, 12, "mCa", 2)}${R(602, 162, 108, 12, "mAn", 2)}
+  ${R(448, 184, 108, 12, "mCa", 2)}${R(602, 206, 108, 12, "mAn", 2)}
+  ${ARROW(548, 146)}${ARROW(616, 168, -1)}${ARROW(548, 190)}${ARROW(616, 212, -1)}
+  ${T(472, 132, "cathode →", "mTxtS")}${T(686, 154, "← anode", "mTxtS", "end")}
+  ${R(516, 252, 126, 14, "mSteel", 3)}${T(579, 280, "alternating placement · ±200 µm", "mTxt", "middle")}`)}
+${ARROW(402, 206)}${ARROW(756, 206)}
+${H(4, 786, 82, 152, 176, `
+  ${R(800, 96, 124, 132, "mSteel2", 7)}
+  ${[0,1,2,3,4,5].map(i => `${R(812, 106 + i * 18, 100, 7, i % 2 ? "mAn" : "mCa", 1)}${R(812, 114 + i * 18, 100, 3, "mSep", 1)}`).join("")}
+  ${R(918, 104, 8, 44, "mCu", 2)}${R(918, 166, 8, 44, "mAl", 2)}
+  ${T(862, 246, "Finished stack", "mTxt", "middle")}${T(862, 262, "≤120 layers · taped", "mTxtS", "middle")}`)}
 `;
 
 M.winding = () => `

@@ -61,7 +61,7 @@
 .advice[data-level="bad"]{border-color:color-mix(in srgb,var(--destructive) 45%,transparent);background:var(--destructive-bg)}
 
 /* ---------------- tour ---------------- */
-.tour{position:fixed;right:22px;bottom:22px;z-index:60;width:min(430px,calc(100vw - 44px));
+.tour{position:fixed;right:22px;bottom:22px;z-index:60;width:min(480px,calc(100vw - 44px));
   max-height:calc(100vh - 44px);overflow:auto;padding:18px 20px 16px;border-radius:var(--radius-2xl);background:var(--popover);color:var(--foreground);
   border:1px solid var(--border-strong);box-shadow:var(--shadow-lg);display:none}
 .tour[data-open="1"]{display:block}
@@ -69,7 +69,7 @@
 .tour h2{font-size:var(--font-size-h2);margin:5px 0 7px}
 .tour p{font-size:var(--font-size-normal);color:var(--muted-foreground);line-height:1.6}
 .tour-pic{margin:10px 0 12px;border:1px solid var(--border);border-radius:var(--radius-md);
-  background:var(--card);padding:6px 8px}
+  background:linear-gradient(180deg,color-mix(in srgb,var(--card) 72%,var(--background)),var(--background));padding:8px 10px}
 .tour-pic:empty{display:none}
 .tour-pic svg{display:block;width:100%;height:auto}
 .tour nav{display:flex;gap:8px;margin-top:14px}

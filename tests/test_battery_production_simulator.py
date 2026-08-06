@@ -133,3 +133,21 @@ def test_responsive_workspace_keeps_the_process_model_attached() -> None:
     assert 'window.matchMedia("(max-width: 1280px)")' in source
     assert 'closeDrawer(false);\n}, true);' in source
     assert '.rail{grid-column:1/-1;position:static' not in source
+
+
+def test_focal_machine_diagrams_share_one_process_language() -> None:
+    source = _source()
+    for label in (
+        "SLURRY DELIVERY",
+        "COMMON EXHAUST → SOLVENT RECOVERY",
+        "CONTROLLED NIP",
+        "Z-FOLD WORKING ZONE",
+        "BARE FOIL",
+        "WET COATED WEB",
+        "THICK · OPEN",
+        "THIN · DENSE",
+    ):
+        assert label in source
+    assert 'const PIC_W = 372, PIC_H = 140;' in source
+    assert "airflow follows solvent load · vapour → recovery" in source
+    assert "place · fold · place · fold" in source

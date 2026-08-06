@@ -8,7 +8,7 @@
   { id:"mixing", proc:"wet", t:"The wet route starts with two black powders",
     d:"Anode and cathode active materials arrive as powder and are nearly indistinguishable by eye. Contamination between them ruins a cell, so they are mixed in physically separate rooms. Hover the mixer to see the two-step dry-then-wet sequence." , pic:"powders" },
   { id:"coating", t:"Slurry meets foil",
-    d:"A slot die meters slurry onto copper foil for the anode, aluminium for the cathode — both only 5–25 µm thick. Only one side is coated per pass. Scroll down to the black Operate this station panel: those are this machine's real knobs. Move the die gap away from the wet film the recipe needs and watch coat weight leave specification." , pic:"die" },
+    d:"A precision pump and slot die meter slurry onto 5–25 µm copper or aluminium foil. The backing roll fixes the coating plane, and the wet-film gauge checks coat weight before solvent evaporates. One face is coated per pass. Change die gap or pump flow in Operate this station and watch uniformity respond." , pic:"die" },
   { id:"drying", t:"The longest machine in the building",
     d:"Up to 100 metres of dryer in four temperature zones. Push the line speed up and the model will tell you the dryer needs more heat — run it under-heated and solvent stays in the coating." , pic:"dryer" },
   { id:"drymix", proc:"dry", t:"The dry route begins without slurry",
