@@ -85,15 +85,75 @@
 .tour-dots i{flex:1;height:3px;border-radius:var(--radius-full);background:var(--muted)}
 .tour-dots i.on{background:var(--primary)}
 
-@media(max-width:1500px){
-  .app{grid-template-columns:230px minmax(0,1fr)}
-  .rail{grid-column:1/-1;position:static;height:auto;border-left:0;border-top:1px solid var(--border)}
+.mobile-tool,.drawer-close,.drawer-scrim{display:none}
+.mobile-tool{min-height:30px;padding:0 11px;border:1px solid var(--input);border-radius:var(--radius-full);
+  background:var(--background);font-size:var(--font-size-small);font-weight:var(--font-weight-medium);
+  align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.mobile-tool:hover{border-color:var(--primary);color:var(--primary)}
+.drawer-close{width:30px;height:30px;flex:0 0 30px;border-radius:50%;border:1px solid var(--input);
+  background:var(--background);color:var(--muted-foreground);font-size:18px;line-height:1}
+.drawer-close:hover{border-color:var(--primary);color:var(--primary)}
+
+/* Keep the three parts of the simulator together on scaled laptop displays.
+   The old 1500px rule moved the process model below the entire lesson, which
+   separated every setpoint from the machine it controls. */
+@media(max-width:1600px) and (min-width:1281px){
+  .app{grid-template-columns:210px minmax(0,1fr) 300px}
+  .sidebar{padding-inline:10px}
+  .rail{padding-inline:12px}
 }
-@media(max-width:980px){
-  .app{grid-template-columns:minmax(0,1fr)}
-  .sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--border)}
+
+/* On narrower screens the lesson keeps the full canvas. Navigation and the
+   process lab become deliberate side drawers instead of long stacked pages. */
+@media(max-width:1280px){
+  body{overflow-x:hidden}
+  body.drawer-open{overflow:hidden}
+  .app{display:block;min-height:100vh}
+  .main{min-height:100vh}
+  .mobile-tool,.drawer-close{display:inline-flex}
+  .mobile-skip{display:none!important}
+  .topbar{padding:10px 14px;gap:10px}
+  .content{padding:16px 16px 54px}
+
+  .sidebar,.rail{position:fixed;z-index:70;top:0;bottom:0;height:100dvh;max-height:100vh;
+    overflow:auto;visibility:hidden;background:var(--background);box-shadow:var(--shadow-lg);
+    transition:transform .22s ease,visibility 0s linear .22s}
+  .sidebar{left:0;width:min(360px,92vw);border-right:1px solid var(--border-strong);
+    transform:translateX(-104%)}
+  .rail{right:0;width:min(380px,94vw);border-left:1px solid var(--border-strong);
+    transform:translateX(104%)}
+  .app[data-drawer="nav"] .sidebar,.app[data-drawer="lab"] .rail{
+    visibility:visible;transform:translateX(0);transition-delay:0s}
+  .brand{padding-right:0}
+  .brand .drawer-close{margin-left:auto}
+  .rail-head{align-items:center}
+  .rail-head .drawer-close{margin-left:2px}
+  .drawer-scrim{display:block;position:fixed;z-index:60;inset:0;width:100%;height:100%;
+    border:0;border-radius:0;background:rgb(9 14 20 / 38%);backdrop-filter:blur(2px);
+    opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s ease,visibility 0s linear .2s}
+  .app[data-drawer="nav"] .drawer-scrim,.app[data-drawer="lab"] .drawer-scrim{
+    opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s}
   .grid2{grid-template-columns:1fr}
-  .mobile-skip{display:block!important}
+}
+
+@media(max-width:760px){
+  .topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;padding:8px 10px;gap:7px;flex-wrap:nowrap}
+  .crumb{min-width:0}
+  .crumb b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .topbar-right{margin:0;gap:5px;flex-wrap:nowrap}
+  .topbar-right .pill{display:none}
+  .content{padding:12px 10px 42px;gap:10px}
+  .machine{overflow-x:auto;scrollbar-width:thin}
+  .machine svg{min-width:760px}
+  .machine-head,.readout{position:sticky;left:0;z-index:2}
+  .runbtn{width:36px;min-width:36px;padding:0;font-size:0}
+  .runbtn::after{content:"\23EF";font-size:13px}
+}
+
+@media(max-width:560px){
+  .mobile-tool{width:36px;min-width:36px;padding:0}
+  .mobile-tool span:last-child{display:none}
+  .sidebar{width:min(340px,94vw)}
 }
 .mobile-skip{display:none;margin:0 6px 10px;padding:8px 10px;border-radius:var(--radius-md);
   background:var(--foreground);color:var(--background);font-size:var(--font-size-small);

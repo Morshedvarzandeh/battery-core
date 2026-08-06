@@ -121,3 +121,14 @@ def test_standalone_page_uses_no_external_code_assets() -> None:
     source = _source()
     assert not re.search(r"<script[^>]+src=[\"\']https?://", source)
     assert not re.search(r"<link[^>]+href=[\"\']https?://", source)
+
+
+def test_responsive_workspace_keeps_the_process_model_attached() -> None:
+    source = _source()
+    assert 'grid-template-columns:210px minmax(0,1fr) 300px' in source
+    assert '@media(max-width:1280px)' in source
+    assert 'data-drawer=""' in source
+    assert 'aria-controls="stationDrawer"' in source
+    assert 'aria-controls="processDrawer"' in source
+    assert 'window.matchMedia("(max-width: 1280px)")' in source
+    assert '.rail{grid-column:1/-1;position:static' not in source

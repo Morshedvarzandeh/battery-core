@@ -27,6 +27,71 @@ function showView(id) {
      radar:renderRadar, factory:renderFactory, refs:renderRefs }[v.id])();
 }
 
+/* ---------------------------------------------------------------------
+   responsive workspace drawers
+   ------------------------------------------------------------------- */
+const appShell = document.querySelector(".app");
+const compactShell = window.matchMedia("(max-width: 1280px)");
+let drawerReturnFocus = null;
+
+function syncDrawerState() {
+  const compact = compactShell.matches;
+  const open = compact ? appShell.dataset.drawer : "";
+  const navOpen = open === "nav", labOpen = open === "lab";
+  if (!compact) appShell.dataset.drawer = "";
+  $("navBtn").setAttribute("aria-expanded", String(navOpen));
+  $("labBtn").setAttribute("aria-expanded", String(labOpen));
+  $("stationDrawer").toggleAttribute("inert", compact && !navOpen);
+  $("processDrawer").toggleAttribute("inert", compact && !labOpen);
+  $("lesson-content").toggleAttribute("inert", compact && (navOpen || labOpen));
+  document.body.classList.toggle("drawer-open", compact && (navOpen || labOpen));
+}
+
+function openDrawer(name, trigger) {
+  if (!compactShell.matches) return;
+  if ($("tour").dataset.open === "1") closeTour();
+  drawerReturnFocus = trigger;
+  appShell.dataset.drawer = name;
+  syncDrawerState();
+  requestAnimationFrame(() => $(name === "nav" ? "navClose" : "labClose").focus());
+}
+
+function closeDrawer(restoreFocus = true) {
+  if (!appShell.dataset.drawer) return;
+  const target = drawerReturnFocus;
+  drawerReturnFocus = null;
+  appShell.dataset.drawer = "";
+  syncDrawerState();
+  if (restoreFocus && target && document.contains(target)) target.focus();
+}
+
+$("navBtn").addEventListener("click", e => openDrawer("nav", e.currentTarget));
+$("labBtn").addEventListener("click", e => openDrawer("lab", e.currentTarget));
+$("navClose").addEventListener("click", () => closeDrawer());
+$("labClose").addEventListener("click", () => closeDrawer());
+$("drawerScrim").addEventListener("click", () => closeDrawer());
+$("tourStart").addEventListener("click", () => closeDrawer(false));
+
+document.addEventListener("click", e => {
+  if (compactShell.matches && e.target.closest("#stationDrawer [data-go]")) closeDrawer(false);
+});
+document.addEventListener("keydown", e => {
+  const open = compactShell.matches && appShell.dataset.drawer;
+  if (!open) return;
+  if (e.key === "Escape") { e.preventDefault(); closeDrawer(); return; }
+  if (e.key !== "Tab") return;
+  const panel = $(open === "nav" ? "stationDrawer" : "processDrawer");
+  const focusable = [...panel.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+    .filter(el => !el.hasAttribute("inert") && el.offsetParent !== null);
+  if (!focusable.length) return;
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+const onShellChange = () => { appShell.dataset.drawer = ""; drawerReturnFocus = null; syncDrawerState(); };
+if (compactShell.addEventListener) compactShell.addEventListener("change", onShellChange);
+else compactShell.addListener(onShellChange);
+
 /* reference chips open the reference list at the right entry */
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-ref]");
@@ -44,6 +109,7 @@ document.addEventListener("click", e => {
 renderSliders();
 renderRail();
 go(null);
+syncDrawerState();
 </script>
 </body>
 </html>
