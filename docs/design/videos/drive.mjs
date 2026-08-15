@@ -1,8 +1,12 @@
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 import fs from 'node:fs';
 
-const URL = 'http://127.0.0.1:8765/fundamentals/battery-production/';
-const OUT = './rec';
+/* Point this at any module in docs/ by setting MODULE_URL; the scene script
+   below is written for the battery-production simulator. */
+const URL = process.env.MODULE_URL
+  || 'http://127.0.0.1:8765/fundamentals/battery-production/';
+const OUT = process.env.REC_DIR || './rec';
+const ZOOM = process.env.ZOOM || '1.7';
 fs.rmSync(OUT, { recursive: true, force: true });
 
 const b = await chromium.launch({ args: ['--force-device-scale-factor=1'] });
@@ -24,7 +28,7 @@ const wait = ms => p.waitForTimeout(ms);
 await p.goto(URL, { waitUntil: 'networkidle' });
 await p.waitForSelector('#sliders input', { state: 'attached' });
 // zoom so the compact (drawer) layout is used and text reads on a phone
-await p.evaluate(() => { document.documentElement.style.zoom = '1.7'; });
+await p.evaluate(z => { document.documentElement.style.zoom = z; }, ZOOM);
 await p.addStyleTag({ content: `
   *{scrollbar-width:none!important}
   ::-webkit-scrollbar{display:none!important}

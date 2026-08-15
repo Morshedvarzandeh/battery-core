@@ -1,11 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")"
-FF=/tmp/claude-0/-home-user-battery-core/fb04c063-ddda-5d82-b9ed-2279bca47bd9/scratchpad/vidtest/node_modules/ffmpeg-static/ffmpeg
+# an ffmpeg with libx264 + aac; `npm i ffmpeg-static` provides one
+FF=${FF:-$(node -p "require('ffmpeg-static')" 2>/dev/null || echo ffmpeg)}
 SRC=$(ls rec/*.webm)
 PREROLL=$(python3 -c "import json;print(json.load(open('timeline.json'))['preroll'])")
-SPEED=1.5
-BODY=$(python3 -c "import json;t=json.load(open('timeline.json'));print(round(t['total']/1.5,2))")
+OUT_NAME=${OUT_NAME:-cellforge-linkedin-1080x1920.mp4}
+SPEED=${SPEED:-1.5}
+BODY=$(SPEED="$SPEED" python3 -c "import json,os;t=json.load(open('timeline.json'));print(round(t['total']/float(os.environ['SPEED']),2))")
 TITLE=3.5
 ENDD=4.5
 
@@ -72,6 +74,6 @@ $FF -y -v warning -f lavfi -i "aevalsrc=exprs=${EXPR}:duration=${DUR}:sample_rat
 # ---- 4 · mux ----------------------------------------------------------------
 $FF -y -v warning -i silent.mp4 -i music.wav -map 0:v -map 1:a \
   -c:v copy -c:a aac -b:a 192k -ac 2 -shortest -movflags +faststart \
-  cellforge-linkedin-1080x1920.mp4
+  "$OUT_NAME"
 
-ls -la cellforge-linkedin-1080x1920.mp4
+ls -la "$OUT_NAME"
