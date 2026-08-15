@@ -31,6 +31,12 @@ node cards.mjs     # renders card-title.png, card-end.png, cap-01..10.png
 bash build.sh      # trims, speeds up, burns captions, adds the music bed, muxes
 ```
 
+`build.sh` calls `music.py` for the bed, so it can also be rendered on its own:
+
+```bash
+python3 music.py music.wav 59.3
+```
+
 Environment variables:
 
 | variable | default | meaning |
@@ -41,6 +47,18 @@ Environment variables:
 | `SPEED` | `1.5` | playback speed applied to the recording |
 | `OUT_NAME` | `cellforge-linkedin-1080x1920.mp4` | final file |
 | `FF` | auto-detected | path to a full ffmpeg |
+| `MUSIC_GAIN` | `0.45` | bed level at the mux; the clip lands near −26 dB mean |
+
+## The music bed
+
+`music.py` writes the WAV with nothing but the Python standard library — no samples,
+no third-party audio, nothing to clear for rights. It plays a I-V-vi-IV progression in
+C major at 100 BPM: plucked arpeggios with a fast decay, a quiet pad, one root note per
+bar, and two short reverb taps.
+
+The shape matters more than the notes. Sustained minor chords with slow swells read as
+a thriller soundtrack no matter how quiet they are; short plucks in a major key read as
+a product demo. If you rework it, keep the plucks.
 
 ## Adapting it to another module
 

@@ -74,22 +74,13 @@ PY
 )
 echo "video duration: ${DUR}s"
 
-# ---- 3 · music bed: two alternating chords, cross-faded ---------------------
-ENVA="(0.5+0.5*sin(2*PI*t/16))"
-ENVB="(0.5-0.5*sin(2*PI*t/16))"
-CHA="(sin(2*PI*110*t)+0.7*sin(2*PI*164.81*t)+0.5*sin(2*PI*220*t)+0.32*sin(2*PI*329.63*t))"
-CHB="(sin(2*PI*87.31*t)+0.7*sin(2*PI*174.61*t)+0.5*sin(2*PI*261.63*t)+0.32*sin(2*PI*349.23*t))"
-AIR="0.035*sin(2*PI*659.26*t)*(0.5+0.5*sin(2*PI*t/7))"
-EXPR="0.13*(${ENVA}*${CHA}+${ENVB}*${CHB})+${AIR}"
-FOUT=$(python3 -c "print(round(${DUR}-3.6,2))")
-
-$FF -y -v warning -f lavfi -i "aevalsrc=exprs=${EXPR}:duration=${DUR}:sample_rate=48000" \
-  -af "aecho=0.8:0.88:60|140:0.28|0.18,lowpass=f=1500,highpass=f=45,afade=t=in:st=0:d=2.5,afade=t=out:st=${FOUT}:d=3.6,volume=0.85,alimiter=limit=0.9" \
-  -c:a pcm_s16le music.wav
+# ---- 3 · music bed ---------------------------------------------------------
+# synthesised here, so the clip carries no third-party audio
+python3 music.py music.wav "$DUR"
 
 # ---- 4 · mux ----------------------------------------------------------------
 $FF -y -v warning -i silent.mp4 -i music.wav -map 0:v -map 1:a \
-  -c:v copy -c:a aac -b:a 192k -ac 2 -shortest -movflags +faststart \
+  -af "volume=${MUSIC_GAIN:-0.45}" -c:v copy -c:a aac -b:a 192k -ac 2 -shortest -movflags +faststart \
   "$OUT_NAME"
 
 ls -la "$OUT_NAME"
