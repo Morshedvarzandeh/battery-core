@@ -1,3 +1,19 @@
+# battery-core — open-source battery engineering fundamentals.
+# Copyright (C) 2026 Morshed Varzandeh and battery-core contributors
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 """Static checks for the Lithium-ion Cell Architecture tutorial."""
 
 import re
@@ -36,7 +52,11 @@ def test_architecture_tutorial_uses_only_local_assets() -> None:
     html = _read("index.html")
     assert 'href="styles.css"' in html
     assert 'src="app.js"' in html
-    assert "https://" not in html
+    # no asset may be pulled from the network; a URL in prose or in the
+    # licence header is not an asset reference
+    assert 'src="https://' not in html
+    assert 'href="https://' not in html
+    assert "url(https://" not in html
     assert "unpkg.com" not in _read("styles.css") + _read("app.js")
 
 
