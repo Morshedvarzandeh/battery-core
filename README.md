@@ -199,4 +199,20 @@ keyword-only capacity API introduced in 0.2.0.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+Copyright (C) 2026 Morshed Varzandeh and `battery-core` contributors.
+
+This project is licensed under the
+[GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0-or-later).
+It is free software: you may redistribute it and modify it under those terms.
+It is distributed in the hope that it will be useful, but **without any warranty** —
+without even the implied warranty of merchantability or fitness for a particular
+purpose. See the licence for details.
+
+The AGPL adds one condition beyond the GPL that matters for this repository: under
+**section 13**, anyone who runs a modified version and lets users interact with it over
+a network must offer those users the corresponding source of their modified version.
+The interactive modules under `docs/` are served over the web, so that clause applies to
+them as well as to the Python package.
+
+Releases up to and including 0.3.0 were published under the MIT licence, and copies
+obtained under those terms remain MIT-licensed.
