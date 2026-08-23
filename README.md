@@ -225,17 +225,29 @@ Contributions are welcome. Keep physics independent of solver choices, add tests
 for new behavior, document units and assumptions, and run `pytest` before opening
 a pull request.
 
+Because the project is dual-licensed, opening a pull request also grants
+Lemonergy the right to license your contribution commercially as well as under
+the AGPL. You keep the copyright in your own work, and you may decline that
+grant — say so in the pull request and the contribution is recorded as
+AGPL-only. See [`COMMERCIAL.md`](COMMERCIAL.md#contributions).
+
 See [`CHANGELOG.md`](CHANGELOG.md) for released changes, including the
 keyword-only capacity API introduced in 0.2.0.
 
 ## License
 
-Battery Core is a project of Lemonergy, licensed under the
-[GNU Affero General Public License v3.0 or later](LICENSE).
+Battery Core is a project of Lemonergy, **dual-licensed**.
 
-You may use, study, modify, redistribute, and deploy this work — including over
-a network — provided you pass on the same freedoms and publish your source. On
-top of that, [`NOTICE`](NOTICE) carries one additional term, permitted by
-section 7(b) of the licence: **the attribution to Lemonergy must stay visible.**
-Keep `NOTICE` with the source, and name Lemonergy in the footer, about screen,
-or documentation of anything you build from this work.
+**Free, under the [GNU AGPL v3.0 or later](LICENSE).** Use, study, modify,
+redistribute, and deploy it — including over a network — provided you pass on
+the same freedoms and publish your source. On top of that, [`NOTICE`](NOTICE)
+carries one additional term, permitted by section 7(b) of the licence: **the
+attribution to Lemonergy must stay visible.** Keep `NOTICE` with the source, and
+name Lemonergy in the footer, about screen, or documentation of anything you
+build from this work.
+
+**Commercially, by agreement with Lemonergy.** If you want to ship this inside a
+closed product, run a modified version as a service without publishing its
+source, or drop the attribution, that needs a
+[commercial licence](COMMERCIAL.md). Learning from it, running it, and building
+in the open never do.

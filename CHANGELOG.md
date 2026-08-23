@@ -8,11 +8,30 @@ All notable changes to `battery-core` are recorded here. The format follows
 
 ### Changed
 
-- The project is relicensed from MIT to the **GNU Affero General Public License
-  v3.0 or later**, with one additional term permitted by section 7(b) of that
-  licence: the attribution to Lemonergy must stay visible. `NOTICE` states the
-  term and how to comply, and every page footer now carries the attribution as
-  its Appropriate Legal Notice.
+- The project is relicensed from MIT and is now **dual-licensed by Lemonergy**.
+
+  The free option is the **GNU Affero General Public License v3.0 or later**,
+  with one additional term permitted by section 7(b): the attribution to
+  Lemonergy must stay visible. `NOTICE` states the term and how to comply, and
+  every page footer carries the attribution as its Appropriate Legal Notice.
+  Anyone learning from the project, running it, or building on it in the open
+  is covered by this and owes nothing.
+
+  The paid option, in `COMMERCIAL.md`, is for the cases the AGPL is designed to
+  make uncomfortable: shipping this inside a closed product, running a modified
+  version as a service without publishing that service's source, or dropping the
+  attribution. Those need a negotiated licence from Lemonergy. The page draws
+  the line explicitly in both directions rather than leaving it to be guessed —
+  including that unmodified network use does not trigger section 13, which is a
+  common misreading in the strict direction.
+
+  Dual licensing only works if Lemonergy can license contributed code on both
+  sets of terms, so contributions now carry an inbound grant, which a
+  contributor may decline in favour of AGPL-only. Without it the model would
+  have broken silently on the first outside patch.
+
+  `COMMERCIAL.md` also records what a relicence cannot do: versions already
+  published under MIT stay available under MIT to whoever received them.
 
 - Chapter 1 reads as one designed chapter rather than six separately authored
   pages. Each module had been written standalone against a generic blue-on-white

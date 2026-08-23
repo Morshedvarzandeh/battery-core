@@ -41,6 +41,7 @@
       '<a href="../../">Course home</a>' +
       '<a href="https://github.com/Morshedvarzandeh/battery-core">Source</a>' +
       '<a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">AGPL-3.0-or-later</a>' +
+      '<a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/COMMERCIAL.md">Commercial use</a>' +
       '</div>';
     document.body.appendChild(footer);
   }

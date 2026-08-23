@@ -1,9 +1,16 @@
-"""Checks that the licence and its attribution term stay intact.
+"""Checks that the licensing stays intact and internally consistent.
 
-The project is AGPL-3.0-or-later with one additional term permitted by section
-7(b) of that licence: the attribution to Lemonergy must stay visible. That term
-only works if the notice actually travels — with the source, with every built
-distribution, and in the Appropriate Legal Notices of the pages themselves.
+The project is dual-licensed. The free option is AGPL-3.0-or-later plus one
+additional term permitted by section 7(b) of that licence: the attribution to
+Lemonergy must stay visible. That term only works if the notice actually
+travels — with the source, with every built distribution, and in the Appropriate
+Legal Notices of the pages themselves.
+
+The commercial option only works if two other things hold: the offer is
+discoverable from wherever someone lands, and contributed code carries an
+inbound grant. Without the grant, Lemonergy cannot license a contributor's work
+commercially, and the dual model quietly breaks the first time someone else
+sends a patch.
 """
 
 import sys
@@ -18,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LICENSE = ROOT / "LICENSE"
 NOTICE = ROOT / "NOTICE"
 README = ROOT / "README.md"
+COMMERCIAL = ROOT / "COMMERCIAL.md"
 PYPROJECT = ROOT / "pyproject.toml"
 
 SITE_PAGES = (
@@ -65,12 +73,12 @@ def test_packaging_metadata_names_the_licence_and_ships_the_notice() -> None:
     assert not any("MIT" in item for item in classifiers)
     assert any(author["name"] == "Lemonergy" for author in project["authors"])
     license_files = pyproject["tool"]["setuptools"]["license-files"]
-    assert set(license_files) == {"LICENSE", "NOTICE"}
+    assert {"LICENSE", "NOTICE"}.issubset(set(license_files))
 
 
 def test_readme_points_at_both_the_licence_and_the_term() -> None:
     text = README.read_text(encoding="utf-8")
-    assert "GNU Affero General Public License" in text
+    assert "AGPL" in text
     assert "NOTICE" in text
     assert "Lemonergy" in text
     assert "MIT License" not in text
@@ -93,3 +101,58 @@ def test_module_pages_carry_the_shared_footer() -> None:
     for path in CHROME_SOURCES[1:]:
         text = path.read_text(encoding="utf-8")
         assert "Lemonergy" in text, path.name
+
+
+def test_commercial_option_is_documented() -> None:
+    assert COMMERCIAL.is_file()
+    text = COMMERCIAL.read_text(encoding="utf-8")
+    assert "dual-licensed by Lemonergy" in text
+    # The line between free and paid is the whole point of the page, so both
+    # sides of it have to be spelled out rather than left to be guessed.
+    assert "You are fine under the open licence" in text
+    assert "You need a commercial licence if you want to" in text
+    # Unmodified network use does not trigger section 13; saying otherwise
+    # would overclaim what the licence actually requires.
+    assert "modified* versions offered" in text or "*modified*" in text
+
+
+def test_commercial_offer_is_reachable_from_the_metadata_and_the_site() -> None:
+    """Someone who needs to pay has to be able to find out that they can."""
+    pyproject = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
+    urls = pyproject["project"]["urls"]
+    assert "COMMERCIAL.md" in urls["Commercial-License"]
+    license_files = pyproject["tool"]["setuptools"]["license-files"]
+    assert "COMMERCIAL.md" in license_files
+
+    for path in SITE_PAGES:
+        html = path.read_text(encoding="utf-8")
+        assert "COMMERCIAL.md" in html, path.name
+    for path in CHROME_SOURCES[1:]:
+        text = path.read_text(encoding="utf-8")
+        assert "COMMERCIAL.md" in text, path.name
+
+
+def test_contributions_carry_an_inbound_grant() -> None:
+    """Dual licensing needs the right to relicense contributed code. Without a
+    stated inbound grant the model breaks on the first outside patch."""
+    commercial = COMMERCIAL.read_text(encoding="utf-8")
+    assert "## Contributions" in commercial
+    assert "royalty-free right to licence" in commercial
+    assert "AGPL-only" in commercial, "a contributor must be able to decline"
+
+    readme = README.read_text(encoding="utf-8")
+    assert "dual-licensed" in readme
+    assert "COMMERCIAL.md" in readme
+
+    notice = NOTICE.read_text(encoding="utf-8")
+    assert "Dual licensing" in notice
+    assert "COMMERCIAL.md" in notice
+
+
+def test_licence_change_scope_is_stated_honestly() -> None:
+    """Relicensing is forward-looking. Versions already released under MIT stay
+    MIT for whoever holds them, and saying otherwise would misrepresent what
+    the change achieves."""
+    text = COMMERCIAL.read_text(encoding="utf-8")
+    assert "cannot be withdrawn" in text
+    assert "MIT" in text

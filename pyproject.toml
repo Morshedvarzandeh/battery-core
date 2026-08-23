@@ -34,11 +34,12 @@ notebook = [
 [project.urls]
 Documentation = "https://github.com/Morshedvarzandeh/battery-core/tree/main/docs"
 Repository = "https://github.com/Morshedvarzandeh/battery-core"
+Commercial-License = "https://github.com/Morshedvarzandeh/battery-core/blob/main/COMMERCIAL.md"
 
 [tool.setuptools]
 # NOTICE carries the section 7(b) attribution term, so it has to travel with
 # every built distribution alongside the licence itself.
-license-files = ["LICENSE", "NOTICE"]
+license-files = ["LICENSE", "NOTICE", "COMMERCIAL.md"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

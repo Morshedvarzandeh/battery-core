@@ -11,6 +11,24 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
 
+Dual licensing
+--------------
+
+Lemonergy holds the copyright and licences this work on two alternative terms.
+
+  1. The GNU AGPL version 3 or later, together with the attribution term below.
+     This costs nothing and requires you to publish the complete source of what
+     you build on it and to keep the Lemonergy attribution visible.
+
+  2. A commercial licence from Lemonergy, on negotiated terms, for anyone whose
+     product cannot meet those conditions.
+
+Choosing one does not affect anyone using the other. See COMMERCIAL.md for
+which one applies to you and how to ask. Contributions carry an inbound grant
+so that contributed code can be licensed on both sets of terms; that grant is
+stated in COMMERCIAL.md and is optional per contributor.
+
+
 Additional term under section 7(b) of the GNU AGPL version 3
 ------------------------------------------------------------
 
