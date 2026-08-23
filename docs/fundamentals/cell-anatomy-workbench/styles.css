@@ -1,17 +1,20 @@
+/* Palette. These names are this module's own — --muted is a text colour here,
+   not a surface — so the page does not link `assets/module-theme.css`. The
+   values are the course palette from `assets/site.css`, and the roles follow
+   the same rule the rest of the site keeps: mint carries the lithium ions and
+   the primary action, orange and blue separate the two electrodes, and silver
+   is bare metal. There is one palette rather than a light and a dark one,
+   because the course itself is dark only. */
 :root{
-  color-scheme:light dark;
-  --bg:#f5f7fa;--panel:#fff;--text:#18212b;--muted:#61707c;--border:#d9e0e7;
-  --accent:#1769aa;--accent-soft:#e7f2fb;--neg:#4f7fbd;--pos:#d47a35;
-  --sep:#a6afb8;--collector:#89939c;--ion:#24945b;--electron:#7a4cc1;
-  --warn-bg:#fff4d6;--warn-border:#dfba50;--warn-text:#684a00;--shadow:0 12px 32px #00000014;
+  color-scheme:dark;
+  --bg:#07131d;--panel:#0d1d29;--text:#edf6f8;--muted:#9fb3bd;
+  --border:rgba(196,224,231,.16);
+  --accent:#68e0bd;--accent-soft:rgba(104,224,189,.14);--neg:#71b7ff;--pos:#ffb067;
+  --sep:#9fb3bd;--collector:#bccbd1;--ion:#68e0bd;--electron:#c9a2f2;
+  --warn-bg:rgba(255,176,103,.1);--warn-border:rgba(255,176,103,.42);
+  --warn-text:#ffb067;--shadow:0 24px 70px rgba(0,0,0,.35);
 }
-@media(prefers-color-scheme:dark){:root{
-  --bg:#11161b;--panel:#1b2229;--text:#eef4f8;--muted:#aeb8c2;--border:#34404b;
-  --accent:#72b7ef;--accent-soft:#16324a;--neg:#72a8e2;--pos:#efa060;--sep:#7e8993;
-  --collector:#6d7882;--ion:#65cf96;--electron:#b293ef;--warn-bg:#3c3115;
-  --warn-border:#8d7027;--warn-text:#ffe39a;--shadow:0 12px 32px #00000045;
-}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
 button{font:inherit}.page{width:min(1180px,calc(100% - 28px));margin:24px auto 48px}
 .eyebrow{color:var(--accent);font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 h1{margin:.25rem 0;font-size:clamp(2rem,4vw,3rem);line-height:1.1}.subtitle{margin:0;max-width:820px;color:var(--muted);font-size:1.03rem}
@@ -19,7 +22,7 @@ h1{margin:.25rem 0;font-size:clamp(2rem,4vw,3rem);line-height:1.1}.subtitle{marg
 .shell{overflow:hidden;border:1px solid var(--border);border-radius:16px;background:var(--panel);box-shadow:var(--shadow)}
 .toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid var(--border)}
 .group,.status,.components{display:flex;flex-wrap:wrap;gap:8px}.btn{min-height:38px;padding:7px 12px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-weight:700;cursor:pointer}
-.btn:hover,.btn:focus-visible{border-color:var(--accent);outline:none}.btn.active,.btn[aria-pressed=true]{border-color:var(--accent);background:var(--accent);color:#fff}
+.btn:hover,.btn:focus-visible{border-color:var(--accent);outline:none}.btn.active,.btn[aria-pressed=true]{border-color:var(--accent);background:var(--accent);color:#04251e}
 .status{justify-content:flex-end}.pill{padding:4px 9px;border:1px solid var(--border);border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.88rem;font-weight:750}
 .workbench{padding:16px}.visual{--inset:7%;position:relative;min-height:470px;overflow:hidden;border:1px solid var(--border);border-radius:14px;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 42%),var(--panel)}
 .wire{position:absolute;top:30px;right:var(--inset);left:var(--inset);height:135px;border:3px solid var(--text);border-bottom:0;border-radius:10px 10px 0 0;pointer-events:none}

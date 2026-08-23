@@ -56,6 +56,12 @@
         <p>Chapter 1 moves from cell structure and ratings through production routes and aging. Chapter 2 will develop equivalent-circuit models.</p>
       </div>
 
+      <ul class="tier-legend" aria-label="What the colours mean">
+        <li><strong>Core path</strong> — required to finish the chapter</li>
+        <li><strong>Deeper view</strong> — optional depth on the part before it</li>
+        <li><strong>Toolkit</strong> — how the modules are built, not what they teach</li>
+      </ul>
+
       <div class="module-grid">
         <article class="module-card available">
           <div class="module-meta"><span class="part-number">01</span><span class="status">Available</span></div>
@@ -63,7 +69,7 @@
           <a class="card-action" href="fundamentals/cell-anatomy-workbench/">Launch workbench <span aria-hidden="true">→</span></a>
         </article>
 
-        <article class="module-card available">
+        <article class="module-card available deeper">
           <div class="module-meta"><span class="part-number">01B</span><span class="status">Available</span></div>
           <div><p class="format">Interactive browser tutorial</p><h3>Lithium-ion cell architecture</h3><p>Assemble the five layers, then zoom into porous electrodes, pore electrolyte, solvent molecules, ions, and transport paths.</p></div>
           <a class="card-action" href="fundamentals/lithium-ion-cell-architecture/">Launch tutorial <span aria-hidden="true">→</span></a>
@@ -82,7 +88,7 @@
           <a class="card-action" href="fundamentals/battery-production/">Launch simulator <span aria-hidden="true">→</span></a>
         </article>
 
-        <article class="module-card available">
+        <article class="module-card available deeper">
           <div class="module-meta"><span class="part-number">03B</span><span class="status">Available</span></div>
           <div><p class="format">Interactive route-comparison simulator</p><h3>All-solid-state cell production</h3><p>Compare oxide, halide, sulfide, and polymer electrolyte routes from material preparation through formation and aging.</p></div>
           <a class="card-action" href="fundamentals/solid-state-production/">Launch SolidForge <span aria-hidden="true">→</span></a>
@@ -93,6 +99,12 @@
           <div><p class="format">Interactive Jupyter notebook</p><h3>Battery aging</h3><p>Explore how degradation mechanisms affect capacity, impedance, and self-discharge under different temperatures and cycling conditions.</p></div>
           <a class="card-action" href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb">Launch notebook <span aria-hidden="true">→</span></a>
           <p class="launch-note">Binder's first launch may take a few minutes.</p>
+        </article>
+
+        <article class="module-card available toolkit">
+          <div class="module-meta"><span class="part-number">TOOL</span><span class="status">Toolkit</span></div>
+          <div><p class="format">Interactive browser editor</p><h3>CellForge layout editor</h3><p>Reposition, rename, and resize the machine diagrams Part 03 draws, or start a new process step from the standard template.</p></div>
+          <a class="card-action" href="tools/cellforge-visual-editor/">Open the editor <span aria-hidden="true">→</span></a>
         </article>
 
         <article class="module-card planned">
@@ -137,6 +149,6 @@
     </section>
   </main>
 
-  <footer><p>Battery Core · Independent open-source battery engineering education</p><div><a href="https://github.com/Morshedvarzandeh/battery-core">Source</a><a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">MIT License</a></div></footer>
+  <footer><p>Battery Core · A project of Lemonergy · Independent open-source battery engineering education</p><div><a href="https://github.com/Morshedvarzandeh/battery-core">Source</a><a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">AGPL-3.0-or-later</a></div></footer>
 </body>
 </html>

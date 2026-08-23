@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A guided route through Battery Core Chapter 1, from cell anatomy and ratings to production and aging.">
+  <meta name="description" content="A guided route through Battery Core Chapter 1, from cell anatomy and ratings to production and aging, with the toolkit the modules are built with.">
   <meta name="theme-color" content="#07131d">
   <link rel="canonical" href="https://morshedvarzandeh.github.io/battery-core/chapter-1/">
   <link rel="stylesheet" href="../assets/site.css">
@@ -20,6 +20,7 @@
     <nav aria-label="Primary navigation">
       <a href="../">Home</a>
       <a href="#sequence" aria-current="page">Study guide</a>
+      <a href="#toolkit">Toolkit</a>
       <a href="#checkpoint">Chapter checkpoint</a>
       <a href="https://github.com/Morshedvarzandeh/battery-core">GitHub</a>
     </nav>
@@ -47,6 +48,7 @@
           <div><dt>Start with</dt><dd>Cell structure</dd></div>
           <div><dt>Finish with</dt><dd>Aging</dd></div>
           <div><dt>Formats</dt><dd>Browser + notebook</dd></div>
+          <div><dt>Toolkit</dt><dd>1 authoring tool</dd></div>
         </dl>
       </aside>
     </section>
@@ -76,6 +78,12 @@
         </div>
         <p>For every part: learn the core idea, interact with the model, then answer the checkpoint before moving on.</p>
       </div>
+
+      <ul class="tier-legend" aria-label="What the colours mean">
+        <li><strong>Core path</strong> — required to finish the chapter</li>
+        <li><strong>Deeper view</strong> — optional depth on the part before it</li>
+        <li><strong>Toolkit</strong> — how the modules are built, not what they teach</li>
+      </ul>
 
       <div class="study-sequence">
         <article class="study-step">
@@ -166,6 +174,32 @@
       </div>
     </section>
 
+    <section id="toolkit" class="section" aria-labelledby="toolkit-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow" data-tier="toolkit">Chapter toolkit</p>
+          <h2 id="toolkit-title">The tool the diagrams are drawn with.</h2>
+        </div>
+        <p>Optional, and outside the checkpoints. Open it if you want to see how Part 03 is maintained, or if you are contributing a new process step.</p>
+      </div>
+
+      <div class="study-sequence">
+        <article class="study-step study-step-toolkit">
+          <div class="study-step-number"><span>Toolkit</span><strong>TOOL</strong></div>
+          <div class="study-step-copy">
+            <p class="format">Interactive browser editor · Authoring tool</p>
+            <h3>CellForge layout editor</h3>
+            <p>Open the coating and calendering diagrams from Part 03, move or rename any machine and label, watch the live collision check, and export the changes as JSON. A third diagram is a standard template: the shared skeleton a new process step starts from.</p>
+            <div class="study-prompts">
+              <p><strong>Teaches:</strong> nothing on its own — it builds the course rather than explaining it.</p>
+              <p><strong>Use it when:</strong> a label overlaps at your screen width, or you are adding a machine to the production chain.</p>
+            </div>
+            <a class="card-action" href="../tools/cellforge-visual-editor/">Open the layout editor <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section id="checkpoint" class="section" aria-labelledby="checkpoint-title">
       <div class="section-heading">
         <div>
@@ -208,8 +242,12 @@
   </main>
 
   <footer>
-    <p>Battery Core · Chapter 1 study guide</p>
-    <div><a href="../">Course home</a><a href="https://github.com/Morshedvarzandeh/battery-core">Source</a><a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">MIT License</a></div>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../">Course home</a>
+      <a href="https://github.com/Morshedvarzandeh/battery-core">Source</a>
+      <a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">AGPL-3.0-or-later</a>
+    </div>
   </footer>
 </body>
 </html>

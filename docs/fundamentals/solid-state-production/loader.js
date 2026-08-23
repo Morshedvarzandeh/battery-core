@@ -15,6 +15,35 @@
   ];
   const status = document.getElementById("load-status");
 
+  // The payload replaces the whole document, so the shared chrome has to be
+  // put back afterwards rather than sitting in this page's own markup.
+  function injectChrome() {
+    const head = document.head || document.documentElement;
+    ["../../assets/module-theme.css", "../../assets/site-chrome.css"].forEach(href => {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = href;
+      head.appendChild(link);
+    });
+    const bar = document.createElement("div");
+    bar.className = "bc-modulebar";
+    bar.innerHTML = '<span class="bc-modulebar-part" data-tier=\"deeper\">Part 03B &middot; Chapter 1</span>' +
+      '<span>All-solid-state cell production</span>' +
+      '<span class="bc-modulebar-spacer"></span>' +
+      '<a href="../../">Course home</a>' +
+      '<a href="../../chapter-1/">Chapter 1</a>';
+    document.body.insertBefore(bar, document.body.firstChild);
+    const footer = document.createElement("footer");
+    footer.className = "bc-footer";
+    footer.innerHTML = '<p>Battery Core \u00b7 A project of Lemonergy</p>' +
+      '<div class="bc-footer-links">' +
+      '<a href="../../">Course home</a>' +
+      '<a href="https://github.com/Morshedvarzandeh/battery-core">Source</a>' +
+      '<a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">AGPL-3.0-or-later</a>' +
+      '</div>';
+    document.body.appendChild(footer);
+  }
+
   async function boot() {
     try {
       const responses = await Promise.all(parts.map(path => fetch(path)));
@@ -24,6 +53,7 @@
       document.open();
       document.write(html);
       document.close();
+      injectChrome();
     } catch (error) {
       console.error(error);
       if (status) status.textContent = "The simulator source could not be loaded. Serve the docs directory over HTTP and reload this page.";

@@ -1,3 +1,20 @@
+/* Battery Core — course design system.
+ *
+ * Colour roles. Every hue on the site means one thing, so a reader can tell a
+ * module's tier before reading its label:
+ *
+ *   --accent  (mint)    the core learning path: primary parts, primary
+ *                       actions, part numbers, the brand mark.
+ *   --blue              optional depth: the "B" parts that go further into a
+ *                       topic without being required to finish the chapter.
+ *   --orange            the toolkit: authoring and maintenance tools that
+ *                       build the course rather than teach it.
+ *
+ * Nothing else introduces a hue. Surfaces are the four navy steps below, and
+ * text is --text or --muted. Standalone module pages get the same palette
+ * through `module-theme.css`; new pages start from `page-template.html`.
+ */
+
 :root {
   color-scheme: dark;
   --background: #07131d;
@@ -11,6 +28,13 @@
   --accent-strong: #95f1d5;
   --blue: #71b7ff;
   --orange: #ffb067;
+
+  /* Tier aliases. Components read these, never the raw hues, so a tier can be
+     recoloured in one place. */
+  --tier-core: var(--accent);
+  --tier-deeper: var(--blue);
+  --tier-toolkit: var(--orange);
+
   --radius: 22px;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -865,5 +889,388 @@ footer a {
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===========================================================================
+   Tier variants
+   A part's tier is carried by one modifier class, and the modifier only ever
+   swaps --tier. Nothing else about the component changes.
+   =========================================================================== */
+
+.study-step,
+.module-card,
+.checkpoint-grid article {
+  --tier: var(--tier-core);
+}
+
+.study-step-deeper,
+.module-card.deeper {
+  --tier: var(--tier-deeper);
+  border-color: color-mix(in srgb, var(--tier) 28%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 7%, transparent), rgba(255, 255, 255, 0.012));
+}
+
+.study-step-toolkit,
+.module-card.toolkit {
+  --tier: var(--tier-toolkit);
+  border-color: color-mix(in srgb, var(--tier) 28%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 7%, transparent), rgba(255, 255, 255, 0.012));
+}
+
+.study-step-toolkit .study-step-number strong,
+.study-step-deeper .study-step-number strong,
+.module-card.toolkit .part-number,
+.module-card.deeper .part-number,
+.study-step-toolkit .card-action,
+.module-card.toolkit .card-action {
+  color: var(--tier);
+}
+
+.module-card.available.deeper:hover,
+.module-card.available.toolkit:hover {
+  border-color: color-mix(in srgb, var(--tier) 45%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 11%, transparent), rgba(255, 255, 255, 0.018));
+}
+
+/* A legend that states the colour roles rather than leaving them to be
+   inferred. */
+.tier-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  margin: 0 0 2.4rem;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.tier-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.tier-legend li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--tier, var(--tier-core));
+}
+
+.tier-legend li:nth-child(2) { --tier: var(--tier-deeper); }
+.tier-legend li:nth-child(3) { --tier: var(--tier-toolkit); }
+
+.tier-legend strong {
+  color: var(--text);
+  font-weight: 800;
+}
+
+/* ===========================================================================
+   Standard page shell
+   The hero every page other than the homepage and the chapter guide uses.
+   `page-template.html` is the copy-ready version.
+   =========================================================================== */
+
+.page-hero {
+  padding: 4.5rem 0 3rem;
+}
+
+.page-hero h1 {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+}
+
+.page-hero .lede {
+  max-width: 760px;
+  margin: 1.4rem 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+}
+
+.page-hero .eyebrow[data-tier="deeper"] { color: var(--tier-deeper); }
+.page-hero .eyebrow[data-tier="toolkit"] { color: var(--tier-toolkit); }
+
+.footer-note {
+  max-width: 46ch;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ===========================================================================
+   Tool surface
+   Controls for the interactive authoring tools. Compact by design: these sit
+   beside a canvas, so they use the small type scale rather than the page one.
+   =========================================================================== */
+
+.tool-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  gap: 1rem;
+  align-items: start;
+}
+
+.panel {
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+}
+
+.panel + .panel {
+  margin-top: 1rem;
+}
+
+.panel > h2,
+.panel > h3 {
+  font-size: 1.05rem;
+}
+
+.panel-label {
+  margin: 0 0 0.85rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.control-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.chip:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.chip:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.chip-primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: #04251e;
+}
+
+.chip-primary:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--tier-toolkit) 60%, transparent);
+  background: color-mix(in srgb, var(--tier-toolkit) 16%, transparent);
+  color: var(--tier-toolkit);
+}
+
+.chip-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+.chip-ghost:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.field {
+  display: block;
+  margin-bottom: 0.9rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field input[type="text"],
+.field textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.field textarea {
+  min-height: 9rem;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+}
+
+.field input[type="text"]:focus-visible,
+.field textarea:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.field input:disabled {
+  opacity: 0.5;
+}
+
+.field input[type="range"] {
+  display: block;
+  width: 100%;
+  margin-top: 0.6rem;
+  accent-color: var(--accent);
+}
+
+.field-value {
+  color: var(--accent);
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.nudge-pad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.nudge-pad .chip {
+  padding: 0.45rem 0;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.pill::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.pill[data-state="warning"] {
+  border-color: color-mix(in srgb, var(--orange) 45%, transparent);
+  color: var(--orange);
+}
+
+.pill[data-state="warning"]::before {
+  background: var(--orange);
+}
+
+.pill[data-state="idle"]::before {
+  background: var(--muted);
+}
+
+.canvas-card {
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  touch-action: none;
+  overflow: hidden;
+}
+
+.canvas-card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(104, 224, 189, 0.07), transparent 22rem),
+    var(--surface);
+}
+
+.tool-statusbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.tool-statusbar .spacer {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 980px) {
+  .tool-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .nudge-pad {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tool-statusbar {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

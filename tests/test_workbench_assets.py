@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from asset_checks import external_asset_references
+
 WORKBENCH = (
     Path(__file__).resolve().parents[1]
     / "docs"
@@ -25,7 +27,7 @@ def test_workbench_references_local_assets() -> None:
     html = (WORKBENCH / "index.html").read_text(encoding="utf-8")
     assert 'href="styles.css"' in html
     assert 'src="app.js"' in html
-    assert "https://" not in html
+    assert external_asset_references(html) == []
 
 
 def test_workbench_contains_required_components() -> None:

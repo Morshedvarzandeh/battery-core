@@ -94,6 +94,22 @@ The **[Battery Materials Lab](https://morshedvarzandeh.github.io/battery-core/la
 
 The **[Fick's first-law notebook](notebooks/transport/ficks_first_law.ipynb)** remains available as a tested transport-physics building block.
 
+### Chapter toolkit — CellForge layout editor
+
+The **[CellForge layout editor](https://morshedvarzandeh.github.io/battery-core/tools/cellforge-visual-editor/)** is an authoring tool rather than a lesson. It opens the coating and calendering diagrams Part 03 draws, so a maintainer can move, rename, or resize any machine and label on the canvas, watch a live label-collision check, and export the changes as JSON. A third diagram is a standard template: the shared skeleton — frame, four zones, one web line, placeholder machines, state badges — that a new process step starts from. See [`docs/tools/cellforge-visual-editor/README.md`](docs/tools/cellforge-visual-editor/README.md).
+
+## Course design system
+
+Every page in `docs/` is built from three files in [`docs/assets/`](docs/assets/README.md):
+
+- **`page-template.html`** — the standard page: copy it, fill the placeholders, and the palette, header, footer, skip link, and responsive rules come with it.
+- **`site.css`** — the tokens and components for pages that use the course shell.
+- **`module-theme.css`** and **`site-chrome.css`** — the same palette and the shared header and footer for a module that brings its own stylesheet.
+
+Colour carries one meaning throughout. Mint is the core path, blue is optional
+depth, and orange is the toolkit that builds the course rather than teaching it.
+No page introduces a hue outside those roles.
+
 ## Principles
 
 - Use explicit units; prefer SI while documenting established battery conventions such as ampere-hours and C-rate when useful.
@@ -199,4 +215,12 @@ keyword-only capacity API introduced in 0.2.0.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+Battery Core is a project of Lemonergy, licensed under the
+[GNU Affero General Public License v3.0 or later](LICENSE).
+
+You may use, study, modify, redistribute, and deploy this work — including over
+a network — provided you pass on the same freedoms and publish your source. On
+top of that, [`NOTICE`](NOTICE) carries one additional term, permitted by
+section 7(b) of the licence: **the attribution to Lemonergy must stay visible.**
+Keep `NOTICE` with the source, and name Lemonergy in the footer, about screen,
+or documentation of anything you build from this work.

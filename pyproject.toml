@@ -9,10 +9,10 @@ description = "Small, well-documented building blocks for battery physics models
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
-authors = [{ name = "Morshed Varzandeh" }]
+authors = [{ name = "Lemonergy" }, { name = "Morshed Varzandeh" }]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -34,6 +34,11 @@ notebook = [
 [project.urls]
 Documentation = "https://github.com/Morshedvarzandeh/battery-core/tree/main/docs"
 Repository = "https://github.com/Morshedvarzandeh/battery-core"
+
+[tool.setuptools]
+# NOTICE carries the section 7(b) attribution term, so it has to travel with
+# every built distribution alongside the licence itself.
+license-files = ["LICENSE", "NOTICE"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

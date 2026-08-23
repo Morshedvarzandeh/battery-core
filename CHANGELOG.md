@@ -4,6 +4,56 @@ All notable changes to `battery-core` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- The project is relicensed from MIT to the **GNU Affero General Public License
+  v3.0 or later**, with one additional term permitted by section 7(b) of that
+  licence: the attribution to Lemonergy must stay visible. `NOTICE` states the
+  term and how to comply, and every page footer now carries the attribution as
+  its Appropriate Legal Notice.
+
+- Chapter 1 reads as one designed chapter rather than six separately authored
+  pages. Each module had been written standalone against a generic blue-on-white
+  token set, so every lesson rendered white while the course shell around it was
+  navy. All of them now use the course palette.
+
+  Colour also means something now. Mint is the core path, blue is optional
+  depth, and orange is the toolkit — a rule stated in a legend on the homepage
+  and the study guide instead of being left to inference. `--orange` had been
+  declared in `site.css` since the homepage landed and never used; it is the
+  toolkit hue.
+
+- The CellForge layout editor is part of the site. It was added standalone in
+  0.3.0 with its own light/dark palette, no header or footer, no link from
+  anywhere, and three `unpkg.com` script tags that nothing on the page used —
+  the only external requests in `docs/`. It is rebuilt on the course design
+  system, reachable from the homepage and the study guide, and self-contained
+  like everything else.
+
+### Added
+
+- A standard page template, `docs/assets/page-template.html`, and the design
+  system it belongs to, documented in `docs/assets/README.md`. A new page copies
+  the template and inherits the palette, header, footer, skip link, responsive
+  rules, and licence attribution instead of deciding each one again.
+
+- `docs/assets/module-theme.css` restates the generic token contract in course
+  colours, so a module written against it adopts the palette without any change
+  to its own layout. `docs/assets/site-chrome.css` carries the shared header and
+  footer separately, because a module with its own token vocabulary — the
+  workbench reads `--muted` as a text colour, not a surface — needs the chrome
+  without the bridge.
+
+- A third diagram in the CellForge editor: a standard template. It is not a
+  machine but the skeleton the coating and calendering diagrams share — the same
+  frame, the same four zone divisions, one web line with flow arrows,
+  placeholder machines to rename, and input/in-process/output state badges. A
+  new process step starts on the course grid and at the course label scale
+  rather than from a blank canvas, which is what produced the label overlaps the
+  editor exists to fix.
+
 ## [0.3.0] — 2026-07-30
 
 ### Added
