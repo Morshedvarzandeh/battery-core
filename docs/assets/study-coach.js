@@ -1112,16 +1112,19 @@
       ui.prompt.focus();
     }
 
-    /* The mascot. Drawn rather than embedded: an inline SVG stays sharp at any
-       size, costs no request, and can change expression, which a flat image
-       cannot. `data-mood` drives the brows and mouth — see `site.css`. */
+    /* Volta, the coach's mascot — a lemon, because a lemon with two
+       dissimilar metals in it is the first battery most people ever build, and
+       Alessandro Volta built the first real one. Drawn rather than embedded: an
+       inline SVG stays sharp at any size, costs no request, and can change
+       expression, which a flat image cannot. `data-mood` drives the brows and
+       mouth — see `site.css`. */
     function mascot() {
       var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("class", "coach-mascot");
       svg.setAttribute("viewBox", "0 0 64 64");
       svg.setAttribute("data-mood", "idle");
       svg.setAttribute("role", "img");
-      svg.setAttribute("aria-label", "The study coach");
+      svg.setAttribute("aria-label", "Volta, the study coach");
       svg.innerHTML = [
         '<path class="lemon-leaf" d="M30 14C24 6 14 5 9 8c-1 6 3 14 11 16 4 1 8 0 10-2z"/>',
         '<path class="lemon-stem" d="M30 13c-1-4-2-6-3-8"/>',
@@ -1333,7 +1336,7 @@
      file is public, and so is anything in it. */
   function attachTutor(root, ui, endpoint, currentQuestion) {
     var panel = element("div", "panel coach-tutor");
-    panel.appendChild(element("p", "panel-label", "Ask the coach"));
+    panel.appendChild(element("p", "panel-label", "Ask Volta"));
     panel.appendChild(
       element(
         "p",
@@ -1405,7 +1408,7 @@
         .catch(function (error) {
           reply.hidden = false;
           reply.textContent =
-            "The coach is unavailable. The checkpoints above work without it. (" +
+            "Volta is unavailable. The checkpoints above work without it. (" +
             error.message +
             ")";
           status.textContent = "Unavailable";

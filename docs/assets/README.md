@@ -181,13 +181,19 @@ A new drill is an entry in `DRILLS` with `generate`, `prompt`, `answer`,
 tested function rather than inventing arithmetic, and add the comparison to
 `tests/test_study_coach.py`.
 
-## The mascot
+## Volta, the mascot
 
-The coach has a face: a lemon in a headset, for Lemonergy. It is drawn as
-inline SVG in `study-coach.js` rather than embedded as an image, for three
-reasons — it stays sharp at any size, it costs no request on a page that is
-meant to be self-contained, and a drawing can change expression where a bitmap
-cannot.
+The coach has a face and a name: **Volta**, a lemon in a headset.
+
+The name does double duty. Alessandro Volta built the first true battery, and a
+lemon with two dissimilar metals pushed into it is the first battery most people
+ever build, in a school classroom. So the character is not decoration bolted
+onto a battery course — it is the joke the course is already making.
+
+Volta is drawn as inline SVG in `study-coach.js` rather than embedded as an
+image, for three reasons — it stays sharp at any size, it costs no request on a
+page that is meant to be self-contained, and a drawing can change expression
+where a bitmap cannot.
 
 `data-mood` on the `<svg>` selects the expression, and `site.css` does the rest:
 
@@ -206,6 +212,22 @@ The lemon yellow is `--lemon`, and it is the one hue outside the role system in
 [Colour roles](#colour-roles). That is deliberate and narrow: the mascot is
 illustration, not a UI state, so `--lemon` never marks a tier, a status, or a
 control. If it starts appearing on buttons, the role system has been broken.
+
+### The favicon
+
+`favicon.svg` is Volta at tab size, and it is a **separate drawing**, not the
+mascot scaled down. At 16px the headset, the freckles, the shine and the eye
+whites collapse into mud, so the favicon keeps only what survives — a yellow
+body, a green leaf, two dark eyes, a smile — on a rounded navy tile, with
+heavier strokes, because hairlines disappear first. Check any change to it at
+16px before believing it works; nothing else predicts what a browser tab does.
+
+Every page links it as `<link rel="icon" type="image/svg+xml">`. The two
+payload-loaded simulators inject it in `loader.js` alongside the rest of the
+chrome, because `document.write` discards the original `<head>`.
+
+Browsers without SVG favicon support simply show no icon, which is what every
+page did before this existed, so there is no fallback bitmap to keep in sync.
 
 ## An AI tutor
 

@@ -16,6 +16,8 @@ COACH = ROOT / "docs" / "assets" / "study-coach.js"
 GUIDE = ROOT / "docs" / "chapter-1" / "index.html"
 STYLESHEET = ROOT / "docs" / "assets" / "site.css"
 ASSETS_README = ROOT / "docs" / "assets" / "README.md"
+FAVICON = ROOT / "docs" / "assets" / "favicon.svg"
+DOCS = ROOT / "docs"
 
 
 def _coach() -> str:
@@ -206,3 +208,52 @@ def test_documented_tutor_contract_matches_the_client() -> None:
     for field in ("question:", "context:", "chapter:", "checkpointId:", "checkpoint:"):
         assert field in source, field
     assert "data.reply" in source
+
+
+def test_mascot_is_named() -> None:
+    source = _coach()
+    assert 'aria-label", "Volta' in source
+    assert "Ask Volta" in source
+    guide = GUIDE.read_text(encoding="utf-8")
+    assert "Volta" in guide, "the name should be introduced where a reader meets it"
+    readme = ASSETS_README.read_text(encoding="utf-8")
+    assert "## Volta, the mascot" in readme
+
+
+def test_every_page_has_a_favicon() -> None:
+    """There was none at all before this: eight pages, eight blank tabs."""
+    assert FAVICON.is_file()
+    pages = [*sorted(DOCS.rglob("index.html")), DOCS / "assets" / "page-template.html"]
+    assert len(pages) >= 9
+    for page in pages:
+        html = page.read_text(encoding="utf-8")
+        assert 'rel="icon"' in html, page.relative_to(ROOT)
+        assert "favicon.svg" in html, page.relative_to(ROOT)
+
+
+def test_payload_loaders_restore_the_favicon() -> None:
+    """`document.write` discards the original head, so the two simulators have
+    to put the icon back with the rest of the chrome or they lose it."""
+    for name in ("battery-production", "solid-state-production"):
+        path = DOCS / "fundamentals" / name / "loader.js"
+        loader = path.read_text(encoding="utf-8")
+        assert 'icon.rel = "icon";' in loader, name
+        assert "favicon.svg" in loader, name
+
+
+def test_favicon_is_drawn_for_tab_size_not_scaled_down() -> None:
+    """A shrunken illustration is mud at 16px. The favicon keeps only the parts
+    that survive, so it must not carry the mascot's fine detail."""
+    icon = FAVICON.read_text(encoding="utf-8")
+    fine_detail = (
+        "lemon-headset",
+        "lemon-freckles",
+        "lemon-shine",
+        "lemon-glints",
+        "lemon-sparkle",
+        "data-mood",
+    )
+    for absent in fine_detail:
+        assert absent not in icon, absent
+    assert "viewBox" in icon
+    assert "#ffd94a" in icon, "the lemon keeps the mascot's yellow"

@@ -26,6 +26,11 @@
       link.href = href;
       head.appendChild(link);
     });
+    const icon = document.createElement("link");
+    icon.rel = "icon";
+    icon.type = "image/svg+xml";
+    icon.href = "../../assets/favicon.svg";
+    head.appendChild(icon);
     const bar = document.createElement("div");
     bar.className = "bc-modulebar";
     bar.innerHTML = '<span class="bc-modulebar-part">Part 03 &middot; Chapter 1</span>' +

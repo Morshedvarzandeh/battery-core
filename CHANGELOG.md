@@ -87,12 +87,24 @@ All notable changes to `battery-core` are recorded here. The format follows
   covers and the learner ticks their own, and the interface says which kind of
   question they are on before they answer.
 
-- The coach has a face: a lemon in a headset, for Lemonergy. It is drawn as
-  inline SVG rather than embedded, so it stays sharp at any size, costs no
-  request on a page meant to be self-contained, and can change expression —
-  idle, thinking, happy, encouraging — which a bitmap cannot. Expressions swap
-  whole paths by `display` rather than animating the CSS `d` property, which
-  Firefox does not support.
+- The coach has a face and a name: **Volta**, a lemon in a headset. Alessandro
+  Volta built the first true battery, and a lemon with two dissimilar metals in
+  it is the first battery most people ever build — so the character is the joke
+  the course was already making rather than decoration bolted onto it.
+
+  Volta is drawn as inline SVG rather than embedded, so the drawing stays sharp
+  at any size, costs no request on a page meant to be self-contained, and can
+  change expression — idle, thinking, happy, encouraging — which a bitmap
+  cannot. Expressions swap whole paths by `display` rather than animating the
+  CSS `d` property, which Firefox does not support.
+
+- A favicon, `docs/assets/favicon.svg`, on every page. There had been none at
+  all: all eight pages showed a blank browser tab. It is Volta at tab size and a
+  separate drawing rather than the mascot scaled down, because at 16px the
+  headset, freckles, shine and eye whites collapse into mud — so it keeps a
+  yellow body, a green leaf, two eyes and a smile on a rounded navy tile, with
+  heavier strokes. Verified by rendering it at 16, 24, 32, 64 and 128px rather
+  than trusting it at illustration size.
 
   Its yellow, `--lemon`, is the one hue outside the colour-role system, and
   narrowly so: the mascot is illustration, not a UI state, so it never marks a
