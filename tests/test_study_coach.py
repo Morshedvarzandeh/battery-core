@@ -81,24 +81,91 @@ def test_coach_covers_every_checkpoint_in_the_guide() -> None:
         assert chapter in ids, chapter
 
 
-def test_coach_drill_matches_the_tested_python() -> None:
-    """The drill is the one answer the coach checks outright, so its arithmetic
-    has to be the definition `battery_core.capacity` implements: I = Q x C and
-    t = 1 / C."""
+def test_coach_drills_implement_the_tested_relationships() -> None:
+    """The drills are the answers the coach marks outright, so each one has to
+    be the relationship the Python implements rather than a lookalike."""
     source = _coach()
+    # current_from_c_rate: I = Q * C
     assert "current: capacity * rate" in source
-    assert "var hours = 1 / rate;" in source
-    assert "I = Q × C = " in source  # noqa: RUF001 — the drill renders U+00D7
-    assert "t = 1 / C = " in source
+    # ideal_duration_hours: t = 1 / C
+    assert "hours: 1 / rate" in source
+    # arrhenius_factor: exp[(Ea / R) * (1/T_ref - 1/T)]
+    arrhenius = "(activation / MOLAR_GAS_CONSTANT) * (1 / referenceKelvin - 1 / kelvin)"
+    assert arrhenius in source
+    # parabolic_film_thickness: delta = delta_ref * sqrt(t / t_ref)
+    assert "thickness * Math.sqrt(multiple)" in source
+
+
+def test_coach_constants_match_the_python_exactly() -> None:
+    """The browser cannot import `battery_core`, so the two constants it needs
+    are copied. A copy drifts silently unless something compares them."""
+    from battery_core.aging import ABSOLUTE_ZERO_C, MOLAR_GAS_CONSTANT
+
+    source = _coach()
+    assert f"MOLAR_GAS_CONSTANT = {MOLAR_GAS_CONSTANT};" in source
+    assert f"ABSOLUTE_ZERO_C = {ABSOLUTE_ZERO_C};" in source
 
 
 def test_coach_does_not_claim_to_mark_prose() -> None:
     """It cannot read an answer. Saying otherwise would be the unstated model
     limit this course exists to avoid."""
     source = _coach()
-    assert "The coach never claims to mark an answer" in source
+    assert "never claims to mark an answer" in source
+    assert "keyword matching, which grades vocabulary" in source
     assert "tick what yours did" in source
     assert "A complete answer covers these" in source
+
+
+def test_coach_separates_checked_from_self_checked() -> None:
+    """A learner should be able to tell which kind of question they are on
+    before answering, because the two are marked in different ways."""
+    source = _coach()
+    assert "function isAutoChecked(" in source
+    assert '"Checked"' in source
+    assert '"Self-checked"' in source
+    for kind in ("drill:", "choice:", "multi:", "order:"):
+        assert kind in source, kind
+
+
+def test_auto_checked_questions_explain_wrong_options() -> None:
+    """A distractor that is only marked wrong teaches nothing. Every option in
+    every choice question carries the reason it is right or wrong."""
+    source = _coach()
+    blocks = re.findall(r"options: \[(.*?)\n      \],", source, re.S)
+    assert blocks, "no choice questions found"
+    for block in blocks:
+        texts = re.findall(r"\n          text:", block)
+        whys = re.findall(r"\n          why:", block)
+        assert len(texts) == len(whys), (len(texts), len(whys))
+        assert len(texts) >= 3
+
+
+def test_ordering_question_is_a_real_process_route() -> None:
+    source = _coach()
+    for step in ("Mixing the slurry", "Coating the foil", "Drying the coating",
+                 "Calendering to porosity", "Stacking or winding",
+                 "Electrolyte filling", "Formation"):
+        assert step in source, step
+    # Shuffling that can return the input order opens the question pre-solved.
+    assert "function shuffled(" in source
+    assert "attempts < 20" in source
+
+
+def test_mascot_is_drawn_not_fetched() -> None:
+    """An embedded bitmap would be an external byte payload in a page that is
+    meant to be self-contained, and could not change expression."""
+    source = _coach()
+    assert "function mascot()" in source
+    assert "data:image" not in source
+    assert "lemon-body" in source
+    for mood in ("idle", "thinking", "happy", "encouraging"):
+        assert f'setMood("{mood}")' in source or f'"{mood}"' in source, mood
+    css = STYLESHEET.read_text(encoding="utf-8")
+    # Firefox does not support the CSS `d` property, so expressions must not
+    # depend on it or the mascot freezes there.
+    assert "d: path(" not in css
+    for mouth in ("mouth-idle", "mouth-happy", "mouth-flat", "mouth-soft"):
+        assert mouth in css, mouth
 
 
 def test_coach_keeps_progress_local() -> None:

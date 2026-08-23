@@ -46,12 +46,18 @@ and knowledge checkpoint for each part.
 
 The guide also runs those checkpoints as
 **[practice](https://morshedvarzandeh.github.io/battery-core/chapter-1/#practice)**:
-write an answer, then compare it against the points a complete one covers. It
-does not mark prose — it cannot read an answer, and says so — but the C-rate
-question is a generated numeric drill checked against the same `Q × C`
-definition the tested Python implements. Everything runs in the browser with no
-network, account, or key; an AI tutor for free-form follow-up is optional and
-off by default (see [`docs/assets/README.md`](docs/assets/README.md)).
+seventeen questions with a lemon in a headset for company. Eight are marked
+outright — numeric drills, multiple choice, select-all, and ordering the
+production route — with every wrong option explaining which misconception it
+is. Drill numbers come from the same relationships the tested Python
+implements. The other nine ask for an explanation and are deliberately *not*
+marked: grading prose offline means keyword matching, which scores vocabulary
+rather than understanding, so the coach shows what a complete answer covers and
+you tick your own.
+
+Everything runs in the browser with no network, account, or key. An AI tutor
+for free-form follow-up is optional and off by default (see
+[`docs/assets/README.md`](docs/assets/README.md)).
 
 ### Chapter 2 — Equivalent Circuit Models
 

@@ -46,17 +46,38 @@ All notable changes to `battery-core` are recorded here. The format follows
   workbench reads `--muted` as a text colour, not a surface — needs the chrome
   without the bridge.
 
-- A study coach on the Chapter 1 guide. The chapter already asked a checkpoint
-  question after every part, but reading one and thinking "yes, roughly" is not
-  answering it. Each question is now a loop: write an answer, then compare it
-  against the points a complete answer covers and score yourself.
+- A study coach on the Chapter 1 guide, with seventeen questions. The chapter
+  already asked a checkpoint question after every part, but reading one and
+  thinking "yes, roughly" is not answering it.
 
-  It does not mark prose, and does not pretend to — it cannot read an answer,
-  and an unstated model limit is the one thing this course refuses to ship.
-  What it does is show what a complete answer contains. The exception is the
-  C-rate drill, where the answer is a number and is checked outright against
-  `Q × C`, the definition `battery_core.capacity.current_from_c_rate`
-  implements.
+  Eight of the questions are **marked outright**: numeric drills, multiple
+  choice, select-all, and putting the production route into order. Every wrong
+  option says which misconception it is and why it fails, which is the part
+  that does the teaching. Every drill number comes from a relationship the
+  tested Python implements — `current_from_c_rate`, `ideal_duration_hours`,
+  `arrhenius_factor`, `parabolic_film_thickness` — and a test compares the two
+  physical constants the browser cannot import against `battery_core.aging`, so
+  the copy cannot drift.
+
+  The other nine ask for an explanation, and those are **not** marked. Grading
+  prose offline means keyword matching, and keyword matching grades vocabulary
+  rather than understanding: "the separator does not block electrons" contains
+  every right word and is wrong, while a correct answer in different words
+  scores nothing. A confidently wrong grade is worse than no grade, because the
+  learner cannot tell it happened. So the coach shows what a complete answer
+  covers and the learner ticks their own, and the interface says which kind of
+  question they are on before they answer.
+
+- The coach has a face: a lemon in a headset, for Lemonergy. It is drawn as
+  inline SVG rather than embedded, so it stays sharp at any size, costs no
+  request on a page meant to be self-contained, and can change expression —
+  idle, thinking, happy, encouraging — which a bitmap cannot. Expressions swap
+  whole paths by `display` rather than animating the CSS `d` property, which
+  Firefox does not support.
+
+  Its yellow, `--lemon`, is the one hue outside the colour-role system, and
+  narrowly so: the mascot is illustration, not a UI state, so it never marks a
+  tier, a status, or a control.
 
   It runs entirely in the browser: no network, no account, no key. Progress
   lives in `localStorage`, and a browser with site data blocked studies without

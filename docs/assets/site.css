@@ -35,6 +35,11 @@
   --tier-deeper: var(--blue);
   --tier-toolkit: var(--orange);
 
+  /* Illustration only. The mascot is a character, not a UI state, so this hue
+     never marks a tier, a status, or a control — it appears in the drawn lemon
+     and nowhere else. */
+  --lemon: #ffd94a;
+
   --radius: 22px;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -1465,5 +1470,301 @@ footer a {
 @media (max-width: 640px) {
   .coach-actions .chip {
     flex: 1 1 auto;
+  }
+}
+
+/* ===========================================================================
+   The coach's mascot
+   Drawn rather than embedded, so it stays sharp at any size, costs no request,
+   and can change expression — `data-mood` swaps the brows and mouth. The only
+   hue outside the role system, because a character is illustration, not state.
+   =========================================================================== */
+
+.coach-mascot {
+  flex: 0 0 auto;
+  width: clamp(56px, 9vw, 76px);
+  height: auto;
+  overflow: visible;
+}
+
+.lemon-body {
+  fill: var(--lemon);
+  stroke: #c9a12c;
+  stroke-width: 1.2;
+}
+
+.lemon-leaf {
+  fill: #4fbf7c;
+  stroke: #2f8f56;
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+
+.lemon-stem {
+  fill: none;
+  stroke: #2f8f56;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.lemon-shine {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.lemon-freckles circle {
+  fill: #e0a93a;
+}
+
+.lemon-eyes ellipse {
+  fill: #fbfdfd;
+}
+
+.lemon-pupils circle {
+  fill: #1d3a2c;
+}
+
+.lemon-glints circle {
+  fill: #ffffff;
+}
+
+.lemon-brows path {
+  fill: none;
+  stroke: #23313a;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  transition: transform 220ms ease;
+}
+
+.lemon-mouth path {
+  fill: none;
+  stroke: #23313a;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  display: none;
+}
+
+/* One mouth per mood. Toggled by display rather than by the CSS `d` property,
+   which Firefox does not support. */
+.coach-mascot[data-mood="idle"] .mouth-idle,
+.coach-mascot[data-mood="thinking"] .mouth-flat,
+.coach-mascot[data-mood="happy"] .mouth-happy,
+.coach-mascot[data-mood="encouraging"] .mouth-soft {
+  display: block;
+}
+
+.lemon-headset path,
+.lemon-headset rect {
+  fill: none;
+  stroke: #23313a;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.lemon-headset rect {
+  fill: #23313a;
+}
+
+.lemon-mic {
+  fill: #23313a;
+  stroke: none;
+}
+
+.lemon-sparkle path {
+  fill: var(--accent);
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+/* Moods. Only the brows and mouth move — the face itself stays put, which is
+   what keeps it reading as the same character. */
+.coach-mascot[data-mood="thinking"] .brow-left {
+  transform: translateY(-2.5px) rotate(-7deg);
+  transform-origin: 25px 25px;
+}
+
+.coach-mascot[data-mood="happy"] .lemon-sparkle path {
+  opacity: 1;
+}
+
+.coach-mascot[data-mood="happy"] .brow-left,
+.coach-mascot[data-mood="happy"] .brow-right {
+  transform: translateY(-1.5px);
+}
+
+.coach-mascot[data-mood="encouraging"] .brow-left {
+  transform: rotate(-8deg);
+  transform-origin: 25px 25px;
+}
+
+.coach-mascot[data-mood="encouraging"] .brow-right {
+  transform: rotate(8deg);
+  transform-origin: 40px 25px;
+}
+
+/* ===========================================================================
+   Auto-checked question types
+   =========================================================================== */
+
+.coach-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  margin-bottom: 1.3rem;
+}
+
+.coach-head .format {
+  margin-bottom: 0.45rem;
+}
+
+.coach-head .coach-question {
+  margin-bottom: 0;
+}
+
+.coach-mode[data-state="idle"] {
+  border-color: color-mix(in srgb, var(--blue) 40%, transparent);
+  color: var(--blue);
+}
+
+.coach-mode[data-state="idle"]::before {
+  background: var(--blue);
+}
+
+.coach-options,
+.coach-order {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coach-options label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.coach-options label:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--text);
+}
+
+.coach-options input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15rem;
+  accent-color: var(--accent);
+}
+
+.coach-options li[data-mark] label {
+  cursor: default;
+}
+
+.coach-options li[data-mark="right"] label {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--text);
+}
+
+.coach-options li[data-mark="wrong"] label {
+  border-color: color-mix(in srgb, var(--orange) 55%, transparent);
+  background: color-mix(in srgb, var(--orange) 9%, transparent);
+  color: var(--text);
+}
+
+.coach-why {
+  margin: 0.5rem 0 0 2.5rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.coach-order {
+  counter-reset: step;
+}
+
+.coach-order li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.7rem 0.6rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--text);
+}
+
+.coach-order li::before {
+  counter-increment: step;
+  content: counter(step);
+  flex: 0 0 auto;
+  width: 22px;
+  color: var(--accent);
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+.coach-order-text {
+  flex: 1 1 auto;
+}
+
+.coach-order-controls {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.coach-order-controls .chip {
+  min-height: 32px;
+  padding: 0.2rem 0.6rem;
+}
+
+.coach-order li[data-mark="right"] {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.coach-order li[data-mark="wrong"] {
+  border-color: color-mix(in srgb, var(--orange) 55%, transparent);
+  background: color-mix(in srgb, var(--orange) 9%, transparent);
+}
+
+.coach-feedback:not(:empty) {
+  margin-top: 1.4rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--line);
+}
+
+.coach-verdict {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.coach-verdict[data-verdict="right"] {
+  color: var(--accent);
+}
+
+.coach-verdict[data-verdict="wrong"],
+.coach-verdict[data-verdict="warning"] {
+  color: var(--orange);
+}
+
+@media (max-width: 560px) {
+  .coach-head {
+    gap: 0.8rem;
+  }
+
+  .coach-order li {
+    flex-wrap: wrap;
   }
 }

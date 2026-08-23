@@ -2,17 +2,26 @@
  *
  * The chapter already asks a checkpoint question after every part. Reading a
  * question and thinking "yes, roughly" is not the same as answering it, so
- * this turns each one into a loop: write an answer first, then compare it
- * against the points a complete answer covers, and score yourself honestly.
+ * this turns each one into a loop: answer first, then find out where you were.
  *
  * It runs entirely in the browser. No network, no account, no key. Progress
  * lives in this browser's localStorage, and clearing site data clears it.
  *
- * The coach never claims to mark an answer. It cannot read prose, and pretending
- * otherwise would be exactly the kind of unstated model limit the rest of the
- * course refuses to ship. What it does is show what a complete answer contains
- * and let the learner check their own against it. The one exception is the C-rate
- * drill, where the answer is a number and can be checked outright.
+ * Two kinds of question, because two kinds are honestly possible offline:
+ *
+ *   Checked outright — numeric drills, multiple choice, select-all, and
+ *   ordering. The answer space is closed, so the coach marks it exactly and
+ *   says why a wrong option is wrong. Every number comes from the same
+ *   definitions the tested Python implements.
+ *
+ *   Self-checked — the questions whose answer is an explanation. The coach
+ *   never claims to mark an answer of that kind. It cannot read prose, and the
+ *   only offline way to fake it is keyword matching, which grades vocabulary
+ *   rather than understanding: "the separator does not block electrons"
+ *   contains every right word and is wrong, while a correct answer in
+ *   different words scores nothing. A confidently wrong grade is worse than no
+ *   grade, because the learner cannot tell it happened. So it shows what a
+ *   complete answer covers and lets the learner mark their own against it.
  *
  * An optional AI tutor can be attached for free-form follow-up questions; see
  * `assets/README.md` § An AI tutor. It is off unless `data-tutor-endpoint` on
@@ -24,11 +33,176 @@
 
   var STORAGE_KEY = "battery-core-chapter-1-coach";
 
-  /* The question bank. Model answers are grounded in the modules and in the
-     tested Python: `current_from_c_rate` is Q x C, `ideal_duration_hours` is
-     1 / C, and `battery_core.aging` supplies rate laws but no chemistry
-     constants. Where the course draws a line between a definition and a
-     prediction, the answer draws it too. */
+  /* Physical constants, matching `battery_core.aging` exactly. */
+  var MOLAR_GAS_CONSTANT = 8.31446261815324;
+  var ABSOLUTE_ZERO_C = -273.15;
+
+  function pick(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  function formatNumber(value) {
+    return Number(value.toFixed(3)).toString();
+  }
+
+  /* The drills. Each generates fresh numbers, so the answer cannot be
+     remembered from last time, and each mirrors one tested function:
+     `current_from_c_rate`, `ideal_duration_hours`, `arrhenius_factor`, and
+     `parabolic_film_thickness`. */
+  var DRILLS = {
+    cRateCurrent: {
+      label: "Constant current, in amperes",
+      tolerance: 0.01,
+      generate: function () {
+        var capacity = pick([1.5, 2.2, 3.0, 4.5, 5.0, 12, 20, 50, 100]);
+        var rate = pick([0.2, 0.5, 1, 2, 3, 5]);
+        return { capacity: capacity, rate: rate, current: capacity * rate };
+      },
+      prompt: function (d) {
+        return (
+          "A cell with a nominal capacity of " +
+          formatNumber(d.capacity) +
+          " Ah is discharged at " +
+          formatNumber(d.rate) +
+          "C. What constant current does that definition give?"
+        );
+      },
+      answer: function (d) {
+        return d.current;
+      },
+      working: function (d) {
+        return [
+          "I = Q × C = " +
+            formatNumber(d.capacity) +
+            " Ah × " +
+            formatNumber(d.rate) +
+            " h⁻¹ = " +
+            formatNumber(d.current) +
+            " A",
+          "The units carry the argument: Ah × h⁻¹ leaves amperes.",
+        ];
+      },
+    },
+
+    idealDuration: {
+      label: "Ideal duration, in hours",
+      tolerance: 0.01,
+      generate: function () {
+        var rate = pick([0.1, 0.2, 0.25, 0.5, 2, 4, 5]);
+        return { rate: rate, hours: 1 / rate };
+      },
+      prompt: function (d) {
+        return (
+          "A cell is discharged at " +
+          formatNumber(d.rate) +
+          "C. How long does the ideal definition say a full nominal capacity lasts?"
+        );
+      },
+      answer: function (d) {
+        return d.hours;
+      },
+      working: function (d) {
+        return [
+          "t = 1 / C = 1 / " + formatNumber(d.rate) + " = " + formatNumber(d.hours) + " h",
+          "That is a definition, not a runtime. A real cell stops at a cutoff voltage.",
+        ];
+      },
+    },
+
+    arrhenius: {
+      label: "Rate ratio, dimensionless",
+      tolerance: 0.02,
+      generate: function () {
+        var temperature = pick([35, 45, 55, 60]);
+        var activation = pick([40000, 50000, 60000]);
+        var reference = 25;
+        var kelvin = temperature - ABSOLUTE_ZERO_C;
+        var referenceKelvin = reference - ABSOLUTE_ZERO_C;
+        return {
+          temperature: temperature,
+          reference: reference,
+          activation: activation,
+          factor: Math.exp(
+            (activation / MOLAR_GAS_CONSTANT) * (1 / referenceKelvin - 1 / kelvin)
+          ),
+        };
+      },
+      prompt: function (d) {
+        return (
+          "A thermally activated ageing process has an activation energy of " +
+          d.activation / 1000 +
+          " kJ/mol. How many times faster does it run at " +
+          d.temperature +
+          " °C than at " +
+          d.reference +
+          " °C?"
+        );
+      },
+      answer: function (d) {
+        return d.factor;
+      },
+      working: function (d) {
+        return [
+          "k(T) / k(T_ref) = exp[(Ea / R) × (1/T_ref − 1/T)], both temperatures in kelvin",
+          "T = " +
+            formatNumber(d.temperature - ABSOLUTE_ZERO_C) +
+            " K, T_ref = " +
+            formatNumber(d.reference - ABSOLUTE_ZERO_C) +
+            " K, R = 8.314 J/(mol·K)",
+          "= " + formatNumber(d.factor) + " times faster",
+          "Near 50 kJ/mol this is the familiar rule of thumb: roughly double per 10 °C.",
+        ];
+      },
+    },
+
+    filmGrowth: {
+      label: "Film thickness, in nanometres",
+      tolerance: 0.01,
+      generate: function () {
+        var thickness = pick([8, 12, 15, 20]);
+        var multiple = pick([4, 9, 16, 25]);
+        var referenceTime = pick([50, 100, 200]);
+        return {
+          thickness: thickness,
+          multiple: multiple,
+          referenceTime: referenceTime,
+          elapsed: referenceTime * multiple,
+          result: thickness * Math.sqrt(multiple),
+        };
+      },
+      prompt: function (d) {
+        return (
+          "A passivating film is " +
+          formatNumber(d.thickness) +
+          " nm thick after " +
+          d.referenceTime +
+          " days. Under the same conditions, how thick is it after " +
+          d.elapsed +
+          " days?"
+        );
+      },
+      answer: function (d) {
+        return d.result;
+      },
+      working: function (d) {
+        return [
+          "δ(t) = δ_ref × √(t / t_ref) = " +
+            formatNumber(d.thickness) +
+            " nm × √" +
+            d.multiple +
+            " = " +
+            formatNumber(d.result) +
+            " nm",
+          "The film is its own diffusion barrier, so growth is parabolic, not linear.",
+          "Quadrupling the time doubles the thickness — it does not quadruple it.",
+        ];
+      },
+    },
+  };
+
+  /* The question bank. Model answers and distractors are grounded in the
+     modules and in the tested Python, and they keep the course's own line
+     between an exact definition and a prediction. */
   var QUESTIONS = [
     {
       id: "p01-paths",
@@ -49,6 +223,36 @@
         "That leaves the external circuit as the only path electrons have between the electrodes.",
         "The detour through the load is the useful work: forcing electrons the long way round is what the cell is for.",
         "Electrons crossing inside would be an internal short — self-discharge and heat, no work delivered.",
+      ],
+    },
+    {
+      id: "p01-separator",
+      group: "part",
+      tier: "core",
+      type: "choice",
+      part: "Part 01",
+      module: "../fundamentals/cell-anatomy-workbench/",
+      moduleLabel: "Part 01 · Cell anatomy workbench",
+      question: "Which statement is true of the separator?",
+      hints: ["Two currencies cross a cell. Ask which one the separator is there to stop."],
+      options: [
+        {
+          text: "It passes lithium ions and blocks electrons.",
+          correct: true,
+          why: "Yes. It is an electronic insulator whose pores are soaked in electrolyte, so ions pass and electrons cannot.",
+        },
+        {
+          text: "It passes electrons and blocks lithium ions.",
+          why: "That is the reverse. A separator carrying electrons would short the cell internally.",
+        },
+        {
+          text: "It blocks both, and the ions travel round the external circuit instead.",
+          why: "Ions never leave the cell. Only electrons take the external circuit — that separation is the whole point.",
+        },
+        {
+          text: "It passes both, which is what lets current flow.",
+          why: "Current flows because the two carriers are forced apart. If the separator passed electrons, the cell would self-discharge as heat.",
+        },
       ],
     },
     {
@@ -77,6 +281,7 @@
       group: "part",
       tier: "core",
       type: "drill",
+      drill: "cRateCurrent",
       part: "Part 02",
       module:
         "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb",
@@ -84,10 +289,24 @@
       question: "Calculate the constant current for this cell and rate.",
       hints: [
         "Current is nominal capacity multiplied by C-rate, with capacity in ampere-hours and C-rate in reciprocal hours.",
-        "The units do the work: Ah x h⁻¹ = A.",
+        "The units do the work: Ah × h⁻¹ = A.",
       ],
       note:
-        "This is the exact definition the tested Python implements. It is not a runtime prediction — see the next question.",
+        "This is the exact definition the tested Python implements. It is not a runtime prediction — see the runtime question.",
+    },
+    {
+      id: "p02-duration",
+      group: "part",
+      tier: "core",
+      type: "drill",
+      drill: "idealDuration",
+      part: "Part 02",
+      module:
+        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb",
+      moduleLabel: "Part 02 · Nominal capacity and C-rate",
+      question: "Calculate the ideal duration at this rate.",
+      hints: ["The ideal duration is the reciprocal of the C-rate, in hours."],
+      note: "Exact by definition, and still not what a real cell will do.",
     },
     {
       id: "p02-real-runtime",
@@ -114,6 +333,31 @@
         "The course keeps these apart deliberately: the formula is exact, the runtime is a prediction that needs a validated cell model.",
     },
     {
+      id: "p03-order",
+      group: "part",
+      tier: "core",
+      type: "order",
+      part: "Part 03",
+      module: "../fundamentals/battery-production/",
+      moduleLabel: "Part 03 · Lithium-ion battery production",
+      question: "Put the conventional electrode and cell route into process order.",
+      hints: [
+        "The electrode is finished as a coated, dried, densified web before anything is assembled.",
+        "The electrolyte goes in after the stack exists, not before.",
+      ],
+      items: [
+        "Mixing the slurry",
+        "Coating the foil",
+        "Drying the coating",
+        "Calendering to porosity",
+        "Stacking or winding",
+        "Electrolyte filling",
+        "Formation",
+      ],
+      note:
+        "This is the wet route. The dry-electrode route replaces coating and drying with two dry stages and no process solvent.",
+    },
+    {
       id: "p03-upstream-downstream",
       group: "part",
       tier: "core",
@@ -132,6 +376,36 @@
         "Calendering: line force sets porosity, which changes electrolyte wetting and shows up as formation time and cell impedance.",
         "Drying: too fast a rate drives binder migration, which weakens adhesion and shows up as cycle life.",
         "Naming the first and last link without the middle one is describing a correlation, not a mechanism.",
+      ],
+    },
+    {
+      id: "p03b-step",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Part 03B",
+      module: "../fundamentals/solid-state-production/",
+      moduleLabel: "Part 03B · All-solid-state cell production",
+      question: "Moving to an all-solid-state route, which process step disappears?",
+      hints: ["Ask which step exists only because the electrolyte arrives as a liquid."],
+      options: [
+        {
+          text: "Electrolyte filling and wetting",
+          correct: true,
+          why: "Yes. The electrolyte is already in the stack, so there is nothing to inject and no pores to wet.",
+        },
+        {
+          text: "Calendering or densification",
+          why: "The opposite: contact must now be made mechanically, so densification matters more, not less.",
+        },
+        {
+          text: "Formation",
+          why: "Formation still happens. Its conditions change, but the step does not disappear.",
+        },
+        {
+          text: "Mixing",
+          why: "Electrode materials still have to be prepared, whether as a slurry or a dry powder.",
+        },
       ],
     },
     {
@@ -154,6 +428,84 @@
         "The family decides the equipment: oxides need high-temperature sintering, sulfides need a tightly controlled dry or inert atmosphere, polymers need heat and pressure.",
         "So the unit operations themselves change; the same line with a different drum would not build the cell.",
       ],
+    },
+    {
+      id: "p04-impedance",
+      group: "part",
+      tier: "core",
+      type: "multi",
+      part: "Part 04",
+      module:
+        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb",
+      moduleLabel: "Part 04 · Battery aging",
+      question: "Select every symptom of impedance rise rather than capacity fade.",
+      hints: [
+        "One of the two costs you stored charge. The other costs you voltage while the charge is still there.",
+        "Ask which measurement would move: an ampere-hour count, or a voltage under load.",
+      ],
+      options: [
+        {
+          text: "The terminal voltage sags further under the same load current.",
+          correct: true,
+          why: "Impedance rise. More internal resistance means a larger IR drop at the same current.",
+        },
+        {
+          text: "A full discharge yields fewer ampere-hours at a defined rate and temperature.",
+          why: "Capacity fade. The charge itself is gone, not just the voltage under load.",
+        },
+        {
+          text: "Measured DC resistance or EIS resistance increases.",
+          correct: true,
+          why: "Impedance rise, measured directly.",
+        },
+        {
+          text: "Cyclable lithium is consumed by SEI growth.",
+          why: "Capacity fade — that lithium is no longer available to shuttle, so stored charge drops.",
+        },
+        {
+          text: "The cell runs hotter for the same current.",
+          correct: true,
+          why: "Impedance rise. Ohmic loss goes as I²R, so more resistance means more heat at the same current.",
+        },
+      ],
+      note:
+        "They move independently: a cell can lose power capability while still holding most of its capacity, or the reverse.",
+    },
+    {
+      id: "p04-arrhenius",
+      group: "part",
+      tier: "core",
+      type: "drill",
+      drill: "arrhenius",
+      part: "Part 04",
+      module:
+        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb",
+      moduleLabel: "Part 04 · Battery aging",
+      question: "How much does temperature accelerate this process?",
+      hints: [
+        "Convert both temperatures to kelvin first — the relation is not linear in Celsius.",
+        "k(T)/k(T_ref) = exp[(Ea/R) × (1/T_ref − 1/T)], with R = 8.314 J/(mol·K).",
+      ],
+      note:
+        "`battery_core.aging.arrhenius_factor` implements exactly this. It takes an activation energy as an input and supplies no chemistry-specific constants, so it is a rate law, not a prediction about any particular cell.",
+    },
+    {
+      id: "p04-film",
+      group: "part",
+      tier: "core",
+      type: "drill",
+      drill: "filmGrowth",
+      part: "Part 04",
+      module:
+        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb",
+      moduleLabel: "Part 04 · Battery aging",
+      question: "How thick is the film after this much time?",
+      hints: [
+        "A growing film is its own diffusion barrier, so it does not grow linearly.",
+        "δ(t) = δ_ref × √(t / t_ref).",
+      ],
+      note:
+        "This is why ageing slows down rather than running away: quadrupling the time only doubles the film.",
     },
     {
       id: "p04-fade-vs-impedance",
@@ -247,39 +599,6 @@
     },
   ];
 
-  /* The drill is the one question with a checkable answer, so it gets real
-     numbers rather than a model answer to compare against. */
-  var DRILL_CAPACITIES = [1.5, 2.2, 3.0, 4.5, 5.0, 12, 20, 50, 100];
-  var DRILL_RATES = [0.2, 0.5, 1, 2, 3, 5];
-
-  function pick(list) {
-    return list[Math.floor(Math.random() * list.length)];
-  }
-
-  function newDrill() {
-    var capacity = pick(DRILL_CAPACITIES);
-    var rate = pick(DRILL_RATES);
-    var hours = 1 / rate;
-    return {
-      capacity: capacity,
-      rate: rate,
-      current: capacity * rate,
-      hours: hours,
-      minutes: hours * 60,
-    };
-  }
-
-  function formatNumber(value) {
-    return Number(value.toFixed(3)).toString();
-  }
-
-  function formatDuration(drill) {
-    if (drill.hours >= 1) {
-      return formatNumber(drill.hours) + " h";
-    }
-    return formatNumber(drill.minutes) + " min";
-  }
-
   function loadState() {
     try {
       var raw = window.localStorage.getItem(STORAGE_KEY);
@@ -291,7 +610,7 @@
       /* A browser with site data blocked is a browser that studies without
          saved progress, not one that gets a broken page. */
     }
-    return { version: 1, results: {} };
+    return { version: 2, results: {} };
   }
 
   function saveState(state) {
@@ -314,6 +633,34 @@
     return node;
   }
 
+  /* Shuffle, never returning the input order — an ordering question that opens
+     already solved teaches nothing. */
+  function shuffled(list) {
+    if (list.length < 2) {
+      return list.slice();
+    }
+    var copy;
+    var attempts = 0;
+    do {
+      copy = list.slice();
+      for (var i = copy.length - 1; i > 0; i -= 1) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var swap = copy[i];
+        copy[i] = copy[j];
+        copy[j] = swap;
+      }
+      attempts += 1;
+    } while (attempts < 20 && copy.every(function (item, index) {
+      return item === list[index];
+    }));
+    return copy;
+  }
+
+  function isAutoChecked(question) {
+    return question.type === "drill" || question.type === "choice" ||
+      question.type === "multi" || question.type === "order";
+  }
+
   function mount(root) {
     var state = loadState();
     var endpoint = (root.dataset.tutorEndpoint || "").trim();
@@ -321,8 +668,8 @@
     var order = [];
     var index = 0;
     var hintsShown = 0;
-    var revealed = false;
-    var drill = null;
+    var settled = false;
+    var active = null;
 
     var ui = buildInterface();
     root.appendChild(ui.wrapper);
@@ -335,6 +682,9 @@
         if (filter === "missed") {
           var result = state.results[question.id];
           return !result || !result.done || result.covered < result.total;
+        }
+        if (filter === "checked") {
+          return isAutoChecked(question);
         }
         return question.group === filter;
       });
@@ -373,55 +723,17 @@
       return { answered: answered, covered: covered, total: total };
     }
 
-    function render() {
+    function recordResult(covered, total) {
       var question = current();
-      hintsShown = 0;
-      revealed = false;
-      drill = question.type === "drill" ? newDrill() : null;
-
-      ui.counter.textContent = "Question " + (index + 1) + " of " + order.length;
-      ui.part.textContent = question.part;
-      ui.part.setAttribute("data-tier", question.tier);
-      ui.format.textContent = question.moduleLabel;
-      ui.prompt.textContent = question.question;
-
-      ui.hintList.textContent = "";
-      ui.hintList.hidden = true;
-      ui.hint.disabled = !question.hints || !question.hints.length;
-      ui.hint.textContent = "Show a hint";
-
-      ui.reveal.hidden = false;
-      ui.answer.hidden = true;
-      ui.answer.textContent = "";
-
-      ui.freeAnswer.hidden = Boolean(drill);
-      ui.drill.hidden = !drill;
-      if (drill) {
-        ui.drillPrompt.textContent =
-          "A cell with a nominal capacity of " +
-          formatNumber(drill.capacity) +
-          " Ah is discharged at " +
-          formatNumber(drill.rate) +
-          "C. What constant current does that definition give?";
-        ui.drillInput.value = "";
-        ui.drillFeedback.textContent = "";
-        ui.drillFeedback.setAttribute("data-state", "idle");
-        ui.reveal.textContent = "Show the working";
-      } else {
-        ui.freeInput.value = "";
-        ui.reveal.textContent = "Show a complete answer";
+      state.results[question.id] = { done: true, covered: covered, total: total };
+      if (!saveState(state)) {
+        ui.live.textContent = "Progress could not be saved in this browser.";
       }
-
-      ui.revisit.href = question.module;
-      ui.revisit.textContent = "Revisit " + question.part;
-
-      var result = state.results[question.id];
-      ui.status.textContent = result && result.done
-        ? "Answered — you marked " + result.covered + " of " + result.total + " points covered"
-        : "Not answered yet";
-      ui.status.setAttribute("data-state", result && result.done ? "clear" : "idle");
-
       updateProgress();
+      ui.status.textContent = isAutoChecked(question)
+        ? "Scored " + covered + " of " + total
+        : "Answered — you marked " + covered + " of " + total + " points covered";
+      ui.status.setAttribute("data-state", covered === total ? "clear" : "warning");
     }
 
     function updateProgress() {
@@ -434,9 +746,346 @@
         " of " +
         QUESTIONS.length +
         " answered" +
-        (summary.total
-          ? " · " + summary.covered + " of " + summary.total + " points covered"
-          : "");
+        (summary.total ? " · " + summary.covered + " of " + summary.total + " scored" : "");
+    }
+
+    /* ---- Question types -------------------------------------------------
+       Each renderer fills `ui.body` and returns the label and handler for the
+       primary button. Auto-checked types settle to a score; the prose type
+       reveals what a complete answer covers and lets the learner mark it. */
+
+    function renderProse(question) {
+      var field = element("label", "field");
+      field.setAttribute("for", "coach-free-answer");
+      field.appendChild(element("span", null, "Your answer — write it before revealing"));
+      var input = document.createElement("textarea");
+      input.id = "coach-free-answer";
+      input.rows = 4;
+      input.placeholder = "Answer in your own words. Nothing here is sent anywhere.";
+      field.appendChild(input);
+      ui.body.appendChild(field);
+
+      return {
+        label: "Show a complete answer",
+        run: function () {
+          ui.feedback.appendChild(
+            element("p", "panel-label", "A complete answer covers these — tick what yours did")
+          );
+          var list = element("ul", "coach-points");
+          question.points.forEach(function (point, position) {
+            var item = element("li");
+            var label = element("label");
+            var box = document.createElement("input");
+            box.type = "checkbox";
+            box.id = "coach-point-" + question.id + "-" + position;
+            box.addEventListener("change", function () {
+              var boxes = ui.feedback.querySelectorAll("input[type=checkbox]");
+              var covered = 0;
+              Array.prototype.forEach.call(boxes, function (each) {
+                if (each.checked) {
+                  covered += 1;
+                }
+              });
+              recordResult(covered, question.points.length);
+            });
+            label.setAttribute("for", box.id);
+            label.appendChild(box);
+            label.appendChild(element("span", null, point));
+            item.appendChild(label);
+            list.appendChild(item);
+          });
+          ui.feedback.appendChild(list);
+          recordResult(0, question.points.length);
+          setMood("thinking");
+        },
+      };
+    }
+
+    function renderDrill(question) {
+      var spec = DRILLS[question.drill];
+      var data = spec.generate();
+      active = { spec: spec, data: data };
+
+      ui.body.appendChild(element("p", "coach-drill-prompt", spec.prompt(data)));
+      var field = element("label", "field");
+      field.setAttribute("for", "coach-drill-input");
+      field.appendChild(element("span", null, spec.label));
+      var input = document.createElement("input");
+      input.id = "coach-drill-input";
+      input.type = "text";
+      input.inputMode = "decimal";
+      input.autocomplete = "off";
+      field.appendChild(input);
+      ui.body.appendChild(field);
+
+      function showWorking() {
+        var list = element("ul", "coach-working");
+        spec.working(data).forEach(function (line) {
+          list.appendChild(element("li", null, line));
+        });
+        ui.feedback.appendChild(element("p", "panel-label", "The working"));
+        ui.feedback.appendChild(list);
+      }
+
+      input.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          ui.primary.click();
+        }
+      });
+
+      return {
+        label: "Check",
+        keepOpen: true,
+        run: function () {
+          var entered = parseFloat(input.value);
+          var expected = spec.answer(data);
+          if (!isFinite(entered)) {
+            ui.feedback.textContent = "";
+            ui.feedback.appendChild(
+              element("p", "coach-verdict", "Enter a number before checking.")
+            );
+            ui.feedback.firstChild.setAttribute("data-verdict", "warning");
+            return;
+          }
+          var tolerance = Math.max(1e-6, Math.abs(expected) * spec.tolerance);
+          var right = Math.abs(entered - expected) <= tolerance;
+          ui.feedback.textContent = "";
+          var verdict = element(
+            "p",
+            "coach-verdict",
+            right
+              ? "Correct — " + formatNumber(expected) + "."
+              : "Not yet. The definition gives " + formatNumber(expected) + "."
+          );
+          verdict.setAttribute("data-verdict", right ? "right" : "wrong");
+          ui.feedback.appendChild(verdict);
+          showWorking();
+          recordResult(right ? 1 : 0, 1);
+          setMood(right ? "happy" : "encouraging");
+          ui.live.textContent = verdict.textContent;
+          settled = true;
+        },
+      };
+    }
+
+    function renderChoice(question) {
+      var multiple = question.type === "multi";
+      var name = "coach-choice-" + question.id;
+      var inputs = [];
+      var list = element("ul", "coach-options");
+      question.options.forEach(function (option, position) {
+        var item = element("li");
+        var label = element("label");
+        var box = document.createElement("input");
+        box.type = multiple ? "checkbox" : "radio";
+        box.name = name;
+        box.id = name + "-" + position;
+        label.setAttribute("for", box.id);
+        label.appendChild(box);
+        label.appendChild(element("span", null, option.text));
+        item.appendChild(label);
+        list.appendChild(item);
+        inputs.push({ box: box, item: item, option: option });
+      });
+      ui.body.appendChild(
+        element(
+          "p",
+          "panel-label",
+          multiple ? "Select every one that applies" : "Select one"
+        )
+      );
+      ui.body.appendChild(list);
+
+      return {
+        label: "Check",
+        run: function () {
+          ui.feedback.textContent = "";
+          var chosen = inputs.filter(function (entry) {
+            return entry.box.checked;
+          });
+          if (!chosen.length) {
+            ui.feedback.appendChild(
+              element("p", "coach-verdict", "Choose an option before checking.")
+            );
+            ui.feedback.firstChild.setAttribute("data-verdict", "warning");
+            return;
+          }
+          var correctCount = 0;
+          inputs.forEach(function (entry) {
+            var wanted = Boolean(entry.option.correct);
+            var got = entry.box.checked;
+            entry.box.disabled = true;
+            entry.item.setAttribute(
+              "data-mark",
+              wanted === got ? (wanted ? "right" : "unchosen-right") : "wrong"
+            );
+            if (wanted === got) {
+              correctCount += 1;
+            }
+            /* Explain every option, not just the chosen ones. On a question
+               that asks the learner to discriminate between two categories,
+               knowing why they were right to reject an option is half the
+               lesson. */
+            if (entry.option.why) {
+              entry.item.appendChild(element("p", "coach-why", entry.option.why));
+            }
+          });
+          var perfect = correctCount === inputs.length;
+          var verdict = element(
+            "p",
+            "coach-verdict",
+            perfect
+              ? "All correct."
+              : correctCount + " of " + inputs.length + " classified correctly."
+          );
+          verdict.setAttribute("data-verdict", perfect ? "right" : "wrong");
+          ui.feedback.insertBefore(verdict, ui.feedback.firstChild);
+          recordResult(correctCount, inputs.length);
+          setMood(perfect ? "happy" : "encouraging");
+          ui.live.textContent = verdict.textContent;
+          settled = true;
+        },
+      };
+    }
+
+    function renderOrder(question) {
+      var items = shuffled(question.items);
+      var list = element("ol", "coach-order");
+
+      function draw() {
+        list.textContent = "";
+        items.forEach(function (text, position) {
+          var item = element("li");
+          item.appendChild(element("span", "coach-order-text", text));
+          var controls = element("div", "coach-order-controls");
+          [["↑", -1], ["↓", 1]].forEach(function (entry) {
+            var button = element("button", "chip chip-ghost", entry[0]);
+            button.type = "button";
+            button.setAttribute(
+              "aria-label",
+              "Move “" + text + "” " + (entry[1] < 0 ? "up" : "down")
+            );
+            button.disabled =
+              settled ||
+              (entry[1] < 0 && position === 0) ||
+              (entry[1] > 0 && position === items.length - 1);
+            button.addEventListener("click", function () {
+              var target = position + entry[1];
+              var swap = items[position];
+              items[position] = items[target];
+              items[target] = swap;
+              draw();
+              ui.live.textContent = "Moved " + text + " to position " + (target + 1) + ".";
+            });
+            controls.appendChild(button);
+          });
+          item.appendChild(controls);
+          list.appendChild(item);
+        });
+      }
+
+      ui.body.appendChild(element("p", "panel-label", "Put these in process order"));
+      draw();
+      ui.body.appendChild(list);
+
+      return {
+        label: "Check",
+        run: function () {
+          var right = 0;
+          settled = true;
+          draw();
+          items.forEach(function (text, position) {
+            var correct = question.items[position] === text;
+            if (correct) {
+              right += 1;
+            }
+            list.children[position].setAttribute("data-mark", correct ? "right" : "wrong");
+          });
+          var perfect = right === items.length;
+          var verdict = element(
+            "p",
+            "coach-verdict",
+            perfect ? "Correct order." : right + " of " + items.length + " in the right place."
+          );
+          verdict.setAttribute("data-verdict", perfect ? "right" : "wrong");
+          ui.feedback.appendChild(verdict);
+          if (!perfect) {
+            ui.feedback.appendChild(element("p", "panel-label", "The order is"));
+            var answer = element("ol", "coach-working");
+            question.items.forEach(function (text) {
+              answer.appendChild(element("li", null, text));
+            });
+            ui.feedback.appendChild(answer);
+          }
+          recordResult(right, items.length);
+          setMood(perfect ? "happy" : "encouraging");
+          ui.live.textContent = verdict.textContent;
+        },
+      };
+    }
+
+    var RENDERERS = {
+      drill: renderDrill,
+      choice: renderChoice,
+      multi: renderChoice,
+      order: renderOrder,
+    };
+
+    function render() {
+      var question = current();
+      hintsShown = 0;
+      settled = false;
+      active = null;
+
+      ui.counter.textContent = "Question " + (index + 1) + " of " + order.length;
+      ui.part.textContent = question.part;
+      ui.part.setAttribute("data-tier", question.tier);
+      ui.format.textContent = question.moduleLabel;
+      ui.prompt.textContent = question.question;
+      ui.mode.textContent = isAutoChecked(question) ? "Checked" : "Self-checked";
+      ui.mode.setAttribute("data-state", isAutoChecked(question) ? "clear" : "idle");
+
+      ui.hintList.textContent = "";
+      ui.hintList.hidden = true;
+      ui.hint.disabled = !question.hints || !question.hints.length;
+      ui.hint.textContent = "Show a hint";
+
+      ui.body.textContent = "";
+      ui.feedback.textContent = "";
+      setMood("idle");
+
+      var renderer = RENDERERS[question.type] || renderProse;
+      var action = renderer(question);
+      ui.primary.textContent = action.label;
+      ui.primary.disabled = false;
+      ui.primary.onclick = function () {
+        if (settled && !action.keepOpen) {
+          return;
+        }
+        action.run();
+        if (!action.keepOpen) {
+          ui.primary.disabled = true;
+        }
+        if (question.note) {
+          ui.feedback.appendChild(element("p", "launch-note", question.note));
+        }
+      };
+
+      ui.revisit.href = question.module;
+      ui.revisit.textContent = "Revisit " + question.part;
+
+      var result = state.results[question.id];
+      ui.status.textContent = result && result.done
+        ? (isAutoChecked(question) ? "Scored " : "Answered — ") +
+          result.covered +
+          " of " +
+          result.total +
+          (isAutoChecked(question) ? "" : " points covered")
+        : "Not answered yet";
+      ui.status.setAttribute("data-state", result && result.done ? "clear" : "idle");
+
+      updateProgress();
     }
 
     function showHint() {
@@ -445,8 +1094,7 @@
         return;
       }
       ui.hintList.hidden = false;
-      var item = element("li", null, question.hints[hintsShown]);
-      ui.hintList.appendChild(item);
+      ui.hintList.appendChild(element("li", null, question.hints[hintsShown]));
       hintsShown += 1;
       if (hintsShown >= question.hints.length) {
         ui.hint.disabled = true;
@@ -454,108 +1102,8 @@
       } else {
         ui.hint.textContent = "Another hint";
       }
+      setMood("thinking");
       ui.live.textContent = "Hint " + hintsShown + ": " + question.hints[hintsShown - 1];
-    }
-
-    function checkDrill() {
-      var entered = parseFloat(ui.drillInput.value);
-      if (!isFinite(entered)) {
-        ui.drillFeedback.textContent = "Enter a number in amperes.";
-        ui.drillFeedback.setAttribute("data-state", "warning");
-        return;
-      }
-      var close = Math.abs(entered - drill.current) <= Math.max(0.01, drill.current * 0.01);
-      ui.drillFeedback.textContent = close
-        ? "Correct — " + formatNumber(drill.current) + " A."
-        : "Not yet. " + formatNumber(entered) + " A is not what Q × C gives here.";
-      ui.drillFeedback.setAttribute("data-state", close ? "clear" : "warning");
-      ui.live.textContent = ui.drillFeedback.textContent;
-      if (close) {
-        recordResult(1, 1);
-      }
-    }
-
-    function recordResult(covered, total) {
-      var question = current();
-      state.results[question.id] = { done: true, covered: covered, total: total };
-      if (!saveState(state)) {
-        ui.live.textContent = "Progress could not be saved in this browser.";
-      }
-      updateProgress();
-      ui.status.textContent =
-        "Answered — you marked " + covered + " of " + total + " points covered";
-      ui.status.setAttribute("data-state", "clear");
-    }
-
-    function reveal() {
-      if (revealed) {
-        return;
-      }
-      revealed = true;
-      var question = current();
-      ui.reveal.hidden = true;
-      ui.answer.hidden = false;
-      ui.answer.textContent = "";
-
-      if (drill) {
-        ui.answer.appendChild(element("p", "panel-label", "The working"));
-        var working = element("ul", "coach-working");
-        [
-          "I = Q × C = " +
-            formatNumber(drill.capacity) +
-            " Ah × " +
-            formatNumber(drill.rate) +
-            " h⁻¹ = " +
-            formatNumber(drill.current) +
-            " A",
-          "t = 1 / C = " + formatDuration(drill) + " at that rate, ideally",
-          "The units carry the argument: Ah × h⁻¹ leaves amperes.",
-        ].forEach(function (line) {
-          working.appendChild(element("li", null, line));
-        });
-        ui.answer.appendChild(working);
-        recordResult(
-          state.results[question.id] && state.results[question.id].covered ? 1 : 0,
-          1
-        );
-      } else {
-        ui.answer.appendChild(
-          element("p", "panel-label", "A complete answer covers these — tick what yours did")
-        );
-        var list = element("ul", "coach-points");
-        question.points.forEach(function (point, position) {
-          var item = element("li");
-          var label = element("label");
-          var box = document.createElement("input");
-          box.type = "checkbox";
-          box.id = "coach-point-" + question.id + "-" + position;
-          box.addEventListener("change", tally);
-          label.setAttribute("for", box.id);
-          label.appendChild(box);
-          label.appendChild(element("span", null, point));
-          item.appendChild(label);
-          list.appendChild(item);
-        });
-        ui.answer.appendChild(list);
-        recordResult(0, question.points.length);
-      }
-
-      if (question.note) {
-        ui.answer.appendChild(element("p", "launch-note", question.note));
-      }
-      ui.live.textContent = "Answer shown.";
-    }
-
-    function tally() {
-      var question = current();
-      var boxes = ui.answer.querySelectorAll("input[type=checkbox]");
-      var covered = 0;
-      Array.prototype.forEach.call(boxes, function (box) {
-        if (box.checked) {
-          covered += 1;
-        }
-      });
-      recordResult(covered, question.points.length);
     }
 
     function step(delta) {
@@ -564,36 +1112,97 @@
       ui.prompt.focus();
     }
 
+    /* The mascot. Drawn rather than embedded: an inline SVG stays sharp at any
+       size, costs no request, and can change expression, which a flat image
+       cannot. `data-mood` drives the brows and mouth — see `site.css`. */
+    function mascot() {
+      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "coach-mascot");
+      svg.setAttribute("viewBox", "0 0 64 64");
+      svg.setAttribute("data-mood", "idle");
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "The study coach");
+      svg.innerHTML = [
+        '<path class="lemon-leaf" d="M30 14C24 6 14 5 9 8c-1 6 3 14 11 16 4 1 8 0 10-2z"/>',
+        '<path class="lemon-stem" d="M30 13c-1-4-2-6-3-8"/>',
+        '<path class="lemon-body" d="M32 12c12 0 22 10 22 24 0 13-9 23-22 23s-22-10-22-23c0-14 10-24 22-24z"/>',
+        '<path class="lemon-shine" d="M20 24c3-5 8-8 12-8" />',
+        '<g class="lemon-freckles">',
+        '<circle cx="20" cy="39" r="1"/><circle cx="23" cy="42" r="0.9"/>',
+        '<circle cx="44" cy="39" r="1"/><circle cx="41" cy="42" r="0.9"/>',
+        "</g>",
+        '<g class="lemon-headset">',
+        '<path d="M50 30c0-10-5-15-11-17"/>',
+        '<rect x="48" y="28" width="6" height="11" rx="3"/>',
+        '<path d="M51 39c0 6-4 8-8 8"/>',
+        '<circle class="lemon-mic" cx="42" cy="47" r="2.4"/>',
+        "</g>",
+        '<g class="lemon-eyes">',
+        '<ellipse cx="25" cy="34" rx="5.4" ry="6"/><ellipse cx="40" cy="34" rx="5.4" ry="6"/>',
+        "</g>",
+        '<g class="lemon-pupils">',
+        '<circle cx="25.6" cy="34.6" r="3.3"/><circle cx="40.6" cy="34.6" r="3.3"/>',
+        "</g>",
+        '<g class="lemon-glints">',
+        '<circle cx="27" cy="32.6" r="1.1"/><circle cx="42" cy="32.6" r="1.1"/>',
+        "</g>",
+        '<g class="lemon-brows">',
+        '<path class="brow-left" d="M20 25.5q5-3 10-0.5"/>',
+        '<path class="brow-right" d="M35 25q5-2.5 10 0.5"/>',
+        "</g>",
+        /* Four mouths, one shown at a time. The CSS `d` property would be
+           tidier but Firefox does not support it, and a mascot whose
+           expression never changes in one major browser is worse than a
+           slightly longer SVG. */
+        '<g class="lemon-mouth">',
+        '<path class="mouth-idle" d="M27.5 44q4.5 4 9 0"/>',
+        '<path class="mouth-happy" d="M25.5 42.5q6.5 7.5 13 0"/>',
+        '<path class="mouth-flat" d="M28 45q4.5 1.5 8.5 0"/>',
+        '<path class="mouth-soft" d="M28 45.5q4.5 -1.2 8.5 0"/>',
+        "</g>",
+        '<g class="lemon-sparkle"><path d="M57 21l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></g>',
+      ].join("");
+      return svg;
+    }
+
+    function setMood(mood) {
+      ui.mascot.setAttribute("data-mood", mood);
+    }
+
     function buildInterface() {
       var wrapper = element("div", "coach");
 
       var bar = element("div", "coach-bar");
       var counter = element("span", "pill", "Question 1 of " + QUESTIONS.length);
       var part = element("span", "pill coach-part", "Part 01");
+      var mode = element("span", "pill coach-mode", "Checked");
       var spacer = element("span", "spacer");
       var filters = element("div", "control-row");
-      var filterButtons = [
+      var filterButtons = [];
+      [
         ["all", "All"],
+        ["checked", "Auto-checked"],
         ["part", "Part checkpoints"],
         ["chapter", "Chapter checkpoints"],
         ["missed", "Not yet complete"],
-      ].map(function (entry) {
+      ].forEach(function (entry, position) {
         var button = element("button", "chip", entry[1]);
         button.type = "button";
-        button.setAttribute("aria-pressed", String(entry[0] === "all"));
+        button.setAttribute("aria-pressed", String(position === 0));
         button.addEventListener("click", function () {
           filter = entry[0];
-          filterButtons.forEach(function (other, position) {
-            other.setAttribute("aria-pressed", String(position === filterButtons.indexOf(button)));
+          filterButtons.forEach(function (other, otherPosition) {
+            other.setAttribute("aria-pressed", String(otherPosition === position));
           });
           rebuild(current() && current().id);
           render();
         });
         filters.appendChild(button);
-        return button;
+        filterButtons.push(button);
       });
       bar.appendChild(counter);
       bar.appendChild(part);
+      bar.appendChild(mode);
       bar.appendChild(spacer);
       bar.appendChild(filters);
 
@@ -608,76 +1217,46 @@
       progressTrack.appendChild(progressFill);
 
       var card = element("div", "panel coach-card");
+      var head = element("div", "coach-head");
+      var face = mascot();
+      var headText = element("div");
       var format = element("p", "format", "");
       var prompt = element("h3", "coach-question", "");
       prompt.tabIndex = -1;
+      headText.appendChild(format);
+      headText.appendChild(prompt);
+      head.appendChild(face);
+      head.appendChild(headText);
 
-      var freeAnswer = element("label", "field");
-      freeAnswer.setAttribute("for", "coach-free-answer");
-      freeAnswer.appendChild(
-        element("span", null, "Your answer — write it before revealing")
-      );
-      var freeInput = document.createElement("textarea");
-      freeInput.id = "coach-free-answer";
-      freeInput.rows = 4;
-      freeInput.placeholder = "Answer in your own words. Nothing here is sent anywhere.";
-      freeAnswer.appendChild(freeInput);
-
-      var drillBox = element("div", "coach-drill");
-      var drillPrompt = element("p", "coach-drill-prompt", "");
-      var drillField = element("label", "field");
-      drillField.setAttribute("for", "coach-drill-input");
-      drillField.appendChild(element("span", null, "Constant current, in amperes"));
-      var drillInput = document.createElement("input");
-      drillInput.id = "coach-drill-input";
-      drillInput.type = "text";
-      drillInput.inputMode = "decimal";
-      drillInput.autocomplete = "off";
-      drillField.appendChild(drillInput);
-      var drillRow = element("div", "control-row");
-      var drillCheck = element("button", "chip chip-primary", "Check");
-      drillCheck.type = "button";
-      var drillFeedback = element("span", "pill", "");
-      drillFeedback.setAttribute("data-state", "idle");
-      drillFeedback.setAttribute("role", "status");
-      drillFeedback.setAttribute("aria-live", "polite");
-      drillRow.appendChild(drillCheck);
-      drillRow.appendChild(drillFeedback);
-      drillBox.appendChild(drillPrompt);
-      drillBox.appendChild(drillField);
-      drillBox.appendChild(drillRow);
-
+      var body = element("div", "coach-body");
       var hintList = element("ul", "coach-hint-list");
       hintList.hidden = true;
 
       var actions = element("div", "control-row coach-actions");
       var hint = element("button", "chip", "Show a hint");
       hint.type = "button";
-      var revealButton = element("button", "chip chip-primary", "Show a complete answer");
-      revealButton.type = "button";
+      var primary = element("button", "chip chip-primary", "Check");
+      primary.type = "button";
       var previous = element("button", "chip chip-ghost", "← Previous");
       previous.type = "button";
       var next = element("button", "chip chip-ghost", "Next →");
       next.type = "button";
       actions.appendChild(hint);
-      actions.appendChild(revealButton);
+      actions.appendChild(primary);
       actions.appendChild(previous);
       actions.appendChild(next);
 
-      var answer = element("div", "coach-answer");
-      answer.hidden = true;
+      var feedback = element("div", "coach-feedback");
 
       var revisitRow = element("div", "control-row coach-revisit");
       var revisit = element("a", "card-action", "Revisit");
       revisitRow.appendChild(revisit);
 
-      card.appendChild(format);
-      card.appendChild(prompt);
-      card.appendChild(freeAnswer);
-      card.appendChild(drillBox);
+      card.appendChild(head);
+      card.appendChild(body);
       card.appendChild(hintList);
       card.appendChild(actions);
-      card.appendChild(answer);
+      card.appendChild(feedback);
       card.appendChild(revisitRow);
 
       var footer = element("div", "coach-bar coach-footer");
@@ -703,22 +1282,14 @@
       wrapper.appendChild(live);
 
       hint.addEventListener("click", showHint);
-      revealButton.addEventListener("click", reveal);
       previous.addEventListener("click", function () {
         step(-1);
       });
       next.addEventListener("click", function () {
         step(1);
       });
-      drillCheck.addEventListener("click", checkDrill);
-      drillInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          checkDrill();
-        }
-      });
       reset.addEventListener("click", function () {
-        state = { version: 1, results: {} };
+        state = { version: 2, results: {} };
         saveState(state);
         rebuild();
         render();
@@ -729,18 +1300,15 @@
         wrapper: wrapper,
         counter: counter,
         part: part,
+        mode: mode,
+        mascot: face,
         format: format,
         prompt: prompt,
-        freeAnswer: freeAnswer,
-        freeInput: freeInput,
-        drill: drillBox,
-        drillPrompt: drillPrompt,
-        drillInput: drillInput,
-        drillFeedback: drillFeedback,
+        body: body,
         hintList: hintList,
         hint: hint,
-        reveal: revealButton,
-        answer: answer,
+        primary: primary,
+        feedback: feedback,
         revisit: revisit,
         status: status,
         overall: overall,
@@ -765,7 +1333,7 @@
      file is public, and so is anything in it. */
   function attachTutor(root, ui, endpoint, currentQuestion) {
     var panel = element("div", "panel coach-tutor");
-    panel.appendChild(element("p", "panel-label", "Ask the tutor"));
+    panel.appendChild(element("p", "panel-label", "Ask the coach"));
     panel.appendChild(
       element(
         "p",
@@ -837,7 +1405,7 @@
         .catch(function (error) {
           reply.hidden = false;
           reply.textContent =
-            "The tutor is unavailable. The checkpoints above work without it. (" +
+            "The coach is unavailable. The checkpoints above work without it. (" +
             error.message +
             ")";
           status.textContent = "Unavailable";

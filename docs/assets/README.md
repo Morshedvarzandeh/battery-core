@@ -99,19 +99,36 @@ answer, then compare it against the points a complete answer covers. It mounts
 into `<div id="study-coach"></div>` and needs nothing else — no build step, no
 network, no account.
 
-It does **not** mark prose. It cannot read an answer, and pretending otherwise
-would be exactly the kind of unstated model limit the rest of the course
-refuses to ship. What it does is show what a complete answer contains and let
-the learner score their own against it. The one exception is the C-rate drill,
-where the answer is a number and is checked outright against `Q x C` — the same
-definition `battery_core.capacity.current_from_c_rate` implements.
+There are two kinds of question, because two kinds are honestly possible
+without a server:
+
+| Kind | Types | How it is marked |
+| --- | --- | --- |
+| **Checked** | `drill`, `choice`, `multi`, `order` | Marked outright. The answer space is closed, so the coach can say exactly what was wrong and why. |
+| **Self-checked** | prose (the default) | Not marked. The coach shows what a complete answer covers and the learner ticks their own. |
+
+The split is not squeamishness. Grading prose offline means keyword matching,
+and keyword matching grades vocabulary rather than understanding: *"the
+separator does **not** block electrons"* contains every right word and is
+wrong, while a correct answer in different words scores nothing. A confidently
+wrong grade is worse than no grade, because the learner cannot tell it
+happened. Anything that genuinely can be checked is therefore written as a
+closed-form question instead — which is also better teaching, since a
+well-chosen distractor names the misconception the learner actually holds.
+
+Every number in a drill comes from the same relationship the tested Python
+implements — `current_from_c_rate`, `ideal_duration_hours`, `arrhenius_factor`,
+`parabolic_film_thickness` — and the two physical constants the browser cannot
+import are compared against `battery_core.aging` by a test, so the copy cannot
+drift.
 
 Progress lives in `localStorage` under `battery-core-chapter-1-coach`. A browser
 with site data blocked studies without saved progress rather than getting a
 broken page. A `<noscript>` block beside the mount point says the questions are
 all written out in the sequence above, because they are.
 
-To add a question, append to `QUESTIONS` in `study-coach.js`:
+To add a question, append to `QUESTIONS` in `study-coach.js`. Every question
+carries the same envelope:
 
 ```js
 {
@@ -123,13 +140,72 @@ To add a question, append to `QUESTIONS` in `study-coach.js`:
   moduleLabel: "Part 05 · …",
   question: "…",
   hints: ["…", "…"],            // revealed one at a time
-  points: ["…", "…"],           // what a complete answer covers
   note: "…",                     // optional: a limit worth stating
 }
 ```
 
-Keep `points` to what a complete answer genuinely needs. The learner ticks each
-one, so a padded list makes an honest self-score look like a failure.
+Then one of these bodies decides how it is answered and marked:
+
+```js
+// prose — the default when no `type` is set
+points: ["…", "…"]              // what a complete answer covers
+
+// choice — exactly one correct; multi — any number correct
+type: "choice",
+options: [
+  { text: "…", correct: true, why: "Why this is the right reading." },
+  { text: "…", why: "Which misconception this option is, and why it fails." },
+]
+
+// order — `items` in the CORRECT order; the coach shuffles for display
+type: "order",
+items: ["First step", "Second step", "…"]
+
+// drill — numeric, generated fresh each time
+type: "drill",
+drill: "cRateCurrent"           // a key of DRILLS
+```
+
+Two rules worth keeping:
+
+- **Every option needs a `why`, including the wrong ones.** A distractor that
+  is only marked wrong teaches nothing; a distractor that says *which*
+  misunderstanding it represents does the actual teaching. A test enforces the
+  count matches.
+- **Keep `points` to what a complete answer genuinely needs.** The learner
+  ticks each one, so a padded list makes an honest self-score look like a
+  failure.
+
+A new drill is an entry in `DRILLS` with `generate`, `prompt`, `answer`,
+`working`, a `label` for the input, and a `tolerance` as a fraction. Mirror a
+tested function rather than inventing arithmetic, and add the comparison to
+`tests/test_study_coach.py`.
+
+## The mascot
+
+The coach has a face: a lemon in a headset, for Lemonergy. It is drawn as
+inline SVG in `study-coach.js` rather than embedded as an image, for three
+reasons — it stays sharp at any size, it costs no request on a page that is
+meant to be self-contained, and a drawing can change expression where a bitmap
+cannot.
+
+`data-mood` on the `<svg>` selects the expression, and `site.css` does the rest:
+
+| Mood | When | What moves |
+| --- | --- | --- |
+| `idle` | a new question | gentle smile |
+| `thinking` | a hint is shown, or an answer revealed | one brow raised, mouth flat |
+| `happy` | marked fully correct | broad smile, sparkle |
+| `encouraging` | marked partly or fully wrong | inner brow ends raised, soft mouth |
+
+Expressions swap whole `<path>` elements by `display` rather than animating the
+CSS `d` property. Firefox does not support `d`, and a mascot that freezes in
+one major browser is worse than a slightly longer SVG.
+
+The lemon yellow is `--lemon`, and it is the one hue outside the role system in
+[Colour roles](#colour-roles). That is deliberate and narrow: the mascot is
+illustration, not a UI state, so `--lemon` never marks a tier, a status, or a
+control. If it starts appearing on buttons, the role system has been broken.
 
 ## An AI tutor
 
