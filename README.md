@@ -44,6 +44,15 @@ The **[Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/ch
 provides one consistently designed route through all six modules, with a focus
 and knowledge checkpoint for each part.
 
+The guide also runs those checkpoints as
+**[practice](https://morshedvarzandeh.github.io/battery-core/chapter-1/#practice)**:
+write an answer, then compare it against the points a complete one covers. It
+does not mark prose — it cannot read an answer, and says so — but the C-rate
+question is a generated numeric drill checked against the same `Q × C`
+definition the tested Python implements. Everything runs in the browser with no
+network, account, or key; an AI tutor for free-form follow-up is optional and
+off by default (see [`docs/assets/README.md`](docs/assets/README.md)).
+
 ### Chapter 2 — Equivalent Circuit Models
 
 Chapter 2 is planned. It will progress from terminal-voltage conventions and OCV

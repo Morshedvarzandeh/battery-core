@@ -1093,10 +1093,14 @@ footer a {
   background: var(--accent-strong);
 }
 
+.chip {
+  --tier: var(--tier-core);
+}
+
 .chip[aria-pressed="true"] {
-  border-color: color-mix(in srgb, var(--tier-toolkit) 60%, transparent);
-  background: color-mix(in srgb, var(--tier-toolkit) 16%, transparent);
-  color: var(--tier-toolkit);
+  border-color: color-mix(in srgb, var(--tier) 60%, transparent);
+  background: color-mix(in srgb, var(--tier) 16%, transparent);
+  color: var(--tier);
 }
 
 .chip-ghost {
@@ -1143,6 +1147,11 @@ footer a {
 .field textarea {
   min-height: 9rem;
   resize: vertical;
+}
+
+/* Machine-readable payloads read better fixed-width; prose does not. */
+.field textarea.monospace,
+#cf-export-text {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.8rem;
 }
@@ -1272,5 +1281,189 @@ footer a {
   .tool-statusbar {
     flex-direction: column;
     align-items: stretch;
+  }
+}
+
+/* ===========================================================================
+   Study coach
+   The checkpoint questions, run as a loop: answer first, then compare against
+   what a complete answer covers. Built from the tool-surface components above
+   so it inherits their sizing rather than inventing a third control scale.
+   =========================================================================== */
+
+.coach {
+  display: grid;
+  gap: 1rem;
+}
+
+.coach-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.coach-bar .spacer {
+  flex: 1 1 auto;
+}
+
+.coach-part[data-tier="deeper"] {
+  border-color: color-mix(in srgb, var(--tier-deeper) 45%, transparent);
+  color: var(--tier-deeper);
+}
+
+.coach-part[data-tier="deeper"]::before {
+  background: var(--tier-deeper);
+}
+
+.coach .progress-track {
+  margin: 0;
+}
+
+.coach-card {
+  padding: 1.5rem;
+}
+
+.coach-question {
+  margin: 0 0 1.3rem;
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+}
+
+.coach-question:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+.coach-card .field textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.coach-drill-prompt {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--text);
+}
+
+.coach-hint-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.coach-hint-list li {
+  padding: 0.85rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--blue) 28%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--blue) 8%, transparent);
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.coach-actions {
+  margin-top: 0.4rem;
+}
+
+.coach-answer {
+  margin-top: 1.4rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--line);
+}
+
+.coach-points,
+.coach-working {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coach-points label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.coach-points label:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.coach-points input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15rem;
+  accent-color: var(--accent);
+}
+
+.coach-points input:checked + span {
+  color: var(--text);
+}
+
+.coach-working li {
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88rem;
+}
+
+.coach-revisit {
+  margin-top: 1.2rem;
+}
+
+.coach-revisit .card-action {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.coach-overall {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.coach-tutor {
+  margin-top: 1rem;
+}
+
+.coach-tutor-reply {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+.coach-noscript {
+  padding: 1.2rem 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--orange) 35%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--orange) 7%, transparent);
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .coach-actions .chip {
+    flex: 1 1 auto;
   }
 }

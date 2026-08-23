@@ -46,6 +46,29 @@ All notable changes to `battery-core` are recorded here. The format follows
   workbench reads `--muted` as a text colour, not a surface — needs the chrome
   without the bridge.
 
+- A study coach on the Chapter 1 guide. The chapter already asked a checkpoint
+  question after every part, but reading one and thinking "yes, roughly" is not
+  answering it. Each question is now a loop: write an answer, then compare it
+  against the points a complete answer covers and score yourself.
+
+  It does not mark prose, and does not pretend to — it cannot read an answer,
+  and an unstated model limit is the one thing this course refuses to ship.
+  What it does is show what a complete answer contains. The exception is the
+  C-rate drill, where the answer is a number and is checked outright against
+  `Q × C`, the definition `battery_core.capacity.current_from_c_rate`
+  implements.
+
+  It runs entirely in the browser: no network, no account, no key. Progress
+  lives in `localStorage`, and a browser with site data blocked studies without
+  saved progress rather than getting a broken page. A `<noscript>` block points
+  at the questions, which are all written out in the sequence above it.
+
+  An AI tutor can be attached for free-form follow-up by pointing
+  `data-tutor-endpoint` at a proxy that holds an API key server-side. It is off
+  by default, so the page ships making no network request at all, and
+  `docs/assets/README.md` carries a complete reference worker plus what it
+  costs and where it will be wrong.
+
 - A third diagram in the CellForge editor: a standard template. It is not a
   machine but the skeleton the coating and calendering diagrams share — the same
   frame, the same four zone divisions, one web line with flow arrows,
