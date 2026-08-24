@@ -44,9 +44,8 @@
     footer.innerHTML = '<p>Battery Core \u00b7 A project of Lemonergy</p>' +
       '<div class="bc-footer-links">' +
       '<a href="../../">Course home</a>' +
-      '<a href="https://github.com/Morshedvarzandeh/battery-core">Source</a>' +
-      '<a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">AGPL-3.0-or-later</a>' +
-      '<a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/COMMERCIAL.md">Commercial use</a>' +
+      '<a href="../../license/">AGPL-3.0-or-later</a>' +
+      '<a href="../../license/#commercial">Commercial use</a>' +
       '</div>';
     document.body.appendChild(footer);
   }

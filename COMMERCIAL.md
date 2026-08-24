@@ -54,10 +54,8 @@ Terms are negotiated per case, and typically settle:
 
 ## Getting in touch
 
-Open an issue on
-[the repository](https://github.com/Morshedvarzandeh/battery-core/issues) titled
-"Commercial licence enquiry", or contact Lemonergy through the repository
-owner's GitHub profile, [@Morshedvarzandeh](https://github.com/Morshedvarzandeh).
+Contact Lemonergy. Enquiries go to Lemonergy as the licensor, not to any
+individual maintainer.
 
 Please say what you are building, whether the code will be modified, and whether
 it will be distributed or offered over a network. Those three answers determine

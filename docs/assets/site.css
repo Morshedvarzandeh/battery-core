@@ -1768,3 +1768,68 @@ footer a {
     flex-wrap: wrap;
   }
 }
+
+/* ===========================================================================
+   Data table
+   For the roadmap, where "part / concept / status / format" genuinely is a
+   table and reads worse as anything else. Scrolls inside its own container so
+   the page body never scrolls sideways on a phone.
+   =========================================================================== */
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+}
+
+.table-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+
+.table-scroll th,
+.table-scroll td {
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table-scroll thead th {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.table-scroll tbody tr:last-child th,
+.table-scroll tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table-scroll tbody th {
+  color: var(--tier, var(--tier-core));
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.table-scroll tr[data-tier="deeper"] th { --tier: var(--tier-deeper); }
+
+.table-scroll td a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.status-cell {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.status-cell[data-state="available"] {
+  color: var(--accent);
+}
