@@ -32,9 +32,14 @@ notebook = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/Morshedvarzandeh/battery-core/tree/main/docs"
+# The course, the documentation, and the licensing terms are all served from
+# Lemonergy's own domain, so none of them depend on where the code is hosted.
+Homepage = "https://learn.lemonergy.com/"
+Documentation = "https://learn.lemonergy.com/"
+Commercial-License = "https://learn.lemonergy.com/license/#commercial"
+# Repository has to resolve to wherever the code actually lives, so it moves
+# when the repository moves.
 Repository = "https://github.com/Morshedvarzandeh/battery-core"
-Commercial-License = "https://github.com/Morshedvarzandeh/battery-core/blob/main/COMMERCIAL.md"
 
 [tool.setuptools]
 # NOTICE carries the section 7(b) attribution term, so it has to travel with

@@ -275,7 +275,7 @@ rise are predictions that need a validated model of a specific cell, so never
 state one as a fact. Say when you are unsure.`;
 
 const CORS = {
-  "access-control-allow-origin": "https://morshedvarzandeh.github.io",
+  "access-control-allow-origin": "https://learn.lemonergy.com",
   "access-control-allow-headers": "content-type",
   "access-control-allow-methods": "POST, OPTIONS",
 };

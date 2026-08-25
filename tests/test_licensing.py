@@ -122,7 +122,16 @@ def test_commercial_offer_is_reachable_from_the_metadata_and_the_site() -> None:
     """Someone who needs to pay has to be able to find out that they can."""
     pyproject = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
     urls = pyproject["project"]["urls"]
-    assert "COMMERCIAL.md" in urls["Commercial-License"]
+    # The metadata may point either at the file that ships in the wheel or at
+    # the site's own licensing page. Both are real routes to the offer; what
+    # matters is that whichever one is named actually exists.
+    commercial_url = urls["Commercial-License"]
+    if "license/#commercial" in commercial_url:
+        page = (ROOT / "docs" / "license" / "index.html").read_text(encoding="utf-8")
+        assert 'id="commercial"' in page, "metadata points at a section the page lacks"
+    else:
+        assert "COMMERCIAL.md" in commercial_url
+        assert COMMERCIAL.exists()
     license_files = pyproject["tool"]["setuptools"]["license-files"]
     assert "COMMERCIAL.md" in license_files
 
@@ -217,3 +226,54 @@ def test_site_hosts_the_roadmap_it_links_to() -> None:
     docs = ROOT / "docs"
     for page in (docs / "index.html", docs / "chapter-1" / "index.html"):
         assert "roadmap/" in page.read_text(encoding="utf-8"), page.name
+
+
+def test_the_site_declares_the_domain_it_is_served_from() -> None:
+    """GitHub Pages reads docs/CNAME to decide which hostname it will answer on.
+    It has to be a bare hostname on one line — a scheme, a path, or a trailing
+    slash makes Pages reject it, and the site silently falls back to the
+    default host, which is exactly the personal one we moved off."""
+    cname = (ROOT / "docs" / "CNAME").read_text(encoding="utf-8")
+    lines = [line for line in cname.splitlines() if line.strip()]
+    assert len(lines) == 1, f"CNAME must hold exactly one hostname, got {lines}"
+    host = lines[0]
+    assert host == host.strip(), "CNAME hostname has surrounding whitespace"
+    assert "://" not in host and "/" not in host, f"CNAME must be a bare host: {host}"
+    assert host.endswith(".lemonergy.com") or host == "lemonergy.com", host
+
+
+def test_every_canonical_url_points_at_the_domain_the_site_is_served_from() -> None:
+    """A canonical tag tells search engines which URL is the real one. If the
+    CNAME moves and a canonical is left behind, that page hands its ranking to
+    a host we no longer serve, so the two have to be checked together."""
+    host = (ROOT / "docs" / "CNAME").read_text(encoding="utf-8").strip()
+    expected = f"https://{host}/"
+    offenders = []
+    for path in (ROOT / "docs").rglob("*.html"):
+        if "payload" in path.parts:
+            continue
+        for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if 'rel="canonical"' in line and expected not in line:
+                offenders.append(f"{path.relative_to(ROOT)}:{line_no}")
+    assert not offenders, f"canonical URLs not on {expected}: " + ", ".join(offenders)
+
+
+def test_nothing_published_points_a_reader_at_a_personal_pages_host() -> None:
+    """The whole point of the custom domain is that a reader never lands on an
+    individual's github.io. That holds only if no page, and no packaging
+    metadata, still carries the old host."""
+    targets = [
+        *(ROOT / "docs").rglob("*.html"),
+        *(ROOT / "docs").rglob("*.js"),
+        *(ROOT / "docs").rglob("*.md"),
+        ROOT / "README.md",
+        ROOT / "pyproject.toml",
+    ]
+    offenders = []
+    for path in targets:
+        if "payload" in path.parts:
+            continue
+        for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if "github.io" in line:
+                offenders.append(f"{path.relative_to(ROOT)}:{line_no}")
+    assert not offenders, "github.io references remain: " + ", ".join(offenders)

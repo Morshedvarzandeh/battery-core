@@ -5,19 +5,19 @@ Books, papers, standards, and public datasets may inform the work, but the
 project's explanations, examples, code, tests, notebooks, and visualizations are
 written specifically for this repository.
 
-[Open the public course homepage](https://morshedvarzandeh.github.io/battery-core/)
+[Open the public course homepage](https://learn.lemonergy.com/)
 ·
-[Open the Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/chapter-1/)
+[Open the Chapter 1 study guide](https://learn.lemonergy.com/chapter-1/)
 
 ## Chapter 1 — Battery Cell Foundations
 
 | Part | Concept | Status | Main format |
 | ---: | --- | --- | --- |
-| 01 | [Cell anatomy and charge/discharge paths](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/) | Available — launch online | Browser workbench |
-| 01B | [Lithium-ion cell architecture](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/) | Available — launch online | Interactive browser tutorial |
+| 01 | [Cell anatomy and charge/discharge paths](https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/) | Available — launch online | Browser workbench |
+| 01B | [Lithium-ion cell architecture](https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/) | Available — launch online | Interactive browser tutorial |
 | 02 | [Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb) | Available — launch notebook | Python API and Jupyter notebook |
-| 03 | [Lithium-ion battery production — materials to finished cell](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/) | Available — launch online | Interactive production simulator |
-| 03B | [All-solid-state cell production](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/) | Available — launch online | Interactive route-comparison simulator |
+| 03 | [Lithium-ion battery production — materials to finished cell](https://learn.lemonergy.com/fundamentals/battery-production/) | Available — launch online | Interactive production simulator |
+| 03B | [All-solid-state cell production](https://learn.lemonergy.com/fundamentals/solid-state-production/) | Available — launch online | Interactive route-comparison simulator |
 | 04 | [Battery aging — how a cell wears out](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb) | Available — launch notebook | Interactive Jupyter notebook |
 
 Part 01 introduces the cell components and charge/discharge paths. Part 01B moves
@@ -35,7 +35,7 @@ outputs are illustrative teaching relationships rather than calibrated factory
 predictions. The aging notebook likewise uses simplified equations for trend
 exploration, not cell-specific state-of-health or lifetime prediction. Part 04
 closes Chapter 1. The
-[Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/chapter-1/)
+[Chapter 1 study guide](https://learn.lemonergy.com/chapter-1/)
 connects all six modules with focus points and knowledge checkpoints in the same
 visual system as the course homepage.
 
@@ -59,7 +59,7 @@ learning material are ready.
 
 ## Supplementary interactive labs
 
-- **[Electrode potentials and battery materials](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)** — a self-contained browser lab covering a Zn/Cu aqueous example, voltage references, the water stability window, lithium-ion intercalation, and representative electrode-material trade-offs.
+- **[Electrode potentials and battery materials](https://learn.lemonergy.com/labs/battery-materials-lab/)** — a self-contained browser lab covering a Zn/Cu aqueous example, voltage references, the water stability window, lithium-ion intercalation, and representative electrode-material trade-offs.
 
 ## Existing physics building blocks
 
