@@ -252,7 +252,8 @@ def test_every_canonical_url_points_at_the_domain_the_site_is_served_from() -> N
     for path in (ROOT / "docs").rglob("*.html"):
         if "payload" in path.parts:
             continue
-        for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        for line_no, line in enumerate(lines, 1):
             if 'rel="canonical"' in line and expected not in line:
                 offenders.append(f"{path.relative_to(ROOT)}:{line_no}")
     assert not offenders, f"canonical URLs not on {expected}: " + ", ".join(offenders)
@@ -273,7 +274,8 @@ def test_nothing_published_points_a_reader_at_a_personal_pages_host() -> None:
     for path in targets:
         if "payload" in path.parts:
             continue
-        for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        for line_no, line in enumerate(lines, 1):
             if "github.io" in line:
                 offenders.append(f"{path.relative_to(ROOT)}:{line_no}")
     assert not offenders, "github.io references remain: " + ", ".join(offenders)
