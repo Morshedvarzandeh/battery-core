@@ -1,0 +1,69 @@
+Battery Core
+Copyright (C) 2026 Lemonergy and the battery-core contributors
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version. The full text is in LICENSE.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+
+Dual licensing
+--------------
+
+Lemonergy holds the copyright and licences this work on two alternative terms.
+
+  1. The GNU AGPL version 3 or later, together with the attribution term below.
+     This costs nothing and requires you to publish the complete source of what
+     you build on it and to keep the Lemonergy attribution visible.
+
+  2. A commercial licence from Lemonergy, on negotiated terms, for anyone whose
+     product cannot meet those conditions.
+
+Choosing one does not affect anyone using the other. See COMMERCIAL.md for
+which one applies to you and how to ask. Contributions carry an inbound grant
+so that contributed code can be licensed on both sets of terms; that grant is
+stated in COMMERCIAL.md and is optional per contributor.
+
+
+Additional term under section 7(b) of the GNU AGPL version 3
+------------------------------------------------------------
+
+As permitted by section 7(b) of the GNU Affero General Public License version
+3, this project requires preservation of the following author attribution.
+
+    Battery Core is a project of Lemonergy.
+
+Anyone who conveys the Program, a modified version of it, or a work based on
+it, and anyone who makes it available to users over a network under section 13,
+must keep the attribution to Lemonergy visible. Concretely, the name Lemonergy
+must appear:
+
+  - in this NOTICE file, which must be conveyed with the source; and
+  - in the Appropriate Legal Notices of any interactive interface built from
+    this work — for the web material in `docs/`, that is the page footer, and
+    for the Python package it is the project metadata; and
+  - in the credits, about screen, or documentation of any work that
+    incorporates a substantial part of this project.
+
+This term requires attribution only. It does not restrict any freedom the AGPL
+grants: you may still use, study, modify, redistribute, and network-deploy this
+work under the AGPL, and you may charge for doing so. Removing or obscuring the
+Lemonergy attribution is the one thing the licence does not permit.
+
+Attribution to Lemonergy does not imply that Lemonergy endorses your modified
+version. If you publish a modified version, mark it as modified, as section 5
+of the licence requires, so users can tell your changes from the original.
+
+
+Third-party material
+--------------------
+
+The Chapter 1 production simulators (`docs/fundamentals/battery-production/`
+and `docs/fundamentals/solid-state-production/`) present process data compiled
+from published PEM RWTH Aachen and VDMA reference material. Those underlying
+publications are the property of their respective authors and are cited in each
+module's README.

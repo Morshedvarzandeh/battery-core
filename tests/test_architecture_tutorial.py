@@ -4,6 +4,8 @@ import re
 from html.parser import HTMLParser
 from pathlib import Path
 
+from asset_checks import external_asset_references
+
 ROOT = Path(__file__).resolve().parents[1]
 TUTORIAL = ROOT / "docs" / "fundamentals" / "lithium-ion-cell-architecture"
 
@@ -36,7 +38,7 @@ def test_architecture_tutorial_uses_only_local_assets() -> None:
     html = _read("index.html")
     assert 'href="styles.css"' in html
     assert 'src="app.js"' in html
-    assert "https://" not in html
+    assert external_asset_references(html) == []
     assert "unpkg.com" not in _read("styles.css") + _read("app.js")
 
 

@@ -7,7 +7,7 @@ from material preparation through cell finishing.
 
 Public URL after merge:
 
-`https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/`
+`https://learn.lemonergy.com/fundamentals/solid-state-production/`
 
 ## Learning scope
 

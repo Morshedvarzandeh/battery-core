@@ -1,3 +1,20 @@
+/* Battery Core — course design system.
+ *
+ * Colour roles. Every hue on the site means one thing, so a reader can tell a
+ * module's tier before reading its label:
+ *
+ *   --accent  (mint)    the core learning path: primary parts, primary
+ *                       actions, part numbers, the brand mark.
+ *   --blue              optional depth: the "B" parts that go further into a
+ *                       topic without being required to finish the chapter.
+ *   --orange            the toolkit: authoring and maintenance tools that
+ *                       build the course rather than teach it.
+ *
+ * Nothing else introduces a hue. Surfaces are the four navy steps below, and
+ * text is --text or --muted. Standalone module pages get the same palette
+ * through `module-theme.css`; new pages start from `page-template.html`.
+ */
+
 :root {
   color-scheme: dark;
   --background: #07131d;
@@ -11,6 +28,18 @@
   --accent-strong: #95f1d5;
   --blue: #71b7ff;
   --orange: #ffb067;
+
+  /* Tier aliases. Components read these, never the raw hues, so a tier can be
+     recoloured in one place. */
+  --tier-core: var(--accent);
+  --tier-deeper: var(--blue);
+  --tier-toolkit: var(--orange);
+
+  /* Illustration only. The mascot is a character, not a UI state, so this hue
+     never marks a tier, a status, or a control — it appears in the drawn lemon
+     and nowhere else. */
+  --lemon: #ffd94a;
+
   --radius: 22px;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -866,4 +895,941 @@ footer a {
   *::after {
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ===========================================================================
+   Tier variants
+   A part's tier is carried by one modifier class, and the modifier only ever
+   swaps --tier. Nothing else about the component changes.
+   =========================================================================== */
+
+.study-step,
+.module-card,
+.checkpoint-grid article {
+  --tier: var(--tier-core);
+}
+
+.study-step-deeper,
+.module-card.deeper {
+  --tier: var(--tier-deeper);
+  border-color: color-mix(in srgb, var(--tier) 28%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 7%, transparent), rgba(255, 255, 255, 0.012));
+}
+
+.study-step-toolkit,
+.module-card.toolkit {
+  --tier: var(--tier-toolkit);
+  border-color: color-mix(in srgb, var(--tier) 28%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 7%, transparent), rgba(255, 255, 255, 0.012));
+}
+
+.study-step-toolkit .study-step-number strong,
+.study-step-deeper .study-step-number strong,
+.module-card.toolkit .part-number,
+.module-card.deeper .part-number,
+.study-step-toolkit .card-action,
+.module-card.toolkit .card-action {
+  color: var(--tier);
+}
+
+.module-card.available.deeper:hover,
+.module-card.available.toolkit:hover {
+  border-color: color-mix(in srgb, var(--tier) 45%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 11%, transparent), rgba(255, 255, 255, 0.018));
+}
+
+/* A legend that states the colour roles rather than leaving them to be
+   inferred. */
+.tier-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  margin: 0 0 2.4rem;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.tier-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.tier-legend li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--tier, var(--tier-core));
+}
+
+.tier-legend li:nth-child(2) { --tier: var(--tier-deeper); }
+.tier-legend li:nth-child(3) { --tier: var(--tier-toolkit); }
+
+.tier-legend strong {
+  color: var(--text);
+  font-weight: 800;
+}
+
+/* ===========================================================================
+   Standard page shell
+   The hero every page other than the homepage and the chapter guide uses.
+   `page-template.html` is the copy-ready version.
+   =========================================================================== */
+
+.page-hero {
+  padding: 4.5rem 0 3rem;
+}
+
+.page-hero h1 {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+}
+
+.page-hero .lede {
+  max-width: 760px;
+  margin: 1.4rem 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+}
+
+.page-hero .eyebrow[data-tier="deeper"] { color: var(--tier-deeper); }
+.page-hero .eyebrow[data-tier="toolkit"] { color: var(--tier-toolkit); }
+
+.footer-note {
+  max-width: 46ch;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ===========================================================================
+   Tool surface
+   Controls for the interactive authoring tools. Compact by design: these sit
+   beside a canvas, so they use the small type scale rather than the page one.
+   =========================================================================== */
+
+.tool-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  gap: 1rem;
+  align-items: start;
+}
+
+.panel {
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+}
+
+.panel + .panel {
+  margin-top: 1rem;
+}
+
+.panel > h2,
+.panel > h3 {
+  font-size: 1.05rem;
+}
+
+.panel-label {
+  margin: 0 0 0.85rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.control-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.chip:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.chip:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.chip-primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: #04251e;
+}
+
+.chip-primary:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.chip {
+  --tier: var(--tier-core);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--tier) 60%, transparent);
+  background: color-mix(in srgb, var(--tier) 16%, transparent);
+  color: var(--tier);
+}
+
+.chip-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+.chip-ghost:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.field {
+  display: block;
+  margin-bottom: 0.9rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field input[type="text"],
+.field textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.field textarea {
+  min-height: 9rem;
+  resize: vertical;
+}
+
+/* Machine-readable payloads read better fixed-width; prose does not. */
+.field textarea.monospace,
+#cf-export-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+}
+
+.field input[type="text"]:focus-visible,
+.field textarea:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.field input:disabled {
+  opacity: 0.5;
+}
+
+.field input[type="range"] {
+  display: block;
+  width: 100%;
+  margin-top: 0.6rem;
+  accent-color: var(--accent);
+}
+
+.field-value {
+  color: var(--accent);
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.nudge-pad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.nudge-pad .chip {
+  padding: 0.45rem 0;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.pill::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.pill[data-state="warning"] {
+  border-color: color-mix(in srgb, var(--orange) 45%, transparent);
+  color: var(--orange);
+}
+
+.pill[data-state="warning"]::before {
+  background: var(--orange);
+}
+
+.pill[data-state="idle"]::before {
+  background: var(--muted);
+}
+
+.canvas-card {
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  touch-action: none;
+  overflow: hidden;
+}
+
+.canvas-card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(104, 224, 189, 0.07), transparent 22rem),
+    var(--surface);
+}
+
+.tool-statusbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.tool-statusbar .spacer {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 980px) {
+  .tool-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .nudge-pad {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tool-statusbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* ===========================================================================
+   Study coach
+   The checkpoint questions, run as a loop: answer first, then compare against
+   what a complete answer covers. Built from the tool-surface components above
+   so it inherits their sizing rather than inventing a third control scale.
+   =========================================================================== */
+
+.coach {
+  display: grid;
+  gap: 1rem;
+}
+
+.coach-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.coach-bar .spacer {
+  flex: 1 1 auto;
+}
+
+.coach-part[data-tier="deeper"] {
+  border-color: color-mix(in srgb, var(--tier-deeper) 45%, transparent);
+  color: var(--tier-deeper);
+}
+
+.coach-part[data-tier="deeper"]::before {
+  background: var(--tier-deeper);
+}
+
+.coach .progress-track {
+  margin: 0;
+}
+
+.coach-card {
+  padding: 1.5rem;
+}
+
+.coach-question {
+  margin: 0 0 1.3rem;
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+}
+
+.coach-question:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+.coach-card .field textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.coach-drill-prompt {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--text);
+}
+
+.coach-hint-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.coach-hint-list li {
+  padding: 0.85rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--blue) 28%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--blue) 8%, transparent);
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.coach-actions {
+  margin-top: 0.4rem;
+}
+
+.coach-answer {
+  margin-top: 1.4rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--line);
+}
+
+.coach-points,
+.coach-working {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coach-points label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.coach-points label:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.coach-points input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15rem;
+  accent-color: var(--accent);
+}
+
+.coach-points input:checked + span {
+  color: var(--text);
+}
+
+.coach-working li {
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88rem;
+}
+
+.coach-revisit {
+  margin-top: 1.2rem;
+}
+
+.coach-revisit .card-action {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.coach-overall {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.coach-tutor {
+  margin-top: 1rem;
+}
+
+.coach-tutor-reply {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+.coach-noscript {
+  padding: 1.2rem 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--orange) 35%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--orange) 7%, transparent);
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .coach-actions .chip {
+    flex: 1 1 auto;
+  }
+}
+
+/* ===========================================================================
+   The coach's mascot
+   Drawn rather than embedded, so it stays sharp at any size, costs no request,
+   and can change expression — `data-mood` swaps the brows and mouth. The only
+   hue outside the role system, because a character is illustration, not state.
+   =========================================================================== */
+
+.coach-mascot {
+  flex: 0 0 auto;
+  width: clamp(56px, 9vw, 76px);
+  height: auto;
+  overflow: visible;
+}
+
+.lemon-body {
+  fill: var(--lemon);
+  stroke: #c9a12c;
+  stroke-width: 1.2;
+}
+
+.lemon-leaf {
+  fill: #4fbf7c;
+  stroke: #2f8f56;
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+
+.lemon-stem {
+  fill: none;
+  stroke: #2f8f56;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.lemon-shine {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.lemon-freckles circle {
+  fill: #e0a93a;
+}
+
+.lemon-eyes ellipse {
+  fill: #fbfdfd;
+}
+
+.lemon-pupils circle {
+  fill: #1d3a2c;
+}
+
+.lemon-glints circle {
+  fill: #ffffff;
+}
+
+.lemon-brows path {
+  fill: none;
+  stroke: #23313a;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  transition: transform 220ms ease;
+}
+
+.lemon-mouth path {
+  fill: none;
+  stroke: #23313a;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  display: none;
+}
+
+/* One mouth per mood. Toggled by display rather than by the CSS `d` property,
+   which Firefox does not support. */
+.coach-mascot[data-mood="idle"] .mouth-idle,
+.coach-mascot[data-mood="thinking"] .mouth-flat,
+.coach-mascot[data-mood="happy"] .mouth-happy,
+.coach-mascot[data-mood="encouraging"] .mouth-soft {
+  display: block;
+}
+
+.lemon-headset path,
+.lemon-headset rect {
+  fill: none;
+  stroke: #23313a;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.lemon-headset rect {
+  fill: #23313a;
+}
+
+.lemon-mic {
+  fill: #23313a;
+  stroke: none;
+}
+
+.lemon-sparkle path {
+  fill: var(--accent);
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+/* Moods. Only the brows and mouth move — the face itself stays put, which is
+   what keeps it reading as the same character. */
+.coach-mascot[data-mood="thinking"] .brow-left {
+  transform: translateY(-2.5px) rotate(-7deg);
+  transform-origin: 25px 25px;
+}
+
+.coach-mascot[data-mood="happy"] .lemon-sparkle path {
+  opacity: 1;
+}
+
+.coach-mascot[data-mood="happy"] .brow-left,
+.coach-mascot[data-mood="happy"] .brow-right {
+  transform: translateY(-1.5px);
+}
+
+.coach-mascot[data-mood="encouraging"] .brow-left {
+  transform: rotate(-8deg);
+  transform-origin: 25px 25px;
+}
+
+.coach-mascot[data-mood="encouraging"] .brow-right {
+  transform: rotate(8deg);
+  transform-origin: 40px 25px;
+}
+
+/* ===========================================================================
+   Auto-checked question types
+   =========================================================================== */
+
+.coach-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  margin-bottom: 1.3rem;
+}
+
+.coach-head .format {
+  margin-bottom: 0.45rem;
+}
+
+.coach-head .coach-question {
+  margin-bottom: 0;
+}
+
+.coach-mode[data-state="idle"] {
+  border-color: color-mix(in srgb, var(--blue) 40%, transparent);
+  color: var(--blue);
+}
+
+.coach-mode[data-state="idle"]::before {
+  background: var(--blue);
+}
+
+.coach-options,
+.coach-order {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coach-options label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.coach-options label:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--text);
+}
+
+.coach-options input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15rem;
+  accent-color: var(--accent);
+}
+
+.coach-options li[data-mark] label {
+  cursor: default;
+}
+
+.coach-options li[data-mark="right"] label {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--text);
+}
+
+.coach-options li[data-mark="wrong"] label {
+  border-color: color-mix(in srgb, var(--orange) 55%, transparent);
+  background: color-mix(in srgb, var(--orange) 9%, transparent);
+  color: var(--text);
+}
+
+.coach-why {
+  margin: 0.5rem 0 0 2.5rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.coach-order {
+  counter-reset: step;
+}
+
+.coach-order li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.7rem 0.6rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  color: var(--text);
+}
+
+.coach-order li::before {
+  counter-increment: step;
+  content: counter(step);
+  flex: 0 0 auto;
+  width: 22px;
+  color: var(--accent);
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+.coach-order-text {
+  flex: 1 1 auto;
+}
+
+.coach-order-controls {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.coach-order-controls .chip {
+  min-height: 32px;
+  padding: 0.2rem 0.6rem;
+}
+
+.coach-order li[data-mark="right"] {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.coach-order li[data-mark="wrong"] {
+  border-color: color-mix(in srgb, var(--orange) 55%, transparent);
+  background: color-mix(in srgb, var(--orange) 9%, transparent);
+}
+
+.coach-feedback:not(:empty) {
+  margin-top: 1.4rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--line);
+}
+
+.coach-verdict {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.coach-verdict[data-verdict="right"] {
+  color: var(--accent);
+}
+
+.coach-verdict[data-verdict="wrong"],
+.coach-verdict[data-verdict="warning"] {
+  color: var(--orange);
+}
+
+@media (max-width: 560px) {
+  .coach-head {
+    gap: 0.8rem;
+  }
+
+  .coach-order li {
+    flex-wrap: wrap;
+  }
+}
+
+/* ===========================================================================
+   Data table
+   For the roadmap, where "part / concept / status / format" genuinely is a
+   table and reads worse as anything else. Scrolls inside its own container so
+   the page body never scrolls sideways on a phone.
+   =========================================================================== */
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+}
+
+.table-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+
+.table-scroll th,
+.table-scroll td {
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table-scroll thead th {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.table-scroll tbody tr:last-child th,
+.table-scroll tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table-scroll tbody th {
+  color: var(--tier, var(--tier-core));
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.table-scroll tr[data-tier="deeper"] th { --tier: var(--tier-deeper); }
+
+.table-scroll td a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.status-cell {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.status-cell[data-state="available"] {
+  color: var(--accent);
 }

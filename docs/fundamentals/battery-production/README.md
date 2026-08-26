@@ -7,7 +7,7 @@ aged, tested, and packed cell.
 
 Public URL after merge:
 
-`https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/`
+`https://learn.lemonergy.com/fundamentals/battery-production/`
 
 ## Learning scope
 

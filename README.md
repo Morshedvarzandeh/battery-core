@@ -2,21 +2,21 @@
 
 **Open-source, executable battery engineering fundamentals.**
 
-[Open the course homepage](https://morshedvarzandeh.github.io/battery-core/)
+[Open the course homepage](https://learn.lemonergy.com/)
 ·
-[Open the Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/chapter-1/)
+[Open the Chapter 1 study guide](https://learn.lemonergy.com/chapter-1/)
 ·
-[Launch the Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)
+[Launch the Cell Anatomy Workbench](https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/)
 ·
-[Launch the Lithium-ion Cell Architecture tutorial](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)
+[Launch the Lithium-ion Cell Architecture tutorial](https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/)
 ·
-[Open the Battery Production simulator](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/)
+[Open the Battery Production simulator](https://learn.lemonergy.com/fundamentals/battery-production/)
 ·
-[Open the Solid-State Production simulator](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/)
+[Open the Solid-State Production simulator](https://learn.lemonergy.com/fundamentals/solid-state-production/)
 ·
 [Run the Battery Aging notebook in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb)
 ·
-[Open the Battery Materials Lab](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)
+[Open the Battery Materials Lab](https://learn.lemonergy.com/labs/battery-materials-lab/)
 ·
 [Run the C-rate notebook in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)
 ·
@@ -31,18 +31,33 @@ with explicit assumptions and validation.
 
 ### Chapter 1 — Battery Cell Foundations
 
-1. **[Part 01 — Cell anatomy and charge/discharge paths](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)** — inspect the named components and conceptual current paths.
-2. **[Part 01B — Lithium-ion cell architecture](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)** — move from the five-layer stack to porous electrodes, pore electrolyte, molecules, ions, and transport paths.
+1. **[Part 01 — Cell anatomy and charge/discharge paths](https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/)** — inspect the named components and conceptual current paths.
+2. **[Part 01B — Lithium-ion cell architecture](https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/)** — move from the five-layer stack to porous electrodes, pore electrolyte, molecules, ions, and transport paths.
 3. **[Part 02 — Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)** — connect capacity, current, C-rate, and ideal duration through tested calculations.
-4. **[Part 03 — Lithium-ion battery production](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/)** — follow a reference graphite/NMC route from slurry preparation to formation, aging, grading, and packing.
-5. **[Part 03B — All-solid-state cell production](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/)** — compare oxide, halide, sulfide, and polymer electrolyte routes and the production steps they add, change, or remove.
+4. **[Part 03 — Lithium-ion battery production](https://learn.lemonergy.com/fundamentals/battery-production/)** — follow a reference graphite/NMC route from slurry preparation to formation, aging, grading, and packing.
+5. **[Part 03B — All-solid-state cell production](https://learn.lemonergy.com/fundamentals/solid-state-production/)** — compare oxide, halide, sulfide, and polymer electrolyte routes and the production steps they add, change, or remove.
 6. **[Part 04 — Battery aging](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb)** — connect degradation mechanisms to capacity loss, impedance rise, self-discharge, temperature, and cycling conditions through explicitly illustrative models.
 
 Part 04 closes Chapter 1 by connecting the cell structures, ratings, and
 production routes to the degradation mechanisms that change cells in service.
-The **[Chapter 1 study guide](https://morshedvarzandeh.github.io/battery-core/chapter-1/)**
+The **[Chapter 1 study guide](https://learn.lemonergy.com/chapter-1/)**
 provides one consistently designed route through all six modules, with a focus
 and knowledge checkpoint for each part.
+
+The guide also runs those checkpoints as
+**[practice](https://learn.lemonergy.com/chapter-1/#practice)**:
+seventeen questions with a lemon in a headset for company. Eight are marked
+outright — numeric drills, multiple choice, select-all, and ordering the
+production route — with every wrong option explaining which misconception it
+is. Drill numbers come from the same relationships the tested Python
+implements. The other nine ask for an explanation and are deliberately *not*
+marked: grading prose offline means keyword matching, which scores vocabulary
+rather than understanding, so the coach shows what a complete answer covers and
+you tick your own.
+
+Everything runs in the browser with no network, account, or key. An AI tutor
+for free-form follow-up is optional and off by default (see
+[`docs/assets/README.md`](docs/assets/README.md)).
 
 ### Chapter 2 — Equivalent Circuit Models
 
@@ -58,11 +73,11 @@ blocks.
 
 ### Part 01 — Cell Anatomy Workbench
 
-The **[live Cell Anatomy Workbench](https://morshedvarzandeh.github.io/battery-core/fundamentals/cell-anatomy-workbench/)** explains cell components and charge/discharge directions. It is a conceptual visualization, not a quantitative simulation. Its source is in [`docs/fundamentals/cell-anatomy-workbench/`](docs/fundamentals/cell-anatomy-workbench/).
+The **[live Cell Anatomy Workbench](https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/)** explains cell components and charge/discharge directions. It is a conceptual visualization, not a quantitative simulation. Its source is in [`docs/fundamentals/cell-anatomy-workbench/`](docs/fundamentals/cell-anatomy-workbench/).
 
 ### Part 01B — Lithium-ion Cell Architecture
 
-The **[interactive architecture tutorial](https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/)** assembles the five physical layers, keeps the parent stack visible during each zoom, and shows that electrolyte fills connected pores rather than forming a sixth structural layer. Its source is in [`docs/fundamentals/lithium-ion-cell-architecture/`](docs/fundamentals/lithium-ion-cell-architecture/).
+The **[interactive architecture tutorial](https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/)** assembles the five physical layers, keeps the parent stack visible during each zoom, and shows that electrolyte fills connected pores rather than forming a sixth structural layer. Its source is in [`docs/fundamentals/lithium-ion-cell-architecture/`](docs/fundamentals/lithium-ion-cell-architecture/).
 
 ### Part 02 — Capacity and C-rate
 
@@ -70,7 +85,7 @@ The **[capacity and C-rate notebook](notebooks/fundamentals/02_capacity_and_c_ra
 
 ### Part 03 — Battery Production
 
-The **[CellForge production simulator](https://morshedvarzandeh.github.io/battery-core/fundamentals/battery-production/)** follows pouch, cylindrical, and prismatic reference routes. Its graphite/NMC calculations are explicitly illustrative teaching relationships, not calibrated plant predictions or release criteria. Its source and limitations are documented in [`docs/fundamentals/battery-production/`](docs/fundamentals/battery-production/).
+The **[CellForge production simulator](https://learn.lemonergy.com/fundamentals/battery-production/)** follows pouch, cylindrical, and prismatic reference routes. Its graphite/NMC calculations are explicitly illustrative teaching relationships, not calibrated plant predictions or release criteria. Its source and limitations are documented in [`docs/fundamentals/battery-production/`](docs/fundamentals/battery-production/).
 
 To open the browser modules locally, run:
 
@@ -80,7 +95,7 @@ python -m http.server 8000 -d docs
 
 ### Part 03B — All-Solid-State Cell Production
 
-The **[SolidForge production simulator](https://morshedvarzandeh.github.io/battery-core/fundamentals/solid-state-production/)** compares oxide, halide, sulfide, and polymer electrolyte routes. Its parameter relationships are explicitly illustrative and do not establish process capability, product safety, or release criteria. Its source and limitations are documented in [`docs/fundamentals/solid-state-production/`](docs/fundamentals/solid-state-production/).
+The **[SolidForge production simulator](https://learn.lemonergy.com/fundamentals/solid-state-production/)** compares oxide, halide, sulfide, and polymer electrolyte routes. Its parameter relationships are explicitly illustrative and do not establish process capability, product safety, or release criteria. Its source and limitations are documented in [`docs/fundamentals/solid-state-production/`](docs/fundamentals/solid-state-production/).
 
 ### Part 04 — Battery Aging
 
@@ -88,11 +103,27 @@ The **[battery aging notebook](notebooks/fundamentals/04_battery_aging.ipynb)** 
 
 ### Supplementary interactive lab — Battery materials
 
-The **[Battery Materials Lab](https://morshedvarzandeh.github.io/battery-core/labs/battery-materials-lab/)** starts with a Zn/Cu aqueous cell and develops electrode-potential differences, reference electrodes, the water stability window, lithium-ion intercalation, and representative material trade-offs. It remains an advanced supplementary lab rather than a replacement for the chapter sequence.
+The **[Battery Materials Lab](https://learn.lemonergy.com/labs/battery-materials-lab/)** starts with a Zn/Cu aqueous cell and develops electrode-potential differences, reference electrodes, the water stability window, lithium-ion intercalation, and representative material trade-offs. It remains an advanced supplementary lab rather than a replacement for the chapter sequence.
 
 ### Additional transport module
 
 The **[Fick's first-law notebook](notebooks/transport/ficks_first_law.ipynb)** remains available as a tested transport-physics building block.
+
+### Chapter toolkit — CellForge layout editor
+
+The **[CellForge layout editor](https://learn.lemonergy.com/tools/cellforge-visual-editor/)** is an authoring tool rather than a lesson. It opens the coating and calendering diagrams Part 03 draws, so a maintainer can move, rename, or resize any machine and label on the canvas, watch a live label-collision check, and export the changes as JSON. A third diagram is a standard template: the shared skeleton — frame, four zones, one web line, placeholder machines, state badges — that a new process step starts from. See [`docs/tools/cellforge-visual-editor/README.md`](docs/tools/cellforge-visual-editor/README.md).
+
+## Course design system
+
+Every page in `docs/` is built from three files in [`docs/assets/`](docs/assets/README.md):
+
+- **`page-template.html`** — the standard page: copy it, fill the placeholders, and the palette, header, footer, skip link, and responsive rules come with it.
+- **`site.css`** — the tokens and components for pages that use the course shell.
+- **`module-theme.css`** and **`site-chrome.css`** — the same palette and the shared header and footer for a module that brings its own stylesheet.
+
+Colour carries one meaning throughout. Mint is the core path, blue is optional
+depth, and orange is the toolkit that builds the course rather than teaching it.
+No page introduces a hue outside those roles.
 
 ## Principles
 
@@ -194,9 +225,29 @@ Contributions are welcome. Keep physics independent of solver choices, add tests
 for new behavior, document units and assumptions, and run `pytest` before opening
 a pull request.
 
+Because the project is dual-licensed, opening a pull request also grants
+Lemonergy the right to license your contribution commercially as well as under
+the AGPL. You keep the copyright in your own work, and you may decline that
+grant — say so in the pull request and the contribution is recorded as
+AGPL-only. See [`COMMERCIAL.md`](COMMERCIAL.md#contributions).
+
 See [`CHANGELOG.md`](CHANGELOG.md) for released changes, including the
 keyword-only capacity API introduced in 0.2.0.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+Battery Core is a project of Lemonergy, **dual-licensed**.
+
+**Free, under the [GNU AGPL v3.0 or later](LICENSE).** Use, study, modify,
+redistribute, and deploy it — including over a network — provided you pass on
+the same freedoms and publish your source. On top of that, [`NOTICE`](NOTICE)
+carries one additional term, permitted by section 7(b) of the licence: **the
+attribution to Lemonergy must stay visible.** Keep `NOTICE` with the source, and
+name Lemonergy in the footer, about screen, or documentation of anything you
+build from this work.
+
+**Commercially, by agreement with Lemonergy.** If you want to ship this inside a
+closed product, run a modified version as a service without publishing its
+source, or drop the attribution, that needs a
+[commercial licence](COMMERCIAL.md). Learning from it, running it, and building
+in the open never do.

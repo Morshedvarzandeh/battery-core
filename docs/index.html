@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Open-source battery engineering fundamentals through interactive visualizations, tested Python models, and executable Jupyter notebooks.">
   <meta name="theme-color" content="#07131d">
-  <link rel="canonical" href="https://morshedvarzandeh.github.io/battery-core/">
+  <link rel="canonical" href="https://learn.lemonergy.com/">
   <link rel="stylesheet" href="assets/site.css">
   <title>Battery Core — Executable battery engineering fundamentals</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to learning modules</a>
@@ -22,7 +23,7 @@
       <a href="chapter-1/">Study guide</a>
       <a href="#labs">Labs</a>
       <a href="#principles">Principles</a>
-      <a href="https://github.com/Morshedvarzandeh/battery-core">GitHub</a>
+      <a href="license/">Licensing</a>
     </nav>
   </header>
 
@@ -35,7 +36,6 @@
         <div class="hero-actions">
           <a class="button button-primary" href="#learn">Start the learning path</a>
           <a class="button button-secondary" href="chapter-1/">Open the Chapter 1 study guide</a>
-          <a class="button button-secondary" href="https://github.com/Morshedvarzandeh/battery-core">View source code</a>
         </div>
       </div>
       <div class="hero-visual" aria-label="A conceptual battery cell showing a connected learning path">
@@ -56,6 +56,12 @@
         <p>Chapter 1 moves from cell structure and ratings through production routes and aging. Chapter 2 will develop equivalent-circuit models.</p>
       </div>
 
+      <ul class="tier-legend" aria-label="What the colours mean">
+        <li><strong>Core path</strong> — required to finish the chapter</li>
+        <li><strong>Deeper view</strong> — optional depth on the part before it</li>
+        <li><strong>Toolkit</strong> — how the modules are built, not what they teach</li>
+      </ul>
+
       <div class="module-grid">
         <article class="module-card available">
           <div class="module-meta"><span class="part-number">01</span><span class="status">Available</span></div>
@@ -63,7 +69,7 @@
           <a class="card-action" href="fundamentals/cell-anatomy-workbench/">Launch workbench <span aria-hidden="true">→</span></a>
         </article>
 
-        <article class="module-card available">
+        <article class="module-card available deeper">
           <div class="module-meta"><span class="part-number">01B</span><span class="status">Available</span></div>
           <div><p class="format">Interactive browser tutorial</p><h3>Lithium-ion cell architecture</h3><p>Assemble the five layers, then zoom into porous electrodes, pore electrolyte, solvent molecules, ions, and transport paths.</p></div>
           <a class="card-action" href="fundamentals/lithium-ion-cell-architecture/">Launch tutorial <span aria-hidden="true">→</span></a>
@@ -82,7 +88,7 @@
           <a class="card-action" href="fundamentals/battery-production/">Launch simulator <span aria-hidden="true">→</span></a>
         </article>
 
-        <article class="module-card available">
+        <article class="module-card available deeper">
           <div class="module-meta"><span class="part-number">03B</span><span class="status">Available</span></div>
           <div><p class="format">Interactive route-comparison simulator</p><h3>All-solid-state cell production</h3><p>Compare oxide, halide, sulfide, and polymer electrolyte routes from material preparation through formation and aging.</p></div>
           <a class="card-action" href="fundamentals/solid-state-production/">Launch SolidForge <span aria-hidden="true">→</span></a>
@@ -95,6 +101,12 @@
           <p class="launch-note">Binder's first launch may take a few minutes.</p>
         </article>
 
+        <article class="module-card available toolkit">
+          <div class="module-meta"><span class="part-number">TOOL</span><span class="status">Toolkit</span></div>
+          <div><p class="format">Interactive browser editor</p><h3>CellForge layout editor</h3><p>Reposition, rename, and resize the machine diagrams Part 03 draws, or start a new process step from the standard template.</p></div>
+          <a class="card-action" href="tools/cellforge-visual-editor/">Open the editor <span aria-hidden="true">→</span></a>
+        </article>
+
         <article class="module-card planned">
           <div class="module-meta"><span class="part-number">CH 2</span><span class="status">Planned</span></div>
           <div><p class="format">Tested Python models + notebooks</p><h3>Equivalent Circuit Models</h3><p>Build from terminal-voltage conventions and OCV to R0, one-RC, multiple-RC, identification, and validation.</p></div>
@@ -103,7 +115,7 @@
       </div>
 
       <a class="text-link" href="chapter-1/">Open the Chapter 1 study guide <span aria-hidden="true">→</span></a>
-      <a class="text-link text-link-secondary" href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LEARNING_PATH.md">View the complete learning roadmap <span aria-hidden="true">→</span></a>
+      <a class="text-link text-link-secondary" href="roadmap/">View the complete learning roadmap <span aria-hidden="true">→</span></a>
     </section>
 
     <section id="labs" class="section transport" aria-labelledby="labs-title">
@@ -132,11 +144,12 @@
     </section>
 
     <section class="closing" aria-labelledby="closing-title">
-      <p class="eyebrow">Build in public</p><h2 id="closing-title">Read the code behind every lesson.</h2><p>The source, tests, documentation, examples, notebooks, and project history are public on GitHub.</p>
-      <a class="button button-primary" href="https://github.com/Morshedvarzandeh/battery-core">Explore the repository</a>
+      <p class="eyebrow">Open by licence</p><h2 id="closing-title">Open, and licensed to stay that way.</h2><p>Every module states its assumptions, units, limitations, and validation scope, and the whole course is free to use, study, modify, and deploy under the GNU AGPL. Anyone who builds on it has to publish their source too — so it cannot quietly disappear into someone's closed product.</p>
+      <a class="button button-primary" href="license/">Read the licence</a>
     </section>
   </main>
 
-  <footer><p>Battery Core · Independent open-source battery engineering education</p><div><a href="https://github.com/Morshedvarzandeh/battery-core">Source</a><a href="https://github.com/Morshedvarzandeh/battery-core/blob/main/LICENSE">MIT License</a></div></footer>
+  <footer><p>Battery Core · A project of Lemonergy · Independent open-source battery engineering education</p><div>
+<a href="license/">AGPL-3.0-or-later</a><a href="license/#commercial">Commercial use</a></div></footer>
 </body>
 </html>

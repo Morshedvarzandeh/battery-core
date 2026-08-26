@@ -4,6 +4,131 @@ All notable changes to `battery-core` are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- The project is relicensed from MIT and is now **dual-licensed by Lemonergy**.
+
+  The free option is the **GNU Affero General Public License v3.0 or later**,
+  with one additional term permitted by section 7(b): the attribution to
+  Lemonergy must stay visible. `NOTICE` states the term and how to comply, and
+  every page footer carries the attribution as its Appropriate Legal Notice.
+  Anyone learning from the project, running it, or building on it in the open
+  is covered by this and owes nothing.
+
+  The paid option, in `COMMERCIAL.md`, is for the cases the AGPL is designed to
+  make uncomfortable: shipping this inside a closed product, running a modified
+  version as a service without publishing that service's source, or dropping the
+  attribution. Those need a negotiated licence from Lemonergy. The page draws
+  the line explicitly in both directions rather than leaving it to be guessed —
+  including that unmodified network use does not trigger section 13, which is a
+  common misreading in the strict direction.
+
+  Dual licensing only works if Lemonergy can license contributed code on both
+  sets of terms, so contributions now carry an inbound grant, which a
+  contributor may decline in favour of AGPL-only. Without it the model would
+  have broken silently on the first outside patch.
+
+  `COMMERCIAL.md` also records what a relicence cannot do: versions already
+  published under MIT stay available under MIT to whoever received them.
+
+- Chapter 1 reads as one designed chapter rather than six separately authored
+  pages. Each module had been written standalone against a generic blue-on-white
+  token set, so every lesson rendered white while the course shell around it was
+  navy. All of them now use the course palette.
+
+  Colour also means something now. Mint is the core path, blue is optional
+  depth, and orange is the toolkit — a rule stated in a legend on the homepage
+  and the study guide instead of being left to inference. `--orange` had been
+  declared in `site.css` since the homepage landed and never used; it is the
+  toolkit hue.
+
+- The CellForge layout editor is part of the site. It was added standalone in
+  0.3.0 with its own light/dark palette, no header or footer, no link from
+  anywhere, and three `unpkg.com` script tags that nothing on the page used —
+  the only external requests in `docs/`. It is rebuilt on the course design
+  system, reachable from the homepage and the study guide, and self-contained
+  like everything else.
+
+### Added
+
+- A standard page template, `docs/assets/page-template.html`, and the design
+  system it belongs to, documented in `docs/assets/README.md`. A new page copies
+  the template and inherits the palette, header, footer, skip link, responsive
+  rules, and licence attribution instead of deciding each one again.
+
+- `docs/assets/module-theme.css` restates the generic token contract in course
+  colours, so a module written against it adopts the palette without any change
+  to its own layout. `docs/assets/site-chrome.css` carries the shared header and
+  footer separately, because a module with its own token vocabulary — the
+  workbench reads `--muted` as a text colour, not a surface — needs the chrome
+  without the bridge.
+
+- A study coach on the Chapter 1 guide, with seventeen questions. The chapter
+  already asked a checkpoint question after every part, but reading one and
+  thinking "yes, roughly" is not answering it.
+
+  Eight of the questions are **marked outright**: numeric drills, multiple
+  choice, select-all, and putting the production route into order. Every wrong
+  option says which misconception it is and why it fails, which is the part
+  that does the teaching. Every drill number comes from a relationship the
+  tested Python implements — `current_from_c_rate`, `ideal_duration_hours`,
+  `arrhenius_factor`, `parabolic_film_thickness` — and a test compares the two
+  physical constants the browser cannot import against `battery_core.aging`, so
+  the copy cannot drift.
+
+  The other nine ask for an explanation, and those are **not** marked. Grading
+  prose offline means keyword matching, and keyword matching grades vocabulary
+  rather than understanding: "the separator does not block electrons" contains
+  every right word and is wrong, while a correct answer in different words
+  scores nothing. A confidently wrong grade is worse than no grade, because the
+  learner cannot tell it happened. So the coach shows what a complete answer
+  covers and the learner ticks their own, and the interface says which kind of
+  question they are on before they answer.
+
+- The coach has a face and a name: **Volta**, a lemon in a headset. Alessandro
+  Volta built the first true battery, and a lemon with two dissimilar metals in
+  it is the first battery most people ever build — so the character is the joke
+  the course was already making rather than decoration bolted onto it.
+
+  Volta is drawn as inline SVG rather than embedded, so the drawing stays sharp
+  at any size, costs no request on a page meant to be self-contained, and can
+  change expression — idle, thinking, happy, encouraging — which a bitmap
+  cannot. Expressions swap whole paths by `display` rather than animating the
+  CSS `d` property, which Firefox does not support.
+
+- A favicon, `docs/assets/favicon.svg`, on every page. There had been none at
+  all: all eight pages showed a blank browser tab. It is Volta at tab size and a
+  separate drawing rather than the mascot scaled down, because at 16px the
+  headset, freckles, shine and eye whites collapse into mud — so it keeps a
+  yellow body, a green leaf, two eyes and a smile on a rounded navy tile, with
+  heavier strokes. Verified by rendering it at 16, 24, 32, 64 and 128px rather
+  than trusting it at illustration size.
+
+  Its yellow, `--lemon`, is the one hue outside the colour-role system, and
+  narrowly so: the mascot is illustration, not a UI state, so it never marks a
+  tier, a status, or a control.
+
+  It runs entirely in the browser: no network, no account, no key. Progress
+  lives in `localStorage`, and a browser with site data blocked studies without
+  saved progress rather than getting a broken page. A `<noscript>` block points
+  at the questions, which are all written out in the sequence above it.
+
+  An AI tutor can be attached for free-form follow-up by pointing
+  `data-tutor-endpoint` at a proxy that holds an API key server-side. It is off
+  by default, so the page ships making no network request at all, and
+  `docs/assets/README.md` carries a complete reference worker plus what it
+  costs and where it will be wrong.
+
+- A third diagram in the CellForge editor: a standard template. It is not a
+  machine but the skeleton the coating and calendering diagrams share — the same
+  frame, the same four zone divisions, one web line with flow arrows,
+  placeholder machines to rename, and input/in-process/output state badges. A
+  new process step starts on the course grid and at the course label scale
+  rather than from a blank canvas, which is what produced the label overlaps the
+  editor exists to fix.
+
 ## [0.3.0] — 2026-07-30
 
 ### Added

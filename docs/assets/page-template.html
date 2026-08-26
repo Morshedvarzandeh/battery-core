@@ -1,0 +1,97 @@
+<!doctype html>
+<!--
+  Battery Core — standard page template.
+
+  Copy this file to `docs/<area>/<module-name>/index.html` and fill in every
+  {{ PLACEHOLDER }}. It is the third level of the design system:
+
+    1. `site.css`         the tokens and components
+    2. `module-theme.css` the same palette for a page that brings its own CSS
+    3. `page-template.html`  this file — the standard structure those produce
+
+  A page built from this template inherits the palette, the header, the
+  footer, the skip link, the responsive rules, and the licence attribution
+  without deciding any of them again. Change the template, not the copies,
+  when the shell should change.
+
+  Depth of `../` in every relative path depends on where the copy lives. From
+  `docs/<area>/<module>/index.html` the prefix is `../../`, which is what is
+  written below. From `docs/<area>/index.html` it is `../`.
+
+  Delete these comments in the copy.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- One sentence. It is what search results and link previews show. -->
+  <meta name="description" content="{{ ONE SENTENCE DESCRIBING THIS PAGE }}">
+  <meta name="theme-color" content="#07131d">
+  <link rel="canonical" href="https://learn.lemonergy.com/{{ PATH }}/">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <!-- Page title pattern: "{{ Page name }} — Battery Core". -->
+  <title>{{ PAGE NAME }} — Battery Core</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+</head>
+<body>
+  <!-- First focusable element on every page. -->
+  <a class="skip-link" href="#main-content">Skip to {{ WHAT THE PAGE IS }}</a>
+
+  <!-- Identical on every page. Mark the current section with aria-current. -->
+  <header class="site-header">
+    <a class="brand" href="../../" aria-label="Battery Core home">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span>Battery Core</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../../">Home</a>
+      <a href="../../chapter-1/">Chapter 1</a>
+      <a href="../../license/">Licensing</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <!--
+      The eyebrow carries the tier, and the tier carries the colour:
+        (omit data-tier)        core path      mint
+        data-tier="deeper"      optional depth blue
+        data-tier="toolkit"     authoring tool orange
+      Nothing else on the page sets a hue.
+    -->
+    <section class="page-hero" aria-labelledby="page-title">
+      <p class="eyebrow" data-tier="{{ TIER OR DELETE THE ATTRIBUTE }}">{{ PART 0X · CHAPTER 1 }}</p>
+      <h1 id="page-title">{{ HEADLINE — A CLAIM OR A QUESTION, NOT A LABEL }}</h1>
+      <p class="lede">{{ WHAT THE READER WILL BE ABLE TO DO AFTERWARDS, AND THE LIMITS OF THE MODEL }}</p>
+    </section>
+
+    <!-- Repeat `.section` for each part of the page. The first one carries no
+         top border because `.page-hero` already separates it. -->
+    <section class="section" aria-labelledby="{{ SECTION ID }}-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">{{ SECTION EYEBROW }}</p>
+          <h2 id="{{ SECTION ID }}-title">{{ SECTION HEADING }}</h2>
+        </div>
+        <p>{{ ONE SENTENCE OF CONTEXT, OR DELETE THIS PARAGRAPH AND ADD
+             class="compact" TO .section-heading }}</p>
+      </div>
+
+      {{ SECTION CONTENT — see the component list in assets/README.md }}
+    </section>
+  </main>
+
+  <!--
+    Identical on every page. The Lemonergy line is the Appropriate Legal
+    Notice required by the additional term in NOTICE: keep it in any copy or
+    derivative of this work.
+  -->
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../../">Course home</a>
+      <a href="../../license/">AGPL-3.0-or-later</a>
+      <a href="../../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+</body>
+</html>

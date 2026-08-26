@@ -10,7 +10,7 @@ transport paths.
 
 After the module is merged and GitHub Pages deploys:
 
-`https://morshedvarzandeh.github.io/battery-core/fundamentals/lithium-ion-cell-architecture/`
+`https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/`
 
 To run locally from the repository root:
 
