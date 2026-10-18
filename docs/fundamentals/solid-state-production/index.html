@@ -4,19 +4,108 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#07131d">
-  <meta name="description" content="SolidForge — interactive all-solid-state battery cell production simulator aligned with the February 2026 PEM RWTH Aachen and VDMA guide.">
-  <title>SolidForge · All-Solid-State Cell Production Simulator</title>
+  <meta name="description" content="SolidForge: an interactive all-solid-state battery production simulator comparing oxide, halide, sulfide and polymer electrolyte routes, from material preparation to formation and aging.">
+  <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/solid-state-production/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Battery Core by Lemonergy">
+  <meta property="og:title" content="All-solid-state cell production simulator (SolidForge)">
+  <meta property="og:description" content="SolidForge: an interactive all-solid-state battery production simulator comparing oxide, halide, sulfide and polymer electrolyte routes, from material preparation to formation and aging.">
+  <meta property="og:url" content="https://learn.lemonergy.com/fundamentals/solid-state-production/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LearningResource",
+      "@id": "https://learn.lemonergy.com/fundamentals/solid-state-production/#lesson",
+      "name": "SolidForge",
+      "description": "SolidForge: an interactive all-solid-state battery production simulator comparing oxide, halide, sulfide and polymer electrolyte routes, from material preparation to formation and aging.",
+      "url": "https://learn.lemonergy.com/fundamentals/solid-state-production/",
+      "inLanguage": "en",
+      "learningResourceType": "Interactive simulation",
+      "isAccessibleForFree": true,
+      "interactivityType": "active",
+      "teaches": [
+        "Solid electrolyte families",
+        "Solid-state cell production routes",
+        "Lithium-metal anodes",
+        "Interface processing"
+      ],
+      "isPartOf": {
+        "@id": "https://learn.lemonergy.com/chapter-1/#course"
+      },
+      "author": {
+        "@id": "https://lemonergy.com/#organization"
+      },
+      "publisher": {
+        "@id": "https://lemonergy.com/#organization"
+      },
+      "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+      "position": 5,
+      "timeRequired": "PT25M"
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://lemonergy.com/#organization",
+      "name": "Lemonergy",
+      "url": "https://lemonergy.com/",
+      "email": "info@lemonergy.com"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Battery Core",
+          "item": "https://learn.lemonergy.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Chapter 1",
+          "item": "https://learn.lemonergy.com/chapter-1/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Part 03B · Solid-state production"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <title>All-solid-state cell production simulator (SolidForge) — Battery Core</title>
   <style>
-    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#07131d;color:#edf6f8;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-    main{max-width:42rem;padding:2rem;text-align:center}
-    h1{font-size:1.5rem;margin:0 0 .75rem}p{line-height:1.6;color:#9fb3bd}
+    body{margin:0;min-height:100vh;background:#07131d;color:#edf6f8;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+    main{max-width:46rem;margin:0 auto;padding:4rem 1.5rem}
+    h1{font-size:1.6rem;line-height:1.2;margin:0 0 .75rem}h2{font-size:1.05rem;margin:2rem 0 .5rem}p,li{color:#9fb3bd}
+    a{color:#68e0bd}#load-status{color:#edf6f8;font-weight:700}
   </style>
   <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 </head>
 <body>
   <main>
+    <p>Part 03B · Chapter 1 · <a href="../../chapter-1/">Chapter 1 syllabus</a></p>
     <h1>SolidForge — All-Solid-State Cell Production Simulator</h1>
     <p id="load-status" role="status">Loading the interactive solid-state production simulator…</p>
+    <p>SolidForge compares reference oxide, halide, sulfide and polymer solid-electrolyte routes from material preparation through cell finishing. Its process sequence follows the February 2026 third edition of the PEM RWTH Aachen / VDMA all-solid-state cell production guide.</p>
+    <h2>What the simulator covers</h2>
+    <ul>
+      <li>Lithium-metal foil extrusion and lamination.</li>
+      <li>Electrolyte-class-dependent mixing, compounding, coating, calendering, deposition, compacting and sintering.</li>
+      <li>Separation, stacking, contacting, packaging, formation and aging.</li>
+      <li>Component responsibility, route comparisons, process references and a guided factory tour.</li>
+    </ul>
+    <h2>What its numbers are</h2>
+    <p>Published sources support the process sequence and displayed operating ranges. Line-condition, interface, quality, throughput, margin and energy outputs are illustrative teaching relationships, not calibrated plant predictions or proof that a particular design is safe. Solid-state routes do not eliminate dendrite, internal-short, moisture, toxicity, solvent or fire risks.</p>
+    <p><a href="../battery-production/">← Part 03 · Battery production</a> · <a href="../battery-aging/">Part 04 · Battery aging →</a></p>
   </main>
   <script src="loader.js"></script>
 </body>

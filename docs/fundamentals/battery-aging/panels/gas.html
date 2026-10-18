@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gas generation — Battery aging panel</title>
+<link rel="stylesheet" href="panels.css">
+</head>
+<body>
+<script src="panels.js"></script>
+<div class="w">
+  <div class="w-head">
+    <h2>Gas: generated, recombined, or gone</h2><span class="spacer"></span>
+    <div class="controls">
+      <span class="ctl"><label for="T">Temperature</label>
+        <input class="range" type="range" id="T" min="-10" max="60" step="1" value="40"><output id="oT">40 °C</output></span>
+      <span class="ctl"><label for="O">Overcharge</label>
+        <input class="range" type="range" id="O" min="10" max="50" step="1" value="20"><output id="oO">×2.0</output></span>
+      <span class="ctl"><label for="Y">Years</label>
+        <input class="range" type="range" id="Y" min="1" max="120" step="1" value="30"><output id="oY">3.0</output></span>
+    </div>
+  </div>
+  <div class="w-body split-l">
+    <div class="pane"><span class="pane-title">The cell, from the side</span><div class="figwrap" id="pouch"></div></div>
+    <div class="pane"><span class="pane-title">Gas held in the cell's free volume</span><div class="figwrap" id="chart"></div></div>
+  </div>
+  <div class="readouts">
+    <div class="ro" id="ro1"><b id="r1">—</b><span>free volume filled</span></div>
+    <div class="ro"><b id="r2">—</b><span>state</span></div>
+    <div class="ro"><b id="r3">—</b><span>capacity lost for good</span></div>
+    <div class="ro"><b id="r4">—</b><span>rate vs. 25 °C in spec</span></div>
+  </div>
+</div>
+<script>
+function render() {
+  const T = +$("#T").value, oc = +$("#O").value / 10, y = +$("#Y").value / 10;
+  $("#oT").textContent = minus(T) + " °C"; $("#oO").textContent = "×" + fix(oc); $("#oY").textContent = fix(y);
+  const v = gasVolume(y, T, oc), open = v >= VENT, swell = v >= SWELL;
+  const lost = 0.55 * Math.max(0, v - VENT);
+
+  /* pouch */
+  const W = 230, H = 190, bulge = 60 * clamp(v / VENT, 0, 1.25);
+  const top = 96 - bulge;
+  let g = `<path class="pouch" d="M16 ${top + 8} C 80 ${top - 8}, 150 ${top - 8}, 214 ${top + 8} L214 172 L16 172 Z"/>
+    <rect x="16" y="120" width="198" height="52" fill="var(--mat-anode-bed)"/>
+    <text class="on-mat" x="115" y="150" text-anchor="middle">electrode stack</text>
+    <rect class="vent${open ? " is-open" : ""}" x="168" y="${top - 14}" width="52" height="16" rx="5"/>
+    <text class="${open ? "on-mat" : "fig-cap"}" x="194" y="${top - 3}" text-anchor="middle" font-weight="650">${open ? "VENTING" : "vent"}</text>`;
+  const R2 = rng(4);
+  for (let i = 0; i < 26; i++) {
+    const bx = 24 + R2() * 182, by = top + 18 + R2() * Math.max(10, 112 - top);
+    if (R2() < clamp(v / VENT)) g += `<circle class="bubble" cx="${bx.toFixed(0)}" cy="${by.toFixed(0)}" r="${(2 + 4 * clamp(v / VENT)).toFixed(1)}"/>`;
+  }
+  $("#pouch").innerHTML = `<svg class="fig" viewBox="0 0 ${W} ${H}" role="img"
+    aria-label="A pouch cell holding ${v.toFixed(1)} percent of its free volume as gas${open ? ", with the vent open" : ""}.">${g}</svg>`;
+
+  /* accumulation */
+  const ymax = Math.max(18, gasVolume(12, T, oc) * 1.2);
+  const P = plot(430, 216, { t: 12, r: 14, b: 36, l: 34 }, [0, 12], [0, ymax]);
+  P.add(`<rect class="band-danger" x="${P.m.l}" y="${P.y(ymax).toFixed(1)}" width="${P.iw}" height="${(P.y(VENT) - P.y(ymax)).toFixed(1)}"/>`);
+  P.gridY([0, 5, 10, 15, 20].filter(t => t <= ymax), t => t + "%").ticksX([0, 3, 6, 9, 12]).titleX("years in service").baseline();
+  [[SWELL, "swelling starts"], [VENT, "vent actuates"]].forEach(([lv, lb]) => {
+    if (lv > ymax) return;
+    P.add(`<line class="threshold" x1="${P.m.l}" x2="${P.w - P.m.r}" y1="${P.y(lv).toFixed(1)}" y2="${P.y(lv).toFixed(1)}"/>`)
+     .add(`<text class="threshold-label" x="${P.m.l + 5}" y="${(P.y(lv) - 4).toFixed(1)}">${lb}</text>`);
+  });
+  const xs = series(61, u => u * 12);
+  P.add(`<path class="series dim" d="${pathOf(P, xs, xs.map(x => gasVolume(x, 25, 1)))}"/>`);
+  P.line(xs, xs.map(x => gasVolume(x, T, oc)), "s-gas");
+  P.dot(y, v, "var(--mech-gas)");
+  $("#chart").innerHTML = P.svg("Gas accumulating over twelve years, against the swelling and venting thresholds.");
+
+  $("#r1").textContent = v.toFixed(1) + " %";
+  $("#r2").textContent = open ? "venting" : (swell ? "swelling" : "contained");
+  $("#r3").textContent = lost.toFixed(1) + " %";
+  $("#r4").textContent = "×" + (arrh(T, 62000) * oc).toFixed(1);
+  $("#ro1").dataset.tone = open ? "danger" : (swell ? "warn" : "");
+}
+bind(["T", "O", "Y"], render); render();
+requestAnimationFrame(fit);
+</script>
+
+</body>
+</html>

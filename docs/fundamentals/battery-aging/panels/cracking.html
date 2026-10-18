@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Cracking and depth of discharge — Battery aging panel</title>
+<link rel="stylesheet" href="panels.css">
+</head>
+<body>
+<script src="panels.js"></script>
+<div class="w">
+  <div class="w-head">
+    <h2>Volume change: the mechanical mechanism</h2><span class="spacer"></span>
+    <div class="controls">
+      <span class="ctl"><label for="D">Depth of discharge</label>
+        <input class="range" type="range" id="D" min="5" max="100" step="5" value="80"><output id="oD">80 %</output></span>
+      <span class="ctl"><label for="N">Cycles</label>
+        <input class="range" type="range" id="N" min="0" max="3000" step="25" value="800"><output id="oN">800</output></span>
+    </div>
+  </div>
+  <div class="w-body split-l">
+    <div class="pane"><span class="pane-title">One active particle and its contacts</span><div class="figwrap" id="particle"></div></div>
+    <div class="pane"><span class="pane-title">Cycles survived before 80 % capacity</span><div class="figwrap" id="chart"></div></div>
+  </div>
+  <div class="readouts">
+    <div class="ro"><b id="r1">—</b><span>accumulated damage</span></div>
+    <div class="ro"><b id="r2">—</b><span>active material working</span></div>
+    <div class="ro"><b id="r3">—</b><span>internal resistance</span></div>
+    <div class="ro"><b id="r4">—</b><span>cycles to 80 % here</span></div>
+  </div>
+</div>
+<script>
+function render() {
+  const dod = +$("#D").value / 100, n = +$("#N").value;
+  $("#oD").textContent = (100 * dod).toFixed(0) + " %"; $("#oN").textContent = n;
+  const d = mechDamage(n, dod), cap = mechCapacity(n, dod), res = 1 + 1.6 * d;
+
+  const S = 210, cx = S / 2, cy = S / 2, r = 62, R5 = rng(3);
+  let g = "";
+  for (let k = 0; k < 9; k++) {
+    const a = 2 * Math.PI * k / 9, broken = d > 0.25 + 0.07 * k;
+    g += `<line class="net-line" x1="${(cx + (r + 4) * Math.cos(a)).toFixed(1)}" y1="${(cy + (r + 4) * Math.sin(a)).toFixed(1)}"
+           x2="${(cx + (r + 40) * Math.cos(a + 0.14)).toFixed(1)}" y2="${(cy + (r + 40) * Math.sin(a + 0.14)).toFixed(1)}"
+           ${broken ? 'stroke-dasharray="3 5" opacity="0.35"' : 'opacity="0.9"'}/>`;
+  }
+  g += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#g-nmc)" opacity="${(1 - 0.3 * d).toFixed(2)}"/>`;
+  for (let k = 0; k < 7; k++) {
+    let a = 2 * Math.PI * R5(), rr = r, pts = [];
+    for (let step = 0; step < 5; step++) {
+      pts.push(`${(cx + rr * Math.cos(a)).toFixed(1)},${(cy + rr * Math.sin(a)).toFixed(1)}`);
+      rr -= 0.24 * d * r * (0.7 + 0.6 * R5()); a += (R5() - 0.5) * 0.28; if (rr < 0) break;
+    }
+    g += `<polyline class="crack" points="${pts.join(" ")}" stroke-width="${(1 + 2 * d).toFixed(1)}" opacity="${Math.min(1, 0.2 + d).toFixed(2)}"/>`;
+  }
+  $("#particle").innerHTML = `<svg class="fig" viewBox="0 0 ${S} ${S}" role="img"
+    aria-label="A cathode particle with ${(100 * d).toFixed(0)} percent accumulated fracture damage and several broken conductive contacts.">
+    <defs><radialGradient id="g-nmc" cx="0.35" cy="0.3"><stop class="stop-nmc-hi" offset="0"/><stop class="stop-nmc-lo" offset="1"/></radialGradient></defs>${g}</svg>`;
+
+  const P = plot(430, 216, { t: 14, r: 16, b: 36, l: 44 }, [10, 100], [Math.log10(300), Math.log10(30000)]);
+  P.gridY([Math.log10(1000), Math.log10(10000)], v => (Math.pow(10, v) / 1000) + "k").ticksX([20, 40, 60, 80, 100], v => v + "%").titleX("depth of discharge").baseline();
+  const xs = series(37, u => 10 + u * 90), ys = xs.map(x => Math.log10(cyclesTo80(x / 100)));
+  P.line(xs, ys, "s-crack");
+  P.dot(100 * dod, Math.log10(cyclesTo80(dod)), "var(--mech-cracking)");
+  P.add(`<text class="axis-label" x="${P.m.l + 6}" y="${P.m.t + 10}">cycles (log)</text>`);
+  $("#chart").innerHTML = P.svg("Cycles survived before eighty percent capacity, against depth of discharge, on a logarithmic scale.");
+
+  $("#r1").textContent = (100 * d).toFixed(0) + " %";
+  $("#r2").textContent = (100 * cap).toFixed(0) + " %";
+  $("#r3").textContent = "×" + res.toFixed(2);
+  $("#r4").textContent = cyclesTo80(dod).toLocaleString();
+}
+bind(["D", "N"], render); render();
+requestAnimationFrame(fit);
+</script>
+
+</body>
+</html>

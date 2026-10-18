@@ -15,6 +15,10 @@
     "payload/source-25.part", "payload/source-26.part",
   ];
   const status = document.getElementById("load-status");
+  // The payload replaces this document, head included, so remember the
+  // canonical address now and put it back afterwards.
+  const canonicalLink = document.querySelector('link[rel="canonical"]');
+  const canonical = canonicalLink ? canonicalLink.href : "";
 
   // The payload replaces the whole document, so the shared chrome has to be
   // put back afterwards rather than sitting in this page's own markup.
@@ -47,7 +51,23 @@
       '<a href="../../license/">AGPL-3.0-or-later</a>' +
       '<a href="../../license/#commercial">Commercial use</a>' +
       '</div>';
+    if (canonical && !document.querySelector('link[rel="canonical"]')) {
+      const link = document.createElement("link");
+      link.rel = "canonical";
+      link.href = canonical;
+      head.appendChild(link);
+    }
+    const next = document.createElement("div");
+    next.className = "bc-nextbar";
+    next.innerHTML = '<span>Done with this lesson?</span>' +
+      '<span class="bc-nextbar-spacer"></span>' +
+      '<button type="button" data-complete="p03" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>' +
+      '<a href="../solid-state-production/">Next: Part 03B →</a>';
+    document.body.appendChild(next);
     document.body.appendChild(footer);
+    const progress = document.createElement("script");
+    progress.src = "../../assets/course-progress.js";
+    document.body.appendChild(progress);
   }
 
   async function boot() {

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Inside one electrode sandwich — Battery aging panel</title>
+<link rel="stylesheet" href="panels.css">
+</head>
+<body>
+<script src="panels.js"></script>
+<div class="w">
+  <div class="w-head">
+    <h2>Inside one electrode sandwich</h2><span class="spacer"></span>
+    <span class="text-xs text-muted">click a numbered marker</span>
+  </div>
+  <div class="controls">
+    <div class="segmented" id="duty" role="group" aria-label="Duty scenario">
+      <button type="button" data-v="storage" aria-pressed="true">Shelf storage</button>
+      <button type="button" data-v="hot" aria-pressed="false">Hot</button>
+      <button type="button" data-v="cold" aria-pressed="false">Cold / fast charge</button>
+      <button type="button" data-v="cycling" aria-pressed="false">Deep cycling</button>
+      <button type="button" data-v="overcharge" aria-pressed="false">Overcharge</button>
+    </div>
+    <span class="ctl"><label for="T">Temperature</label>
+      <input class="range" type="range" id="T" min="-10" max="60" step="1" value="25"><output id="oT">25 °C</output></span>
+    <span class="ctl"><label for="Y">Years</label>
+      <input class="range" type="range" id="Y" min="1" max="120" step="1" value="30"><output id="oY">3.0</output></span>
+  </div>
+  <div id="fig" style="flex:1 1 auto; min-height:0"></div>
+  <div class="detail m-sei" id="detail">
+    <div>
+      <h3 id="d-title"></h3>
+      <p id="d-body" style="margin-block-start: var(--space-1)"></p>
+    </div>
+    <div><span class="lead">Leads to</span><p id="d-result" style="margin-block-start: var(--space-1)"></p>
+      <p class="text-muted" id="d-caveat" style="font-size: var(--text-2xs); margin-block-start: var(--space-2); padding-block-start: var(--space-2); border-block-start: 1px solid var(--hairline)"></p></div>
+  </div>
+</div>
+<script>
+const GEO = { cu: [30, 46], an: [76, 254], sep: [330, 100], ca: [430, 320], al: [750, 46], top: 68, h: 238 };
+const POS = { corrosion: [773, 123], sei: [150, 94], gas: [250, 290], crystal: [406, 266], dendrite: [360, 84], cracking: [600, 123] };
+let duty = "storage", active = "sei";
+const R = rng(12345);
+const PARTS = { gr: [], nmc: [], net: [], cry: [], pit: [], bub: [] };
+
+function shell() {
+  const { cu, an, sep, ca, al, top, h } = GEO;
+  let g = `<defs>
+    <linearGradient id="g-cu" x1="0" x2="1"><stop class="stop-cu-edge" offset="0"/><stop class="stop-cu-mid" offset="0.5"/><stop class="stop-cu-edge" offset="1"/></linearGradient>
+    <linearGradient id="g-al" x1="0" x2="1"><stop class="stop-al-edge" offset="0"/><stop class="stop-al-mid" offset="0.5"/><stop class="stop-al-edge" offset="1"/></linearGradient>
+    <radialGradient id="g-graphite" cx="0.35" cy="0.3"><stop class="stop-gr-hi" offset="0"/><stop class="stop-gr-lo" offset="1"/></radialGradient>
+    <radialGradient id="g-nmc" cx="0.35" cy="0.3"><stop class="stop-nmc-hi" offset="0"/><stop class="stop-nmc-lo" offset="1"/></radialGradient>
+    <pattern id="p-sep" width="11" height="11" patternUnits="userSpaceOnUse"><rect class="sep-bg" width="11" height="11"/>
+      <circle class="sep-pore" cx="3" cy="3" r="1.1"/><circle class="sep-pore" cx="8.5" cy="8" r="1.1"/></pattern></defs>
+    <path class="pouch" id="pouch" d=""/>
+    <rect class="vent" id="vent" x="700" y="2" width="52" height="15" rx="5"/>
+    <text class="fig-cap" x="726" y="13" text-anchor="middle" id="vent-t">vent</text>
+    <text class="fig-cap" x="30" y="13" id="encl">cell enclosure · free volume</text>
+    <text class="fig-label" x="${cu[0]}" y="${top - 20}">Cu</text>
+    <text class="fig-label" x="${an[0]}" y="${top - 20}">Graphite negative electrode</text>
+    <text class="fig-label" x="${sep[0]}" y="${top - 20}">Separator</text>
+    <text class="fig-label" x="${ca[0]}" y="${top - 20}">NMC positive electrode</text>
+    <text class="fig-label" x="${al[0]}" y="${top - 20}">Al</text>
+    <text class="fig-cap" x="${an[0]}" y="${top - 8}">porous — electrolyte fills every pore</text>
+    <text class="fig-cap" x="${ca[0]}" y="${top - 8}">porous — electrolyte fills every pore</text>
+    <rect class="layer-cu" x="${cu[0]}" y="${top}" width="${cu[1]}" height="${h}"/>
+    <rect class="layer-anode" x="${an[0]}" y="${top}" width="${an[1]}" height="${h}"/>
+    <rect class="layer-sep" x="${sep[0]}" y="${top}" width="${sep[1]}" height="${h}"/>
+    <rect class="layer-cathode" x="${ca[0]}" y="${top}" width="${ca[1]}" height="${h}"/>
+    <rect class="layer-al" x="${al[0]}" y="${top}" width="${al[1]}" height="${h}"/>
+    <g id="v-sei"></g><g id="v-cracking-net"></g><g id="v-cracking"></g><g id="v-crystal"></g>
+    <g id="v-dendrite"></g><g id="v-corrosion"></g><g id="v-gas"></g><g id="markers"></g>`;
+  $("#fig").innerHTML = `<svg class="fig tall" viewBox="0 0 810 318" role="img"
+    aria-label="Cross-section of one lithium-ion electrode sandwich with six numbered aging mechanisms marked.">${g}</svg>`;
+}
+
+function mkEl(tag, at) { const n = document.createElementNS(NS, tag); for (const k in at) n.setAttribute(k, at[k]); return n; }
+
+function build() {
+  shell();
+  const { an, ca, sep, cu, al, top, h } = GEO;
+  const gS = $("#v-sei"), gC = $("#v-cracking"), gN = $("#v-cracking-net"),
+        gY = $("#v-crystal"), gD = $("#v-dendrite"), gP = $("#v-corrosion"), gG = $("#v-gas");
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+    const cx = an[0] + 34 + c * 62 + (r % 2) * 10, cy = top + 32 + r * 56;
+    const ring = mkEl("circle", { class: "sei-ring", cx, cy, r: 20, "stroke-width": 0.1 });
+    gS.appendChild(ring); gS.appendChild(mkEl("circle", { class: "p-graphite", cx, cy, r: 19 }));
+    PARTS.gr.push(ring);
+  }
+  for (let i = 0; i < 12; i++) {
+    const x1 = ca[0] + 12 + R() * (ca[1] - 60), y1 = top + 10 + R() * (h - 30);
+    const l = mkEl("line", { class: "net-line", x1, y1, x2: x1 + 24 + R() * 20, y2: y1 + (R() - 0.5) * 40, "stroke-dasharray": "100 0", opacity: 0.6 });
+    gN.appendChild(l); PARTS.net.push(l);
+  }
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++) {
+    const cx = ca[0] + 34 + c * 62 + (r % 2) * 12, cy = top + 32 + r * 56;
+    const body = mkEl("circle", { class: "p-nmc", cx, cy, r: 21 });
+    const a = mkEl("path", { class: "crack", d: `M${cx - 16} ${cy - 6} l14 8 l-4 10`, "stroke-width": 2, pathLength: 100, "stroke-dasharray": "0 100", opacity: 0 });
+    const b = mkEl("path", { class: "crack", d: `M${cx + 15} ${cy - 11} l-11 12 l6 9`, "stroke-width": 1.6, pathLength: 100, "stroke-dasharray": "0 100", opacity: 0 });
+    gC.appendChild(body); gC.appendChild(a); gC.appendChild(b);
+    PARTS.nmc.push({ body, cracks: [a, b] });
+  }
+  for (let i = 0; i < 12; i++) {
+    const onA = i < 6, x = onA ? sep[0] - 2 : sep[0] + sep[1] + 2, y = top + 18 + (i % 6) * 40;
+    const poly = mkEl("polygon", { class: "crystal", points: "0,0 0,0 0,0", opacity: 0 });
+    poly.dataset.x = x; poly.dataset.y = y; poly.dataset.dir = onA ? -1 : 1;
+    gY.appendChild(poly); PARTS.cry.push(poly);
+  }
+  for (let i = 0; i < 14; i++) {
+    const onCu = i < 7;
+    const cx = (onCu ? cu[0] + 6 + R() * (cu[1] - 12) : al[0] + 6 + R() * (al[1] - 12));
+    const c = mkEl("circle", { class: "pit", cx, cy: top + 8 + R() * (h - 16), r: 0.5, opacity: 0.2 });
+    gP.appendChild(c); PARTS.pit.push(c);
+  }
+  for (let i = 0; i < 14; i++) {
+    const b = mkEl("circle", { class: "bubble rising", cx: an[0] + R() * 640, cy: top + h - 6, r: 0.5,
+                               style: `animation-delay:${(-R() * 5).toFixed(2)}s` });
+    gG.appendChild(b); PARTS.bub.push(b);
+  }
+  PARTS.den = mkEl("path", { class: "dendrite", "stroke-width": 4, pathLength: 100, "stroke-dasharray": "0 100",
+    d: `M${sep[0]} 198 l14 -12 l12 14 l14 -10 l13 12 l14 -9 l12 10 l14 -7 l13 9` });
+  PARTS.denB = mkEl("path", { class: "dendrite", "stroke-width": 2.2, pathLength: 100, "stroke-dasharray": "0 100",
+    d: `M${sep[0] + 14} 186 l8 -18 M${sep[0] + 40} 190 l10 -17 M${sep[0] + 67} 193 l8 -17` });
+  gD.appendChild(PARTS.den); gD.appendChild(PARTS.denB);
+
+  const gM = $("#markers");
+  ORDER.forEach(k => {
+    const [x, y] = POS[k];
+    const g = mkEl("g", { class: `marker ${MECH[k].cls}`, tabindex: 0, role: "button", "aria-label": `Show ${MECH[k].title}` });
+    g.dataset.k = k;
+    g.appendChild(mkEl("circle", { cx: x, cy: y, r: 13 }));
+    const t = mkEl("text", { x, y }); t.textContent = MECH[k].n; g.appendChild(t);
+    gM.appendChild(g);
+    g.addEventListener("click", () => select(k));
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(k); } });
+  });
+}
+
+const VIS = { corrosion: "#v-corrosion", sei: "#v-sei", gas: "#v-gas", crystal: "#v-crystal", dendrite: "#v-dendrite", cracking: "#v-cracking" };
+function select(k) {
+  active = k;
+  $$(".marker").forEach(m => m.classList.toggle("is-active", m.dataset.k === k));
+  Object.keys(VIS).forEach(key => $(VIS[key]).classList.toggle("is-dim", key !== k));
+  $("#v-cracking-net").classList.toggle("is-dim", k !== "cracking");
+  const m = MECH[k];
+  $("#detail").className = "detail " + m.cls;
+  $("#d-title").textContent = `${m.n} · ${m.title}`;
+  $("#d-body").textContent = m.body;
+  $("#d-result").textContent = m.result;
+  $("#d-caveat").textContent = m.caveat;
+}
+
+function render() {
+  const T = +$("#T").value, y = +$("#Y").value / 10, d = DUTY[duty];
+  $("#oT").textContent = minus(T) + " °C"; $("#oY").textContent = fix(y);
+  const s = severities(T, y, d);
+  PARTS.gr.forEach((n, i) => {
+    const w = 0.4 + s.sei * 7 * (0.75 + 0.5 * ((i * 37) % 10) / 10);
+    n.setAttribute("stroke-width", w.toFixed(2)); n.setAttribute("r", (19 + w / 2).toFixed(2));
+    n.setAttribute("opacity", (0.25 + 0.75 * s.sei).toFixed(2));
+  });
+  PARTS.nmc.forEach((p, i) => {
+    const f = clamp(s.cracking * (0.7 + 0.6 * ((i * 53) % 10) / 10));
+    p.cracks.forEach(c => { c.setAttribute("stroke-dasharray", `${(f * 100).toFixed(1)} 100`); c.setAttribute("opacity", (0.15 + 0.85 * f).toFixed(2)); });
+    p.body.setAttribute("opacity", (1 - 0.35 * f).toFixed(2));
+  });
+  PARTS.net.forEach((l, i) => {
+    const b = clamp(s.cracking * (0.6 + ((i * 29) % 10) / 10));
+    l.setAttribute("stroke-dasharray", `${((1 - b) * 100).toFixed(1)} 100`); l.setAttribute("opacity", (0.6 - 0.4 * b).toFixed(2));
+  });
+  PARTS.cry.forEach((p, i) => {
+    const x = +p.dataset.x, yy = +p.dataset.y, dir = +p.dataset.dir;
+    const hh = 3 + s.crystal * 22 * (0.6 + ((i * 41) % 10) / 10);
+    p.setAttribute("points", `${x},${yy - 8} ${x + dir * hh},${yy - 2} ${x + dir * hh * 0.7},${yy + 6} ${x},${yy + 9}`);
+    p.setAttribute("opacity", (s.crystal * 0.95).toFixed(2));
+  });
+  PARTS.pit.forEach((c, i) => {
+    c.setAttribute("r", (0.5 + s.corrosion * 6 * (0.55 + ((i * 31) % 10) / 10)).toFixed(2));
+    c.setAttribute("opacity", (0.2 + 0.7 * s.corrosion).toFixed(2));
+  });
+  PARTS.bub.forEach((b, i) => {
+    b.setAttribute("r", (1 + s.gas * 8 * (0.5 + ((i * 23) % 10) / 10)).toFixed(2));
+    b.setAttribute("opacity", (0.1 + 0.9 * clamp(s.gas * 1.3)).toFixed(2));
+  });
+  PARTS.den.setAttribute("stroke-dasharray", `${(clamp(s.dendrite) * 100).toFixed(1)} 100`);
+  PARTS.denB.setAttribute("stroke-dasharray", `${(clamp(s.dendrite * 0.8) * 100).toFixed(1)} 100`);
+  PARTS.den.classList.toggle("is-short", s.dendrite > 0.92);
+  const bulge = 30 - s.gas * 24;
+  $("#pouch").setAttribute("d", `M30 30 C 280 ${bulge}, 520 ${bulge}, 796 30 L 796 36 L 30 36 Z`);
+  $("#vent").classList.toggle("is-open", s.gas > 0.65);
+  $("#vent-t").textContent = s.gas > 0.65 ? "VENTING" : "vent";
+  $("#encl").textContent = s.gas > 0.65 ? "cell enclosure · swelling and venting" : "cell enclosure · free volume";
+}
+
+build();
+segmented("#duty", v => { duty = v; $("#T").value = DUTY[v].temp; render(); });
+bind(["T", "Y"], render);
+select("sei"); render();
+requestAnimationFrame(fit);
+</script>
+
+</body>
+</html>

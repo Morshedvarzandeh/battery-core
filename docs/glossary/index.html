@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plain-language definitions of 28 battery engineering terms — C-rate, nominal capacity, SEI, lithium plating, calendering, formation and more — each linked to the lesson that teaches it.">
+  <meta name="theme-color" content="#07131d">
+  <link rel="canonical" href="https://learn.lemonergy.com/glossary/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Battery Core by Lemonergy">
+  <meta property="og:title" content="Battery engineering glossary">
+  <meta property="og:description" content="28 battery terms in plain language, each linked to a free lesson.">
+  <meta property="og:url" content="https://learn.lemonergy.com/glossary/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../assets/site.css">
+  <title>Battery glossary: C-rate, SEI, lithium plating and more — Battery Core</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "DefinedTermSet",
+      "@id": "https://learn.lemonergy.com/glossary/#terms",
+      "name": "Battery engineering glossary",
+      "description": "Definitions of battery terms used in the Battery Core course, each linked to the lesson that teaches it.",
+      "url": "https://learn.lemonergy.com/glossary/",
+      "inLanguage": "en",
+      "hasDefinedTerm": [
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#ampere-hour",
+          "name": "Ampere-hour (Ah)",
+          "description": "A unit of electric charge: one ampere flowing for one hour. Battery capacity is usually rated in ampere-hours, which measure charge, not energy.",
+          "url": "https://learn.lemonergy.com/glossary/#ampere-hour"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#arrhenius",
+          "name": "Arrhenius law",
+          "description": "The rule that a rate constant is proportional to exp(−Ea/RT), so a thermally activated reaction speeds up steeply with temperature. Near room temperature many degradation reactions roughly double their rate for every +10 °C.",
+          "url": "https://learn.lemonergy.com/glossary/#arrhenius"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#c-rate",
+          "name": "C-rate",
+          "description": "Current divided by nominal capacity, in reciprocal hours. 1C on a 20 Ah cell is 20 A; 2C is 40 A. C-rate lets you compare loads on cells of different sizes.",
+          "url": "https://learn.lemonergy.com/glossary/#c-rate"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#calendar-aging",
+          "name": "Calendar aging",
+          "description": "Degradation that happens with time even when a cell is not cycled — in storage, for example. It is driven mainly by side reactions such as SEI growth and accelerates with temperature.",
+          "url": "https://learn.lemonergy.com/glossary/#calendar-aging"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#calendering",
+          "name": "Calendering",
+          "description": "Compressing a dried electrode coating between rollers to set its thickness, density and porosity. It is one of the electrode-making steps in cell production.",
+          "url": "https://learn.lemonergy.com/glossary/#calendering"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#capacity-fade",
+          "name": "Capacity fade",
+          "description": "The loss of charge a cell can store and deliver, for example through lithium locked into the SEI or active material that has cracked out of service.",
+          "url": "https://learn.lemonergy.com/glossary/#capacity-fade"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#current-collector",
+          "name": "Current collector",
+          "description": "The thin metal foil that carries electrons between an electrode and the external circuit — usually copper on the negative side and aluminium on the positive side.",
+          "url": "https://learn.lemonergy.com/glossary/#current-collector"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#cutoff-voltage",
+          "name": "Cutoff voltage",
+          "description": "The terminal-voltage limit that ends a discharge, or caps a charge — in constant-current, constant-voltage (CC-CV) charging the cell is then held at that voltage until the current falls to a cutoff. A real discharge ends at the lower cutoff, which is why actual runtime can differ from the ideal duration.",
+          "url": "https://learn.lemonergy.com/glossary/#cutoff-voltage"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#dendrite",
+          "name": "Dendrite",
+          "description": "A tree-like metal deposit that can grow from the negative electrode through the separator, raising self-discharge or causing an internal short circuit.",
+          "url": "https://learn.lemonergy.com/glossary/#dendrite"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#depth-of-discharge",
+          "name": "Depth of discharge (DOD)",
+          "description": "How much of a cell’s capacity is used in a cycle. Deep cycles cause more mechanical stress in the active materials than shallow ones.",
+          "url": "https://learn.lemonergy.com/glossary/#depth-of-discharge"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#diffusion-coefficient",
+          "name": "Diffusion coefficient",
+          "description": "The proportionality constant D in Fick’s first law, in m²/s. It sets how fast a species spreads for a given concentration gradient.",
+          "url": "https://learn.lemonergy.com/glossary/#diffusion-coefficient"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#electrolyte",
+          "name": "Electrolyte",
+          "description": "The ion-conducting medium between the electrodes. In a liquid-electrolyte cell it fills the pores of both electrodes and the separator, so it is not a separate structural layer.",
+          "url": "https://learn.lemonergy.com/glossary/#electrolyte"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#ficks-first-law",
+          "name": "Fick’s first law",
+          "description": "J = −D dc/dx: diffusive flux is proportional to the concentration gradient and points down it.",
+          "url": "https://learn.lemonergy.com/glossary/#ficks-first-law"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#formation",
+          "name": "Formation",
+          "description": "The first controlled charge and discharge cycles of a newly assembled cell, during which the SEI forms. It is part of cell production, before aging and grading.",
+          "url": "https://learn.lemonergy.com/glossary/#formation"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#ideal-duration",
+          "name": "Ideal duration",
+          "description": "t = 1 / C-rate: how long a constant current would take to transfer the full nominal capacity. A definition, not a prediction of real runtime.",
+          "url": "https://learn.lemonergy.com/glossary/#ideal-duration"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#impedance-rise",
+          "name": "Impedance rise",
+          "description": "An increase in a cell’s internal resistance as it ages. It costs voltage under load and therefore power, even while the stored charge is still there.",
+          "url": "https://learn.lemonergy.com/glossary/#impedance-rise"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#intercalation",
+          "name": "Intercalation",
+          "description": "Lithium inserting into, and leaving, the host structure of an electrode material — between graphite layers, for example — without destroying it.",
+          "url": "https://learn.lemonergy.com/glossary/#intercalation"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#lithium-plating",
+          "name": "Lithium plating",
+          "description": "Lithium metal depositing on the negative-electrode surface instead of intercalating into it. It is promoted by charging at low temperature or high current.",
+          "url": "https://learn.lemonergy.com/glossary/#lithium-plating"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#nominal-capacity",
+          "name": "Nominal capacity",
+          "description": "The charge a cell is rated to deliver under specified test conditions — current, temperature, rest and voltage limits — usually in ampere-hours.",
+          "url": "https://learn.lemonergy.com/glossary/#nominal-capacity"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#passivation",
+          "name": "Passivation",
+          "description": "The formation of a surface film that slows further reaction. In lithium-ion cells, the SEI passivates the graphite negative electrode.",
+          "url": "https://learn.lemonergy.com/glossary/#passivation"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#porous-electrode",
+          "name": "Porous electrode",
+          "description": "An electrode made of active-material particles, conductive additive and binder with electrolyte-filled pores between them. Its large internal surface is where the reaction happens.",
+          "url": "https://learn.lemonergy.com/glossary/#porous-electrode"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#self-discharge",
+          "name": "Self-discharge",
+          "description": "The slow loss of stored charge while a cell is not in use. An unexpected rise can signal a leakage path or a soft internal short.",
+          "url": "https://learn.lemonergy.com/glossary/#self-discharge"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#separator",
+          "name": "Separator",
+          "description": "A porous, electronically insulating film between the electrodes. Electrons cannot cross it; ions move through the electrolyte in its pores.",
+          "url": "https://learn.lemonergy.com/glossary/#separator"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#slurry",
+          "name": "Slurry",
+          "description": "The mixture of active material, conductive carbon, binder and solvent that is coated onto a current-collector foil to make an electrode.",
+          "url": "https://learn.lemonergy.com/glossary/#slurry"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#solid-electrolyte",
+          "name": "Solid electrolyte",
+          "description": "A solid ion conductor that replaces the liquid electrolyte in an all-solid-state cell. Oxide, sulfide, halide and polymer families each need a different production route.",
+          "url": "https://learn.lemonergy.com/glossary/#solid-electrolyte"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#sei",
+          "name": "Solid–electrolyte interphase (SEI)",
+          "description": "A film of electrolyte reaction products on the negative-electrode particles — graphite, and also silicon or lithium metal. It protects the electrode from further reaction but grows slowly for the whole life of the cell, consuming cyclable lithium.",
+          "url": "https://learn.lemonergy.com/glossary/#sei"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#state-of-charge",
+          "name": "State of charge (SOC)",
+          "description": "How full a cell is, as a fraction of its available capacity. State of charge, like temperature, affects how fast a stored cell ages.",
+          "url": "https://learn.lemonergy.com/glossary/#state-of-charge"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#state-of-health",
+          "name": "State of health (SOH)",
+          "description": "A summary of how far a cell has aged, often expressed through remaining capacity or increased resistance compared with when it was new.",
+          "url": "https://learn.lemonergy.com/glossary/#state-of-health"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Battery Core",
+          "item": "https://learn.lemonergy.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Glossary"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the glossary</a>
+
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="Battery Core home">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span>Battery Core</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../">Home</a>
+      <a href="../chapter-1/">Chapter 1</a>
+      <a href="./" aria-current="page">Glossary</a>
+      <a href="../license/">Licensing</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../">Battery Core</a></li>
+        <li><span aria-current="page">Glossary</span></li>
+      </ol>
+    </nav>
+
+    <section class="page-hero" aria-labelledby="page-title">
+      <p class="eyebrow">Reference</p>
+      <h1 id="page-title">Battery terms, in plain language.</h1>
+      <p class="lede">28 terms used across the course, each defined in a sentence or two and linked to the lesson where it is taught properly. Definitions describe the general idea; the lessons state the assumptions and limits.</p>
+    </section>
+
+    <section class="section glossary" aria-labelledby="terms-title">
+      <h2 id="terms-title" class="sr-only">Terms A–Z</h2>
+      <div class="prose">
+        <ul class="glossary-index" aria-label="Jump to a term">
+          <li><a href="#ampere-hour">Ampere-hour</a></li>
+          <li><a href="#arrhenius">Arrhenius law</a></li>
+          <li><a href="#c-rate">C-rate</a></li>
+          <li><a href="#calendar-aging">Calendar aging</a></li>
+          <li><a href="#calendering">Calendering</a></li>
+          <li><a href="#capacity-fade">Capacity fade</a></li>
+          <li><a href="#current-collector">Current collector</a></li>
+          <li><a href="#cutoff-voltage">Cutoff voltage</a></li>
+          <li><a href="#dendrite">Dendrite</a></li>
+          <li><a href="#depth-of-discharge">Depth of discharge</a></li>
+          <li><a href="#diffusion-coefficient">Diffusion coefficient</a></li>
+          <li><a href="#electrolyte">Electrolyte</a></li>
+          <li><a href="#ficks-first-law">Fick’s first law</a></li>
+          <li><a href="#formation">Formation</a></li>
+          <li><a href="#ideal-duration">Ideal duration</a></li>
+          <li><a href="#impedance-rise">Impedance rise</a></li>
+          <li><a href="#intercalation">Intercalation</a></li>
+          <li><a href="#lithium-plating">Lithium plating</a></li>
+          <li><a href="#nominal-capacity">Nominal capacity</a></li>
+          <li><a href="#passivation">Passivation</a></li>
+          <li><a href="#porous-electrode">Porous electrode</a></li>
+          <li><a href="#self-discharge">Self-discharge</a></li>
+          <li><a href="#separator">Separator</a></li>
+          <li><a href="#slurry">Slurry</a></li>
+          <li><a href="#solid-electrolyte">Solid electrolyte</a></li>
+          <li><a href="#sei">Solid–electrolyte interphase</a></li>
+          <li><a href="#state-of-charge">State of charge</a></li>
+          <li><a href="#state-of-health">State of health</a></li>
+        </ul>
+        <dl>
+          <dt id="ampere-hour">Ampere-hour (Ah)</dt>
+          <dd>
+            <p>A unit of electric charge: one ampere flowing for one hour. Battery capacity is usually rated in ampere-hours, which measure charge, not energy.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#nominal-capacity">Learn it in Part 02 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="arrhenius">Arrhenius law</dt>
+          <dd>
+            <p>The rule that a rate constant is proportional to exp(−Ea/RT), so a thermally activated reaction speeds up steeply with temperature. Near room temperature many degradation reactions roughly double their rate for every +10 °C.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#arrhenius">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="c-rate">C-rate</dt>
+          <dd>
+            <p>Current divided by nominal capacity, in reciprocal hours. 1C on a 20 Ah cell is 20 A; 2C is 40 A. C-rate lets you compare loads on cells of different sizes.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#c-rate">Learn it in Part 02 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="calendar-aging">Calendar aging</dt>
+          <dd>
+            <p>Degradation that happens with time even when a cell is not cycled — in storage, for example. It is driven mainly by side reactions such as SEI growth and accelerates with temperature.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#whole-cell">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="calendering">Calendering</dt>
+          <dd>
+            <p>Compressing a dried electrode coating between rollers to set its thickness, density and porosity. It is one of the electrode-making steps in cell production.</p>
+            <a class="term-link" href="../fundamentals/battery-production/">Learn it in Part 03 · Battery production →</a>
+          </dd>
+          <dt id="capacity-fade">Capacity fade</dt>
+          <dd>
+            <p>The loss of charge a cell can store and deliver, for example through lithium locked into the SEI or active material that has cracked out of service.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#chain">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="current-collector">Current collector</dt>
+          <dd>
+            <p>The thin metal foil that carries electrons between an electrode and the external circuit — usually copper on the negative side and aluminium on the positive side.</p>
+            <a class="term-link" href="../fundamentals/lithium-ion-cell-architecture/">Learn it in Part 01B · Cell architecture →</a>
+          </dd>
+          <dt id="cutoff-voltage">Cutoff voltage</dt>
+          <dd>
+            <p>The terminal-voltage limit that ends a discharge, or caps a charge — in constant-current, constant-voltage (CC-CV) charging the cell is then held at that voltage until the current falls to a cutoff. A real discharge ends at the lower cutoff, which is why actual runtime can differ from the ideal duration.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#real-cells">Learn it in Part 02 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="dendrite">Dendrite</dt>
+          <dd>
+            <p>A tree-like metal deposit that can grow from the negative electrode through the separator, raising self-discharge or causing an internal short circuit.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#plating">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="depth-of-discharge">Depth of discharge (DOD)</dt>
+          <dd>
+            <p>How much of a cell’s capacity is used in a cycle. Deep cycles cause more mechanical stress in the active materials than shallow ones.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#cracking">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="diffusion-coefficient">Diffusion coefficient</dt>
+          <dd>
+            <p>The proportionality constant D in Fick’s first law, in m²/s. It sets how fast a species spreads for a given concentration gradient.</p>
+            <a class="term-link" href="../transport/ficks-first-law/#law">Learn it in Fick’s first law →</a>
+          </dd>
+          <dt id="electrolyte">Electrolyte</dt>
+          <dd>
+            <p>The ion-conducting medium between the electrodes. In a liquid-electrolyte cell it fills the pores of both electrodes and the separator, so it is not a separate structural layer.</p>
+            <a class="term-link" href="../fundamentals/lithium-ion-cell-architecture/">Learn it in Part 01B · Cell architecture →</a>
+          </dd>
+          <dt id="ficks-first-law">Fick’s first law</dt>
+          <dd>
+            <p>J = −D dc/dx: diffusive flux is proportional to the concentration gradient and points down it.</p>
+            <a class="term-link" href="../transport/ficks-first-law/">Learn it in Fick’s first law →</a>
+          </dd>
+          <dt id="formation">Formation</dt>
+          <dd>
+            <p>The first controlled charge and discharge cycles of a newly assembled cell, during which the SEI forms. It is part of cell production, before aging and grading.</p>
+            <a class="term-link" href="../fundamentals/battery-production/">Learn it in Part 03 · Battery production →</a>
+          </dd>
+          <dt id="ideal-duration">Ideal duration</dt>
+          <dd>
+            <p>t = 1 / C-rate: how long a constant current would take to transfer the full nominal capacity. A definition, not a prediction of real runtime.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#area">Learn it in Part 02 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="impedance-rise">Impedance rise</dt>
+          <dd>
+            <p>An increase in a cell’s internal resistance as it ages. It costs voltage under load and therefore power, even while the stored charge is still there.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#crystals">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="intercalation">Intercalation</dt>
+          <dd>
+            <p>Lithium inserting into, and leaving, the host structure of an electrode material — between graphite layers, for example — without destroying it.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#plating">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="lithium-plating">Lithium plating</dt>
+          <dd>
+            <p>Lithium metal depositing on the negative-electrode surface instead of intercalating into it. It is promoted by charging at low temperature or high current.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#plating">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="nominal-capacity">Nominal capacity</dt>
+          <dd>
+            <p>The charge a cell is rated to deliver under specified test conditions — current, temperature, rest and voltage limits — usually in ampere-hours.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#nominal-capacity">Learn it in Part 02 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="passivation">Passivation</dt>
+          <dd>
+            <p>The formation of a surface film that slows further reaction. In lithium-ion cells, the SEI passivates the graphite negative electrode.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#sei">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="porous-electrode">Porous electrode</dt>
+          <dd>
+            <p>An electrode made of active-material particles, conductive additive and binder with electrolyte-filled pores between them. Its large internal surface is where the reaction happens.</p>
+            <a class="term-link" href="../fundamentals/lithium-ion-cell-architecture/">Learn it in Part 01B · Cell architecture →</a>
+          </dd>
+          <dt id="self-discharge">Self-discharge</dt>
+          <dd>
+            <p>The slow loss of stored charge while a cell is not in use. An unexpected rise can signal a leakage path or a soft internal short.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#check-yourself">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="separator">Separator</dt>
+          <dd>
+            <p>A porous, electronically insulating film between the electrodes. Electrons cannot cross it; ions move through the electrolyte in its pores.</p>
+            <a class="term-link" href="../fundamentals/cell-anatomy-workbench/">Learn it in Part 01 · Cell anatomy →</a>
+          </dd>
+          <dt id="slurry">Slurry</dt>
+          <dd>
+            <p>The mixture of active material, conductive carbon, binder and solvent that is coated onto a current-collector foil to make an electrode.</p>
+            <a class="term-link" href="../fundamentals/battery-production/">Learn it in Part 03 · Battery production →</a>
+          </dd>
+          <dt id="solid-electrolyte">Solid electrolyte</dt>
+          <dd>
+            <p>A solid ion conductor that replaces the liquid electrolyte in an all-solid-state cell. Oxide, sulfide, halide and polymer families each need a different production route.</p>
+            <a class="term-link" href="../fundamentals/solid-state-production/">Learn it in Part 03B · Solid-state production →</a>
+          </dd>
+          <dt id="sei">Solid–electrolyte interphase (SEI)</dt>
+          <dd>
+            <p>A film of electrolyte reaction products on the negative-electrode particles — graphite, and also silicon or lithium metal. It protects the electrode from further reaction but grows slowly for the whole life of the cell, consuming cyclable lithium.</p>
+            <a class="term-link" href="../fundamentals/battery-aging/#sei">Learn it in Part 04 · Battery aging →</a>
+          </dd>
+          <dt id="state-of-charge">State of charge (SOC)</dt>
+          <dd>
+            <p>How full a cell is, as a fraction of its available capacity. State of charge, like temperature, affects how fast a stored cell ages.</p>
+          </dd>
+          <dt id="state-of-health">State of health (SOH)</dt>
+          <dd>
+            <p>A summary of how far a cell has aged, often expressed through remaining capacity or increased resistance compared with when it was new.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#real-cells">Learn it in Part 02 · Capacity and C-rate →</a>
+          </dd>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../">Course home</a>
+      <a href="../license/">AGPL-3.0-or-later</a>
+      <a href="../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+</body>
+</html>

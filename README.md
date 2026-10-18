@@ -14,13 +14,15 @@
 ·
 [Open the Solid-State Production simulator](https://learn.lemonergy.com/fundamentals/solid-state-production/)
 ·
-[Run the Battery Aging notebook in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb)
+[Read the Battery Aging lesson](https://learn.lemonergy.com/fundamentals/battery-aging/)
 ·
 [Open the Battery Materials Lab](https://learn.lemonergy.com/labs/battery-materials-lab/)
 ·
-[Run the C-rate notebook in Binder](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)
+[Read the Capacity and C-rate lesson](https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/)
 ·
-[Run the Fick's-law notebook](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/transport/ficks_first_law.ipynb)
+[Read the Fick's-law lesson](https://learn.lemonergy.com/transport/ficks-first-law/)
+·
+[Battery glossary](https://learn.lemonergy.com/glossary/)
 
 `battery-core` develops battery concepts through interactive visualizations,
 well-tested Python models, and independently authored executable notebooks.
@@ -33,10 +35,10 @@ with explicit assumptions and validation.
 
 1. **[Part 01 — Cell anatomy and charge/discharge paths](https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/)** — inspect the named components and conceptual current paths.
 2. **[Part 01B — Lithium-ion cell architecture](https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/)** — move from the five-layer stack to porous electrodes, pore electrolyte, molecules, ions, and transport paths.
-3. **[Part 02 — Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb)** — connect capacity, current, C-rate, and ideal duration through tested calculations.
+3. **[Part 02 — Nominal capacity and C-rate](https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/)** — connect capacity, current, C-rate, and ideal duration through tested calculations.
 4. **[Part 03 — Lithium-ion battery production](https://learn.lemonergy.com/fundamentals/battery-production/)** — follow a reference graphite/NMC route from slurry preparation to formation, aging, grading, and packing.
 5. **[Part 03B — All-solid-state cell production](https://learn.lemonergy.com/fundamentals/solid-state-production/)** — compare oxide, halide, sulfide, and polymer electrolyte routes and the production steps they add, change, or remove.
-6. **[Part 04 — Battery aging](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb)** — connect degradation mechanisms to capacity loss, impedance rise, self-discharge, temperature, and cycling conditions through explicitly illustrative models.
+6. **[Part 04 — Battery aging](https://learn.lemonergy.com/fundamentals/battery-aging/)** — connect degradation mechanisms to capacity loss, impedance rise, self-discharge, temperature, and cycling conditions through explicitly illustrative models.
 
 Part 04 closes Chapter 1 by connecting the cell structures, ratings, and
 production routes to the degradation mechanisms that change cells in service.

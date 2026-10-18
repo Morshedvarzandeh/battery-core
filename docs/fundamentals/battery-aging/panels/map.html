@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mechanism map — Battery aging panel</title>
+<link rel="stylesheet" href="panels.css">
+</head>
+<body>
+<script src="panels.js"></script>
+<div class="w">
+  <div class="w-head">
+    <h2>Six causes, three effects</h2><span class="spacer"></span>
+    <span class="text-xs text-muted">select a cause to trace it</span>
+  </div>
+  <div id="map"></div>
+  <p class="note" id="map-note"><em>Line thickness</em> is how strongly that mechanism feeds that effect in the model used throughout this lesson. Every arrow runs one way: aging does not reverse.</p>
+</div>
+<script>
+const EFFECTS = [
+  { k: "impedance", label: "Internal impedance ↑", sub: "power fade", w: IMP_W, c: "var(--mech-corrosion)" },
+  { k: "capacity",  label: "Usable capacity ↓",    sub: "capacity fade", w: CAP_W, c: "var(--mech-sei)" },
+  { k: "self",      label: "Self-discharge ↑",     sub: "it empties itself while standing",     w: SD_W,  c: "var(--mech-dendrite)" },
+];
+let focus = null;
+
+function draw() {
+  const W = 900, H = 400, bw = 240, bh = 50, ew = 335, eh = 76;
+  const cy = i => 14 + i * 64, ey = j => 24 + j * 122;
+  let g = "";
+  ORDER.forEach((k, i) => EFFECTS.forEach((e, j) => {
+    const wt = e.w[k] || 0;
+    if (wt <= 0.01) return;
+    const on = !focus || focus === k;
+    const x1 = 10 + bw, y1 = cy(i) + bh / 2, x2 = 550, y2 = ey(j) + eh / 2;
+    g += `<path d="M${x1} ${y1} C ${x1 + 110} ${y1}, ${x2 - 110} ${y2}, ${x2} ${y2}" fill="none"
+           stroke="var(--mech-${k})" stroke-width="${(0.8 + 2.6 * wt / 3.4).toFixed(2)}"
+           opacity="${on ? 0.75 : 0.08}"/>`;
+  }));
+  ORDER.forEach((k, i) => {
+    const m = MECH[k], on = !focus || focus === k;
+    g += `<g class="cause" data-k="${k}" tabindex="0" role="button" aria-label="${m.title}" style="cursor:pointer;opacity:${on ? 1 : 0.35}">
+      <rect x="10" y="${cy(i)}" width="${bw}" height="${bh}" rx="8" fill="var(--surface)" stroke="var(--mech-${k})" stroke-width="${focus === k ? 2.5 : 1.5}"/>
+      <rect x="10" y="${cy(i)}" width="4" height="${bh}" fill="var(--mech-${k})"/>
+      <text class="fig-label" x="26" y="${cy(i) + 21}" font-weight="650">${m.n} · ${m.title}</text>
+      <text class="fig-cap"   x="26" y="${cy(i) + 37}">${m.where}</text></g>`;
+  });
+  EFFECTS.forEach((e, j) => {
+    g += `<rect x="550" y="${ey(j)}" width="${ew}" height="${eh}" rx="10" fill="${e.c}"/>
+      <text class="on-mat" x="570" y="${ey(j) + 31}" font-size="13">${e.label}</text>
+      <text class="on-mat" x="570" y="${ey(j) + 50}" font-size="10" font-weight="400" opacity="0.92">${e.sub}</text>`;
+  });
+  $("#map").innerHTML = `<svg class="fig tall" viewBox="0 0 ${W} ${H}" role="img"
+    aria-label="Six aging mechanisms on the left, each feeding one or more of three cell-level effects on the right: impedance rise, capacity loss and self-discharge.">${g}</svg>`;
+  $$(".cause").forEach(n => {
+    const pick = () => { focus = focus === n.dataset.k ? null : n.dataset.k; draw(); note(); };
+    n.addEventListener("click", pick);
+    n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+  });
+}
+function note() {
+  $("#map-note").innerHTML = focus
+    ? `<em>${MECH[focus].title}.</em> ${MECH[focus].result}`
+    : `<em>Line thickness</em> is how strongly that mechanism feeds that effect in the model used throughout this lesson. Every arrow runs one way: aging does not reverse.`;
+}
+draw();
+requestAnimationFrame(fit);
+</script>
+
+</body>
+</html>

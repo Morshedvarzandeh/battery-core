@@ -1,0 +1,743 @@
+/* ==========================================================================
+   AXIOM v1 — a token preamble for HTML documents
+   --------------------------------------------------------------------------
+   Think of this file as \documentclass + preamble in LaTeX.
+   Nothing below the PREAMBLE ever names a raw colour, size or radius —
+   it only references tokens. So changing a token restyles the whole document.
+
+   THE SIX KNOBS (§1) are the only things you normally touch.
+   Everything else is derived from them with oklch() + calc() + color-mix().
+
+   Why oklch: L is *perceptual* lightness. Holding L fixed and spinning the
+   hue keeps contrast roughly constant, so re-theming can't silently break
+   accessibility the way swapping hex values does.
+   ========================================================================== */
+
+/* ==========================================================================
+   §1  THE KNOBS  — edit these, nothing else
+   ========================================================================== */
+:root {
+  color-scheme: light dark;
+
+  --hue-accent: 252;          /* 0–360. 252 cobalt · 190 teal · 150 green · 25 rust */
+  --chroma-accent: 0.125;     /* 0 = greyscale · 0.08 muted · 0.16 vivid       */
+  --hue-neutral: 252;         /* tint of the greys — keep near --hue-accent    */
+  --chroma-neutral: 0.008;    /* 0 = pure grey · 0.012 noticeably tinted        */
+
+  --font-size-base: 15px;     /* everything typographic scales from this        */
+  --scale-ratio: 1.2;         /* 1.125 tight · 1.2 balanced · 1.333 dramatic    */
+  --density: 1;               /* 0.85 compact · 1 default · 1.2 airy            */
+  --radius-base: 6px;         /* 0 sharp · 6 default · 14 soft                  */
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Cascadia Mono",
+    "Liberation Mono", monospace;
+  --measure: 74ch;            /* max line length for prose                      */
+}
+
+/* ==========================================================================
+   §2  DERIVED RAMPS — you should not need to edit these
+   ========================================================================== */
+:root {
+  /* -- neutral ramp ------------------------------------------------------ */
+  --n-0:    oklch(1     0                                        var(--hue-neutral));
+  --n-25:   oklch(0.988 calc(var(--chroma-neutral) * 0.5)        var(--hue-neutral));
+  --n-50:   oklch(0.974 var(--chroma-neutral)                    var(--hue-neutral));
+  --n-100:  oklch(0.954 calc(var(--chroma-neutral) * 1.3)        var(--hue-neutral));
+  --n-200:  oklch(0.918 calc(var(--chroma-neutral) * 1.8)        var(--hue-neutral));
+  --n-300:  oklch(0.856 calc(var(--chroma-neutral) * 2.4)        var(--hue-neutral));
+  --n-400:  oklch(0.700 calc(var(--chroma-neutral) * 3.2)        var(--hue-neutral));
+  --n-500:  oklch(0.625 calc(var(--chroma-neutral) * 3.6)        var(--hue-neutral));
+  --n-550:  oklch(0.560 calc(var(--chroma-neutral) * 3.5)        var(--hue-neutral));
+  --n-600:  oklch(0.510 calc(var(--chroma-neutral) * 3.4)        var(--hue-neutral));
+  --n-700:  oklch(0.400 calc(var(--chroma-neutral) * 3.0)        var(--hue-neutral));
+  --n-800:  oklch(0.320 calc(var(--chroma-neutral) * 2.6)        var(--hue-neutral));
+  --n-900:  oklch(0.240 calc(var(--chroma-neutral) * 2.2)        var(--hue-neutral));
+  --n-950:  oklch(0.180 calc(var(--chroma-neutral) * 1.8)        var(--hue-neutral));
+  --n-1000: oklch(0.140 calc(var(--chroma-neutral) * 1.6)        var(--hue-neutral));
+
+  /* -- accent ramp ------------------------------------------------------- */
+  --a-100: oklch(0.960 calc(var(--chroma-accent) * 0.22) var(--hue-accent));
+  --a-200: oklch(0.910 calc(var(--chroma-accent) * 0.42) var(--hue-accent));
+  --a-300: oklch(0.830 calc(var(--chroma-accent) * 0.66) var(--hue-accent));
+  --a-400: oklch(0.720 calc(var(--chroma-accent) * 0.92) var(--hue-accent));
+  --a-500: oklch(0.620 var(--chroma-accent)              var(--hue-accent));
+  --a-600: oklch(0.520 var(--chroma-accent)              var(--hue-accent));
+  --a-700: oklch(0.430 calc(var(--chroma-accent) * 0.92) var(--hue-accent));
+  --a-800: oklch(0.330 calc(var(--chroma-accent) * 0.72) var(--hue-accent));
+  --a-900: oklch(0.250 calc(var(--chroma-accent) * 0.52) var(--hue-accent));
+  --a-950: oklch(0.195 calc(var(--chroma-accent) * 0.40) var(--hue-accent));
+
+  /* ==== SEMANTIC ROLES — what the components actually reference ========== */
+  --surface-page:   light-dark(var(--n-50),  var(--n-1000));
+  --surface:        light-dark(var(--n-0),   var(--n-950));
+  --surface-raised: light-dark(var(--n-0),   var(--n-900));
+  --surface-sunken: light-dark(var(--n-100), var(--n-900));
+  --surface-inverse:light-dark(var(--n-900), var(--n-50));
+
+  --ink:            light-dark(var(--n-900), var(--n-50));
+  --ink-secondary:  light-dark(var(--n-700), var(--n-300));
+  --ink-muted:      light-dark(var(--n-600), var(--n-400));  /* ≥4.5:1 on every surface */
+  --ink-inverse:    light-dark(var(--n-0),   var(--n-1000));
+
+  /* decorative separators — exempt from contrast minima */
+  --hairline:       light-dark(var(--n-200), var(--n-800));
+  --hairline-strong:light-dark(var(--n-300), var(--n-700));
+  /* the boundary of an interactive control — WCAG 1.4.11 requires ≥3:1 */
+  --border-control: light-dark(var(--n-500), var(--n-550));
+
+  --accent:         light-dark(var(--a-600), var(--a-400));
+  --accent-ink:     light-dark(var(--a-700), var(--a-300));
+  --accent-solid:   light-dark(var(--a-600), var(--a-400));
+  --accent-solid-hover: light-dark(var(--a-700), var(--a-300));
+  --on-accent:      light-dark(var(--n-0),   var(--n-1000));
+  --accent-wash:    light-dark(var(--a-100), color-mix(in oklab, var(--a-900) 60%, var(--n-950)));
+  --focus-ring:     light-dark(var(--a-500), var(--a-400));
+
+  /* status — fixed hues, never reused as chart series, always with a label */
+  --ok:       light-dark(oklch(0.48 0.15 150), oklch(0.76 0.17 150));
+  --ok-wash:  light-dark(oklch(0.95 0.04 150), oklch(0.26 0.06 150));
+  --warn:     light-dark(oklch(0.53 0.13  75), oklch(0.80 0.15  85));
+  --warn-wash:light-dark(oklch(0.96 0.05  85), oklch(0.27 0.05  75));
+  --danger:   light-dark(oklch(0.52 0.19  27), oklch(0.72 0.17  27));
+  --danger-wash: light-dark(oklch(0.96 0.03 27), oklch(0.27 0.07 27));
+  --info:     var(--accent-ink);
+  --info-wash:var(--accent-wash);
+
+  /* -- chart series: fixed, validated hexes (do NOT derive these) --------- */
+  --series-1: light-dark(#2a78d6, #3987e5);
+  --series-2: light-dark(#eb6834, #d95926);
+  --series-3: light-dark(#1baf7a, #199e70);
+  --series-4: light-dark(#eda100, #c98500);
+  --series-5: light-dark(#e87ba4, #d55181);
+  --series-6: light-dark(#008300, #008300);
+  --series-7: light-dark(#4a3aa7, #9085e9);
+  --series-8: light-dark(#e34948, #e66767);
+  --grid:     light-dark(oklch(0.92 0.004 var(--hue-neutral)), oklch(0.28 0.006 var(--hue-neutral)));
+
+  /* -- type scale (modular, ratio = --scale-ratio) ------------------------ */
+  --r: var(--scale-ratio);
+  --text-2xs: calc(var(--font-size-base) / var(--r) / var(--r));
+  --text-xs:  calc(var(--font-size-base) / var(--r));
+  --text-sm:  calc(var(--font-size-base) / (1 + (var(--r) - 1) / 2));
+  --text-md:  var(--font-size-base);
+  --text-lg:  calc(var(--font-size-base) * var(--r));
+  --text-xl:  calc(var(--font-size-base) * var(--r) * var(--r));
+  --text-2xl: calc(var(--font-size-base) * var(--r) * var(--r) * var(--r));
+  --text-3xl: calc(var(--font-size-base) * var(--r) * var(--r) * var(--r) * var(--r));
+
+  --weight-normal: 400;
+  --weight-medium: 520;
+  --weight-bold: 650;
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+
+  /* -- spacing (4px grid × density) --------------------------------------- */
+  --space-0:  0;
+  --space-1:  calc(4px  * var(--density));
+  --space-2:  calc(8px  * var(--density));
+  --space-3:  calc(12px * var(--density));
+  --space-4:  calc(16px * var(--density));
+  --space-5:  calc(20px * var(--density));
+  --space-6:  calc(24px * var(--density));
+  --space-8:  calc(32px * var(--density));
+  --space-10: calc(40px * var(--density));
+  --space-12: calc(48px * var(--density));
+  --space-16: calc(64px * var(--density));
+
+  /* -- radius & elevation -------------------------------------------------- */
+  --radius-sm: calc(var(--radius-base) * 0.5);
+  --radius-md: var(--radius-base);
+  --radius-lg: calc(var(--radius-base) * 1.6);
+  --radius-xl: calc(var(--radius-base) * 2.4);
+  --radius-full: 9999px;
+
+  --shadow-xs: 0 1px 1px light-dark(rgb(0 0 0 / 4%), rgb(0 0 0 / 24%));
+  --shadow-sm: 0 1px 2px light-dark(rgb(0 0 0 / 6%), rgb(0 0 0 / 30%)),
+               0 2px 6px -2px light-dark(rgb(0 0 0 / 6%), rgb(0 0 0 / 26%));
+  --shadow-md: 0 2px 4px -1px light-dark(rgb(0 0 0 / 7%), rgb(0 0 0 / 34%)),
+               0 8px 20px -6px light-dark(rgb(0 0 0 / 9%), rgb(0 0 0 / 40%));
+
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur: 160ms;
+}
+
+/* explicit theme stamps beat the OS setting, both directions */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
+/* ==========================================================================
+   §3  BASE — elements styled purely from tokens
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: var(--space-6);
+  background: var(--surface-page);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-normal);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, p, figure, blockquote, ul, ol, pre, table { margin: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+h1 { font-size: var(--text-3xl); letter-spacing: -0.021em; }
+h2 { font-size: var(--text-2xl); letter-spacing: -0.017em; }
+h3 { font-size: var(--text-xl);  letter-spacing: -0.012em; }
+h4 { font-size: var(--text-lg);  letter-spacing: -0.008em; }
+h5, h6 { font-size: var(--text-md); }
+
+p { max-width: var(--measure); text-wrap: pretty; }
+
+/* vertical rhythm: only *between* siblings, never a trailing margin */
+.prose > * + *      { margin-block-start: var(--space-4); }
+.prose > * + :is(h2, h3, h4) { margin-block-start: var(--space-8); }
+.prose :is(h2, h3, h4) + *   { margin-block-start: var(--space-3); }
+
+a {
+  color: var(--accent-ink);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+a:hover { text-decoration-color: currentColor; }
+
+strong, b, th { font-weight: var(--weight-bold); }
+em { font-style: italic; }
+small, .text-sm { font-size: var(--text-sm); }
+.text-xs { font-size: var(--text-xs); }
+.text-muted { color: var(--ink-muted); }
+.text-secondary { color: var(--ink-secondary); }
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+:where(ul, ol) { padding-inline-start: var(--space-5); max-width: var(--measure); }
+:where(ul, ol) li + li { margin-block-start: var(--space-2); }
+li::marker { color: var(--ink-muted); }
+
+hr {
+  height: 0; margin-block: var(--space-8);
+  border: 0; border-top: 1px solid var(--hairline);
+}
+
+blockquote {
+  padding-inline-start: var(--space-4);
+  border-inline-start: 2px solid var(--accent);
+  color: var(--ink-secondary);
+}
+
+code, kbd, samp {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-variant-ligatures: none;
+}
+:not(pre) > code {
+  padding: 0.12em 0.38em;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+pre {
+  overflow-x: auto;
+  padding: var(--space-4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  tab-size: 2;
+}
+pre code { padding: 0; border: 0; background: none; white-space: pre; }
+
+kbd {
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--border-control);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: var(--text-xs);
+}
+
+::selection { background: var(--accent-wash); color: var(--ink); }
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   §4  LAYOUT
+   ========================================================================== */
+.page  { max-width: 1100px; margin-inline: auto; }
+.stack { display: flex; flex-direction: column; gap: var(--space-4); }
+.stack-lg { display: flex; flex-direction: column; gap: var(--space-8); }
+.row   { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.grid  { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.grid-2 { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.spacer { flex: 1 1 auto; }
+
+.section-label {
+  display: flex; align-items: center; gap: var(--space-3);
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.section-label::after {
+  content: ""; flex: 1; height: 1px; background: var(--hairline);
+}
+
+/* ==========================================================================
+   §5  COMPONENTS
+   ========================================================================== */
+
+/* -- card ------------------------------------------------------------------ */
+.card {
+  padding: var(--space-5);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.card-head { display: flex; align-items: baseline; gap: var(--space-3); margin-block-end: var(--space-3); }
+.card-title { font-size: var(--text-md); font-weight: var(--weight-bold); }
+
+/* -- stat tile ------------------------------------------------------------- */
+.stat { display: flex; flex-direction: column; gap: var(--space-1); }
+.stat-label { color: var(--ink-muted); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+.stat-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.stat-sub { color: var(--ink-muted); font-size: var(--text-xs); }
+.stat-delta { display: inline-flex; align-items: center; gap: 0.25em; font-size: var(--text-xs); font-weight: var(--weight-bold); }
+.stat-delta[data-dir="up"]   { color: var(--ok); }
+.stat-delta[data-dir="down"] { color: var(--danger); }
+
+/* -- button ---------------------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2);
+  min-height: calc(32px * var(--density));
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.btn:hover { background: var(--surface-sunken); border-color: var(--ink-muted); }
+.btn:active { transform: translateY(0.5px); }
+.btn[disabled] { opacity: 0.5; pointer-events: none; }
+
+.btn-primary {
+  border-color: transparent;
+  background: var(--accent-solid);
+  color: var(--on-accent);
+}
+.btn-primary:hover { background: var(--accent-solid-hover); border-color: transparent; }
+
+.btn-ghost { border-color: transparent; background: transparent; color: var(--ink-secondary); }
+.btn-ghost:hover { background: var(--surface-sunken); border-color: transparent; color: var(--ink); }
+
+.btn[aria-pressed="true"] {
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  background: var(--accent-wash);
+  color: var(--accent-ink);
+}
+.btn-sm { min-height: calc(26px * var(--density)); padding: 0 var(--space-3); font-size: var(--text-xs); }
+
+/* -- segmented control ------------------------------------------------------ */
+.segmented {
+  display: inline-flex; padding: 2px; gap: 2px;
+  border: 1px solid var(--hairline); border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+.segmented > button {
+  padding: calc(var(--space-1) + 1px) var(--space-3);
+  border: 0; border-radius: calc(var(--radius-md) - 2px);
+  background: transparent; color: var(--ink-secondary);
+  font: inherit; font-size: var(--text-xs); font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.segmented > button[aria-pressed="true"] {
+  background: var(--surface); color: var(--ink); box-shadow: var(--shadow-xs);
+}
+
+/* -- form ------------------------------------------------------------------- */
+.field { display: flex; flex-direction: column; gap: var(--space-1); }
+.label { color: var(--ink-secondary); font-size: var(--text-xs); font-weight: var(--weight-medium); }
+.hint  { color: var(--ink-muted); font-size: var(--text-xs); }
+
+.input, .select, .textarea {
+  min-height: calc(32px * var(--density));
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.input::placeholder, .textarea::placeholder { color: var(--ink-muted); }
+.input:hover, .select:hover, .textarea:hover { border-color: var(--ink-muted); }
+.input:focus, .select:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent);
+}
+.select {
+  appearance: none;
+  padding-inline-end: var(--space-8);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right var(--space-4) center, right calc(var(--space-4) - 4px) center;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.range { accent-color: var(--accent); width: 100%; }
+
+/* -- badge / pill ------------------------------------------------------------ */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.35em;
+  padding: 0.15em 0.55em;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--surface-sunken);
+  color: var(--ink-secondary);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+.badge-accent { background: var(--accent-wash); color: var(--accent-ink); }
+.badge-ok     { background: var(--ok-wash);     color: var(--ok); }
+.badge-warn   { background: var(--warn-wash);   color: var(--warn); }
+.badge-danger { background: var(--danger-wash); color: var(--danger); }
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.85; }
+.badge-plain::before { display: none; }
+
+/* -- callout ----------------------------------------------------------------- */
+.callout {
+  display: grid; grid-template-columns: auto 1fr; gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--hairline);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.callout-title { font-weight: var(--weight-bold); }
+.callout-icon { width: 1.15em; height: 1.15em; margin-block-start: 0.2em; color: var(--accent); }
+.callout[data-tone="ok"]     { border-inline-start-color: var(--ok);     background: var(--ok-wash); }
+.callout[data-tone="ok"] .callout-icon { color: var(--ok); }
+.callout[data-tone="warn"]   { border-inline-start-color: var(--warn);   background: var(--warn-wash); }
+.callout[data-tone="warn"] .callout-icon { color: var(--warn); }
+.callout[data-tone="danger"] { border-inline-start-color: var(--danger); background: var(--danger-wash); }
+.callout[data-tone="danger"] .callout-icon { color: var(--danger); }
+
+/* -- table -------------------------------------------------------------------- */
+.table-wrap { overflow-x: auto; scrollbar-width: thin; }
+.table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.table :is(th, td) {
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  border-bottom: 1px solid var(--hairline);
+  text-align: start;
+  vertical-align: baseline;
+}
+.table :is(th, td):last-child { padding-inline-end: 0; }
+.table thead th {
+  padding-block: var(--space-2);
+  border-bottom-color: var(--hairline-strong);
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.table tbody tr:last-child :is(th, td) { border-bottom: 0; }
+.table tbody tr { transition: background var(--dur) var(--ease); }
+.table tbody tr:hover { background: var(--surface-sunken); }
+.table .num, .table [align="right"] { text-align: end; font-variant-numeric: tabular-nums; }
+.table caption { padding-block-end: var(--space-3); color: var(--ink-muted); font-size: var(--text-xs); text-align: start; }
+
+/* -- swatch / legend ----------------------------------------------------------- */
+.legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--text-xs); }
+.legend-item { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-secondary); }
+.swatch { width: 10px; height: 10px; border-radius: 3px; background: var(--c, var(--accent)); flex: none; }
+
+/* -- chart chrome ---------------------------------------------------------------- */
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart .axis-label { fill: var(--ink-muted); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.chart .gridline { stroke: var(--grid); stroke-width: 1; shape-rendering: crispEdges; }
+.chart .baseline { stroke: var(--hairline-strong); stroke-width: 1; }
+.chart .series-line { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.chart .bar { rx: 4; }
+.chart .dot { r: 4; stroke: var(--surface); stroke-width: 2; }
+
+.tooltip {
+  position: absolute; z-index: 10;
+  min-width: 130px; padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-md);
+  font-size: var(--text-xs);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -115%);
+  transition: opacity var(--dur) var(--ease);
+}
+.tooltip[data-show="true"] { opacity: 1; }
+.tooltip dl { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--space-3); margin: 0; }
+.tooltip dt { color: var(--ink-secondary); }
+.tooltip dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: var(--weight-medium); }
+
+/* -- misc --------------------------------------------------------------------- */
+.divider { height: 1px; background: var(--hairline); }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ==========================================================================
+   §6  RESPECT THE USER
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .card, .callout, .btn, .input, .select { border: 1px solid CanvasText; }
+  .swatch { forced-color-adjust: none; }
+}
+
+@media print {
+  :root { color-scheme: light; }
+  body { padding: 0; background: #fff; }
+  .card, .callout { break-inside: avoid; box-shadow: none; }
+  a { text-decoration: underline; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; color: #555; font-size: 0.85em; }
+  .no-print { display: none !important; }
+}
+
+/* ==========================================================================
+   WIDGET-LOCAL — shared by every embedded panel in the notebook.
+   Still the one rule: no raw colour, size, radius or shadow below the preamble.
+   Added token families:
+     --mech-*  each degradation mechanism, mapped to a fixed chart series slot
+     --mat-*   the physical anatomy of a cell (copper, graphite, separator…)
+   ========================================================================== */
+:root {
+  --mech-corrosion: var(--series-2);
+  --mech-sei:       var(--series-3);
+  --mech-gas:       var(--series-1);
+  --mech-crystal:   var(--series-4);
+  --mech-dendrite:  var(--series-7);
+  --mech-cracking:  var(--series-5);
+
+  --mat-copper:      light-dark(oklch(0.70 0.115 55),  oklch(0.60 0.100 55));
+  --mat-copper-hi:   light-dark(oklch(0.84 0.090 62),  oklch(0.72 0.085 62));
+  --mat-aluminium:   light-dark(oklch(0.72 0.008 250), oklch(0.62 0.008 250));
+  --mat-aluminium-hi:light-dark(oklch(0.90 0.004 250), oklch(0.78 0.005 250));
+  --mat-anode-bed:   light-dark(oklch(0.44 0.020 235), oklch(0.27 0.020 235));
+  --mat-graphite:    light-dark(oklch(0.40 0.014 235), oklch(0.42 0.014 235));
+  --mat-graphite-hi: light-dark(oklch(0.62 0.014 235), oklch(0.58 0.014 235));
+  --mat-cathode-bed: light-dark(oklch(0.55 0.095 45),  oklch(0.40 0.085 45));
+  --mat-nmc:         light-dark(oklch(0.48 0.090 45),  oklch(0.46 0.080 45));
+  --mat-nmc-hi:      light-dark(oklch(0.72 0.080 55),  oklch(0.64 0.075 55));
+  --mat-separator:   light-dark(oklch(0.94 0.012 95),  oklch(0.38 0.010 95));
+  --mat-separator-pore: light-dark(oklch(0.85 0.020 95), oklch(0.50 0.014 95));
+  --mat-binder:      light-dark(oklch(0.80 0.045 50),  oklch(0.55 0.040 50));
+  --mat-fracture:    light-dark(oklch(0.24 0.030 35),  oklch(0.14 0.020 35));
+  --mat-enclosure:   light-dark(oklch(0.72 0.012 250), oklch(0.55 0.012 250));
+}
+
+.m-corrosion { --mech: var(--mech-corrosion); }
+.m-sei       { --mech: var(--mech-sei); }
+.m-gas       { --mech: var(--mech-gas); }
+.m-crystal   { --mech: var(--mech-crystal); }
+.m-dendrite  { --mech: var(--mech-dendrite); }
+.m-cracking  { --mech: var(--mech-cracking); }
+
+/* -- the frame every widget sits in ---------------------------------------- */
+/* The panel sizes itself and tells its frame how tall to be, so nothing is ever
+   clipped at any window width. */
+body { padding: 0; background: var(--surface); overflow: hidden; }
+.w { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); }
+.w-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-3); }
+.w-head h2 { font-size: var(--text-md); font-weight: var(--weight-bold); }
+.w-head .spacer { flex: 1 1 auto; }
+.w-body { display: grid; gap: var(--space-4); }
+.split   { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.split-l { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+.split-r { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); }
+.pane { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; min-height: 0; }
+.figwrap { display: flex; align-items: center; justify-content: center; }
+.pane-title {
+  color: var(--ink-muted); font-size: var(--text-2xs); font-weight: var(--weight-bold);
+  letter-spacing: 0.07em; text-transform: uppercase;
+}
+svg.fig { display: block; width: 100%; height: auto; max-height: 290px; overflow: visible; }
+svg.fig.tall { max-height: 430px; }
+
+/* -- controls --------------------------------------------------------------- */
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) var(--space-5); }
+.ctl { display: flex; align-items: center; gap: var(--space-2); }
+.ctl > label { color: var(--ink-secondary); font-size: var(--text-xs); font-weight: var(--weight-medium); white-space: nowrap; }
+.ctl input[type="range"] { width: calc(110px * var(--density)); accent-color: var(--accent); }
+.ctl output {
+  min-width: 6ch; padding: 0.1em 0.5em;
+  border-radius: var(--radius-full); background: var(--accent-wash);
+  color: var(--accent-ink); font-size: var(--text-xs); font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums; text-align: center;
+}
+.segmented > button { white-space: nowrap; }
+
+/* -- readouts --------------------------------------------------------------- */
+.readouts { display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
+.ro {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--hairline); border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+.ro b { display: block; font-size: var(--text-lg); font-weight: var(--weight-medium); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.ro span { display: block; color: var(--ink-muted); font-size: var(--text-2xs); }
+.ro[data-tone="danger"] { border-color: var(--danger); background: var(--danger-wash); }
+.ro[data-tone="danger"] b { color: var(--danger); }
+.ro[data-tone="warn"] { border-color: var(--warn); background: var(--warn-wash); }
+.ro[data-tone="warn"] b { color: var(--warn); }
+.note { color: var(--ink-muted); font-size: var(--text-xs); line-height: var(--leading-snug); }
+.note em { color: var(--ink-secondary); font-style: normal; font-weight: var(--weight-medium); }
+
+/* -- chart chrome ----------------------------------------------------------- */
+.gridline { stroke: var(--grid); stroke-width: 1; shape-rendering: crispEdges; }
+.baseline { stroke: var(--hairline-strong); stroke-width: 1; }
+.axis-label { fill: var(--ink-muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+.axis-title { fill: var(--ink-muted); font-size: 10px; }
+.series { fill: none; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+.series.dim { stroke: var(--ink-muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.series.s-cap  { stroke: var(--mech-sei); }
+.series.s-imp  { stroke: var(--mech-corrosion); }
+.series.s-plate{ stroke: var(--mech-dendrite); stroke-dasharray: 5 4; }
+.series.s-chem { stroke: var(--mech-corrosion); stroke-dasharray: 5 4; }
+.series.s-total{ stroke: var(--ink); stroke-width: 2.75; }
+.series.s-gas  { stroke: var(--mech-gas); }
+.series.s-crack{ stroke: var(--mech-cracking); }
+.series.s-crystal { stroke: var(--mech-crystal); }
+.dot { stroke: var(--surface); stroke-width: 2; }
+.threshold { stroke: var(--danger); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.7; }
+.threshold-label { fill: var(--danger); font-size: 9.5px; }
+.band { fill: var(--mech-sei); opacity: 0.13; }
+.band-label { fill: var(--ink-secondary); font-size: 10px; font-weight: var(--weight-bold); }
+.band-danger { fill: var(--danger); opacity: 0.07; }
+.now-line { stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 3; }
+.legend { gap: var(--space-2) var(--space-4); }
+
+/* -- cell anatomy ----------------------------------------------------------- */
+.layer-cu { fill: url(#g-cu); } .layer-al { fill: url(#g-al); }
+.layer-anode { fill: var(--mat-anode-bed); } .layer-cathode { fill: var(--mat-cathode-bed); }
+.layer-sep { fill: url(#p-sep); stroke: var(--mat-separator-pore); stroke-width: 1.5; }
+.sep-bg { fill: var(--mat-separator); } .sep-pore { fill: var(--mat-separator-pore); }
+.stop-cu-edge { stop-color: var(--mat-copper); }  .stop-cu-mid { stop-color: var(--mat-copper-hi); }
+.stop-al-edge { stop-color: var(--mat-aluminium); } .stop-al-mid { stop-color: var(--mat-aluminium-hi); }
+.stop-gr-hi { stop-color: var(--mat-graphite-hi); } .stop-gr-lo { stop-color: var(--mat-graphite); }
+.stop-nmc-hi { stop-color: var(--mat-nmc-hi); }    .stop-nmc-lo { stop-color: var(--mat-nmc); }
+.p-graphite { fill: url(#g-graphite); } .p-nmc { fill: url(#g-nmc); }
+.sei-ring { fill: none; stroke: var(--mech-sei); }
+.crack { fill: none; stroke: var(--mat-fracture); stroke-linecap: round; }
+.net-line { stroke: var(--mat-binder); stroke-width: 1.6; }
+.crystal { fill: var(--mech-crystal); stroke: var(--mat-fracture); stroke-width: 0.5; }
+.pit { fill: var(--mat-fracture); }
+.bubble { fill: none; stroke: var(--mech-gas); stroke-width: 1.3; }
+.bubble.rising { animation: rise 5s infinite ease-in; }
+.dendrite { fill: none; stroke: var(--mech-dendrite); stroke-linecap: round; stroke-linejoin: round; }
+.dendrite.is-short { stroke: var(--danger); }
+.pouch { fill: var(--surface-sunken); stroke: var(--mat-enclosure); stroke-width: 2.5; }
+.vent { fill: var(--surface-sunken); } .vent.is-open { fill: var(--danger); }
+.fig-label { fill: var(--ink-secondary); font-size: 10px; font-weight: var(--weight-medium); }
+.fig-cap { fill: var(--ink-muted); font-size: 9px; }
+.on-mat { fill: var(--n-0); font-size: 10px; font-weight: var(--weight-bold); }
+
+@keyframes rise { from { transform: translateY(14px) scale(0.7); opacity: 0.1; }
+                  55% { opacity: 1; } to { transform: translateY(-150px) scale(1.1); opacity: 0; } }
+
+/* -- markers ---------------------------------------------------------------- */
+.marker { cursor: pointer; }
+.marker circle { fill: var(--surface); stroke: var(--mech); stroke-width: 3.5; transition: stroke-width var(--dur) var(--ease); }
+.marker text { fill: var(--ink); font-size: 10px; font-weight: var(--weight-bold); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.marker:hover circle, .marker.is-active circle { stroke-width: 5.5; }
+.marker:focus { outline: none; }
+.marker:focus-visible circle { stroke: var(--focus-ring); }
+.is-dim { opacity: 0.18; transition: opacity var(--dur) var(--ease); }
+
+/* -- mechanism detail ------------------------------------------------------- */
+.detail { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(160px, 0.6fr); gap: var(--space-3);
+          padding: var(--space-3); border: 1px solid var(--hairline);
+          border-inline-start: 3px solid var(--mech, var(--accent)); border-radius: var(--radius-md);
+          background: var(--surface-sunken); }
+.detail h3 { font-size: var(--text-sm); font-weight: var(--weight-bold); }
+.detail p { font-size: var(--text-xs); line-height: var(--leading-snug); color: var(--ink-secondary); }
+.detail .lead { color: var(--ink-muted); font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--weight-bold); }
+
+/* -- theme bar -------------------------------------------------------------- */
+.themebar { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); }
+.themebar .label { margin-inline-end: auto; }
+
+@media (max-width: 700px) {
+  .w-body { grid-template-columns: 1fr !important; }
+  .detail { grid-template-columns: 1fr; }
+}
+
+/* -- contribution bars ------------------------------------------------------ */
+.stackrow { display: grid; grid-template-columns: 108px 1fr; gap: var(--space-3); align-items: center; }
+.stackrow > span { color: var(--ink-secondary); font-size: var(--text-xs); }
+.stackbar { display: flex; height: 14px; border-radius: var(--radius-full); overflow: hidden; background: var(--surface-sunken); }
+.stackbar i { display: block; height: 100%; background: var(--c); border-inline-end: 2px solid var(--surface); }
+
+/* --- Battery Core website theme (added by scripts/export_aging_panels.py) --- */
+:root {
+  --hue-accent: 168;
+  --chroma-accent: 0.12;
+  --hue-neutral: 232;
+  --chroma-neutral: 0.022;
+}
+body {
+  background: transparent;
+  padding: 16px;
+}

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Crystal formation and power fade — Battery aging panel</title>
+<link rel="stylesheet" href="panels.css">
+</head>
+<body>
+<script src="panels.js"></script>
+<div class="w">
+  <div class="w-head">
+    <h2>Crystal growth eats surface area, and surface area is power</h2><span class="spacer"></span>
+    <div class="controls">
+      <span class="ctl"><label for="N">Cycles</label>
+        <input class="range" type="range" id="N" min="0" max="2000" step="25" value="600"><output id="oN">600</output></span>
+    </div>
+  </div>
+  <div class="w-body split-l">
+    <div class="pane"><span class="pane-title">The electrode face</span><div class="figwrap" id="face"></div></div>
+    <div class="pane"><span class="pane-title">Power the cell can still deliver</span><div class="figwrap" id="chart"></div>
+      <div class="legend" id="lg"></div></div>
+  </div>
+  <div class="readouts">
+    <div class="ro"><b id="r1">—</b><span>active surface area</span></div>
+    <div class="ro"><b id="r2">—</b><span>internal resistance</span></div>
+    <div class="ro"><b id="r3">—</b><span>peak power, new</span></div>
+    <div class="ro"><b id="r4">—</b><span>peak power, now</span></div>
+  </div>
+</div>
+<script>
+function render() {
+  const n = +$("#N").value;
+  $("#oN").textContent = n;
+  const a = areaRatio(n), r = R0 / a;
+
+  const W = 230, H = 190, grow = (1 - a) * 92, R3 = rng(7);
+  let g = `<rect x="10" y="132" width="210" height="48" fill="var(--mat-anode-bed)"/>
+           <text class="on-mat" x="115" y="162" text-anchor="middle">electrode</text>`;
+  for (let i = 0; i < 12; i++) {
+    const x = 16 + i * 17.5, h = grow * (0.5 + 0.9 * R3()), w = 5 + 4 * (1 - a) * (0.6 + R3());
+    g += `<polygon class="crystal" points="${x - w},132 ${x + w},132 ${x + w * 0.4},${132 - h} ${x - w * 0.5},${132 - h * 0.8}"/>`;
+  }
+  g += `<line x1="14" y1="128" x2="216" y2="128" stroke="var(--ink-muted)" stroke-width="1.2"/>
+        <text class="fig-cap" x="115" y="${Math.max(16, 120 - grow)}" text-anchor="middle" font-weight="650" fill="var(--ink)">effective area ${(100 * a).toFixed(0)} % of new</text>`;
+  $("#face").innerHTML = `<svg class="fig" viewBox="0 0 ${W} ${H}" role="img"
+    aria-label="Crystal deposits building on an electrode face, leaving ${(100 * a).toFixed(0)} percent of the original active area.">${g}</svg>`;
+
+  const imax = (OCV - V_CUT) / R0, pk = i0 => { const im = (OCV - V_CUT) / i0; return im * V_CUT; };
+  const P = plot(430, 216, { t: 12, r: 16, b: 36, l: 40 }, [0, imax * 1.1], [0, pk(R0) * 1.15]);
+  P.gridY([0, 25, 50, 75].filter(v => v < pk(R0) * 1.15), v => v + " W").ticksX([0, 10, 20, 30]).titleX("discharge current (A)").baseline();
+  [[R0, "dim", "when new"], [r, "s-crystal", "now"]].forEach(([rr, cls]) => {
+    const im = (OCV - V_CUT) / rr;
+    const xs = series(40, u => u * im), ys = xs.map(i => i * (OCV - i * rr));
+    P.add(`<path class="series ${cls}" d="${pathOf(P, xs, ys)}"/>`);
+    P.dot(im, im * V_CUT, cls === "dim" ? "var(--ink-muted)" : "var(--mech-crystal)");
+  });
+  $("#chart").innerHTML = P.svg("Deliverable power against discharge current, before and after crystal growth.");
+  $("#lg").innerHTML = legend([{ c: "var(--ink-muted)", label: "when new" }, { c: "var(--mech-crystal)", label: `after ${n} cycles` }]);
+
+  $("#r1").textContent = (100 * a).toFixed(0) + " %";
+  $("#r2").textContent = (1000 * r).toFixed(0) + " mΩ";
+  $("#r3").textContent = pk(R0).toFixed(0) + " W";
+  $("#r4").textContent = pk(r).toFixed(0) + " W";
+}
+bind(["N"], render); render();
+requestAnimationFrame(fit);
+</script>
+
+</body>
+</html>

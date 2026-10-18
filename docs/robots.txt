@@ -1,0 +1,10 @@
+# Battery Core — learn.lemonergy.com
+User-agent: *
+Allow: /
+
+# Markdown sources (module READMEs, design notes) duplicate the pages.
+Disallow: /*.md$
+# The copy-ready page template is not a page.
+Disallow: /assets/page-template.html
+
+Sitemap: https://learn.lemonergy.com/sitemap.xml

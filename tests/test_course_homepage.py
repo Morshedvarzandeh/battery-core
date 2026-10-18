@@ -1,5 +1,6 @@
 """Static checks for the public Battery Core course pages."""
 
+import re
 from pathlib import Path
 
 from asset_checks import external_asset_references
@@ -29,9 +30,15 @@ def test_design_system_ships_all_three_levels() -> None:
 
 
 def test_course_homepage_uses_local_styles() -> None:
+    """The homepage runs no code. Its only script element is structured data
+    for search engines (`application/ld+json`), which browsers never execute."""
     html = HOMEPAGE.read_text(encoding="utf-8")
     assert 'href="assets/site.css"' in html
-    assert "<script" not in html
+    script_types = re.findall(r"<script\b([^>]*)>", html)
+    assert script_types, "expected the structured-data block"
+    for attributes in script_types:
+        assert 'type="application/ld+json"' in attributes, attributes
+        assert "src=" not in attributes, attributes
 
 
 def test_course_homepage_links_available_modules() -> None:
@@ -46,6 +53,16 @@ def test_course_homepage_links_available_modules() -> None:
     assert "notebooks/fundamentals/02_capacity_and_c_rate.ipynb" in html
     assert "notebooks/fundamentals/04_battery_aging.ipynb" in html
     assert "notebooks/transport/ficks_first_law.ipynb" in html
+
+
+def test_course_homepage_sends_learners_to_the_on_site_lessons() -> None:
+    """The notebooks stay available, but the readable lesson on this site is
+    the primary route: a learner should not need Binder to study Part 02."""
+    html = HOMEPAGE.read_text(encoding="utf-8")
+    assert 'class="card-action" href="fundamentals/capacity-and-c-rate/"' in html
+    assert 'class="card-action" href="fundamentals/battery-aging/"' in html
+    assert 'href="transport/ficks-first-law/"' in html
+    assert 'href="glossary/"' in html
 
 
 def test_course_homepage_distinguishes_available_and_planned_parts() -> None:

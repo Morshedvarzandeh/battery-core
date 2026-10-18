@@ -15,10 +15,10 @@ written specifically for this repository.
 | ---: | --- | --- | --- |
 | 01 | [Cell anatomy and charge/discharge paths](https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/) | Available — launch online | Browser workbench |
 | 01B | [Lithium-ion cell architecture](https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/) | Available — launch online | Interactive browser tutorial |
-| 02 | [Nominal capacity and C-rate](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb) | Available — launch notebook | Python API and Jupyter notebook |
+| 02 | [Nominal capacity and C-rate](https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/) | Available — read online | Lesson with calculators and quiz; [notebook](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb) |
 | 03 | [Lithium-ion battery production — materials to finished cell](https://learn.lemonergy.com/fundamentals/battery-production/) | Available — launch online | Interactive production simulator |
 | 03B | [All-solid-state cell production](https://learn.lemonergy.com/fundamentals/solid-state-production/) | Available — launch online | Interactive route-comparison simulator |
-| 04 | [Battery aging — how a cell wears out](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb) | Available — launch notebook | Interactive Jupyter notebook |
+| 04 | [Battery aging — how a cell wears out](https://learn.lemonergy.com/fundamentals/battery-aging/) | Available — read online | Lesson with 9 interactive panels and quiz; [notebook](https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb) |
 
 Part 01 introduces the cell components and charge/discharge paths. Part 01B moves
 through the structural scales inside a lithium-ion cell. Part 02 introduces the
