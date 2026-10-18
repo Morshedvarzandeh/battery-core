@@ -124,8 +124,9 @@
           <p>By the end of this lesson you will be able to:</p>
           <ul>
             <li>calculate current from nominal capacity and C-rate;</li>
+            <li>calculate C-rate from a measured or datasheet current;</li>
             <li>calculate the ideal duration associated with a C-rate;</li>
-            <li>explain why current–time rectangles have equal area for equal transferred charge;</li>
+            <li>use charge as the area under a current–time curve to explain why the ideal duration is 1 / C-rate;</li>
             <li>separate exact C-rate arithmetic from real-cell voltage-cutoff behaviour.</li>
           </ul>
           <p class="prerequisite"><strong>Before you start:</strong> <a href="../cell-anatomy-workbench/">Part 01 · Cell anatomy</a>. Arithmetic with units is all the maths you need.</p>
@@ -258,8 +259,8 @@
         <section aria-labelledby="worked-example">
           <h2 id="worked-example"><span class="section-number">06</span>Worked example: reading a datasheet</h2>
           <p>A datasheet lists a <strong>3.2 Ah</strong> cell with a maximum continuous discharge current of <strong>15 A</strong>. What C-rate is that, and what is its ideal duration?</p>
-          <div class="equation" role="math" aria-label="C-rate equals 15 amperes divided by 3.2 ampere-hours, about 4.69 per hour; ideal duration is one over 4.69, about 0.213 hours or 12.8 minutes">
-            <math display="block"><msub><mi>C</mi><mtext>rate</mtext></msub><mo>=</mo><mfrac><mrow><mn>15</mn><mtext>&#8202;A</mtext></mrow><mrow><mn>3.2</mn><mtext>&#8202;Ah</mtext></mrow></mfrac><mo>≈</mo><mn>4.69</mn><mtext>&#8202;C</mtext><mspace width="2em"/><msub><mi>t</mi><mtext>ideal</mtext></msub><mo>=</mo><mfrac><mn>1</mn><mn>4.69</mn></mfrac><mo>≈</mo><mn>12.8</mn><mtext>&#8202;min</mtext></math>
+          <div class="equation" role="math" aria-label="C-rate equals 15 amperes divided by 3.2 ampere-hours, about 4.69 per hour; ideal duration is one over 4.69 per hour, about 0.213 hours or 12.8 minutes">
+            <math display="block"><msub><mi>C</mi><mtext>rate</mtext></msub><mo>=</mo><mfrac><mrow><mn>15</mn><mtext>&#8202;A</mtext></mrow><mrow><mn>3.2</mn><mtext>&#8202;Ah</mtext></mrow></mfrac><mo>≈</mo><mn>4.69</mn><mtext>&#8202;h⁻¹</mtext><mspace width="2em"/><msub><mi>t</mi><mtext>ideal</mtext></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>4.69</mn><mtext>&#8202;h⁻¹</mtext></mrow></mfrac><mo>≈</mo><mn>0.213</mn><mtext>&#8202;h</mtext><mo>≈</mo><mn>12.8</mn><mtext>&#8202;min</mtext></math>
           </div>
           <form class="calc" data-calc="c-rate-inverse" aria-labelledby="calc-inverse-title" onsubmit="return false">
             <p class="calc-title" id="calc-inverse-title">Calculator · C-rate from current</p>

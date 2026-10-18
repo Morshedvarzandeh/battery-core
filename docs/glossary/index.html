@@ -42,7 +42,7 @@
           "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#arrhenius",
           "name": "Arrhenius law",
-          "description": "The rule that a thermally activated reaction speeds up exponentially with temperature, set by its activation energy. Near room temperature many degradation reactions roughly double their rate for every +10 °C.",
+          "description": "The rule that a rate constant is proportional to exp(−Ea/RT), so a thermally activated reaction speeds up steeply with temperature. Near room temperature many degradation reactions roughly double their rate for every +10 °C.",
           "url": "https://learn.lemonergy.com/glossary/#arrhenius"
         },
         {
@@ -84,7 +84,7 @@
           "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#cutoff-voltage",
           "name": "Cutoff voltage",
-          "description": "The terminal-voltage limit at which a charge or discharge is stopped. A real discharge ends at the cutoff voltage, which is why actual runtime can differ from the ideal duration.",
+          "description": "The terminal-voltage limit that ends a discharge, or caps a charge — in constant-current, constant-voltage (CC-CV) charging the cell is then held at that voltage until the current falls to a cutoff. A real discharge ends at the lower cutoff, which is why actual runtime can differ from the ideal duration.",
           "url": "https://learn.lemonergy.com/glossary/#cutoff-voltage"
         },
         {
@@ -210,14 +210,14 @@
           "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#sei",
           "name": "Solid–electrolyte interphase (SEI)",
-          "description": "A film of electrolyte reaction products on the negative-electrode particles. It protects the graphite from further reaction but grows slowly for the whole life of the cell, consuming cyclable lithium.",
+          "description": "A film of electrolyte reaction products on the negative-electrode particles — graphite, and also silicon or lithium metal. It protects the electrode from further reaction but grows slowly for the whole life of the cell, consuming cyclable lithium.",
           "url": "https://learn.lemonergy.com/glossary/#sei"
         },
         {
           "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#state-of-charge",
           "name": "State of charge (SOC)",
-          "description": "How full a cell is, as a fraction of its available capacity. Storage temperature and state of charge both influence calendar aging.",
+          "description": "How full a cell is, as a fraction of its available capacity. State of charge, like temperature, affects how fast a stored cell ages.",
           "url": "https://learn.lemonergy.com/glossary/#state-of-charge"
         },
         {
@@ -320,7 +320,7 @@
           </dd>
           <dt id="arrhenius">Arrhenius law</dt>
           <dd>
-            <p>The rule that a thermally activated reaction speeds up exponentially with temperature, set by its activation energy. Near room temperature many degradation reactions roughly double their rate for every +10 °C.</p>
+            <p>The rule that a rate constant is proportional to exp(−Ea/RT), so a thermally activated reaction speeds up steeply with temperature. Near room temperature many degradation reactions roughly double their rate for every +10 °C.</p>
             <a class="term-link" href="../fundamentals/battery-aging/#arrhenius">Learn it in Part 04 · Battery aging →</a>
           </dd>
           <dt id="c-rate">C-rate</dt>
@@ -331,7 +331,7 @@
           <dt id="calendar-aging">Calendar aging</dt>
           <dd>
             <p>Degradation that happens with time even when a cell is not cycled — in storage, for example. It is driven mainly by side reactions such as SEI growth and accelerates with temperature.</p>
-            <a class="term-link" href="../fundamentals/battery-aging/#sei">Learn it in Part 04 · Battery aging →</a>
+            <a class="term-link" href="../fundamentals/battery-aging/#whole-cell">Learn it in Part 04 · Battery aging →</a>
           </dd>
           <dt id="calendering">Calendering</dt>
           <dd>
@@ -350,7 +350,7 @@
           </dd>
           <dt id="cutoff-voltage">Cutoff voltage</dt>
           <dd>
-            <p>The terminal-voltage limit at which a charge or discharge is stopped. A real discharge ends at the cutoff voltage, which is why actual runtime can differ from the ideal duration.</p>
+            <p>The terminal-voltage limit that ends a discharge, or caps a charge — in constant-current, constant-voltage (CC-CV) charging the cell is then held at that voltage until the current falls to a cutoff. A real discharge ends at the lower cutoff, which is why actual runtime can differ from the ideal duration.</p>
             <a class="term-link" href="../fundamentals/capacity-and-c-rate/#real-cells">Learn it in Part 02 · Capacity and C-rate →</a>
           </dd>
           <dt id="dendrite">Dendrite</dt>
@@ -396,7 +396,7 @@
           <dt id="intercalation">Intercalation</dt>
           <dd>
             <p>Lithium inserting into, and leaving, the host structure of an electrode material — between graphite layers, for example — without destroying it.</p>
-            <a class="term-link" href="../fundamentals/battery-aging/#cracking">Learn it in Part 04 · Battery aging →</a>
+            <a class="term-link" href="../fundamentals/battery-aging/#plating">Learn it in Part 04 · Battery aging →</a>
           </dd>
           <dt id="lithium-plating">Lithium plating</dt>
           <dd>
@@ -440,18 +440,17 @@
           </dd>
           <dt id="sei">Solid–electrolyte interphase (SEI)</dt>
           <dd>
-            <p>A film of electrolyte reaction products on the negative-electrode particles. It protects the graphite from further reaction but grows slowly for the whole life of the cell, consuming cyclable lithium.</p>
+            <p>A film of electrolyte reaction products on the negative-electrode particles — graphite, and also silicon or lithium metal. It protects the electrode from further reaction but grows slowly for the whole life of the cell, consuming cyclable lithium.</p>
             <a class="term-link" href="../fundamentals/battery-aging/#sei">Learn it in Part 04 · Battery aging →</a>
           </dd>
           <dt id="state-of-charge">State of charge (SOC)</dt>
           <dd>
-            <p>How full a cell is, as a fraction of its available capacity. Storage temperature and state of charge both influence calendar aging.</p>
-            <a class="term-link" href="../fundamentals/battery-aging/#recap">Learn it in Part 04 · Battery aging →</a>
+            <p>How full a cell is, as a fraction of its available capacity. State of charge, like temperature, affects how fast a stored cell ages.</p>
           </dd>
           <dt id="state-of-health">State of health (SOH)</dt>
           <dd>
             <p>A summary of how far a cell has aged, often expressed through remaining capacity or increased resistance compared with when it was new.</p>
-            <a class="term-link" href="../fundamentals/battery-aging/">Learn it in Part 04 · Battery aging →</a>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#real-cells">Learn it in Part 02 · Capacity and C-rate →</a>
           </dd>
         </dl>
       </div>

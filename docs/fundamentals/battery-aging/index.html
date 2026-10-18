@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="How lithium-ion batteries age: SEI growth, gas generation, crystal formation, lithium plating and particle cracking, and how temperature and cycling drive capacity fade, impedance rise and self-discharge. Ten interactive panels.">
+  <meta name="description" content="How lithium-ion batteries age: corrosion, SEI growth, gas generation, crystal formation, lithium plating and particle cracking, and how temperature and cycling drive capacity fade, impedance rise and self-discharge. Nine interactive panels.">
   <meta name="theme-color" content="#07131d">
   <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/battery-aging/">
   <meta property="og:type" content="article">
@@ -35,7 +35,7 @@
         "educationalLevel": "Intermediate",
         "timeRequired": "PT40M",
         "isAccessibleForFree": true,
-        "teaches": ["Solid-electrolyte interphase growth", "Gas generation", "Lithium plating", "Particle cracking", "Arrhenius temperature dependence", "Capacity fade and impedance rise"],
+        "teaches": ["Corrosion", "Solid-electrolyte interphase growth", "Gas generation", "Lithium plating", "Particle cracking", "Arrhenius temperature dependence", "Capacity fade and impedance rise"],
         "keywords": "battery aging, lithium-ion degradation, SEI growth, lithium plating, capacity fade, impedance rise, self-discharge, Arrhenius",
         "isPartOf": { "@id": "https://learn.lemonergy.com/chapter-1/#course" },
         "position": 6,
@@ -96,7 +96,7 @@
         <li><strong>40 min</strong> reading and labs</li>
         <li><strong>8 min</strong> practice quiz</li>
         <li><strong>9</strong> interactive panels</li>
-        <li><strong>15</strong> references with DOI links</li>
+        <li><strong>15</strong> references, 11 with DOI links</li>
       </ul>
     </section>
 
@@ -107,6 +107,7 @@
           <li><a href="#chain">The whole chain</a></li>
           <li><a href="#where">Where it happens</a></li>
           <li><a href="#arrhenius">The rate law: Arrhenius</a></li>
+          <li><a href="#corrosion">Corrosion</a></li>
           <li><a href="#sei">Passivation — the SEI film</a></li>
           <li><a href="#gas">Gas generation</a></li>
           <li><a href="#crystals">Crystal formation</a></li>
@@ -170,7 +171,7 @@
           <div class="table-wrap">
             <table>
               <caption>Reaction rate relative to 25 °C, for three activation energies used in this lesson</caption>
-              <thead><tr><th scope="col">Temperature</th><th scope="col" class="num">E<sub>a</sub> = 45 kJ/mol</th><th scope="col" class="num">50 kJ/mol (SEI)</th><th scope="col" class="num">62 kJ/mol (gassing)</th></tr></thead>
+              <thead><tr><th scope="col">Temperature</th><th scope="col" class="num">E<sub>a</sub> = 45 kJ/mol (corrosion)</th><th scope="col" class="num">50 kJ/mol (SEI)</th><th scope="col" class="num">62 kJ/mol (gassing)</th></tr></thead>
               <tbody>
                 <tr><th scope="row">−10 °C</th><td class="num">0.09×</td><td class="num">0.07×</td><td class="num">0.04×</td></tr>
                 <tr><th scope="row">0 °C</th><td class="num">0.19×</td><td class="num">0.16×</td><td class="num">0.10×</td></tr>
@@ -182,12 +183,16 @@
               </tbody>
             </table>
           </div>
-          <p class="sources">Where this comes from — <a href="https://doi.org/10.1016/j.jpowsour.2005.03.172">Broussely et al. 2005</a> measured the calendar-aging rates the Arrhenius factor is fitted to · <a href="https://doi.org/10.1016/j.jpowsour.2014.03.112">Waldmann et al. 2014</a> mapped how the dominant mechanism itself changes with temperature.</p>
+          <p class="sources">Where this comes from — <a href="https://doi.org/10.1016/j.jpowsour.2005.03.172">Broussely et al. 2005</a> measured calendar-aging rates that follow Arrhenius behaviour · <a href="https://doi.org/10.1016/j.jpowsour.2014.03.112">Waldmann et al. 2014</a> mapped how the dominant mechanism itself changes with temperature.</p>
+
+          <h3 id="corrosion">Corrosion — the catch-all mechanism</h3>
+          <p>Corrosion is deterioration by chemical reaction with the surroundings, and inside a cell it is a catch-all for unwanted side reactions: the electrolyte solvent attacking the current collectors, or reacting with electrode materials. The products can themselves be corrosive, so the process can feed itself.</p>
+          <p>The cost is mostly <strong>impedance</strong>: less conductive area and poorer contact raise the internal resistance, so the cell loses power before it loses much charge. Like the other chemical mechanisms it speeds up with temperature — the teaching model uses an activation energy of 45 kJ/mol. Not every chemistry suffers every one of these reactions; the panels show the aluminium collector as one example. The next mechanism, passivation, is a special case of corrosion.</p>
         </section>
 
         <section aria-labelledby="sei">
           <h2 id="sei"><span class="section-number">03</span>Passivation — the SEI film</h2>
-          <p>Graphite negative electrodes suffer a particular form of corrosion called passivation. The electrolyte solvent is not chemically stable at the potentials found in most lithium-ion cells, so it reacts with the graphite particles. The reaction products form a layer on the particle surfaces: the <strong>solid–electrolyte interphase (SEI)</strong>.</p>
+          <p>Negative electrodes that work at low potential — graphite above all, but also silicon and lithium metal — suffer a particular form of corrosion called passivation. The electrolyte solvent is not chemically stable at the potentials found in most lithium-ion cells, so it reacts with the electrode particles. The reaction products form a layer on the particle surfaces: the <strong>solid–electrolyte interphase (SEI)</strong>.</p>
           <p>That film is not purely bad news. It <em>protects</em> the graphite from further reaction, which is why the process slows so sharply after the first few cycles. But it never stops: the SEI keeps growing slowly for the whole life of the cell, and every nanometre of growth consumes lithium that can no longer be cycled. Two ideas do most of the work:</p>
           <ul>
             <li><strong>√t growth.</strong> The film is its own diffusion barrier, so its thickness grows like the square root of time, not linearly.</li>
@@ -196,14 +201,14 @@
           <div class="equation" role="math" aria-label="film thickness delta of t and T equals delta one times the square root of t times the Arrhenius factor of T">
             <math display="block"><mi>δ</mi><mo stretchy="false">(</mo><mi>t</mi><mo>,</mo><mi>T</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>δ</mi><mn>1</mn></msub><msqrt><mi>t</mi><mo>·</mo><mfrac><mrow><mi>k</mi><mo stretchy="false">(</mo><mi>T</mi><mo stretchy="false">)</mo></mrow><mrow><mi>k</mi><mo stretchy="false">(</mo><mn>25</mn><mtext>&#8202;°C</mtext><mo stretchy="false">)</mo></mrow></mfrac></msqrt></math>
           </div>
-          <p>In the teaching model, δ<sub>1</sub> is 12 nm of film after one year at 25 °C, and capacity loss is proportional to film thickness. Set the panel to 45 °C and watch what a hot summer does to a cell that is doing nothing at all.</p>
+          <p>Here <math><mi>t</mi></math> is in years. In the teaching model, δ<sub>1</sub> is 12 nm of film after one year at 25 °C, and capacity loss is proportional to film thickness. Set the panel to 45 °C and watch what a hot summer does to a cell that is doing nothing at all.</p>
           <figure class="panel-frame">
             <iframe src="panels/sei.html" title="Interactive panel: SEI film growth with temperature and time" height="440" loading="lazy"></iframe>
             <figcaption>One graphite particle with its film drawn to scale, and film thickness over the cell’s life.</figcaption>
           </figure>
           <div class="table-wrap">
             <table>
-              <caption>Capacity remaining in storage only, no cycling (teaching model)</caption>
+              <caption>Capacity remaining from SEI growth alone, in constant-temperature storage (teaching model)</caption>
               <thead><tr><th scope="col">Years</th><th scope="col" class="num">0 °C</th><th scope="col" class="num">25 °C</th><th scope="col" class="num">45 °C</th></tr></thead>
               <tbody>
                 <tr><th scope="row">1</th><td class="num">97.9 %</td><td class="num">94.8 %</td><td class="num">90.3 %</td></tr>
@@ -219,7 +224,7 @@
 
         <section aria-labelledby="gas">
           <h2 id="gas"><span class="section-number">04</span>Gas generation</h2>
-          <p>Some chemistries produce gaseous products while charging that, ideally, return to their earlier state on discharge. Two quite different failure paths come out of that one reaction:</p>
+          <p>Some chemistries produce gas while charging that, ideally, returns to its earlier aqueous state on discharge — lead-acid is the classic example. In lithium-ion cells, gas comes mainly from irreversible electrolyte decomposition, so the recombination term in the model below is a simplification. Either way, two quite different failure paths follow:</p>
           <ul>
             <li><strong>The gas escapes.</strong> Through a breach in the enclosure, that capacity is gone for good — and in some cells the released gases are flammable or explosive. Overcharged lead-acid cells, for example, give off oxygen and hydrogen.</li>
             <li><strong>The gas stays.</strong> In a sealed cell, pressure builds until the cell swells or ruptures unless it has a <strong>release vent</strong>. A vent makes the failure survivable, not free: venting loses electrolyte too.</li>
@@ -337,7 +342,7 @@
           <p>Three results are worth pulling out by hand:</p>
           <ul>
             <li><strong>Shelf storage at 25 °C</strong> is dominated by passivation, and takes over a decade to reach 80 %.</li>
-            <li><strong>Hot operation</strong> compresses that to about two years, without the cell doing anything different.</li>
+            <li><strong>Heat alone</strong> shortens it: storage at 45 °C reaches 80 % in about 3.5 years, and cycling at 45 °C (<em>hot operation</em>) in about two.</li>
             <li><strong>Cold fast-charging</strong> hands the blame to plating instead — a different mechanism, a different warning sign, and a safety problem rather than a performance one.</li>
           </ul>
           <p>One caveat the panel cannot show: measured capacity can appear to recover slightly after rest, temperature equilibration or a different diagnostic procedure. That does not reverse the underlying degradation, and deep discharge should not be used as a general rejuvenation method.</p>
@@ -347,7 +352,7 @@
         <section aria-labelledby="temperature">
           <h2 id="temperature"><span class="section-number">09</span>Temperature shifts the aging balance</h2>
           <p>Higher temperature generally accelerates aging, so keeping cells inside an acceptable temperature range is the most effective single way to extend their life. It is the most actionable idea in the whole topic, and the panel below shows why.</p>
-          <p>The catch — and the reason the total curve is <strong>U-shaped</strong> rather than simply rising — is lithium plating. Cooling a cell slows the side reactions, but it also slows the intercalation you <em>want</em>, so a cold cell that is being charged plates lithium instead. <strong>Cold is only free if no current is flowing.</strong> Switch between <em>shelf storage</em> and <em>cold / fast charge</em> to see both halves. Both curves come from the model in section 08, so the U-shape is a result, not a second opinion.</p>
+          <p>The catch — and the reason the total curve is <strong>U-shaped</strong> rather than simply rising — is lithium plating. Cooling a cell slows the side reactions, but it also slows the intercalation you <em>want</em>, so a cold cell that is being charged plates lithium instead. <strong>Cold is only free if no current is flowing.</strong> Switch between <em>shelf storage</em> and <em>cold / fast charge</em> to see both halves. Both curves come from the model in section 08, so the U-shape is a result, not a second opinion. In this teaching model the slowest-aging temperature for the cycling duties sits between about 4 and 13 °C (around 20 °C for cold fast charging); the measurements cited below put the minimum nearer room temperature, a reminder that the model shows shape, not calibrated values.</p>
           <figure class="panel-frame">
             <iframe src="panels/window.html" title="Interactive panel: aging rate against temperature for different duties" height="520" loading="lazy"></iframe>
             <figcaption>Years to 80 % capacity across temperature, for the selected duty.</figcaption>
@@ -375,7 +380,7 @@
               <thead><tr><th scope="col">Mechanism</th><th scope="col">Where it lives</th><th scope="col">Feeds mainly</th><th scope="col">Accelerated by</th><th scope="col">Caveat</th></tr></thead>
               <tbody>
                 <tr><th scope="row">Corrosion</th><td>Collectors, active and inactive materials</td><td>Impedance ↑</td><td>Temperature</td><td>A catch-all term; not every chemistry suffers every reaction</td></tr>
-                <tr><th scope="row">Passivation (SEI)</th><td>Graphite particle surfaces</td><td>Capacity ↓</td><td>Temperature, time</td><td>Specific to graphitic negative electrodes</td></tr>
+                <tr><th scope="row">Passivation (SEI)</th><td>Graphite particle surfaces</td><td>Capacity ↓</td><td>Temperature, time</td><td>Forms on low-potential negative electrodes (graphite, silicon, lithium metal)</td></tr>
                 <tr><th scope="row">Gas generation</th><td>Pores, then the cell’s free volume</td><td>Capacity ↓, safety</td><td>Temperature, overcharge</td><td>Species and rates depend on chemistry, SOC and abuse history</td></tr>
                 <tr><th scope="row">Crystal formation</th><td>Electrode surfaces</td><td>Impedance ↑ → power fade</td><td>Cycling</td><td>Very general to redox cells; morphology varies enormously</td></tr>
                 <tr><th scope="row">Dendrites / plating</th><td>Negative electrode → through the separator</td><td>Self-discharge ↑, shorts</td><td>Cold charging, high current</td><td>A risk condition, not normal operation</td></tr>
@@ -406,7 +411,7 @@
           </details>
           <details>
             <summary>Two identical cells sit on a shelf, one at 25 °C and one at 45 °C. Roughly how much faster does the hot one age?</summary>
-            <div><p>About <strong>3.5× faster</strong>, from the Arrhenius factor for a reaction near 50 kJ/mol — doubling per 10 °C, and 20 °C is two doublings plus a bit. In section 08, set <em>shelf storage</em> and compare: time to 80 % goes from over a decade to a couple of years, with the cell doing no work at all.</p></div>
+            <div><p>About <strong>3.5× faster</strong>, from the Arrhenius factor for a reaction near 50 kJ/mol — a little under two doublings (1.92 × 1.85 ≈ 3.5). In section 08, set <em>shelf storage</em> and compare: time to 80 % goes from about 12 years to about 3.5, with the cell doing no work at all.</p></div>
           </details>
           <details>
             <summary>Why is a rising self-discharge rate treated as more alarming than a slow capacity fade?</summary>
@@ -414,7 +419,7 @@
           </details>
           <details>
             <summary>Your pack lives in a hot climate and is fast-charged. You can fix one thing. Which?</summary>
-            <div><p>Keep the cells inside their validated operating window and <strong>manage charge power with temperature</strong>. For the illustrative <em>cold / fast charge</em> duty, the model favours the low twenties over 45 °C. For a pack that is already cold, reduce the charge current or pre-heat it — extra cooling would raise the plating risk.</p></div>
+            <div><p>Keep the cells inside their validated operating window and <strong>manage charge power with temperature</strong>. For the illustrative <em>cold / fast charge</em> duty, the model favours around 20 °C over 45 °C. For a pack that is already cold, reduce the charge current or pre-heat it — extra cooling would raise the plating risk.</p></div>
           </details>
         </section>
 

@@ -202,7 +202,7 @@
 
         <section aria-labelledby="in-a-cell">
           <h2 id="in-a-cell"><span class="section-number">04</span>Where it shows up in a cell</h2>
-          <p>Diffusion appears wherever lithium has to travel without being carried by a current alone: inside active-material particles during intercalation, and through the electrolyte in the pores of the electrodes and separator described in <a href="../../fundamentals/lithium-ion-cell-architecture/">Part 01B</a>. It also explains the shape of one aging curve: the SEI film in <a href="../../fundamentals/battery-aging/#sei">Part 04</a> grows like √t because the film acts as its own diffusion barrier.</p>
+          <p>Diffusion acts wherever there is a concentration gradient: inside active-material particles during intercalation (solid-state diffusion), and in the electrolyte filling the pores of the electrodes and separator described in <a href="../../fundamentals/lithium-ion-cell-architecture/">Part 01B</a>, where it acts alongside migration in the electric field. It also explains the shape of one aging curve: in the diffusion-limited model of <a href="../../fundamentals/battery-aging/#sei">Part 04</a>, the SEI film grows like √t because the film acts as its own diffusion barrier.</p>
           <p>Applying the law inside a porous electrode usually needs an <strong>effective</strong> transport coefficient and extra homogenisation assumptions, because the species moves through a tortuous network of pores rather than a uniform medium.</p>
         </section>
 
@@ -242,7 +242,7 @@ ficks_first_law_flux(1.0e-14, [-3e6, 0.0, 3e6])      # array: one flux per gradi
           <h2 id="exercises"><span class="section-number">08</span>Exercises</h2>
           <details>
             <summary>Halve the diffusivity from 10⁻¹⁴ to 5 × 10⁻¹⁵ m²/s. What happens to the flux–gradient line?</summary>
-            <div><p>Its slope halves. Flux is proportional to <math><mi>D</mi></math>, so every flux at a given gradient is half as large; the sign — the direction — does not change.</p></div>
+            <div><p>Its slope, −<math><mi>D</mi></math>, halves in magnitude. Flux is proportional to <math><mi>D</mi></math>, so every flux at a given gradient is half as large; the sign — the direction — does not change.</p></div>
           </details>
           <details>
             <summary>Calculate the flux for D = 2 × 10⁻¹⁴ m²/s and dc/dx = −3 × 10⁷ mol/m⁴.</summary>
