@@ -283,8 +283,7 @@
       type: "drill",
       drill: "cRateCurrent",
       part: "Part 02",
-      module:
-        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb",
+      module: "../fundamentals/capacity-and-c-rate/",
       moduleLabel: "Part 02 · Nominal capacity and C-rate",
       question: "Calculate the constant current for this cell and rate.",
       hints: [
@@ -301,8 +300,7 @@
       type: "drill",
       drill: "idealDuration",
       part: "Part 02",
-      module:
-        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb",
+      module: "../fundamentals/capacity-and-c-rate/",
       moduleLabel: "Part 02 · Nominal capacity and C-rate",
       question: "Calculate the ideal duration at this rate.",
       hints: ["The ideal duration is the reciprocal of the C-rate, in hours."],
@@ -313,8 +311,7 @@
       group: "part",
       tier: "core",
       part: "Part 02",
-      module:
-        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb",
+      module: "../fundamentals/capacity-and-c-rate/",
       moduleLabel: "Part 02 · Nominal capacity and C-rate",
       question:
         "Ideal duration is 1 / C-rate. Why will a real cell usually run for less than that?",
@@ -435,8 +432,7 @@
       tier: "core",
       type: "multi",
       part: "Part 04",
-      module:
-        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb",
+      module: "../fundamentals/battery-aging/",
       moduleLabel: "Part 04 · Battery aging",
       question: "Select every symptom of impedance rise rather than capacity fade.",
       hints: [
@@ -478,8 +474,7 @@
       type: "drill",
       drill: "arrhenius",
       part: "Part 04",
-      module:
-        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb",
+      module: "../fundamentals/battery-aging/",
       moduleLabel: "Part 04 · Battery aging",
       question: "How much does temperature accelerate this process?",
       hints: [
@@ -496,8 +491,7 @@
       type: "drill",
       drill: "filmGrowth",
       part: "Part 04",
-      module:
-        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb",
+      module: "../fundamentals/battery-aging/",
       moduleLabel: "Part 04 · Battery aging",
       question: "How thick is the film after this much time?",
       hints: [
@@ -512,8 +506,7 @@
       group: "part",
       tier: "core",
       part: "Part 04",
-      module:
-        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb",
+      module: "../fundamentals/battery-aging/",
       moduleLabel: "Part 04 · Battery aging",
       question:
         "Distinguish capacity fade from impedance rise, and name a condition that accelerates each.",
@@ -580,8 +573,7 @@
       group: "chapter",
       tier: "core",
       part: "Checkpoint 04",
-      module:
-        "https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb",
+      module: "../fundamentals/battery-aging/",
       moduleLabel: "Chapter checkpoint · Connect",
       question:
         "Connect an operating condition to a degradation mechanism, and then to a signal you could actually measure.",
@@ -663,6 +655,21 @@
 
   function mount(root) {
     var state = loadState();
+    /* A lesson page mounts the coach with `data-part="Part 02"` to ask only
+       that part's questions, as the lesson's practice quiz. The chapter guide
+       sets nothing and gets every question. */
+    var only = (root.dataset.part || "").trim();
+    var pool = only
+      ? QUESTIONS.filter(function (question) {
+          return question.part === only;
+        })
+      : QUESTIONS;
+    if (!pool.length) {
+      pool = QUESTIONS;
+    }
+    /* Module links are written relative to the chapter guide. A page that
+       lives elsewhere says where the guide is with `data-module-base`. */
+    var moduleBase = new URL(root.dataset.moduleBase || ".", window.location.href);
     var endpoint = (root.dataset.tutorEndpoint || "").trim();
     var filter = "all";
     var order = [];
@@ -675,7 +682,7 @@
     root.appendChild(ui.wrapper);
 
     function visible() {
-      return QUESTIONS.filter(function (question) {
+      return pool.filter(function (question) {
         if (filter === "all") {
           return true;
         }
@@ -697,7 +704,7 @@
     function rebuild(keepId) {
       order = visible();
       if (!order.length) {
-        order = QUESTIONS.slice();
+        order = pool.slice();
         filter = "all";
       }
       var found = keepId
@@ -712,7 +719,7 @@
       var answered = 0;
       var covered = 0;
       var total = 0;
-      QUESTIONS.forEach(function (question) {
+      pool.forEach(function (question) {
         var result = state.results[question.id];
         if (result && result.done) {
           answered += 1;
@@ -738,13 +745,13 @@
 
     function updateProgress() {
       var summary = scoreSummary();
-      var percent = Math.round((summary.answered / QUESTIONS.length) * 100);
+      var percent = Math.round((summary.answered / pool.length) * 100);
       ui.progressFill.style.width = percent + "%";
       ui.progressTrack.setAttribute("aria-valuenow", String(summary.answered));
       ui.overall.textContent =
         summary.answered +
         " of " +
-        QUESTIONS.length +
+        pool.length +
         " answered" +
         (summary.total ? " · " + summary.covered + " of " + summary.total + " scored" : "");
     }
@@ -1072,7 +1079,7 @@
         }
       };
 
-      ui.revisit.href = question.module;
+      ui.revisit.href = new URL(question.module, moduleBase).href;
       ui.revisit.textContent = "Revisit " + question.part;
 
       var result = state.results[question.id];
@@ -1176,7 +1183,7 @@
       var wrapper = element("div", "coach");
 
       var bar = element("div", "coach-bar");
-      var counter = element("span", "pill", "Question 1 of " + QUESTIONS.length);
+      var counter = element("span", "pill", "Question 1 of " + pool.length);
       var part = element("span", "pill coach-part", "Part 01");
       var mode = element("span", "pill coach-mode", "Checked");
       var spacer = element("span", "spacer");
@@ -1207,13 +1214,17 @@
       bar.appendChild(part);
       bar.appendChild(mode);
       bar.appendChild(spacer);
-      bar.appendChild(filters);
+      /* A lesson quiz is already scoped to one part; the chapter-wide filters
+         would only offer empty or identical sets. */
+      if (!only) {
+        bar.appendChild(filters);
+      }
 
       var progressTrack = element("div", "progress-track");
       progressTrack.setAttribute("role", "progressbar");
       progressTrack.setAttribute("aria-label", "Checkpoint questions answered");
       progressTrack.setAttribute("aria-valuemin", "0");
-      progressTrack.setAttribute("aria-valuemax", String(QUESTIONS.length));
+      progressTrack.setAttribute("aria-valuemax", String(pool.length));
       progressTrack.setAttribute("aria-valuenow", "0");
       var progressFill = element("span");
       progressFill.style.width = "0%";

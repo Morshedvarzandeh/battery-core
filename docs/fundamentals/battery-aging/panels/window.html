@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Temperature window — Battery aging panel</title>
+<link rel="stylesheet" href="panels.css">
+</head>
+<body>
+<script src="panels.js"></script>
+<div class="w">
+  <div class="w-head">
+    <h2>Temperature shifts the aging balance</h2><span class="spacer"></span>
+    <span class="text-xs text-muted">capacity lost in 5 years, relative to a mild 25 °C</span>
+  </div>
+  <div class="segmented" id="duty" role="group" aria-label="Duty scenario" style="align-self:flex-start">
+    <button type="button" data-v="storage" aria-pressed="true">Shelf storage</button>
+    <button type="button" data-v="hot" aria-pressed="false">Hot</button>
+    <button type="button" data-v="cold" aria-pressed="false">Cold / fast charge</button>
+    <button type="button" data-v="cycling" aria-pressed="false">Deep cycling</button>
+    <button type="button" data-v="overcharge" aria-pressed="false">Overcharge</button>
+  </div>
+  <div class="w-body" style="grid-template-columns: 1fr">
+    <div class="pane"><div class="figwrap" id="chart"></div><div class="legend" id="lg"></div></div>
+  </div>
+  <div class="readouts">
+    <div class="ro"><b id="r1">—</b><span>slowest-aging window</span></div>
+    <div class="ro"><b id="r2">—</b><span>life at 0 °C</span></div>
+    <div class="ro"><b id="r3">—</b><span>life at 25 °C</span></div>
+    <div class="ro"><b id="r4">—</b><span>life at 45 °C</span></div>
+  </div>
+  <p class="note" id="note"></p>
+</div>
+<script>
+let duty = "storage";
+const REF = 5;
+function render() {
+  const d = DUTY[duty], M = 161, T = [], chem = [], plate = [], tot = [];
+  for (let i = 0; i < M; i++) {
+    const t = -20 + 80 * i / (M - 1), s = severities(t, REF, d);
+    const p = CAP_W.dendrite * s.dendrite;
+    const c = CAP_W.sei * s.sei + CAP_W.cracking * s.cracking + CAP_W.gas * s.gas + CAP_W.crystal * s.crystal;
+    T.push(t); plate.push(p); chem.push(c); tot.push(clamp(p + c, 0, 0.75));
+  }
+  const base = tot[Math.round((25 + 20) / 80 * (M - 1))];      /* normalise to 25 °C */
+  const vmax = Math.min(8, Math.max(...tot) / base * 1.12);
+  const lim = Math.min(...tot) * 1.25;
+  let lo = -1, hi = -1;
+  if (d.cRate > 0) tot.forEach((v, i) => { if (v <= lim) { if (lo < 0) lo = i; hi = i; } });
+
+  const P = plot(760, 250, { t: 22, r: 20, b: 38, l: 44 }, [-20, 60], [0, vmax]);
+  if (lo >= 0 && hi > lo) {
+    P.add(`<rect class="band" x="${P.x(T[lo]).toFixed(1)}" y="${P.m.t}" width="${(P.x(T[hi]) - P.x(T[lo])).toFixed(1)}" height="${P.ih}"/>`)
+     .add(`<text class="band-label" x="${((P.x(T[lo]) + P.x(T[hi])) / 2).toFixed(1)}" y="${P.m.t + 14}" text-anchor="middle">slowest aging · ${minus(T[lo].toFixed(0))} to ${minus(T[hi].toFixed(0))} °C</text>`);
+  }
+  P.gridY([0.5, 1, 1.5, 2, 3, 4, 6, 8].filter(v => v < vmax), v => "×" + v).ticksX([-20, 0, 20, 40, 60], minus).titleX("cell temperature (°C)").baseline();
+  P.add(`<path class="series s-chem" d="${pathOf(P, T, chem.map(v => v / base))}"/>`)
+   .add(`<path class="series s-plate" d="${pathOf(P, T, plate.map(v => v / base))}"/>`)
+   .add(`<path class="series s-total" d="${pathOf(P, T, tot.map(v => v / base))}"/>`);
+  $("#chart").innerHTML = P.svg("Relative capacity loss against temperature: chemical side reactions rise with heat, plating rises with cold, and the total is U-shaped whenever the cell is charged.");
+  $("#lg").innerHTML = legend([
+    { c: "var(--mech-corrosion)", label: "chemical side reactions" },
+    { c: "var(--mech-dendrite)", label: "lithium plating" },
+    { c: "var(--ink)", label: "total" }]);
+
+  const life = t => { const e = yearsTo80(t, d); return e ? e.toFixed(1) + " yr" : "> 30 yr"; };
+  $("#r1").textContent = lo >= 0 ? `${minus(T[lo].toFixed(0))} to ${minus(T[hi].toFixed(0))} °C` : "colder is slower";
+  $("#r2").textContent = life(0); $("#r3").textContent = life(25); $("#r4").textContent = life(45);
+  $("#note").innerHTML = d.cRate === 0
+    ? "With <em>no current flowing</em> there is no plating penalty, so storage aging simply slows as the cell gets colder — every side reaction is thermally activated. Pick a duty that <em>charges</em> the cell to see the other half of the story."
+    : "Cooling slows the side reactions but also slows the intercalation you want, so a cold cell being charged plates lithium instead. Both curves are derived from the same model as every other panel here — the U-shape is a result, not a second opinion.";
+}
+segmented("#duty", v => { duty = v; render(); });
+render();
+requestAnimationFrame(fit);
+</script>
+
+</body>
+</html>

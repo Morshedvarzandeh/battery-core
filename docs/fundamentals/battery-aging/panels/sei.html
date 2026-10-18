@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>SEI film growth — Battery aging panel</title>
+<link rel="stylesheet" href="panels.css">
+</head>
+<body>
+<script src="panels.js"></script>
+<div class="w">
+  <div class="w-head">
+    <h2>The SEI film: √t growth, Arrhenius rate</h2><span class="spacer"></span>
+    <div class="controls">
+      <span class="ctl"><label for="T">Temperature</label>
+        <input class="range" type="range" id="T" min="-10" max="60" step="1" value="25"><output id="oT">25 °C</output></span>
+      <span class="ctl"><label for="Y">Years</label>
+        <input class="range" type="range" id="Y" min="1" max="120" step="1" value="30"><output id="oY">3.0</output></span>
+    </div>
+  </div>
+  <div class="w-body split-l">
+    <div class="pane">
+      <span class="pane-title">One graphite particle, film drawn to scale</span>
+      <div class="figwrap" id="particle"></div>
+    </div>
+    <div class="pane">
+      <span class="pane-title">Film thickness over the cell's life</span>
+      <div class="figwrap" id="chart"></div>
+      <div class="legend" id="lg"></div>
+    </div>
+  </div>
+  <div class="readouts">
+    <div class="ro"><b id="r1">—</b><span>film thickness</span></div>
+    <div class="ro"><b id="r2">—</b><span>capacity left</span></div>
+    <div class="ro"><b id="r3">—</b><span>rate vs. 25 °C</span></div>
+    <div class="ro"><b id="r4">—</b><span>reaches 80 % at</span></div>
+  </div>
+</div>
+<script>
+const RAMP = ["var(--n-400)", "var(--n-600)", "var(--ink)"];
+function render() {
+  const T = +$("#T").value, y = +$("#Y").value / 10;
+  $("#oT").textContent = minus(T) + " °C";
+  $("#oY").textContent = fix(y);
+  const d = seiThickness(y, T), cap = seiCapacity(y, T);
+
+  /* particle */
+  const S = 200, cx = S / 2, cy = S / 2, r = 52, w = 6 + 34 * clamp(d / 90);
+  let p = `<circle cx="${cx}" cy="${cy}" r="${r + w}" fill="var(--mech-sei)" opacity="0.8"/>
+           <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#g-graphite)"/>
+           <circle cx="${cx}" cy="${cy}" r="${r + w}" fill="none" stroke="var(--surface)" stroke-width="1.2" stroke-dasharray="3 3"/>
+           <text class="on-mat" x="${cx}" y="${cy + 4}" text-anchor="middle">graphite</text>
+           <line x1="${cx + r * 0.72}" y1="${cy - r * 0.72}" x2="${S - 6}" y2="14" stroke="var(--mech-sei)" stroke-width="1.2"/>
+           <text class="fig-label" x="${S - 4}" y="10" text-anchor="end" fill="var(--mech-sei)">SEI ≈ ${d.toFixed(0)} nm</text>`;
+  $("#particle").innerHTML = `<svg class="fig" viewBox="0 0 ${S} ${S}" role="img"
+    aria-label="A graphite particle wrapped in a solid–electrolyte interphase film about ${d.toFixed(0)} nanometres thick.">
+    <defs><radialGradient id="g-graphite" cx="0.35" cy="0.3"><stop class="stop-gr-hi" offset="0"/><stop class="stop-gr-lo" offset="1"/></radialGradient></defs>${p}</svg>`;
+
+  /* thickness chart */
+  const P = plot(430, 216, { t: 12, r: 40, b: 36, l: 36 }, [0, 12], [0, 90]);
+  P.gridY([0, 30, 60, 90], v => v + " nm").ticksX([0, 3, 6, 9, 12]).titleX("years in service").baseline();
+  const xs = series(61, u => u * 12);
+  [0, 25, 45].forEach((t, i) => {
+    const ys = xs.map(x => Math.min(90, seiThickness(x, t)));
+    P.add(`<path class="series" d="${pathOf(P, xs, ys)}" stroke="${RAMP[i]}" stroke-width="1.5"/>`);
+    P.add(`<text class="axis-label" x="${(P.x(12) + 5).toFixed(1)}" y="${(P.y(ys[60]) + 3.5).toFixed(1)}" fill="${RAMP[i]}">${minus(t)}°</text>`);
+  });
+  P.line(xs, xs.map(x => Math.min(90, seiThickness(x, T))), "s-cap");
+  P.dot(y, Math.min(90, d), "var(--mech-sei)");
+  $("#chart").innerHTML = P.svg("SEI film thickness against years, shown at zero, twenty-five and forty-five degrees plus the temperature you chose.");
+
+  let eol = null;
+  for (let t = 0.1; t <= 30; t += 0.1) if (seiCapacity(t, T) <= 0.8) { eol = t; break; }
+  $("#r1").textContent = d.toFixed(0) + " nm";
+  $("#r2").textContent = (100 * cap).toFixed(1) + " %";
+  $("#r3").textContent = "×" + arrh(T, 50000).toFixed(2);
+  $("#r4").textContent = eol ? eol.toFixed(1) + " yr" : "> 30 yr";
+}
+bind(["T", "Y"], render);
+render();
+requestAnimationFrame(fit);
+</script>
+
+</body>
+</html>

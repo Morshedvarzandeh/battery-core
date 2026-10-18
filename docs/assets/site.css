@@ -1833,3 +1833,948 @@ footer a {
 .status-cell[data-state="available"] {
   color: var(--accent);
 }
+
+
+/* ===========================================================================
+   Lesson pages
+   The readable version of a module: the explanation, the equations, worked
+   examples, the check-yourself questions and the references, on the page
+   itself rather than behind a notebook launch. Structure:
+
+     nav.breadcrumbs  →  .page-hero  →  .lesson (aside.lesson-toc + article.prose)
+                      →  nav.lesson-pager
+
+   `.lesson` carries the tier through `data-tier`, exactly like the hero
+   eyebrow, so rules, callouts and links pick up the module's colour.
+   =========================================================================== */
+
+.breadcrumbs {
+  padding-top: 1.4rem;
+  font-size: 0.85rem;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+}
+
+.breadcrumbs li + li::before {
+  content: "/";
+  margin-right: 0.45rem;
+  opacity: 0.5;
+}
+
+.breadcrumbs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover,
+.breadcrumbs [aria-current="page"] {
+  color: var(--text);
+}
+
+.lesson-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.lesson-meta strong {
+  color: var(--text);
+}
+
+.lesson {
+  --tier: var(--tier-core);
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  padding: 0 0 5rem;
+  border-top: 1px solid var(--line);
+}
+
+.lesson[data-tier="deeper"] { --tier: var(--tier-deeper); }
+
+.lesson-toc {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 2.4rem 0 1rem;
+}
+
+.lesson-toc h2 {
+  margin: 0 0 0.8rem;
+  color: var(--tier);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.lesson-toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid var(--line);
+}
+
+.lesson-toc a {
+  display: block;
+  padding: 0.38rem 0 0.38rem 0.95rem;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.lesson-toc a:hover {
+  border-left-color: var(--tier);
+  color: var(--text);
+}
+
+.lesson-toc .lesson-toc-run {
+  display: inline-block;
+  margin-top: 1.4rem;
+  color: var(--tier);
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.prose {
+  min-width: 0;
+  max-width: 780px;
+  padding-top: 2.4rem;
+  font-size: 1.06rem;
+  line-height: 1.75;
+}
+
+.prose > section + section {
+  margin-top: 3.4rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--line);
+}
+
+.prose h2 {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.7rem, 3.2vw, 2.35rem);
+  scroll-margin-top: 1.5rem;
+}
+
+.prose h2 .section-number {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--tier);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.prose h3 {
+  margin: 2.2rem 0 0.7rem;
+  font-size: 1.28rem;
+  scroll-margin-top: 1.5rem;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  margin: 0 0 1.15rem;
+}
+
+.prose li {
+  margin: 0.35rem 0;
+}
+
+.prose li::marker {
+  color: var(--tier);
+}
+
+.prose a {
+  color: var(--tier);
+  text-underline-offset: 3px;
+}
+
+.prose a:hover {
+  color: var(--text);
+}
+
+.prose .button {
+  text-decoration: none;
+}
+
+.prose .button-primary,
+.prose .button-primary:hover {
+  color: #04251e;
+}
+
+.prose code,
+.prose kbd {
+  padding: 0.1em 0.38em;
+  border-radius: 6px;
+  background: var(--surface-raised);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.88em;
+}
+
+.prose pre {
+  margin: 1.2rem 0 1.6rem;
+  padding: 1.05rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-soft);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.prose .lede-inline {
+  color: var(--muted);
+  font-size: 1.12rem;
+}
+
+.table-wrap {
+  margin: 1.3rem 0 1.7rem;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-soft);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.prose caption {
+  padding: 0.85rem 1rem 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.prose th,
+.prose td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+/* Header cells keep their case: units such as kJ/mol and mΩ change meaning
+   when they are upper-cased. */
+.prose thead th {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.prose tbody tr:last-child th,
+.prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.prose .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.equation {
+  margin: 1.4rem 0 1.6rem;
+  padding: 1.15rem 1.3rem;
+  overflow-x: auto;
+  border-left: 3px solid var(--tier);
+  border-radius: 0 14px 14px 0;
+  background: var(--surface-soft);
+  text-align: center;
+}
+
+math {
+  font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", math, serif;
+}
+
+.equation math {
+  font-size: 1.3em;
+}
+
+.callout {
+  margin: 1.6rem 0;
+  padding: 1.15rem 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.callout > :last-child {
+  margin-bottom: 0;
+}
+
+.callout-title {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--tier);
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.callout-limits .callout-title {
+  color: var(--muted);
+}
+
+.sources {
+  margin: 1.4rem 0 0;
+  padding-left: 0.95rem;
+  border-left: 2px solid var(--line);
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.sources a {
+  color: var(--muted);
+}
+
+.answers details {
+  margin: 0 0 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.answers summary {
+  padding: 0.95rem 1.2rem;
+  cursor: pointer;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.answers summary::marker {
+  color: var(--tier);
+}
+
+.answers details[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.answers details > div {
+  padding: 1rem 1.2rem 0.2rem;
+  color: var(--muted);
+}
+
+.answers details > div strong {
+  color: var(--text);
+}
+
+.references {
+  padding-left: 1.4rem;
+  font-size: 0.95rem;
+}
+
+.references li {
+  margin: 0.6rem 0;
+  color: var(--muted);
+}
+
+.references cite {
+  color: var(--text);
+  font-style: italic;
+}
+
+/* An embedded interactive panel. The frame sizes itself to its content when
+   the panel can report its height; the min-height is only the first paint. */
+.panel-frame {
+  margin: 1.6rem 0 1.8rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface-soft);
+}
+
+.panel-frame iframe {
+  display: block;
+  width: 100%;
+  min-height: 360px;
+  border: 0;
+}
+
+.panel-frame figcaption {
+  padding: 0.7rem 1.1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* A small calculator inside a lesson. Results are written into the HTML with
+   the worked example, so the page reads correctly before any script runs. */
+.calc {
+  margin: 1.6rem 0 1.8rem;
+  padding: 1.3rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.calc-title,
+.prose .calc-title {
+  margin: 0 0 1rem;
+  color: var(--tier);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.calc-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+}
+
+.calc label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.calc input,
+.calc select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc input:focus-visible,
+.calc select:focus-visible {
+  outline: 2px solid var(--tier);
+  outline-offset: 1px;
+}
+
+.calc-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin: 1.1rem 0 0;
+}
+
+.calc-results div {
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: var(--surface-soft);
+}
+
+.calc-results dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.calc-results dd {
+  margin: 0.15rem 0 0;
+  color: var(--text);
+  font-size: 1.35rem;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.calc-note,
+.prose .calc-note {
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.calc-note[data-state="error"] {
+  color: var(--text);
+}
+
+.calc-note[data-state="error"]::before {
+  content: "⚠ ";
+  color: var(--orange);
+}
+
+.lesson-pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 2.5rem 0 4rem;
+  border-top: 1px solid var(--line);
+}
+
+.lesson-pager a {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1.15rem 1.3rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  text-decoration: none;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.lesson-pager a:hover {
+  border-color: rgba(104, 224, 189, 0.55);
+  transform: translateY(-2px);
+}
+
+.lesson-pager span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lesson-pager strong {
+  font-size: 1.05rem;
+}
+
+.lesson-pager .pager-next {
+  grid-column: 2;
+  text-align: right;
+}
+
+/* Glossary */
+.glossary-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.glossary-index a {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.glossary-index a:hover {
+  border-color: var(--tier);
+  color: var(--text);
+}
+
+.glossary dl {
+  margin: 0;
+}
+
+.glossary dt {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  font-weight: 850;
+  letter-spacing: -0.015em;
+  scroll-margin-top: 1.5rem;
+}
+
+.glossary dd {
+  margin: 0.45rem 0 0;
+}
+
+.glossary dd p {
+  margin: 0 0 0.6rem;
+}
+
+.glossary .term-link {
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+@media (max-width: 920px) {
+  .lesson {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .lesson-toc {
+    position: static;
+    max-height: none;
+    padding-bottom: 0;
+  }
+
+  /* On a narrow screen the contents become a compact set of chips instead of
+     a full-height column the reader has to scroll past. */
+  .lesson-toc ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    border-left: 0;
+  }
+
+  .lesson-toc a {
+    margin-left: 0;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.82rem;
+  }
+
+  .lesson-toc a:hover {
+    border-color: var(--tier);
+  }
+
+  .lesson-pager {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-pager .pager-next {
+    grid-column: 1;
+  }
+}
+
+@media print {
+  .site-header nav,
+  .lesson-toc,
+  .lesson-pager,
+  .calc,
+  .panel-frame {
+    display: none;
+  }
+
+  .lesson {
+    display: block;
+  }
+}
+
+
+/* ===========================================================================
+   Course discipline
+   The structure a learner expects from a course platform: objectives before a
+   lesson, a practice quiz and "mark as complete" after it, and a syllabus
+   with item types, times and progress. Progress is kept by
+   `course-progress.js` in the learner's own browser.
+   =========================================================================== */
+
+.objectives {
+  margin: 0 0 2.6rem;
+  padding: 1.3rem 1.45rem;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--tier, var(--tier-core));
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.objectives h2 {
+  margin: 0 0 0.7rem;
+  color: var(--tier, var(--tier-core));
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.objectives p {
+  margin: 0 0 0.6rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.objectives ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.objectives li {
+  margin: 0.3rem 0;
+}
+
+.objectives .prerequisite {
+  margin: 0.9rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+
+.complete-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.4rem 0 0;
+  padding: 1.15rem 1.3rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.complete-bar p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.complete-bar .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.complete-button {
+  min-height: 46px;
+  padding: 0.65rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.complete-button:hover {
+  border-color: var(--accent);
+}
+
+.complete-button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.complete-button[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--accent);
+  color: #04251e;
+}
+
+.complete-bar .button {
+  min-height: 46px;
+}
+
+/* Course overview */
+.course-about {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.course-about > div,
+.course-facts {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.course-about h3 {
+  margin-bottom: 0.9rem;
+  font-size: 1.15rem;
+}
+
+.learn-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learn-list li {
+  position: relative;
+  padding-left: 1.6rem;
+  color: var(--muted);
+}
+
+.learn-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.4rem 0 0;
+  padding: 1.2rem 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.skill-chips li {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.course-facts dl {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.course-facts dl div {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 0.8rem;
+}
+
+.course-facts dt {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.course-facts dd {
+  margin: 0;
+  font-weight: 750;
+}
+
+.course-progress {
+  margin-top: 1.3rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.course-progress p {
+  margin: 0 0 0.6rem;
+  font-weight: 800;
+}
+
+/* Syllabus items inside a study step */
+.syllabus-items {
+  display: grid;
+  gap: 0.45rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.syllabus-items li {
+  display: grid;
+  grid-template-columns: 1.4rem 8.5rem minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: baseline;
+  padding: 0.55rem 0.8rem;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  font-size: 0.9rem;
+}
+
+.syllabus-items li::before {
+  content: "○";
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.syllabus-items li[data-done="true"]::before {
+  content: "✓";
+  color: var(--tier, var(--tier-core));
+}
+
+.syllabus-items .item-type {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.syllabus-items a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.syllabus-items a:hover {
+  color: var(--tier, var(--tier-core));
+}
+
+.syllabus-items .item-time {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.study-step-copy .complete-button {
+  display: block;
+  margin-top: 0.9rem;
+  min-height: 40px;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 920px) {
+  .course-about,
+  .learn-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .syllabus-items li {
+    grid-template-columns: 1.4rem minmax(0, 1fr) auto;
+  }
+
+  .syllabus-items li::before { grid-column: 1; grid-row: 1 / span 2; }
+  .syllabus-items .item-type { grid-column: 2; grid-row: 1; }
+  .syllabus-items li > a,
+  .syllabus-items li > .item-title { grid-column: 2; grid-row: 2; }
+  .syllabus-items .item-time { grid-column: 3; grid-row: 1 / span 2; align-self: center; }
+}
+
+.section > .syllabus-items {
+  max-width: 760px;
+  margin-bottom: 0.9rem;
+}
+
+.section > .complete-button {
+  margin: 0 0 2rem;
+}
+
+.glossary {
+  --tier: var(--tier-core);
+  padding-top: 2.5rem;
+}
+
+.glossary .prose {
+  max-width: 820px;
+  padding-top: 0;
+}

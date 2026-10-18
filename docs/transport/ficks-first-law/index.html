@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Fick's first law, J = −D dc/dx, for battery materials: units, the sign convention, a worked lithium-diffusion example, a flux calculator, and what the law does not model.">
+  <meta name="theme-color" content="#07131d">
+  <link rel="canonical" href="https://learn.lemonergy.com/transport/ficks-first-law/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Battery Core by Lemonergy">
+  <meta property="og:title" content="Fick's first law for battery materials — which way does lithium move?">
+  <meta property="og:description" content="J = −D dc/dx with units, the sign convention, a lithium-diffusion example and a flux calculator.">
+  <meta property="og:url" content="https://learn.lemonergy.com/transport/ficks-first-law/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <title>Fick's first law: diffusion flux, sign convention and calculator — Battery Core</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LearningResource",
+        "@id": "https://learn.lemonergy.com/transport/ficks-first-law/#lesson",
+        "name": "Fick's first law",
+        "headline": "Fick's first law: diffusion flux, sign convention and calculator",
+        "description": "One-dimensional diffusive flux J = −D dc/dx for battery materials, with SI units, the sign convention, a worked example, and the law's limits.",
+        "url": "https://learn.lemonergy.com/transport/ficks-first-law/",
+        "inLanguage": "en",
+        "learningResourceType": "Lesson",
+        "educationalLevel": "Beginner",
+        "timeRequired": "PT12M",
+        "isAccessibleForFree": true,
+        "teaches": ["Fick's first law", "Diffusion coefficient", "Concentration gradient", "Diffusive flux sign convention"],
+        "keywords": "Fick's first law, diffusion flux, diffusion coefficient, concentration gradient, lithium diffusion, battery transport",
+        "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
+        "author": { "@id": "https://lemonergy.com/#organization" },
+        "publisher": { "@id": "https://lemonergy.com/#organization" },
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://lemonergy.com/#organization",
+        "name": "Lemonergy",
+        "url": "https://lemonergy.com/",
+        "email": "info@lemonergy.com"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Battery Core", "item": "https://learn.lemonergy.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Transport and diffusion" },
+          { "@type": "ListItem", "position": 3, "name": "Fick's first law" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the lesson</a>
+
+  <header class="site-header">
+    <a class="brand" href="../../" aria-label="Battery Core home">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span>Battery Core</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../../">Home</a>
+      <a href="../../chapter-1/">Chapter 1</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">Licensing</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Battery Core</a></li>
+        <li><a href="../../#transport-title">Transport and diffusion</a></li>
+        <li><span aria-current="page">Fick’s first law</span></li>
+      </ol>
+    </nav>
+
+    <section class="page-hero" aria-labelledby="page-title">
+      <p class="eyebrow">Physics building block · Transport</p>
+      <h1 id="page-title">Which way does lithium move? Fick’s first law.</h1>
+      <p class="lede">Diffusion carries a species from where it is concentrated to where it is scarce. Fick’s first law turns that sentence into one equation. After this lesson you can compute a diffusive flux with the right units and the right sign, and say what the law leaves out before you build a battery model on it.</p>
+      <ul class="lesson-meta">
+        <li><strong>12 min</strong> read</li>
+        <li><strong>1</strong> calculator</li>
+        <li><strong>3</strong> exercises with answers</li>
+      </ul>
+    </section>
+
+    <div class="lesson">
+      <aside class="lesson-toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">In this lesson</h2>
+        <ol>
+          <li><a href="#law">The law and its units</a></li>
+          <li><a href="#sign">The sign convention</a></li>
+          <li><a href="#example">A battery-material example</a></li>
+          <li><a href="#in-a-cell">Where it shows up in a cell</a></li>
+          <li><a href="#assumptions">Assumptions</a></li>
+          <li><a href="#limitations">What it does not model</a></li>
+          <li><a href="#python">Calculate it in Python</a></li>
+          <li><a href="#exercises">Exercises</a></li>
+          <li><a href="#references">References</a></li>
+        </ol>
+      </aside>
+
+      <article class="prose">
+        <section class="objectives" aria-labelledby="objectives-title">
+          <h2 id="objectives-title">Learning objectives</h2>
+          <p>By the end of this lesson you will be able to:</p>
+          <ul>
+            <li>compute a one-dimensional diffusive flux with consistent SI units;</li>
+            <li>predict the direction of the flux from the sign of the concentration gradient;</li>
+            <li>list the assumptions behind the law and what it does not model.</li>
+          </ul>
+          <p class="prerequisite"><strong>Before you start:</strong> comfort with a derivative as a slope. <a href="../../fundamentals/lithium-ion-cell-architecture/">Part 01B</a> shows where lithium travels inside a cell.</p>
+        </section>
+
+        <section aria-labelledby="law">
+          <h2 id="law"><span class="section-number">01</span>The law and its units</h2>
+          <p>For diffusion in one dimension, the flux of a species is proportional to its concentration gradient:</p>
+          <div class="equation" role="math" aria-label="J equals minus D times d c by d x">
+            <math display="block"><mi>J</mi><mo>=</mo><mo form="prefix">−</mo><mi>D</mi><mfrac><mrow><mi>d</mi><mi>c</mi></mrow><mrow><mi>d</mi><mi>x</mi></mrow></mfrac></math>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Symbol</th><th scope="col">Meaning</th><th scope="col">SI unit</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><math><mi>J</mi></math></th><td>Molar flux through a unit area</td><td>mol m⁻² s⁻¹</td></tr>
+                <tr><th scope="row"><math><mi>D</mi></math></th><td>Diffusion coefficient (diffusivity)</td><td>m² s⁻¹</td></tr>
+                <tr><th scope="row"><math><mi>c</mi></math></th><td>Concentration</td><td>mol m⁻³</td></tr>
+                <tr><th scope="row"><math><mi>x</mi></math></th><td>Spatial coordinate</td><td>m</td></tr>
+                <tr><th scope="row"><math><mi>d</mi><mi>c</mi><mo>/</mo><mi>d</mi><mi>x</mi></math></th><td>Concentration gradient</td><td>mol m⁻⁴</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Flux measures how much of the species crosses a unit area per unit time. This is a <strong>molar</strong> flux. Multiplying by the species’ molar mass converts it to a mass flux in kg m⁻² s⁻¹ without changing its direction.</p>
+        </section>
+
+        <section aria-labelledby="sign">
+          <h2 id="sign"><span class="section-number">02</span>The minus sign is the physics</h2>
+          <p>Passive diffusion runs <strong>down</strong> the concentration gradient. With positive <math><mi>x</mi></math> as the reference direction:</p>
+          <ul>
+            <li>a <strong>positive</strong> gradient (concentration rising toward +x) gives a <strong>negative</strong> flux — the species moves toward −x;</li>
+            <li>a <strong>negative</strong> gradient gives a <strong>positive</strong> flux — the species moves toward +x;</li>
+            <li>a zero gradient gives zero net flux.</li>
+          </ul>
+          <figure class="panel-frame">
+            <svg viewBox="0 0 720 300" role="img" aria-labelledby="fick-svg-title fick-svg-desc" style="display:block;width:100%;height:auto">
+              <title id="fick-svg-title">Diffusion runs down the concentration gradient</title>
+              <desc id="fick-svg-desc">Concentration falls from left to right, so the gradient is negative and the flux points to the right, toward positive x.</desc>
+              <g font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#9fb3bd">
+                <line x1="80" y1="240" x2="660" y2="240" stroke="rgba(196,224,231,0.35)"/>
+                <line x1="80" y1="240" x2="80" y2="40" stroke="rgba(196,224,231,0.35)"/>
+                <text x="670" y="244">x</text>
+                <text x="80" y="30" text-anchor="middle">c</text>
+                <path d="M80 70 C 260 80, 480 200, 660 220" fill="none" stroke="#68e0bd" stroke-width="3"/>
+                <text x="100" y="62" fill="#edf6f8" font-weight="700">high concentration</text>
+                <text x="520" y="206" fill="#edf6f8" font-weight="700">low</text>
+                <text x="370" y="120" fill="#edf6f8">dc/dx &lt; 0</text>
+                <line x1="240" y1="275" x2="500" y2="275" stroke="#68e0bd" stroke-width="3"/>
+                <path d="M500 275 l-14 -8 v16 z" fill="#68e0bd"/>
+                <text x="370" y="266" text-anchor="middle" fill="#edf6f8" font-weight="700">J &gt; 0 — toward +x</text>
+              </g>
+            </svg>
+            <figcaption>Where concentration falls with x, the flux points toward +x. Flip the slope and the flux flips with it.</figcaption>
+          </figure>
+          <p>For example, with <math><mi>D</mi><mo>=</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>14</mn></mrow></msup></math> m²/s, a gradient of +2 × 10⁶ mol/m⁴ gives <math><mi>J</mi><mo>=</mo><mo form="prefix">−</mo><mn>2</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>8</mn></mrow></msup></math> mol/(m²·s), and the reversed gradient gives +2 × 10⁻⁸ mol/(m²·s).</p>
+        </section>
+
+        <section aria-labelledby="example">
+          <h2 id="example"><span class="section-number">03</span>A battery-material example</h2>
+          <p>Take an illustrative solid-state diffusivity of 10⁻¹⁴ m²/s and a concentration change of −5000 mol/m³ across 5 µm of active material. The gradient is −5000 / (5 × 10⁻⁶) = −10⁹ mol/m⁴, so:</p>
+          <div class="equation" role="math" aria-label="J equals minus ten to the minus fourteen times minus ten to the nine, which equals ten to the minus five moles per square metre per second">
+            <math display="block"><mi>J</mi><mo>=</mo><mrow><mo form="prefix">−</mo><mo stretchy="false">(</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>14</mn></mrow></msup><mo stretchy="false">)</mo></mrow><mrow><mo stretchy="false">(</mo><mrow><mo form="prefix">−</mo><msup><mn>10</mn><mn>9</mn></msup></mrow><mo stretchy="false">)</mo></mrow><mo>=</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup><mtext>&#8195;mol m⁻² s⁻¹</mtext></math>
+          </div>
+          <form class="calc" data-calc="fick-flux" aria-labelledby="calc-fick-title" onsubmit="return false">
+            <p class="calc-title" id="calc-fick-title">Calculator · diffusive flux</p>
+            <div class="calc-inputs">
+              <label>Diffusivity D (m²/s)<input name="diffusivity" type="number" inputmode="decimal" min="0" step="any" value="1e-14"></label>
+              <label>Concentration change Δc (mol/m³)<input name="delta_c" type="number" inputmode="decimal" step="any" value="-5000"></label>
+              <label>Distance Δx (µm)<input name="delta_x_um" type="number" inputmode="decimal" min="0" step="any" value="5"></label>
+            </div>
+            <dl class="calc-results" aria-live="polite">
+              <div><dt>Gradient dc/dx</dt><dd data-out="gradient">−1.00 × 10⁹ mol/m⁴</dd></div>
+              <div><dt>Flux J</dt><dd data-out="flux">1.00 × 10⁻⁵ mol/(m²·s)</dd></div>
+              <div><dt>Direction</dt><dd data-out="direction">toward +x</dd></div>
+            </dl>
+            <p class="calc-note">Diffusion always runs down the concentration gradient — the minus sign in J = −D dc/dx.</p>
+          </form>
+          <p>The calculator approximates the gradient as Δc / Δx, which is exact only for a linear profile. Estimating a gradient from a real profile — and choosing a mesh to do it on — is the job of a numerical model, not of the constitutive law.</p>
+        </section>
+
+        <section aria-labelledby="in-a-cell">
+          <h2 id="in-a-cell"><span class="section-number">04</span>Where it shows up in a cell</h2>
+          <p>Diffusion appears wherever lithium has to travel without being carried by a current alone: inside active-material particles during intercalation, and through the electrolyte in the pores of the electrodes and separator described in <a href="../../fundamentals/lithium-ion-cell-architecture/">Part 01B</a>. It also explains the shape of one aging curve: the SEI film in <a href="../../fundamentals/battery-aging/#sei">Part 04</a> grows like √t because the film acts as its own diffusion barrier.</p>
+          <p>Applying the law inside a porous electrode usually needs an <strong>effective</strong> transport coefficient and extra homogenisation assumptions, because the species moves through a tortuous network of pores rather than a uniform medium.</p>
+        </section>
+
+        <section aria-labelledby="assumptions">
+          <h2 id="assumptions"><span class="section-number">05</span>Assumptions</h2>
+          <ul>
+            <li>A diffusion coefficient that does not depend on concentration within a single evaluation.</li>
+            <li>An isotropic medium, represented here in one spatial dimension.</li>
+            <li>A continuum description with a locally defined concentration gradient.</li>
+            <li>Diffusion driven only by the concentration gradient.</li>
+            <li>SI-unit inputs — numbers carry no unit metadata, so consistency is the user’s job.</li>
+          </ul>
+          <p>The diffusivity may vary in space — one value per position — but not with the local concentration. Every diffusivity must be finite and non-negative, and every gradient value finite.</p>
+        </section>
+
+        <section aria-labelledby="limitations">
+          <h2 id="limitations"><span class="section-number">06</span>What it does not model</h2>
+          <p>Fick’s first law alone is not a time-evolution model, and it defines no initial or boundary conditions. It leaves out concentration- or temperature-dependent diffusivity, anisotropic diffusion tensors, migration in an electric field, convection, activity corrections for non-ideal mixtures, mechanics, reactions and interfacial transport.</p>
+          <div class="callout callout-limits">
+            <span class="callout-title">Not yet in Battery Core</span>
+            <p>Fick’s second law — conservation combined with this constitutive relation, which describes how concentration changes in time — is not implemented yet. Neither are the single-particle (SPM, SPMe) or Doyle–Fuller–Newman (DFN) battery models built on it.</p>
+          </div>
+        </section>
+
+        <section aria-labelledby="python">
+          <h2 id="python"><span class="section-number">07</span>Calculate it in Python</h2>
+          <p>The calculator mirrors the tested <code>ficks_first_law_flux</code> function in the open-source <code>battery_core</code> package, including its input rules:</p>
+<pre><code>from battery_core import ficks_first_law_flux
+
+ficks_first_law_flux(1.0e-14, 2.0e6)                 # -2e-08 mol/(m² s)
+ficks_first_law_flux(1.0e-14, -5000.0 / 5.0e-6)      #  1e-05 mol/(m² s)
+ficks_first_law_flux(1.0e-14, [-3e6, 0.0, 3e6])      # array: one flux per gradient</code></pre>
+          <p><a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/transport/ficks_first_law.ipynb">Run the transport notebook in your browser</a> to plot flux against gradient and change the diffusivity yourself.</p>
+        </section>
+
+        <section aria-labelledby="exercises" class="answers">
+          <h2 id="exercises"><span class="section-number">08</span>Exercises</h2>
+          <details>
+            <summary>Halve the diffusivity from 10⁻¹⁴ to 5 × 10⁻¹⁵ m²/s. What happens to the flux–gradient line?</summary>
+            <div><p>Its slope halves. Flux is proportional to <math><mi>D</mi></math>, so every flux at a given gradient is half as large; the sign — the direction — does not change.</p></div>
+          </details>
+          <details>
+            <summary>Calculate the flux for D = 2 × 10⁻¹⁴ m²/s and dc/dx = −3 × 10⁷ mol/m⁴.</summary>
+            <div><p><math><mi>J</mi><mo>=</mo><mrow><mo form="prefix">−</mo><mo stretchy="false">(</mo><mn>2</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>14</mn></mrow></msup><mo stretchy="false">)</mo></mrow><mrow><mo stretchy="false">(</mo><mrow><mo form="prefix">−</mo><mn>3</mn></mrow><mo>×</mo><msup><mn>10</mn><mn>7</mn></msup><mo stretchy="false">)</mo></mrow></math> = <strong>6 × 10⁻⁷ mol/(m²·s)</strong>, positive, so toward +x.</p></div>
+          </details>
+          <details>
+            <summary>In the battery-material example, halve the distance while keeping the concentration change fixed. What is the new flux?</summary>
+            <div><p>The gradient doubles to −2 × 10⁹ mol/m⁴, so the flux doubles to <strong>2 × 10⁻⁵ mol/(m²·s)</strong>. Thinner layers and smaller particles shorten diffusion paths — one reason particle size matters for rate capability.</p></div>
+          </details>
+        </section>
+
+        <div class="complete-bar" hidden data-progress-ui>
+          <p>Worked through the exercises?</p>
+          <div class="actions">
+            <button type="button" class="complete-button" data-complete="fick-1" aria-pressed="false">Mark as complete</button>
+            <a class="button button-primary" href="../../fundamentals/battery-aging/">Next: Battery aging →</a>
+          </div>
+        </div>
+
+        <section aria-labelledby="references">
+          <h2 id="references"><span class="section-number">09</span>References and further reading</h2>
+          <p>These sources give historical and modern context; this page summarises the equation independently rather than reproducing textbook prose.</p>
+          <ol class="references">
+            <li>A. Fick, “On liquid diffusion,” <cite>The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science</cite> 10(63), 30–39 (1855). <a href="https://doi.org/10.1080/14786445508641925">doi:10.1080/14786445508641925</a></li>
+            <li>J. Newman, K. E. Thomas-Alyea, <cite>Electrochemical Systems</cite>, 3rd ed., Wiley-Interscience, 2004.</li>
+          </ol>
+        </section>
+      </article>
+    </div>
+
+    <nav class="lesson-pager" aria-label="Related lessons">
+      <a class="pager-prev" href="../../" rel="prev"><span>← Course home</span><strong>All modules</strong></a>
+      <a class="pager-next" href="../../fundamentals/battery-aging/" rel="next"><span>Part 04 →</span><strong>Battery aging</strong></a>
+    </nav>
+  </main>
+
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../../">Course home</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">AGPL-3.0-or-later</a>
+      <a href="../../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+  <script src="../../assets/lesson-tools.js" defer></script>
+  <script src="../../assets/course-progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lithium plating risk — Battery aging panel</title>
+<link rel="stylesheet" href="panels.css">
+</head>
+<body>
+<script src="panels.js"></script>
+<div class="w">
+  <div class="w-head">
+    <h2>Plating: when lithium arrives faster than graphite can take it</h2><span class="spacer"></span>
+    <div class="controls">
+      <span class="ctl"><label for="T">Temperature</label>
+        <input class="range" type="range" id="T" min="-20" max="55" step="1" value="0"><output id="oT">0 °C</output></span>
+      <span class="ctl"><label for="C">Charge rate</label>
+        <input class="range" type="range" id="C" min="1" max="40" step="1" value="20"><output id="oC">2.0 C</output></span>
+      <span class="ctl"><label for="N">Charges</label>
+        <input class="range" type="range" id="N" min="0" max="2000" step="25" value="400"><output id="oN">400</output></span>
+    </div>
+  </div>
+  <div class="w-body split">
+    <div class="pane"><span class="pane-title">Where plating happens</span><div class="figwrap" id="heat"></div></div>
+    <div class="pane"><span class="pane-title">The deposit, across the separator</span><div class="figwrap" id="sep"></div></div>
+  </div>
+  <div class="readouts">
+    <div class="ro"><b id="r1">—</b><span>plating propensity</span></div>
+    <div class="ro" id="ro2"><b id="r2">—</b><span>separator bridged</span></div>
+    <div class="ro"><b id="r3">—</b><span>self-discharge</span></div>
+    <div class="ro"><b id="r4">—</b><span>vs. same charge at 25 °C</span></div>
+  </div>
+</div>
+<script>
+function render() {
+  const T = +$("#T").value, c = +$("#C").value / 10, n = +$("#N").value;
+  $("#oT").textContent = minus(T) + " °C"; $("#oC").textContent = fix(c) + " C"; $("#oN").textContent = n;
+  const risk = platingRisk(T, c), pen = dendritePenetration(T, c, n), sd = selfDischargeOf(pen);
+
+  /* heat map: temperature × charge rate */
+  const W = 300, H = 200, m = { t: 10, r: 8, b: 32, l: 32 }, nx = 30, ny = 20;
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  let g = "";
+  for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) {
+    const tt = -20 + 75 * i / (nx - 1), cc = 0.1 + 3.9 * j / (ny - 1);
+    const p = platingRisk(tt, cc);
+    g += `<rect x="${(m.l + iw * i / nx).toFixed(1)}" y="${(m.t + ih - ih * (j + 1) / ny).toFixed(1)}"
+           width="${(iw / nx + 0.6).toFixed(1)}" height="${(ih / ny + 0.6).toFixed(1)}"
+           style="fill: color-mix(in oklab, var(--mech-dendrite) ${(p * 100).toFixed(0)}%, var(--surface))"/>`;
+  }
+  const hx = t => m.l + iw * (t + 20) / 75, hy = v => m.t + ih - ih * (v - 0.1) / 3.9;
+  g += `<circle cx="${hx(T).toFixed(1)}" cy="${hy(c).toFixed(1)}" r="7" fill="none" stroke="var(--surface)" stroke-width="2.5"/>
+        <circle cx="${hx(T).toFixed(1)}" cy="${hy(c).toFixed(1)}" r="3" fill="var(--surface)"/>`;
+  [-20, 0, 20, 40].forEach(t => g += `<text class="axis-label" x="${hx(t).toFixed(1)}" y="${m.t + ih + 15}" text-anchor="middle">${minus(t)}</text>`);
+  [1, 2, 3, 4].forEach(v => g += `<text class="axis-label" x="${m.l - 5}" y="${(hy(v) + 3.5).toFixed(1)}" text-anchor="end">${v}C</text>`);
+  g += `<text class="axis-title" x="${m.l + iw / 2}" y="${m.t + ih + 29}" text-anchor="middle">cell temperature (°C)</text>`;
+  $("#heat").innerHTML = `<svg class="fig" viewBox="0 0 ${W} ${H}" role="img"
+    aria-label="Plating propensity across temperature and charge rate: worst in the cold, fast-charge corner.">${g}</svg>`;
+
+  /* separator with dendrite */
+  const W2 = 300, H2 = 200, R4 = rng(11);
+  let s = `<rect x="0" y="14" width="70" height="172" fill="var(--mat-anode-bed)"/>
+           <rect x="70" y="14" width="160" height="172" fill="var(--mat-separator)" stroke="var(--mat-separator-pore)"/>
+           <rect x="230" y="14" width="70" height="172" fill="var(--mat-cathode-bed)"/>
+           <text class="fig-cap" x="35" y="8" text-anchor="middle">graphite</text>
+           <text class="fig-cap" x="150" y="8" text-anchor="middle">separator</text>
+           <text class="fig-cap" x="265" y="8" text-anchor="middle">NMC</text>`;
+  [50, 100, 150].forEach(y0 => {
+    const reach = 160 * pen * (0.82 + 0.3 * R4());
+    if (reach < 2) return;
+    const pts = [];
+    let yy = y0;
+    for (let k = 0; k <= 8; k++) { pts.push(`${(70 + Math.min(reach, 160) * k / 8).toFixed(1)},${yy.toFixed(1)}`); yy += (R4() - 0.5) * 0.16 * reach; }
+    s += `<polyline class="dendrite${reach >= 158 ? " is-short" : ""}" points="${pts.join(" ")}" stroke-width="4"/>`;
+  });
+  $("#sep").innerHTML = `<svg class="fig" viewBox="0 0 ${W2} ${H2}" role="img"
+    aria-label="Dendritic lithium reaching ${(100 * pen).toFixed(0)} percent of the way across the separator.">${s}</svg>`;
+
+  $("#r1").textContent = (100 * risk).toFixed(0) + " %";
+  $("#r2").textContent = (100 * pen).toFixed(0) + " %";
+  $("#r3").textContent = sd.toFixed(1) + " %/mo";
+  $("#r4").textContent = "×" + (platingDrive(T, c) / Math.max(1e-6, platingDrive(25, c))).toFixed(1);
+  $("#ro2").dataset.tone = pen >= 0.995 ? "danger" : (pen > 0.6 ? "warn" : "");
+}
+bind(["T", "C", "N"], render); render();
+requestAnimationFrame(fit);
+</script>
+
+</body>
+</html>

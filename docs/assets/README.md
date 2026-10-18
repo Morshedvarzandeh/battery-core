@@ -356,3 +356,39 @@ Two things worth knowing before switching it on:
   every transition it defines.
 - The footer keeps the Lemonergy attribution. It is the Appropriate Legal
   Notice required by the additional term in [`NOTICE`](../../NOTICE).
+
+## Lesson pages
+
+A lesson is the readable version of a module: explanation, equations, worked
+examples, check-yourself answers and references on the page itself. Start from
+`page-template.html` and add, in this order:
+
+| Part | Markup | Notes |
+| --- | --- | --- |
+| Breadcrumb | `nav.breadcrumbs` | Home / Chapter / this page. |
+| Hero | `.page-hero` + `ul.lesson-meta` | "Lesson 3 of 6", reading and quiz time. |
+| Layout | `.lesson` › `aside.lesson-toc` + `article.prose` | `data-tier="deeper"` on `.lesson` for a B part. |
+| Objectives | `section.objectives` | First thing in the article, with a "Before you start" line. |
+| Equations | `div.equation` › `<math display="block">` | MathML, rendered by the browser. Give the div `role="math"` and an `aria-label` in words. |
+| Tables | `div.table-wrap` › `table` | `.num` for right-aligned figures. Header case is preserved: units change meaning in capitals. |
+| Calculators | `form.calc[data-calc=…]` | Defined in `lesson-tools.js`. Write the worked-example results into the HTML. |
+| Panels | `figure.panel-frame` › `iframe` | Local pages only; lazy-loaded; a `title` that starts "Interactive panel:". |
+| Answers | `section.answers` › `details` | Written answers, revealed on demand. |
+| Quiz | `div#study-coach[data-part="Part 0X"][data-module-base="../../chapter-1/"]` | The study coach, scoped to one part. |
+| Completion | `div.complete-bar[hidden][data-progress-ui]` › `button[data-complete=id]` | Plus a next-item link. |
+| Pager | `nav.lesson-pager` | Previous and next lesson. |
+
+Every lesson also carries a canonical link, Open Graph tags and a
+`LearningResource` JSON-LD block; `tests/test_site_seo.py` checks them for
+every page in the sitemap. After adding a page, run
+`python scripts/build_sitemap.py`.
+
+## Course progress
+
+`course-progress.js` records completed items in `localStorage` under
+`battery-core-course-progress`. Item ids are `p01`, `p01b`, `p02`, `p03`,
+`p03b`, `p04`, `checkpoint` and `fick-1`. Any `[data-complete=id]` button
+toggles an item, any `[data-progress-item=id]` gets `data-done="true"`, and a
+`[data-progress-summary][data-items="…"]` block keeps its count and progress bar
+current. Controls marked `hidden data-progress-ui` appear only when the script
+runs, so a page without JavaScript never shows a button that does nothing.

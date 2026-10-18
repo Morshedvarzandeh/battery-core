@@ -3,8 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Conceptual visualization of lithium-ion cell anatomy and charge transport.">
-<title>Battery Core — Cell Anatomy Workbench</title>
+<meta name="description" content="Interactive lithium-ion cell anatomy workbench: electrodes, current collectors, separator and electrolyte, and the electron and lithium-ion paths during charge and discharge.">
+<title>Lithium-ion cell anatomy: interactive workbench — Battery Core</title>
+<link rel="canonical" href="https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Battery Core by Lemonergy">
+<meta property="og:title" content="Inside a lithium-ion cell — interactive anatomy workbench">
+<meta property="og:description" content="Identify every component of a lithium-ion cell and follow electrons and lithium ions during charge and discharge.">
+<meta property="og:url" content="https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/">
+<meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LearningResource",
+      "@id": "https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/#lesson",
+      "name": "Cell anatomy and charge/discharge paths",
+      "description": "Interactive workbench for the components of a lithium-ion cell and the electron and ion paths during charge and discharge.",
+      "url": "https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/",
+      "inLanguage": "en",
+      "learningResourceType": "Interactive lab",
+      "isAccessibleForFree": true,
+      "interactivityType": "active",
+      "teaches": [
+        "Lithium-ion cell components",
+        "Electron path",
+        "Lithium-ion path"
+      ],
+      "isPartOf": {
+        "@id": "https://learn.lemonergy.com/chapter-1/#course"
+      },
+      "author": {
+        "@id": "https://lemonergy.com/#organization"
+      },
+      "publisher": {
+        "@id": "https://lemonergy.com/#organization"
+      },
+      "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+      "position": 1,
+      "timeRequired": "PT15M"
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://lemonergy.com/#organization",
+      "name": "Lemonergy",
+      "url": "https://lemonergy.com/",
+      "email": "info@lemonergy.com"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Battery Core",
+          "item": "https://learn.lemonergy.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Chapter 1",
+          "item": "https://learn.lemonergy.com/chapter-1/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Part 01 · Cell anatomy"
+        }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="stylesheet" href="styles.css">
 
 <link rel="stylesheet" href="../../assets/site-chrome.css">
@@ -110,6 +185,12 @@
 </main>
 
 <script src="app.js" defer></script>
+<div class="bc-nextbar">
+  <span>Done with this lesson?</span>
+  <span class="bc-nextbar-spacer"></span>
+  <button type="button" data-complete="p01" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>
+  <a href="../lithium-ion-cell-architecture/">Next: Part 01B →</a>
+</div>
 <footer class="bc-footer">
   <p>Battery Core · A project of Lemonergy</p>
   <div class="bc-footer-links">
@@ -119,5 +200,6 @@
     <a href="../../license/#commercial">Commercial use</a>
   </div>
 </footer>
+<script src="../../assets/course-progress.js" defer></script>
 </body>
 </html>
