@@ -136,12 +136,13 @@ a:focus-visible {
   line-height: 1.15;
 }
 
-/* The mark: a lemon that is also a cell — a terminal at one end and three
-   charge bars inside. It sits beside the two lines of the wordmark. */
+/* The Lemonergy mark, the same cut lemon as the LinkedIn page and
+   lemonergy.com: eight yellow segments radiating from a pale rind. It sits
+   beside the two lines of the wordmark. */
 .brand-logo {
   grid-row: 1 / span 2;
-  width: 40px;
-  height: 25px;
+  width: 36px;
+  height: 36px;
 }
 
 .brand-name {
@@ -3403,8 +3404,8 @@ math {
 }
 
 .statement-logo {
-  width: 40px;
-  height: 25px;
+  width: 36px;
+  height: 36px;
 }
 
 .statement-kicker {

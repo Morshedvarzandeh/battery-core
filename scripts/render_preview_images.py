@@ -181,7 +181,7 @@ TEMPLATE = """<!doctype html><html><head><meta charset="utf-8"><style>
 html,body{{margin:0;width:1200px;height:630px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;color:#202938}}
 .wrap{{position:relative;box-sizing:border-box;width:1200px;height:630px;padding:56px 72px;display:grid;grid-template-columns:600px 1fr;column-gap:40px;border-top:10px solid #2459a8}}
 .brand{{display:flex;align-items:center;gap:14px;grid-column:1/-1;margin-bottom:34px}}
-.logo{{width:64px;height:40px}}
+.logo{{width:56px;height:56px}}
 .brand b{{font-size:30px}} .brand span{{font-size:20px;color:#596579;margin-left:6px}}
 .eyebrow{{font-size:22px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#2459a8;margin:0 0 18px}}
 h1{{font-size:{size}px;line-height:1.08;margin:0 0 22px;letter-spacing:-.01em}}

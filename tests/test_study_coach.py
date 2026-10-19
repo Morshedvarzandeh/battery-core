@@ -256,4 +256,4 @@ def test_favicon_is_drawn_for_tab_size_not_scaled_down() -> None:
     for absent in fine_detail:
         assert absent not in icon, absent
     assert "viewBox" in icon
-    assert "#ffd94a" in icon, "the lemon keeps the mascot's yellow"
+    assert "#F5C518" in icon, "the favicon is the Lemonergy mark, in its yellow"

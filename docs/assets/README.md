@@ -223,12 +223,15 @@ control. If it starts appearing on buttons, the role system has been broken.
 
 ### The favicon
 
-`favicon.svg` is Volta at tab size, and it is a **separate drawing**, not the
-mascot scaled down. At 16px the headset, the freckles, the shine and the eye
-whites collapse into mud, so the favicon keeps only what survives — a yellow
-body, a green leaf, two dark eyes, a smile — on a rounded navy tile, with
-heavier strokes, because hairlines disappear first. Check any change to it at
+`favicon.svg` is the Lemonergy mark — the same cut lemon as the LinkedIn page,
+the site header and lemonergy.com: eight yellow (`#F5C518`) segments radiating
+from a pale (`#F3F7FC`) rind. It is not Volta: the mascot belongs to the study
+coach, the mark belongs to the brand. The shape is bold enough to read at
+16px as it is, so there is no separate small drawing. Check any change to it at
 16px before believing it works; nothing else predicts what a browser tab does.
+
+`logo.png` is the same mark at 512 by 512 on white, for search engines: the
+home page names it as the organization's `logo` in its structured data.
 
 Every page links it as `<link rel="icon" type="image/svg+xml">`. The two
 payload-loaded simulators inject it in `loader.js` alongside the rest of the
