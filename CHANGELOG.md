@@ -17,6 +17,13 @@ All notable changes to `battery-core` are recorded here. The format follows
   on every page. Module bridge, module chrome, workbench palette, Part 04
   panels (via the exporter), favicon and the social-share image follow the
   same palette.
+- **Every background is white.** Pages, title bands, cards, panels, diagrams,
+  quiz feedback, simulator surfaces and status badges no longer use grey,
+  blue, peach or pink fills; thin grey lines separate them instead. The oxide
+  positive electrode is terracotta on every page (it was green in Lesson 1B
+  and the simulators), the materials lab and the layout editor drop their
+  green, pink and dark-theme colours, and the lab's chart palette matches the
+  course.
 
 ### Added
 

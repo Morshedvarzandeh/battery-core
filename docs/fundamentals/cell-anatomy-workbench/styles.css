@@ -7,12 +7,12 @@
    because the course itself has one (light) theme. */
 :root{
   color-scheme:light;
-  --bg:#ffffff;--panel:#f8fafc;--text:#202938;--muted:#596579;
+  --bg:#ffffff;--panel:#ffffff;--text:#202938;--muted:#596579;
   --border:#dce1e8;
-  --accent:#2459a8;--accent-soft:#eef4ff;--neg:#64748b;--pos:#c2410c;
+  --accent:#2459a8;--accent-soft:#ffffff;--neg:#64748b;--pos:#c8693f;
   --sep:#8a94a6;--collector:#7c8796;--ion:#2459a8;--electron:#7c3aed;
-  --warn-bg:#fff7ed;--warn-border:#fdba74;
-  --warn-text:#9a3412;--shadow:0 1px 2px rgba(16,24,40,.05),0 6px 18px rgba(16,24,40,.06);
+  --warn-bg:#ffffff;--warn-border:#dce1e8;
+  --warn-text:#596579;--shadow:0 1px 2px rgba(16,24,40,.05),0 6px 18px rgba(16,24,40,.06);
 }
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 Arial, Helvetica, sans-serif}
 button{font:inherit}.page{width:min(1180px,calc(100% - 28px));margin:24px auto 48px}
@@ -24,7 +24,7 @@ h1{margin:.25rem 0;font-size:clamp(2rem,4vw,3rem);line-height:1.1}.subtitle{marg
 .group,.status,.components{display:flex;flex-wrap:wrap;gap:8px}.btn{min-height:38px;padding:7px 12px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-weight:700;cursor:pointer}
 .btn:hover,.btn:focus-visible{border-color:var(--accent);outline:none}.btn.active,.btn[aria-pressed=true]{border-color:var(--accent);background:var(--accent);color:#ffffff}
 .status{justify-content:flex-end}.pill{padding:4px 9px;border:1px solid var(--border);border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.88rem;font-weight:750}
-.workbench{padding:16px}.visual{--inset:7%;position:relative;min-height:470px;overflow:hidden;border:1px solid var(--border);border-radius:14px;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 42%),var(--panel)}
+.workbench{padding:16px}.visual{--inset:7%;position:relative;min-height:470px;overflow:hidden;border:1px solid var(--border);border-radius:14px;background:var(--panel)}
 .wire{position:absolute;top:30px;right:var(--inset);left:var(--inset);height:135px;border:3px solid var(--text);border-bottom:0;border-radius:10px 10px 0 0;pointer-events:none}
 .device{position:absolute;top:7px;left:50%;z-index:5;min-width:130px;padding:10px 15px;transform:translateX(-50%);border:2px solid var(--text);border-radius:10px;background:var(--panel);text-align:center;font-weight:800}
 .flow{position:absolute;top:69px;left:50%;z-index:5;width:max-content;max-width:82%;padding:3px 8px;transform:translateX(-50%);background:var(--panel);color:var(--muted);text-align:center;font-size:.9rem}
@@ -32,7 +32,7 @@ h1{margin:.25rem 0;font-size:clamp(2rem,4vw,3rem);line-height:1.1}.subtitle{marg
 .cell{position:absolute;top:162px;right:var(--inset);left:var(--inset);z-index:2;display:grid;grid-template-columns:24px minmax(0,1fr) 64px minmax(0,1fr) 24px;height:220px;overflow:hidden;border:3px solid var(--border);border-radius:8px}
 .part{position:relative;min-width:0;border:0;color:var(--text)}button.part{cursor:pointer}button.part:focus-visible,button.part.selected{z-index:3;outline:4px solid color-mix(in srgb,var(--accent) 65%,transparent);outline-offset:-5px}
 .collector{background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--collector) 78%,transparent) 0 3px,color-mix(in srgb,var(--collector) 38%,transparent) 3px 6px)}
-.electrode{display:grid;place-items:center;padding:16px 10px;text-align:center}.negative{background:radial-gradient(circle at 20% 25%,color-mix(in srgb,var(--neg) 65%,transparent) 0 9px,transparent 10px),radial-gradient(circle at 66% 68%,color-mix(in srgb,var(--neg) 55%,transparent) 0 11px,transparent 12px),color-mix(in srgb,var(--neg) 18%,var(--panel));background-size:64px 58px,78px 68px,auto}.positive{background:radial-gradient(circle at 18% 72%,color-mix(in srgb,var(--pos) 65%,transparent) 0 9px,transparent 10px),radial-gradient(circle at 56% 22%,color-mix(in srgb,var(--pos) 55%,transparent) 0 11px,transparent 12px),color-mix(in srgb,var(--pos) 18%,var(--panel));background-size:64px 58px,78px 68px,auto}
+.electrode{display:grid;place-items:center;padding:16px 10px;text-align:center}.negative{background:radial-gradient(circle at 20% 25%,color-mix(in srgb,var(--neg) 65%,transparent) 0 9px,transparent 10px),radial-gradient(circle at 66% 68%,color-mix(in srgb,var(--neg) 55%,transparent) 0 11px,transparent 12px),var(--panel);background-size:64px 58px,78px 68px,auto}.positive{background:radial-gradient(circle at 18% 72%,color-mix(in srgb,var(--pos) 65%,transparent) 0 9px,transparent 10px),radial-gradient(circle at 56% 22%,color-mix(in srgb,var(--pos) 55%,transparent) 0 11px,transparent 12px),var(--panel);background-size:64px 58px,78px 68px,auto}
 .separator{display:grid;place-items:center;border-inline:1px solid var(--border);background:repeating-linear-gradient(0deg,transparent 0 7px,color-mix(in srgb,var(--sep) 62%,transparent) 7px 10px)}.separator span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.82rem;font-weight:800}
 .copy{display:grid;gap:5px;max-width:240px;padding:8px;border-radius:10px;background:color-mix(in srgb,var(--panel) 83%,transparent)}.title{font-weight:800}.material{font-size:.92rem}.reaction{color:var(--muted);font-size:.84rem}
 .electrolyte-region{

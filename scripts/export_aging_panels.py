@@ -61,7 +61,14 @@ SITE_THEME = """
   --series-3: #5b6b8a;
   --series-6: #8a5a2b;
   --ok: #2459a8;
-  --ok-wash: #eef4ff;
+  --ok-wash: #ffffff;
+  /* Every background on the course is white: no grey, blue or tinted wells. */
+  --surface: #ffffff;
+  --surface-sunken: #ffffff;
+  --surface-raised: #ffffff;
+  --accent-wash: #ffffff;
+  --warn-wash: #ffffff;
+  --danger-wash: #ffffff;
 }
 body {
   background: transparent;

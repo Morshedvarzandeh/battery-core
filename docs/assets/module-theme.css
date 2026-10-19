@@ -41,15 +41,15 @@
      modules' own; only the values change. */
   --background: var(--bc-background);
   --foreground: var(--bc-text);
-  --card: #f8fafc;
+  --card: #ffffff;
   --card-foreground: var(--bc-text);
   --popover: var(--bc-surface);
   --popover-foreground: var(--bc-text);
   --primary: var(--bc-accent);
   --primary-foreground: #ffffff;
-  --secondary: #f1f4f8;
+  --secondary: #ffffff;
   --secondary-foreground: var(--bc-text);
-  --muted: #eef1f5;
+  --muted: #ffffff;
   --muted-foreground: var(--bc-muted);
   /* Generic --accent is a tinted surface, not the course blue; --bc-accent is
      the blue. Keeping the distinction stops soft washes turning saturated. */
@@ -65,11 +65,20 @@
   /* One categorical series, ordered by how often a module needs a colour.
      Each is legible on white and distinguishable from its neighbours. */
   --viz-series-1: var(--bc-accent);
-  --viz-series-2: var(--bc-orange);
+  --viz-series-2: #c8693f;
   --viz-series-3: var(--bc-blue);
-  --viz-series-4: #7c3aed;
-  --viz-series-5: #a16207;
-  --viz-series-6: #be185d;
+  --viz-series-4: #a16207;
+  --viz-series-5: #6d28d9;
+  --viz-series-6: #64748b;
+
+  /* Every background is white: status washes and simulator surfaces too.
+     State is carried by the coloured text and border, not by a tint. */
+  --green-bg: #ffffff;
+  --warning-bg: #ffffff;
+  --destructive-bg: #ffffff;
+  /* One colour per material across the course: the oxide positive electrode
+     is terracotta everywhere (workbench, architecture, simulators, aging). */
+  --cathode: #c8693f;
 
   --font-sans: Arial, Helvetica, sans-serif;
 

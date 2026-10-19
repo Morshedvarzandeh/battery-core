@@ -64,7 +64,7 @@ button { font: inherit; }
   padding: 3px 8px;
   border-radius: var(--radius-full);
   color: var(--foreground);
-  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  background: #ffffff;
 }
 .btn {
   display: inline-flex;
@@ -99,7 +99,7 @@ svg { display: block; max-width: 100%; height: auto; }
     --ca-copper: light-dark(#c07f42, #b87333);
     --ca-graphite: light-dark(#6b7d86, #46565e);
     --ca-polymer: light-dark(#ded8ab, #cdc79a);
-    --ca-oxide: light-dark(#5aa98d, #4f987f);
+    --ca-oxide: light-dark(#c8693f, #b85c35);
     --ca-aluminium: light-dark(#b9c8d1, #a8bbc5);
     --ca-liquid: light-dark(#3f8bb4, #4a97bf);
   }
@@ -113,7 +113,7 @@ svg { display: block; max-width: 100%; height: auto; }
     padding: 9px 12px;
     border-radius: var(--radius-lg);
     border-left: 3px solid var(--destructive);
-    background: color-mix(in srgb, var(--destructive) 7%, transparent);
+    background: #ffffff;
     color: var(--muted-foreground);
   }
 
@@ -148,7 +148,7 @@ svg { display: block; max-width: 100%; height: auto; }
   #cell-architecture .skin-1 { background: linear-gradient(160deg,#e7ac78,#b87333 58%,#733913); }
   #cell-architecture .skin-2 { background: linear-gradient(160deg,#5f6f77,#46565e 55%,#26353c); }
   #cell-architecture .skin-3 { background: repeating-linear-gradient(45deg,#ece7c6,#ece7c6 7px,#bbb58e 7px,#bbb58e 11px); }
-  #cell-architecture .skin-4 { background: linear-gradient(160deg,#6eb198,#4f987f 55%,#265e4d); }
+  #cell-architecture .skin-4 { background: linear-gradient(160deg,#e3a07c,#c8693f 55%,#8a3d1c); }
   #cell-architecture .skin-5 { background: linear-gradient(160deg,#e0e7ea,#a8bbc5 58%,#687b85); }
 
   /* ---------- assembly ---------- */
@@ -197,7 +197,7 @@ svg { display: block; max-width: 100%; height: auto; }
     margin-top: 12px; padding: 10px 12px;
     border-radius: var(--radius-lg);
     border-left: 3px solid var(--primary);
-    background: color-mix(in srgb, var(--primary) 8%, transparent);
+    background: #ffffff;
   }
 
   #cell-architecture .ca-info h4 { margin-top: 2px; }
@@ -214,7 +214,7 @@ svg { display: block; max-width: 100%; height: auto; }
     margin-top: 16px; padding: 12px 14px;
     border-radius: var(--radius-lg);
     border-left: 3px solid var(--viz-series-6);
-    background: color-mix(in srgb, var(--viz-series-6) 8%, transparent);
+    background: #ffffff;
   }
   #cell-architecture .ca-note > p { margin-top: 6px; max-width: 84ch; }
   #cell-architecture .ca-note-tight { margin-top: 12px; }
@@ -227,7 +227,7 @@ svg { display: block; max-width: 100%; height: auto; }
     position: relative; overflow: hidden;
     border: 1px solid var(--border); border-radius: var(--radius-lg);
   }
-  #cell-architecture .ca-liquid.dry { background: color-mix(in srgb, var(--foreground) 5%, transparent); }
+  #cell-architecture .ca-liquid.dry { background: #ffffff; }
   #cell-architecture .ca-liquid.wet {
     background: linear-gradient(color-mix(in srgb, var(--ca-liquid) 42%, transparent), color-mix(in srgb, var(--ca-liquid) 42%, transparent)),
                 radial-gradient(circle at 20% 20%, var(--viz-series-1) 0 3px, transparent 4px);
@@ -266,7 +266,7 @@ svg { display: block; max-width: 100%; height: auto; }
     position: relative; min-height: 290px; overflow: hidden;
     margin: 12px 0 8px;
     border: 1px solid var(--border); border-radius: var(--radius-lg);
-    background: color-mix(in srgb, var(--foreground) 4%, transparent);
+    background: #ffffff;
   }
   #cell-architecture .ca-visual [data-tooltip] { cursor: help; }
   #cell-architecture .ca-visual [data-tooltip]:hover,
@@ -277,7 +277,7 @@ svg { display: block; max-width: 100%; height: auto; }
   #cell-architecture .ca-readout {
     min-height: 62px; padding: 9px 12px;
     border: 1px solid var(--border); border-radius: var(--radius-lg);
-    background: color-mix(in srgb, var(--foreground) 3%, transparent);
+    background: #ffffff;
   }
   #cell-architecture .ca-readout-label {
     color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .08em;
@@ -287,7 +287,7 @@ svg { display: block; max-width: 100%; height: auto; }
   #cell-architecture .ca-chip {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 9px; border-radius: var(--radius-full);
-    border: 1px solid var(--border); background: color-mix(in srgb, var(--foreground) 3%, transparent);
+    border: 1px solid var(--border); background: #ffffff;
     font-size: var(--font-size-small);
   }
   #cell-architecture .ca-swatch { display: inline-block; width: 13px; height: 13px; flex: 0 0 13px; border-radius: 50%; }
@@ -296,7 +296,7 @@ svg { display: block; max-width: 100%; height: auto; }
     display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
     margin-top: 12px; padding: 8px 12px;
     border: 1px solid var(--border); border-radius: var(--radius-lg);
-    background: color-mix(in srgb, var(--foreground) 3%, transparent);
+    background: #ffffff;
   }
   #cell-architecture .ca-sep { color: var(--primary); font-weight: var(--font-weight-medium); }
 
@@ -321,7 +321,7 @@ svg { display: block; max-width: 100%; height: auto; }
   }
   #cell-architecture .ca-grain.oxide {
     border-radius: 44% 56% 52% 48%;
-    background: radial-gradient(circle at 34% 28%,#8fd9bd,#4f987f 62%,#1f4d3f);
+    background: radial-gradient(circle at 34% 28%,#f0b796,#c8693f 62%,#7a3417);
   }
   #cell-architecture .ca-grain.g1 { width: 104px; height: 88px; left: 8%; top: 15%; }
   #cell-architecture .ca-grain.g2 { width: 90px; height: 104px; left: 42%; top: 8%; }
@@ -364,7 +364,7 @@ svg { display: block; max-width: 100%; height: auto; }
   #cell-architecture .ca-mol-svg {
     width: 100%; min-height: 320px;
     border: 1px solid var(--border); border-radius: var(--radius-lg);
-    background: color-mix(in srgb, var(--foreground) 4%, transparent);
+    background: #ffffff;
   }
   #cell-architecture .ca-bond { stroke: light-dark(#5c6a70, #c9d6db); stroke-width: 4; stroke-linecap: round; }
   #cell-architecture .ca-atom circle { stroke: var(--background); stroke-width: 2; }
@@ -391,7 +391,7 @@ svg { display: block; max-width: 100%; height: auto; }
   #cell-architecture .ca-change > div {
     display: grid; gap: 2px; padding: 9px 11px;
     border: 1px solid var(--border); border-radius: var(--radius-lg);
-    background: color-mix(in srgb, var(--foreground) 3%, transparent);
+    background: #ffffff;
   }
   #cell-architecture .ca-change-label {
     color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .08em;
@@ -466,7 +466,7 @@ svg { display: block; max-width: 100%; height: auto; }
   #cell-architecture .ca-salt-info {
     display: grid; gap: 8px; padding: 10px 12px;
     border: 1px solid var(--border); border-radius: var(--radius-lg);
-    background: color-mix(in srgb, var(--foreground) 3%, transparent);
+    background: #ffffff;
   }
   #cell-architecture .ca-key {
     display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%;

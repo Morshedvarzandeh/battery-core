@@ -24,11 +24,14 @@
 :root {
   color-scheme: light;
   /* Values taken from design.lemonergy.com so the islands read as one site. */
+  /* Every background is white. Separation comes from thin grey lines, never
+     from tinted fills; --hover is the only off-white, and only on hover. */
   --background: #ffffff;
-  --band: #f5f6f8;
+  --band: #ffffff;
   --surface: #ffffff;
-  --surface-raised: #f8f9fb;
-  --surface-soft: #f3f5f8;
+  --surface-raised: #ffffff;
+  --surface-soft: #ffffff;
+  --hover: #f5f6f8;
   --text: #202938;
   --muted: #596579;
   --line: #dce1e8;
@@ -181,7 +184,7 @@ nav a {
 
 nav a:hover {
   border-color: var(--line);
-  background: var(--surface-soft);
+  background: var(--hover);
 }
 
 nav a[aria-current="page"] {
@@ -649,9 +652,7 @@ h3 {
   font-size: clamp(1.9rem, 3.2vw, 2.4rem);
 }
 
-.guide-hero + .section {
-  border-top: 0;
-}
+
 
 .chapter-status {
   padding: 1.4rem;
@@ -752,7 +753,7 @@ h3 {
 
 .study-step-deeper {
   border-color: color-mix(in srgb, var(--blue) 28%, transparent);
-  background: color-mix(in srgb, var(--blue) 4%, var(--surface));
+  background: var(--surface);
 }
 
 .study-step-number {
@@ -799,7 +800,7 @@ h3 {
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(16, 24, 40, 0.04);
+  background: var(--surface);
 }
 
 .study-prompts strong {
@@ -1004,7 +1005,7 @@ footer a {
 .module-card.available.deeper:hover,
 .module-card.available.toolkit:hover {
   border-color: color-mix(in srgb, var(--tier) 45%, transparent);
-  background: color-mix(in srgb, var(--tier) 5%, var(--surface));
+  background: var(--surface);
 }
 
 /* A legend that states the colour roles rather than leaving them to be
@@ -1172,9 +1173,10 @@ footer a {
 }
 
 .chip[aria-pressed="true"] {
-  border-color: color-mix(in srgb, var(--tier) 60%, transparent);
-  background: color-mix(in srgb, var(--tier) 16%, transparent);
+  border-color: var(--tier);
+  background: var(--surface);
   color: var(--tier);
+  box-shadow: inset 0 0 0 1px var(--tier);
 }
 
 .chip-ghost {
@@ -1209,7 +1211,7 @@ footer a {
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: rgba(16, 24, 40, 0.07);
+  background: var(--surface);
   color: var(--text);
   font: inherit;
   font-size: 0.9rem;
@@ -1419,7 +1421,7 @@ footer a {
   border: 1px solid var(--line);
   border-left: 3px solid var(--accent);
   border-radius: 14px;
-  background: rgba(16, 24, 40, 0.05);
+  background: var(--surface);
   color: var(--text);
 }
 
@@ -1435,7 +1437,7 @@ footer a {
   padding: 0.85rem 1rem;
   border: 1px solid color-mix(in srgb, var(--blue) 28%, transparent);
   border-radius: 14px;
-  background: color-mix(in srgb, var(--blue) 8%, transparent);
+  background: var(--surface);
   color: var(--muted);
   font-size: 0.94rem;
 }
@@ -1466,7 +1468,7 @@ footer a {
   padding: 0.8rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(16, 24, 40, 0.04);
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   transition: border-color 160ms ease, color 160ms ease;
@@ -1492,7 +1494,7 @@ footer a {
   padding: 0.8rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(16, 24, 40, 0.04);
+  background: var(--surface);
   color: var(--text);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.88rem;
@@ -1522,7 +1524,7 @@ footer a {
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(16, 24, 40, 0.05);
+  background: var(--surface);
   color: var(--text);
   white-space: pre-wrap;
 }
@@ -1531,7 +1533,7 @@ footer a {
   padding: 1.2rem 1.4rem;
   border: 1px solid color-mix(in srgb, var(--orange) 35%, transparent);
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--orange) 7%, transparent);
+  background: var(--surface);
   color: var(--muted);
 }
 
@@ -1717,7 +1719,7 @@ footer a {
   padding: 0.85rem 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(16, 24, 40, 0.04);
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   transition: border-color 160ms ease, color 160ms ease;
@@ -1742,13 +1744,13 @@ footer a {
 
 .coach-options li[data-mark="right"] label {
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  background: var(--surface);
   color: var(--text);
 }
 
 .coach-options li[data-mark="wrong"] label {
   border-color: color-mix(in srgb, var(--orange) 55%, transparent);
-  background: color-mix(in srgb, var(--orange) 9%, transparent);
+  background: var(--surface);
   color: var(--text);
 }
 
@@ -1769,7 +1771,7 @@ footer a {
   padding: 0.6rem 0.7rem 0.6rem 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(16, 24, 40, 0.04);
+  background: var(--surface);
   color: var(--text);
 }
 
@@ -1799,12 +1801,12 @@ footer a {
 
 .coach-order li[data-mark="right"] {
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  background: var(--surface);
 }
 
 .coach-order li[data-mark="wrong"] {
   border-color: color-mix(in srgb, var(--orange) 55%, transparent);
-  background: color-mix(in srgb, var(--orange) 9%, transparent);
+  background: var(--surface);
 }
 
 .coach-feedback:not(:empty) {
@@ -2986,9 +2988,7 @@ math {
 }
 
 /* Refinements: one rule between bands, sentence-case meta lines on cards. */
-.band + .section {
-  border-top: 0;
-}
+
 
 .module-card .format,
 .wide-card .format {
