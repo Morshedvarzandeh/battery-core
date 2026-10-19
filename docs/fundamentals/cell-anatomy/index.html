@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The parts of a lithium-ion cell and what each one does, and why electrons take the external circuit while lithium ions cross inside. With an interactive workbench.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/cell-anatomy/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Lemonergy Learn">
+  <meta property="og:title" content="How a lithium-ion cell works: its parts and the two paths of charge">
+  <meta property="og:description" content="Electrodes, separator, electrolyte and current collectors — and why electrons go the long way round while lithium ions cross inside.">
+  <meta property="og:url" content="https://learn.lemonergy.com/fundamentals/cell-anatomy/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <title>How a lithium-ion cell works: parts, electron path and ion path | Lemonergy Learn</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LearningResource",
+        "@id": "https://learn.lemonergy.com/fundamentals/cell-anatomy/#lesson",
+        "name": "Cell anatomy and charge/discharge paths",
+        "headline": "How a lithium-ion cell works: parts, electron path and ion path",
+        "description": "The parts of a lithium-ion cell and what each one does, and why electrons take the external circuit while lithium ions cross inside the cell, on discharge and on charge.",
+        "url": "https://learn.lemonergy.com/fundamentals/cell-anatomy/",
+        "inLanguage": "en",
+        "learningResourceType": "Lesson",
+        "educationalLevel": "Beginner",
+        "timeRequired": "PT35M",
+        "isAccessibleForFree": true,
+        "teaches": ["Lithium-ion cell components", "Electron path and lithium-ion path", "Anode and cathode as reaction roles", "Internal short circuit"],
+        "keywords": "how a lithium-ion battery works, lithium-ion cell components, anode cathode separator electrolyte, current collector, internal short circuit",
+        "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
+        "position": 1,
+        "author": { "@id": "https://lemonergy.com/#organization" },
+        "publisher": { "@id": "https://lemonergy.com/#organization" },
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://lemonergy.com/#organization",
+        "name": "Lemonergy",
+        "url": "https://lemonergy.com/",
+        "email": "info@lemonergy.com"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Battery Cell Foundations", "item": "https://learn.lemonergy.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Syllabus", "item": "https://learn.lemonergy.com/chapter-1/" },
+          { "@type": "ListItem", "position": 3, "name": "Lesson 1 · Cell anatomy" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the lesson</a>
+
+  <header class="site-header">
+    <a class="brand" href="../../" aria-label="Battery Core home">
+      <span class="brand-name">Lemonergy</span>
+      <span class="brand-sub">· battery engineering courses</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../../">Home</a>
+      <a href="../../chapter-1/">Syllabus</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">Licensing</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Battery Cell Foundations</a></li>
+        <li><a href="../../chapter-1/">Syllabus</a></li>
+        <li><span aria-current="page">Lesson 1 · Cell anatomy</span></li>
+      </ol>
+    </nav>
+
+    <section class="page-hero" aria-labelledby="page-title">
+      <p class="eyebrow">Lesson 1 · Battery Cell Foundations · Foundation</p>
+      <h1 id="page-title">Why do electrons go the long way round?</h1>
+      <p class="lede">A lithium-ion cell is two materials that both want to hold lithium, kept apart by a layer that lets lithium ions through and stops electrons. That one arrangement explains how the cell stores energy, why it can power a device, and what goes wrong when the arrangement fails. This lesson names every part of the cell and follows the two paths that charge takes through it, on discharge and on charge.</p>
+      <ul class="lesson-meta">
+        <li><strong>Lesson 1</strong> of Battery Cell Foundations</li>
+        <li><strong>15 min</strong> reading</li>
+        <li><strong>15 min</strong> interactive workbench</li>
+        <li><strong>5 min</strong> practice quiz</li>
+        <li>No prerequisites</li>
+      </ul>
+    </section>
+
+    <div class="lesson">
+      <aside class="lesson-toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">In this lesson</h2>
+        <ol>
+          <li><a href="#big-picture">The big picture</a></li>
+          <li><a href="#components">Six parts, five layers</a></li>
+          <li><a href="#workbench">Interactive workbench</a></li>
+          <li><a href="#discharge">Discharge: the two paths</a></li>
+          <li><a href="#charge">Charge: the same paths reversed</a></li>
+          <li><a href="#anode-cathode">Anode and cathode are roles</a></li>
+          <li><a href="#voltage">Where the voltage comes from</a></li>
+          <li><a href="#short-circuit">When the electron path breaks</a></li>
+          <li><a href="#check-yourself">Check yourself</a></li>
+          <li><a href="#practice-quiz">Practice quiz</a></li>
+          <li><a href="#references">References</a></li>
+        </ol>
+        <a class="lesson-toc-run" href="../cell-anatomy-workbench/">Open the workbench full screen →</a>
+      </aside>
+
+      <article class="prose">
+        <section class="objectives" aria-labelledby="objectives-title">
+          <h2 id="objectives-title">Learning objectives</h2>
+          <p>By the end of this lesson you will be able to:</p>
+          <ul>
+            <li>name the parts of a lithium-ion cell and say what each one does;</li>
+            <li>trace the electron path and the lithium-ion path through the cell, on discharge and on charge;</li>
+            <li>explain why the separator and electrolyte force electrons through the external circuit;</li>
+            <li>tell the fixed labels <em>negative</em> and <em>positive</em> apart from the reaction roles <em>anode</em> and <em>cathode</em>;</li>
+            <li>explain what an internal short circuit is and why it is dangerous.</li>
+          </ul>
+          <p class="prerequisite"><strong>Before you start:</strong> nothing. If “ion” and “electron” are familiar words, you have everything this lesson needs.</p>
+        </section>
+
+        <section aria-labelledby="big-picture">
+          <h2 id="big-picture"><span class="section-number">01</span>The big picture</h2>
+          <p>A rechargeable lithium-ion cell stores energy by moving lithium from one material to another. On one side sits a material that holds lithium loosely — usually graphite. On the other sits a material that holds it much more tightly — usually a lithium metal oxide, or lithium iron phosphate. Lithium “wants” to move from the loose host to the tight one, in the same way a ball wants to roll downhill, and the size of that difference sets the cell’s voltage.</p>
+          <p>The trick is that lithium can only make the move in two halves. It travels inside the cell as a <strong>lithium ion</strong>, Li⁺, while the <strong>electron</strong> it left behind travels round an outside wire. The cell is built so that the inside route carries ions only and the outside route carries electrons only. Put a phone, a motor or a lamp in the outside route, and the electrons do useful work on their way.</p>
+          <p>Charging pushes the lithium back uphill. An external charger drives electrons the other way round the wire, and the lithium ions follow inside, back into the loosely holding material, ready for the next discharge. Neither material dissolves or is used up in the process. Both are <strong>hosts</strong> that take lithium in and let it out again, so the lithium simply shuttles back and forth.</p>
+          <div class="callout">
+            <span class="callout-title">Cell or battery?</span>
+            <p>A <strong>cell</strong> is one electrochemical unit: two electrodes, a separator and electrolyte in one sealed case. A <strong>battery</strong> is, strictly, one or more cells connected together — a laptop battery or an electric-car pack holds many cells plus the electronics that manage them. Everyday speech uses “battery” for both. This course says “cell” whenever it means one unit.</p>
+          </div>
+        </section>
+
+        <section aria-labelledby="components">
+          <h2 id="components"><span class="section-number">02</span>Six parts, five layers</h2>
+          <p>Cut through a cell and you find a thin sandwich, repeated many times. Reading from the negative terminal to the positive one, there are five solid layers, and one liquid that fills the gaps in three of them:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The parts of a typical lithium-ion cell, negative side first</caption>
+              <thead><tr><th scope="col">Part</th><th scope="col">Typical material</th><th scope="col">Its job</th><th scope="col">Carries</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Negative current collector</th><td>Copper foil</td><td>Collects electrons from the negative electrode and leads them to the terminal</td><td>Electrons</td></tr>
+                <tr><th scope="row">Negative electrode</th><td>Graphite, sometimes with some silicon</td><td>Stores lithium at low potential</td><td>Electrons and, in its pores, ions</td></tr>
+                <tr><th scope="row">Separator</th><td>Porous polyethylene or polypropylene film</td><td>Keeps the electrodes apart while letting ions through</td><td>Ions only, through its pores</td></tr>
+                <tr><th scope="row">Positive electrode</th><td>Lithium metal oxide (for example NMC) or lithium iron phosphate (LFP)</td><td>Stores lithium at high potential</td><td>Electrons and, in its pores, ions</td></tr>
+                <tr><th scope="row">Positive current collector</th><td>Aluminium foil</td><td>Leads electrons between the terminal and the positive electrode</td><td>Electrons</td></tr>
+                <tr><th scope="row">Electrolyte</th><td>A lithium salt (LiPF₆) dissolved in organic carbonate solvents</td><td>Carries lithium ions between the electrodes</td><td>Ions only</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The layers are thin. Copper foil is typically around 6–10 µm thick and aluminium foil around 10–15 µm; a separator is often 10–25 µm; each electrode coating ranges from a few tens of micrometres to about a tenth of a millimetre. A human hair is about 70 µm across. To make a useful cell, the sandwich is coated on both sides of each foil and repeated dozens of times, either stacked as flat sheets or wound into a roll. <a href="../cell-architecture/">Lesson 1B</a> looks inside those layers.</p>
+          <p>Two details are worth noticing now. First, the electrolyte is not a sixth layer: it soaks into the pores of the two electrodes and the separator, so ions can reach the material deep inside each electrode. Second, the two collectors are different metals for a reason that comes up again in <a href="#check-yourself">Check yourself</a>: each metal survives only on its own side of the cell.</p>
+        </section>
+
+        <section aria-labelledby="workbench">
+          <h2 id="workbench"><span class="section-number">03</span>Interactive workbench</h2>
+          <p>Switch between <em>Discharge</em> and <em>Charge</em>, and select each part to read what it does in that mode. Watch which way the electrons (e⁻) travel in the wire and which way the lithium ions (Li⁺) travel inside, and notice that neither ever takes the other’s route.</p>
+          <figure class="panel-frame lab-frame">
+            <div class="lab-frame-head"><strong>Cell anatomy workbench</strong><a href="../cell-anatomy-workbench/">Open full screen →</a></div>
+            <iframe src="../cell-anatomy-workbench/" title="Interactive cell anatomy workbench: components, electron path and lithium-ion path" data-fit loading="lazy"></iframe>
+            <figcaption>A conceptual picture, not a simulation: the speed of the moving markers does not represent current, rate or time.</figcaption>
+          </figure>
+        </section>
+
+        <section aria-labelledby="discharge">
+          <h2 id="discharge"><span class="section-number">04</span>Discharge: one journey, two paths</h2>
+          <p>Connect a load across the terminals and the cell discharges. Follow one lithium atom stored in the graphite:</p>
+          <ol>
+            <li>At the surface of a graphite particle, the lithium gives up an electron. Chemists call losing an electron <strong>oxidation</strong>.</li>
+            <li>The electron enters the graphite, flows into the copper collector, out of the negative terminal and through the load. This is the electric current that powers the device.</li>
+            <li>At the same time the lithium ion, now Li⁺, leaves the graphite and travels through the electrolyte — across the separator — to the positive electrode.</li>
+            <li>At the positive electrode, the ion and an electron arriving through the aluminium collector are taken up together into the oxide. Gaining an electron is called <strong>reduction</strong>.</li>
+          </ol>
+          <figure class="panel-frame">
+            <svg viewBox="0 0 720 340" role="img" aria-labelledby="paths-svg-title paths-svg-desc" style="display:block;width:100%;height:auto">
+              <title id="paths-svg-title">The electron path and the lithium-ion path during discharge</title>
+              <desc id="paths-svg-desc">A cell drawn as five layers: copper collector, graphite negative electrode, separator, positive electrode and aluminium collector. Electrons leave the negative side, travel up through the wire, through the load and back down into the positive side. Lithium ions travel inside the cell from the negative electrode through the separator to the positive electrode.</desc>
+              <defs>
+                <marker id="paths-arrow-e" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#202938"/></marker>
+                <marker id="paths-arrow-li" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2459a8"/></marker>
+              </defs>
+              <g font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#202938">
+                <rect x="300" y="26" width="120" height="42" rx="6" fill="#ffffff" stroke="#c3cad5"/>
+                <text x="360" y="52" text-anchor="middle" font-weight="700">Load</text>
+                <path d="M160 160 V47 H296" fill="none" stroke="#202938" stroke-width="2" marker-end="url(#paths-arrow-e)"/>
+                <path d="M424 47 H560 V156" fill="none" stroke="#202938" stroke-width="2" marker-end="url(#paths-arrow-e)"/>
+                <text x="228" y="38" text-anchor="middle" font-weight="700">e⁻</text>
+                <text x="492" y="38" text-anchor="middle" font-weight="700">e⁻</text>
+                <text x="360" y="96" text-anchor="middle" fill="#596579">electrons: through the external circuit</text>
+                <rect x="150" y="160" width="20" height="130" fill="#d6a37a" stroke="#a8784f"/>
+                <rect x="170" y="160" width="160" height="130" fill="#e7ebf0" stroke="#64748b"/>
+                <rect x="330" y="160" width="60" height="130" fill="#ffffff" stroke="#8a95a6" stroke-dasharray="4 3"/>
+                <rect x="390" y="160" width="160" height="130" fill="#f3e1d7" stroke="#c8693f"/>
+                <rect x="550" y="160" width="20" height="130" fill="#cfd5dd" stroke="#8a95a6"/>
+                <path d="M210 236 H500" fill="none" stroke="#2459a8" stroke-width="3" marker-end="url(#paths-arrow-li)"/>
+                <text x="250" y="222" fill="#2459a8" font-weight="700">Li⁺</text>
+                <text x="250" y="190" text-anchor="middle" font-size="13">graphite</text>
+                <text x="470" y="190" text-anchor="middle" font-size="13">metal oxide</text>
+                <text x="360" y="276" text-anchor="middle" font-size="12" fill="#596579">separator</text>
+                <text x="160" y="312" text-anchor="middle" font-size="12" fill="#596579">Cu</text>
+                <text x="560" y="312" text-anchor="middle" font-size="12" fill="#596579">Al</text>
+                <text x="250" y="312" text-anchor="middle" font-size="13">negative electrode</text>
+                <text x="470" y="312" text-anchor="middle" font-size="13">positive electrode</text>
+                <text x="360" y="334" text-anchor="middle" fill="#2459a8">lithium ions: inside, through the electrolyte</text>
+                <text x="128" y="230" text-anchor="end" font-weight="700" font-size="22">−</text>
+                <text x="592" y="230" font-weight="700" font-size="22">+</text>
+              </g>
+            </svg>
+            <figcaption>Discharge. Both journeys start at the negative electrode and end at the positive one, but only the electrons pass through the load.</figcaption>
+          </figure>
+          <p>Written as chemistry, with a layered oxide LiMO₂ as the positive electrode (M stands for metals such as nickel, manganese and cobalt), the two half-reactions on discharge are:</p>
+          <div class="equation" role="math" aria-label="Negative electrode: Li x C 6 gives C 6 plus x lithium ions plus x electrons. Positive electrode: Li 1 minus x M O 2 plus x lithium ions plus x electrons gives Li M O 2.">
+            <math display="block"><mtable columnalign="left"><mtr><mtd><mtext>negative:</mtext></mtd><mtd><msub><mtext>Li</mtext><mi>x</mi></msub><msub><mtext>C</mtext><mn>6</mn></msub><mo>→</mo><msub><mtext>C</mtext><mn>6</mn></msub><mo>+</mo><mi>x</mi><msup><mtext>Li</mtext><mo>+</mo></msup><mo>+</mo><mi>x</mi><msup><mtext>e</mtext><mo>−</mo></msup></mtd></mtr><mtr><mtd><mtext>positive:</mtext></mtd><mtd><msub><mtext>Li</mtext><mrow><mn>1</mn><mo>−</mo><mi>x</mi></mrow></msub><msub><mtext>MO</mtext><mn>2</mn></msub><mo>+</mo><mi>x</mi><msup><mtext>Li</mtext><mo>+</mo></msup><mo>+</mo><mi>x</mi><msup><mtext>e</mtext><mo>−</mo></msup><mo>→</mo><msub><mtext>LiMO</mtext><mn>2</mn></msub></mtd></mtr></mtable></math>
+          </div>
+          <p>Every ion that leaves the negative electrode is matched by an electron leaving it through the wire, and every ion that arrives at the positive electrode is matched by an electron arriving through the wire. That is why the two paths always carry the same amount of charge, and why stopping either one stops both: open the circuit, and the ions stop too.</p>
+        </section>
+
+        <section aria-labelledby="charge">
+          <h2 id="charge"><span class="section-number">05</span>Charge: the same paths, reversed</h2>
+          <p>Charging replaces the load with a charger, which is a source of higher voltage than the cell. It pulls electrons out of the positive electrode and pushes them round the wire into the negative electrode. Lithium ions leave the oxide, cross the electrolyte and separator the other way, and slip back between the graphite layers to meet those electrons. Both half-reactions above run from right to left.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>What moves where</caption>
+              <thead><tr><th scope="col"></th><th scope="col">Discharge</th><th scope="col">Charge</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Electrons, outside the cell</th><td>Negative → load → positive</td><td>Positive → charger → negative</td></tr>
+                <tr><th scope="row">Lithium ions, inside the cell</th><td>Negative → positive</td><td>Positive → negative</td></tr>
+                <tr><th scope="row">Oxidation happens at</th><td>The negative electrode</td><td>The positive electrode</td></tr>
+                <tr><th scope="row">Reduction happens at</th><td>The positive electrode</td><td>The negative electrode</td></tr>
+                <tr><th scope="row">Energy</th><td>Released to the load</td><td>Taken from the charger</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Notice that the electrons and the ions always travel in the same direction as each other — toward the positive electrode on discharge, toward the negative on charge. They just take different routes.</p>
+        </section>
+
+        <section aria-labelledby="anode-cathode">
+          <h2 id="anode-cathode"><span class="section-number">06</span>Anode and cathode are roles, not places</h2>
+          <p>In electrochemistry, the <strong>anode</strong> is wherever oxidation happens and the <strong>cathode</strong> is wherever reduction happens. The table above shows that those roles swap sides between discharge and charge. The labels <strong>negative</strong> and <strong>positive</strong> do not: they belong to the electrodes and never change.</p>
+          <p>The battery industry, however, names the electrodes after their roles on discharge and keeps those names for good. A datasheet or a materials supplier will call graphite “the anode” and the oxide “the cathode” even while the cell is charging. That is a convention, not an error, but it can mislead when you reason about charging. This course says negative and positive electrode, and uses anode and cathode only for the reaction roles, unless it is quoting the industry usage.</p>
+        </section>
+
+        <section aria-labelledby="voltage">
+          <h2 id="voltage"><span class="section-number">07</span>Where the voltage comes from</h2>
+          <p>Each electrode has an electrical potential that depends on how tightly it holds lithium. Measured against lithium metal, lithiated graphite sits only about 0.1 V above it, while a layered oxide averages roughly 3.7–3.9 V. The difference between the two is the cell voltage, which is why a graphite/oxide cell is usually rated at a nominal 3.6–3.7 V. Swap the oxide for lithium iron phosphate, which holds lithium at about 3.4 V, and the nominal cell voltage falls to about 3.2–3.3 V.</p>
+          <p>Voltage tells you how much energy each unit of charge carries; capacity, in ampere-hours, tells you how much charge the cell can move. Multiply the two and you get stored energy, which is where <a href="../capacity-and-c-rate/#energy">Lesson 2</a> picks up. The <a href="../../labs/battery-materials-lab/">battery materials lab</a> lets you build the voltage up from the electrode potentials yourself.</p>
+        </section>
+
+        <section aria-labelledby="short-circuit">
+          <h2 id="short-circuit"><span class="section-number">08</span>When the electron path breaks: the internal short</h2>
+          <p>Everything above depends on one rule: electrons must not be able to cross the inside of the cell. If anything conductive bridges the two electrodes — a metal particle left in from manufacturing, a burr on a cut electrode edge, a separator that has melted or been crushed, or lithium metal that has grown through it — electrons get a short cut. That is an <strong>internal short circuit</strong>.</p>
+          <p>The energy that should have gone to the load is then released as heat at one small spot inside the cell. A weak short shows up as a cell that slowly discharges itself on the shelf. A strong one can heat the surrounding materials until they start reacting with each other, which can lead to <strong>thermal runaway</strong>, the self-accelerating heating behind battery fires. That is why <a href="../cell-production/">Lesson 3</a> spends so much effort on particles and burrs, and why <a href="../battery-aging/#plating">Lesson 4</a> treats lithium plating as a safety problem.</p>
+        </section>
+
+        <section aria-labelledby="check-yourself" class="answers">
+          <h2 id="check-yourself"><span class="section-number">09</span>Check yourself</h2>
+          <p>Work each one out before opening the answer.</p>
+          <details>
+            <summary>During charging, which electrode is the anode?</summary>
+            <div><p>The <strong>positive</strong> electrode. Oxidation happens wherever electrons leave the electrode material, and during charging the charger pulls electrons out of the positive electrode. The negative electrode is the anode only on discharge — even though the industry keeps calling graphite “the anode” all the time.</p></div>
+          </details>
+          <details>
+            <summary>Why is the negative current collector copper and the positive one aluminium, and not the other way round?</summary>
+            <div><p>Each metal is stable only on its own side. At the very low potential of the negative electrode, aluminium would react with lithium and form an alloy, so it would swell and crumble; copper does not react with lithium. At the high potential of the positive electrode, copper would be oxidized and dissolve into the electrolyte, while aluminium is protected by a thin passivating surface film.</p></div>
+          </details>
+          <details>
+            <summary>A tiny metal burr on a cut electrode edge pierces the separator. What happens?</summary>
+            <div><p>The burr gives electrons a path straight through the cell: an <strong>internal short circuit</strong>. Current flows through that small contact instead of the external circuit, so the cell discharges itself and the energy turns into heat at one spot. A weak short shows up as high self-discharge; a strong one can trigger thermal runaway.</p></div>
+          </details>
+          <details>
+            <summary>A cell sits on a shelf with nothing connected. Do lithium ions flow from one electrode to the other?</summary>
+            <div><p>Essentially <strong>no</strong>. An ion can only leave the negative electrode if an electron leaves with it, and with the circuit open the electron has nowhere to go. Charge builds up at the electrode surfaces almost instantly and stops any further net movement. A real cell does lose a little charge on the shelf through slow side reactions — that is self-discharge, which <a href="../battery-aging/">Lesson 4</a> covers.</p></div>
+          </details>
+          <details>
+            <summary>On discharge, the electrons and the lithium ions both move from the negative side to the positive side. So why does current flow at all?</summary>
+            <div><p>Because they take <strong>different routes</strong>. Only the electrons pass through the load, so the useful current is the flow of electrons through the external circuit. Inside the cell, the ions carry the same amount of charge across the electrolyte, which closes the loop. If the electrons could cross inside with the ions, no current would reach the load at all.</p></div>
+          </details>
+        </section>
+
+        <section aria-labelledby="practice-quiz">
+          <h2 id="practice-quiz"><span class="section-number">10</span>Practice quiz</h2>
+          <p>Questions on this lesson. The multiple-choice ones are marked in your browser; the written one you check against a model answer.</p>
+          <div id="study-coach" data-part="Lesson 1" data-module-base="../../chapter-1/"></div>
+          <noscript><p class="coach-noscript">The practice quiz needs JavaScript. The check-yourself questions above cover the same ground with written answers.</p></noscript>
+          <div class="complete-bar" hidden data-progress-ui>
+            <p>Finished the lesson, the workbench and the quiz?</p>
+            <div class="actions">
+              <button type="button" class="complete-button" data-complete="p01" aria-pressed="false">Mark as complete</button>
+              <a class="button button-primary" href="../cell-architecture/">Next: Lesson 1B →</a>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="references">
+          <h2 id="references"><span class="section-number">11</span>References and further reading</h2>
+          <p>These sources go deeper. The explanation and figures here are written independently.</p>
+          <ol class="references">
+            <li>J. B. Goodenough, K.-S. Park, “The Li-ion rechargeable battery: a perspective,” <cite>Journal of the American Chemical Society</cite> 135(4), 1167–1176 (2013). <a href="https://doi.org/10.1021/ja3091438">doi:10.1021/ja3091438</a></li>
+            <li>T. B. Reddy (ed.), <cite>Linden’s Handbook of Batteries</cite>, 4th ed., McGraw-Hill, 2011.</li>
+            <li>G. L. Plett, <cite>Battery Management Systems, Volume I: Battery Modeling</cite>, Artech House, 2015, chapter 1.</li>
+            <li>Argonne National Laboratory, <a href="https://www.anl.gov/science-101/batteries">Science 101: Batteries</a>.</li>
+          </ol>
+        </section>
+      </article>
+    </div>
+
+    <nav class="lesson-pager" aria-label="Chapter 1 lessons">
+      <a class="pager-prev" href="../../chapter-1/" rel="prev"><span>← Syllabus</span><strong>Battery Cell Foundations</strong></a>
+      <a class="pager-next" href="../cell-architecture/" rel="next"><span>Lesson 1B →</span><strong>Lithium-ion cell architecture</strong></a>
+    </nav>
+  </main>
+
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../../">Course home</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">AGPL-3.0-or-later</a>
+      <a href="../../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+  <script src="../../assets/lab-frame.js" defer></script>
+  <script src="../../assets/study-coach.js" defer></script>
+  <script src="../../assets/course-progress.js" defer></script>
+</body>
+</html>

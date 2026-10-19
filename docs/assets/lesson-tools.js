@@ -6,6 +6,7 @@
  *   current_from_c_rate   I = C · Q        Q > 0, C ≥ 0
  *   c_rate_from_current   C = I / Q        Q > 0, I ≥ 0
  *   ideal_duration_hours  t = 1 / C        C > 0  (1/0 is undefined)
+ *   nominal_energy_wh     E = Q · V        Q > 0, V > 0
  *   ficks_first_law_flux  J = −D · dc/dx   D ≥ 0, every value finite
  *
  * The HTML already contains the worked-example results, so a reader without
@@ -148,6 +149,52 @@
     update();
   }
 
+  /* ---- Lesson 2: nominal energy ------------------------------------------- */
+  function energy(wh) {
+    if (wh >= 1000) return `${fixed(wh / 1000, 2)} kWh`;
+    return `${fixed(wh, 2)} Wh`;
+  }
+
+  function energyCalculator(root) {
+    const cap = $("[name=capacity]", root);
+    const volt = $("[name=voltage]", root);
+    const count = $("[name=cells]", root);
+    const out = {
+      cell: $("[data-out=cell_energy]", root),
+      total: $("[data-out=energy]", root),
+    };
+    const msg = $(".calc-note", root);
+
+    function update() {
+      const q = read(cap);
+      const v = read(volt);
+      const n = read(count);
+      const blank = () => { out.cell.textContent = out.total.textContent = "—"; };
+      if (!Number.isFinite(q) || q <= 0) {
+        blank();
+        note(msg, "Nominal capacity must be a finite, positive number of ampere-hours.", true);
+        return;
+      }
+      if (!Number.isFinite(v) || v <= 0) {
+        blank();
+        note(msg, "Nominal voltage must be a finite, positive number of volts.", true);
+        return;
+      }
+      if (!Number.isInteger(n) || n < 1) {
+        blank();
+        note(msg, "The number of cells must be a whole number, 1 or more.", true);
+        return;
+      }
+      const e = q * v;
+      out.cell.textContent = energy(e);
+      out.total.textContent = energy(e * n);
+      note(msg, "A rating: delivered energy is lower at high current, at low temperature and in an aged cell.");
+    }
+
+    [cap, volt, count].forEach(el => el.addEventListener("input", update));
+    update();
+  }
+
   /* ---- Fick's first law --------------------------------------------------- */
   function fickCalculator(root) {
     const d = $("[name=diffusivity]", root);
@@ -190,6 +237,7 @@
   const CALCULATORS = {
     "c-rate-forward": forwardCalculator,
     "c-rate-inverse": inverseCalculator,
+    energy: energyCalculator,
     "fick-flux": fickCalculator,
   };
 

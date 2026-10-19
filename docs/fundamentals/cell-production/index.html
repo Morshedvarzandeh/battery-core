@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How lithium-ion cells are made: electrode manufacturing, cell assembly in the dry room, and formation, aging and testing — and what each step sets in the cell.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/cell-production/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Lemonergy Learn">
+  <meta property="og:title" content="How lithium-ion cells are made, step by step">
+  <meta property="og:description" content="Mixing, coating, calendering, stacking, filling, formation and aging: what each production step does and which property of the finished cell it sets.">
+  <meta property="og:url" content="https://learn.lemonergy.com/fundamentals/cell-production/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <title>How lithium-ion cells are made: production steps explained | Lemonergy Learn</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LearningResource",
+        "@id": "https://learn.lemonergy.com/fundamentals/cell-production/#lesson",
+        "name": "Lithium-ion cell production",
+        "headline": "How lithium-ion cells are made: production steps explained",
+        "description": "Electrode manufacturing, cell assembly in the dry room, and formation, aging and end-of-line testing: what each step of lithium-ion cell production does and which property of the finished cell it sets.",
+        "url": "https://learn.lemonergy.com/fundamentals/cell-production/",
+        "inLanguage": "en",
+        "learningResourceType": "Lesson",
+        "educationalLevel": "Beginner",
+        "timeRequired": "PT1H",
+        "isAccessibleForFree": true,
+        "teaches": ["Electrode manufacturing", "Dry-room cell assembly", "Formation and aging", "End-of-line testing", "Process–property–quality chains"],
+        "keywords": "lithium-ion battery manufacturing, cell production process, electrode coating, calendering, dry room, electrolyte filling, formation, battery aging step, gigafactory",
+        "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
+        "position": 4,
+        "author": { "@id": "https://lemonergy.com/#organization" },
+        "publisher": { "@id": "https://lemonergy.com/#organization" },
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://lemonergy.com/#organization",
+        "name": "Lemonergy",
+        "url": "https://lemonergy.com/",
+        "email": "info@lemonergy.com"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Battery Cell Foundations", "item": "https://learn.lemonergy.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Syllabus", "item": "https://learn.lemonergy.com/chapter-1/" },
+          { "@type": "ListItem", "position": 3, "name": "Lesson 3 · Cell production" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the lesson</a>
+
+  <header class="site-header">
+    <a class="brand" href="../../" aria-label="Battery Core home">
+      <span class="brand-name">Lemonergy</span>
+      <span class="brand-sub">· battery engineering courses</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../../">Home</a>
+      <a href="../../chapter-1/">Syllabus</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">Licensing</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Battery Cell Foundations</a></li>
+        <li><a href="../../chapter-1/">Syllabus</a></li>
+        <li><span aria-current="page">Lesson 3 · Cell production</span></li>
+      </ol>
+    </nav>
+
+    <section class="page-hero" aria-labelledby="page-title">
+      <p class="eyebrow">Lesson 3 · Battery Cell Foundations · Manufacturing</p>
+      <h1 id="page-title">From black powder to a tested cell</h1>
+      <p class="lede">A cell factory turns powders, metal foils and a liquid into a sealed, tested lithium-ion cell in about seventeen steps. Most of them happen on rolls of electrode moving at tens of metres a minute; the last ones take days to weeks for each cell. This lesson walks the line in order and, at every step, names the property of the finished cell it decides.</p>
+      <ul class="lesson-meta">
+        <li><strong>Lesson 3</strong> of Battery Cell Foundations</li>
+        <li><strong>20 min</strong> reading</li>
+        <li><strong>30 min</strong> production simulator</li>
+        <li><strong>10 min</strong> practice quiz</li>
+      </ul>
+    </section>
+
+    <div class="lesson">
+      <aside class="lesson-toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">In this lesson</h2>
+        <ol>
+          <li><a href="#three-phases">Three phases</a></li>
+          <li><a href="#electrodes">Electrode manufacturing</a></li>
+          <li><a href="#assembly">Cell assembly</a></li>
+          <li><a href="#finishing">Cell finishing</a></li>
+          <li><a href="#formats">Pouch, cylinder, prism</a></li>
+          <li><a href="#chains">Process to quality</a></li>
+          <li><a href="#simulator">CellForge simulator</a></li>
+          <li><a href="#limitations">Assumptions and limits</a></li>
+          <li><a href="#check-yourself">Check yourself</a></li>
+          <li><a href="#practice-quiz">Practice quiz</a></li>
+          <li><a href="#references">References</a></li>
+        </ol>
+        <a class="lesson-toc-run" href="../battery-production/">Open the CellForge simulator →</a>
+      </aside>
+
+      <article class="prose">
+        <section class="objectives" aria-labelledby="objectives-title">
+          <h2 id="objectives-title">Learning objectives</h2>
+          <p>By the end of this lesson you will be able to:</p>
+          <ul>
+            <li>put the main steps of lithium-ion cell production in order, in three phases;</li>
+            <li>say which property of the finished cell each step sets;</li>
+            <li>explain why assembly happens in a dry room;</li>
+            <li>explain what formation and aging do, and why they take so long;</li>
+            <li>follow a process change through an electrode property to a quality signal measured at the end of the line.</li>
+          </ul>
+          <p class="prerequisite"><strong>Before you start:</strong> <a href="../cell-anatomy/">Lesson 1</a> for the parts of a cell. <a href="../cell-architecture/">Lesson 1B</a> helps with the electrode recipe and porosity, but is optional.</p>
+        </section>
+
+        <section aria-labelledby="three-phases">
+          <h2 id="three-phases"><span class="section-number">01</span>Three phases, seventeen steps</h2>
+          <p>Production splits into three phases, and each one has its own kind of factory hall. <strong>Electrode manufacturing</strong> makes the coated foils as long continuous rolls. <strong>Cell assembly</strong> cuts and layers them, puts them in a case and fills in the electrolyte. <strong>Cell finishing</strong> charges each cell for the first time, waits, tests and sorts it.</p>
+          <figure class="panel-frame">
+            <svg viewBox="0 0 720 352" role="img" aria-labelledby="flow-svg-title flow-svg-desc" style="display:block;width:100%;height:auto">
+              <title id="flow-svg-title">The three phases of lithium-ion cell production</title>
+              <desc id="flow-svg-desc">Electrode manufacturing: mixing, coating, drying, calendering, slitting and vacuum drying. Cell assembly in a dry room: separation for pouch cells, stacking or winding, tab welding, packaging, electrolyte filling and wetting. Cell finishing: formation, degassing for pouch cells, aging, end-of-line testing, and grading and packing.</desc>
+              <defs>
+                <marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a95a6"/></marker>
+              </defs>
+              <g font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#202938">
+                <text x="10" y="26" font-weight="700" fill="#2459a8">1 · Electrode manufacturing</text>
+                <text x="710" y="26" text-anchor="end" font-size="12" fill="#596579">clean room · moisture controlled</text>
+                <rect x="10" y="40" width="103" height="54" rx="6" fill="#ffffff" stroke="#2459a8" stroke-width="1.4"/>
+                <text x="18" y="55" font-size="11" fill="#2459a8" font-weight="700">01</text>
+                <text x="61.5" y="74" text-anchor="middle" font-size="13">Mixing</text>
+                <path d="M114 67.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="127" y="40" width="103" height="54" rx="6" fill="#ffffff" stroke="#2459a8" stroke-width="1.4"/>
+                <text x="135" y="55" font-size="11" fill="#2459a8" font-weight="700">02</text>
+                <text x="178.5" y="74" text-anchor="middle" font-size="13">Coating</text>
+                <path d="M231 67.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="244" y="40" width="103" height="54" rx="6" fill="#ffffff" stroke="#2459a8" stroke-width="1.4"/>
+                <text x="252" y="55" font-size="11" fill="#2459a8" font-weight="700">03</text>
+                <text x="295.5" y="74" text-anchor="middle" font-size="13">Drying</text>
+                <path d="M348 67.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="361" y="40" width="103" height="54" rx="6" fill="#ffffff" stroke="#2459a8" stroke-width="1.4"/>
+                <text x="369" y="55" font-size="11" fill="#2459a8" font-weight="700">04</text>
+                <text x="412.5" y="74" text-anchor="middle" font-size="13">Calendering</text>
+                <path d="M465 67.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="478" y="40" width="103" height="54" rx="6" fill="#ffffff" stroke="#2459a8" stroke-width="1.4"/>
+                <text x="486" y="55" font-size="11" fill="#2459a8" font-weight="700">05</text>
+                <text x="529.5" y="74" text-anchor="middle" font-size="13">Slitting</text>
+                <path d="M582 67.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="595" y="40" width="103" height="54" rx="6" fill="#ffffff" stroke="#2459a8" stroke-width="1.4"/>
+                <text x="603" y="55" font-size="11" fill="#2459a8" font-weight="700">06</text>
+                <text x="646.5" y="68" text-anchor="middle" font-size="13">Vacuum</text>
+                <text x="646.5" y="83" text-anchor="middle" font-size="13">drying</text>
+                <text x="10" y="138" font-weight="700" fill="#5b6b8a">2 · Cell assembly</text>
+                <text x="710" y="138" text-anchor="end" font-size="12" fill="#596579">dry room · dew point −30 to −60 °C</text>
+                <rect x="10" y="152" width="103" height="54" rx="6" fill="#ffffff" stroke="#5b6b8a" stroke-width="1.4"/>
+                <text x="18" y="167" font-size="11" fill="#5b6b8a" font-weight="700">07</text>
+                <text x="61.5" y="180" text-anchor="middle" font-size="13">Separation</text>
+                <text x="61.5" y="195" text-anchor="middle" font-size="13">(pouch)</text>
+                <path d="M114 179.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="127" y="152" width="103" height="54" rx="6" fill="#ffffff" stroke="#5b6b8a" stroke-width="1.4"/>
+                <text x="135" y="167" font-size="11" fill="#5b6b8a" font-weight="700">08</text>
+                <text x="178.5" y="180" text-anchor="middle" font-size="13">Stacking</text>
+                <text x="178.5" y="195" text-anchor="middle" font-size="13">or winding</text>
+                <path d="M231 179.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="244" y="152" width="103" height="54" rx="6" fill="#ffffff" stroke="#5b6b8a" stroke-width="1.4"/>
+                <text x="252" y="167" font-size="11" fill="#5b6b8a" font-weight="700">09</text>
+                <text x="295.5" y="180" text-anchor="middle" font-size="13">Tab</text>
+                <text x="295.5" y="195" text-anchor="middle" font-size="13">welding</text>
+                <path d="M348 179.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="361" y="152" width="103" height="54" rx="6" fill="#ffffff" stroke="#5b6b8a" stroke-width="1.4"/>
+                <text x="369" y="167" font-size="11" fill="#5b6b8a" font-weight="700">10</text>
+                <text x="412.5" y="186" text-anchor="middle" font-size="13">Packaging</text>
+                <path d="M465 179.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="478" y="152" width="103" height="54" rx="6" fill="#ffffff" stroke="#5b6b8a" stroke-width="1.4"/>
+                <text x="486" y="167" font-size="11" fill="#5b6b8a" font-weight="700">11</text>
+                <text x="529.5" y="180" text-anchor="middle" font-size="13">Electrolyte</text>
+                <text x="529.5" y="195" text-anchor="middle" font-size="13">filling</text>
+                <path d="M582 179.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="595" y="152" width="103" height="54" rx="6" fill="#ffffff" stroke="#5b6b8a" stroke-width="1.4"/>
+                <text x="603" y="167" font-size="11" fill="#5b6b8a" font-weight="700">12</text>
+                <text x="646.5" y="186" text-anchor="middle" font-size="13">Wetting</text>
+                <text x="10" y="250" font-weight="700" fill="#9a5b13">3 · Cell finishing</text>
+                <text x="710" y="250" text-anchor="end" font-size="12" fill="#596579">ordinary production air</text>
+                <rect x="10" y="264" width="103" height="54" rx="6" fill="#ffffff" stroke="#9a5b13" stroke-width="1.4"/>
+                <text x="18" y="279" font-size="11" fill="#9a5b13" font-weight="700">13</text>
+                <text x="61.5" y="298" text-anchor="middle" font-size="13">Formation</text>
+                <path d="M114 291.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="127" y="264" width="103" height="54" rx="6" fill="#ffffff" stroke="#9a5b13" stroke-width="1.4"/>
+                <text x="135" y="279" font-size="11" fill="#9a5b13" font-weight="700">14</text>
+                <text x="178.5" y="292" text-anchor="middle" font-size="13">Degassing</text>
+                <text x="178.5" y="307" text-anchor="middle" font-size="13">(pouch)</text>
+                <path d="M231 291.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="244" y="264" width="103" height="54" rx="6" fill="#ffffff" stroke="#9a5b13" stroke-width="1.4"/>
+                <text x="252" y="279" font-size="11" fill="#9a5b13" font-weight="700">15</text>
+                <text x="295.5" y="298" text-anchor="middle" font-size="13">Aging</text>
+                <path d="M348 291.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="361" y="264" width="103" height="54" rx="6" fill="#ffffff" stroke="#9a5b13" stroke-width="1.4"/>
+                <text x="369" y="279" font-size="11" fill="#9a5b13" font-weight="700">16</text>
+                <text x="412.5" y="292" text-anchor="middle" font-size="13">End-of-line</text>
+                <text x="412.5" y="307" text-anchor="middle" font-size="13">testing</text>
+                <path d="M465 291.0 h11" stroke="#8a95a6" stroke-width="1.4" marker-end="url(#flow-arrow)"/>
+                <rect x="478" y="264" width="103" height="54" rx="6" fill="#ffffff" stroke="#9a5b13" stroke-width="1.4"/>
+                <text x="486" y="279" font-size="11" fill="#9a5b13" font-weight="700">17</text>
+                <text x="529.5" y="292" text-anchor="middle" font-size="13">Grading</text>
+                <text x="529.5" y="307" text-anchor="middle" font-size="13">and packing</text>
+              </g>
+            </svg>
+            <figcaption>The conventional wet-electrode route. Separation and degassing apply to pouch cells; cylindrical cells are wound instead of stacked. Step names follow the PEM RWTH Aachen process guide.</figcaption>
+          </figure>
+          <p>The order matters. Everything that involves water or solvent happens before the electrolyte goes in, and the electrolyte goes in only once the stack is sealed in its case, apart from the opening it is filled through. Nothing after formation can fix a defect built in before it, which is why so much of the line is measurement.</p>
+        </section>
+
+        <section aria-labelledby="electrodes">
+          <h2 id="electrodes"><span class="section-number">02</span>Electrode manufacturing</h2>
+          <p><strong>Mixing.</strong> Active material, conductive carbon and binder are blended with a solvent into a thick, ink-like <strong>slurry</strong>: water for graphite, the organic solvent NMP for most positive electrodes. Negative and positive slurries are made in separate rooms, because a trace of one in the other can ruin a batch. The slurry must be smooth, free of lumps and of air bubbles, and of a viscosity the coater can handle. <em>Sets:</em> how evenly every ingredient is spread through the electrode.</p>
+          <p><strong>Coating.</strong> A slot die spreads the slurry onto copper or aluminium foil, typically 5–25 µm thick and up to about 1.5 m wide, moving at tens of metres per minute. The wet film thickness is controlled to a few micrometres. Pouch-cell electrodes are often coated intermittently, leaving bare strips that later become the tabs. <em>Sets:</em> the coat weight, which fixes how much charge each square centimetre of electrode stores — its areal capacity.</p>
+          <p><strong>Drying.</strong> The web runs straight into a dryer that can be up to around 100 m long, through zones from about 50 °C up to about 160 °C. NMP is recovered from the exhaust and reused, both for cost and because it is a hazardous solvent. Drying too fast can drag binder to the surface, leaving the bottom of the coating weakly attached. <em>Sets:</em> adhesion and the evenness of the binder through the coating.</p>
+          <p><strong>Calendering.</strong> Two heavy steel rolls squeeze the dried coating to a defined thickness, taking its porosity from around 50 % down to roughly 20–35 %. <em>Sets:</em> the porosity, and with it the trade-off between energy and power from <a href="../cell-architecture/#porosity">Lesson 1B</a>, plus how easily the electrolyte will later soak in.</p>
+          <p><strong>Slitting.</strong> Rotating knives cut the wide mother roll into narrower daughter rolls of the exact width the cell needs. The edge must be clean: a burr or a loose particle can later pierce the separator. <em>Sets:</em> edge quality, which decides the risk of internal shorts.</p>
+          <p><strong>Vacuum drying.</strong> The rolls spend hours to two days in vacuum ovens at around 60–150 °C to drive out the last moisture, then go straight into the dry room. <em>Sets:</em> residual water, which would otherwise react with the electrolyte.</p>
+          <div class="callout">
+            <span class="callout-title">The dry-electrode route</span>
+            <p>Some manufacturers skip the solvent entirely. The powders are mixed dry with a binder that, when sheared, draws out into fine fibres and knits the powder into a self-supporting film, which is then pressed straight onto the foil. There is no slurry, no dryer and no solvent to recover, which saves energy and a great deal of floor space. Getting the film to stick well to the foil is the main difficulty. The CellForge simulator lets you switch the line between both routes.</p>
+          </div>
+        </section>
+
+        <section aria-labelledby="assembly">
+          <h2 id="assembly"><span class="section-number">03</span>Cell assembly in the dry room</h2>
+          <p>From here on, the air itself is a contaminant. The electrolyte salt, LiPF₆, reacts with water to form hydrofluoric acid, which attacks the electrodes and generates gas. So assembly happens in a <strong>dry room</strong>, where the dew point is held around −30 °C to −60 °C — air drier than a desert — at great energy cost.</p>
+          <p><strong>Separation, stacking or winding.</strong> For pouch cells, individual electrode sheets are punched out, a fraction of a second each, and stacked with separator between them, often by <em>Z-folding</em> one continuous separator back and forth between the sheets. For cylindrical cells, and many prismatic ones, four long strips — two electrodes and two separators — are wound into a jelly roll instead. Alignment matters: the negative electrode is made slightly larger than the positive so that every lithium ion leaving the positive always has graphite opposite it to go into, rather than plating as metal on an edge. <em>Sets:</em> alignment, overhang and the internal geometry of the cell.</p>
+          <p><strong>Tab welding and packaging.</strong> The bare foil edges are welded to the tabs or terminals, by ultrasonic welding for the thin foils of a pouch cell and often by laser in metal cans. The stack goes into its case: a deep-drawn pouch of aluminium laminated with plastic, or a steel or aluminium can. <em>Sets:</em> the electrical resistance of the joints, and the seal that will keep moisture out for the life of the cell.</p>
+          <p><strong>Electrolyte filling and wetting.</strong> A precisely weighed dose of electrolyte is injected under vacuum, so it is drawn into the pores rather than trapping air. Soaking into every pore of the electrodes and separator takes time — hours or more, sometimes helped by warmth, pressure or vibration — and a dry patch left behind is an electrode area that will never work properly. <em>Sets:</em> how completely the electrodes are wetted, which shows up in formation and in impedance.</p>
+        </section>
+
+        <section aria-labelledby="finishing">
+          <h2 id="finishing"><span class="section-number">04</span>Cell finishing: formation, aging, testing</h2>
+          <p><strong>Formation.</strong> Each cell gets its first charge and discharge on racks of precision chargers, starting at a low current, roughly 0.1C to 0.5C, and stepping up over several cycles. This is when the solid electrolyte interphase, the SEI from <a href="../cell-architecture/#sei">Lesson 1B</a>, grows on the graphite. A slow, controlled first charge gives a thin, even, protective film; rushing it gives a poor film and can plate lithium. The first SEI permanently consumes some of the cell’s lithium, typically a few percent and up to around ten percent, and the cell is designed with that loss built in. Formation takes many hours per cell and ties up a great deal of equipment; in the PEM reference plant it is the single largest equipment investment on the line.</p>
+          <p><strong>Degassing.</strong> Formation releases gas. Pouch cells are made with an extra gas pocket that is pierced in a dry atmosphere, emptied, and sealed off and cut away, leaving the cell at its final size. Cans are usually closed after formation or are built to cope with the gas.</p>
+          <p><strong>Aging.</strong> Cells are then stored, at room temperature or warmer, for days and up to around three weeks, while their open-circuit voltage is tracked. Very little changes in a good cell. A cell with a tiny internal short — from a particle or a burr — loses charge slowly through it, so its voltage falls faster than its neighbours’. Because that difference is small, time is the only way to see it. <em>Sets nothing:</em> aging is a screen, not a process step that improves the cell.</p>
+          <p><strong>End-of-line testing and grading.</strong> Each cell’s capacity, internal resistance and open-circuit voltage are measured, and cells are sorted into grades so that a battery pack can be built from closely matched ones. Cells are then shipped part-charged. For lithium-ion cells shipped on their own by air, international rules cap the state of charge at 30 %.</p>
+        </section>
+
+        <section aria-labelledby="formats">
+          <h2 id="formats"><span class="section-number">05</span>Pouch, cylinder, prism</h2>
+          <p>The same electrode rolls can go into three kinds of case, and the case decides part of the assembly line:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>How the cell format changes assembly</caption>
+              <thead><tr><th scope="col"></th><th scope="col">Pouch</th><th scope="col">Cylindrical</th><th scope="col">Prismatic</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Electrode layout</th><td>Stacked sheets</td><td>Wound jelly roll</td><td>Wound flat roll or stacked sheets</td></tr>
+                <tr><th scope="row">Case</th><td>Soft aluminium–plastic laminate</td><td>Rigid metal can</td><td>Rigid metal box</td></tr>
+                <tr><th scope="row">Joining</th><td>Ultrasonic tab welding, heat sealing</td><td>Welded terminals and lid</td><td>Welded terminals and lid</td></tr>
+                <tr><th scope="row">Degassing</th><td>Yes, through a gas pocket</td><td>Usually not a separate step</td><td>Usually not a separate step</td></tr>
+                <tr><th scope="row">Typical strengths</th><td>Light, flexible shapes, good cooling</td><td>Fast, mature winding; robust can</td><td>Large cells that pack tightly</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section aria-labelledby="chains">
+          <h2 id="chains"><span class="section-number">06</span>From a process setting to a quality signal</h2>
+          <p>A useful way to understand a production line is as a set of chains with three links: a <strong>process setting</strong> changes an <strong>electrode or cell property</strong>, which shows up as a <strong>signal measured</strong> later. If you can only name the first and the last link, you have a correlation; the middle link makes it an explanation.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Six process-to-quality chains</caption>
+              <thead><tr><th scope="col">Process setting</th><th scope="col">Property it changes</th><th scope="col">Where it shows up</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Coat weight drifts low</th><td>Less active material per area, lower areal capacity</td><td>Low capacity at grading</td></tr>
+                <tr><th scope="row">Dryer too hot or too fast</th><td>Binder migrates to the surface; weak adhesion at the foil</td><td>Coating flakes; faster capacity fade in cycling</td></tr>
+                <tr><th scope="row">Calender pressed harder</th><td>Lower porosity, longer ion paths</td><td>Slower wetting; higher resistance at high current</td></tr>
+                <tr><th scope="row">Worn slitting knife</th><td>Burrs on the electrode edge</td><td>Voltage drop during aging; failed insulation test</td></tr>
+                <tr><th scope="row">Dry-room humidity rises</th><td>Water in the cell; acid formed from the salt</td><td>Gas and swelling; extra capacity loss</td></tr>
+                <tr><th scope="row">Formation current too high</th><td>Poor, uneven SEI; possible lithium plating</td><td>Lower capacity; shorter cycle life</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section aria-labelledby="simulator">
+          <h2 id="simulator"><span class="section-number">07</span>Walk the line in CellForge</h2>
+          <p>CellForge draws all of these stations as machines you can open, with their operating windows, the parts of each machine, and a setpoint lab where changing a process setting moves the downstream quality signals. It covers pouch, cylindrical and prismatic lines and both the wet and dry electrode routes. It opens full screen; come back here for the quiz.</p>
+          <div class="lab-launch">
+            <img src="cellforge-preview.webp" width="800" height="351" alt="CellForge’s calendering station: the dried electrode is cleaned, pressed between two rollers at a controlled line force, measured for thickness and rewound at 20–35 % porosity." loading="lazy">
+            <div class="lab-launch-copy">
+              <p class="format">Interactive simulator · about 30 min</p>
+              <h3>CellForge — lithium-ion cell production</h3>
+              <ul>
+                <li>Fifteen stations, drawn as the machines</li>
+                <li>Wet and dry electrode routes</li>
+                <li>Pouch, cylindrical and prismatic lines</li>
+                <li>A setpoint lab and a guided tour</li>
+              </ul>
+              <a class="button button-primary" href="../battery-production/">Open CellForge →</a>
+            </div>
+          </div>
+          <p><strong>Try this:</strong> open the setpoint lab, raise the calendering line pressure, and watch what happens to porosity and to the wetting estimate downstream. Then switch the line to the dry route and see which stations disappear.</p>
+        </section>
+
+        <section aria-labelledby="limitations">
+          <h2 id="limitations"><span class="section-number">08</span>Assumptions and limits</h2>
+          <ul>
+            <li>The step sequence and operating ranges follow the PEM RWTH Aachen and VDMA process guide for a reference graphite/NMC cell. Real plants, chemistries and cell designs use different windows.</li>
+            <li>Ranges quoted here are indicative, to give a sense of scale. They are not recipes, equipment specifications or release criteria.</li>
+            <li>The quality chains are typical cause-and-effect links, not a complete list; a real signal usually has several possible causes.</li>
+            <li>The numbers in the CellForge setpoint lab are teaching relationships, not calibrated plant predictions.</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="check-yourself" class="answers">
+          <h2 id="check-yourself"><span class="section-number">09</span>Check yourself</h2>
+          <p>Work each one out before opening the answer.</p>
+          <details>
+            <summary>Graphite slurry is made with water. So why does assembly need a dry room at all?</summary>
+            <div><p>Because the water problem starts when the electrolyte arrives. LiPF₆ reacts with water to form hydrofluoric acid, which attacks the electrodes and makes gas. The water used in mixing is removed by drying and vacuum drying <em>before</em> the electrodes enter the dry room; the dry room then keeps new moisture from getting back in before the cell is sealed.</p></div>
+          </details>
+          <details>
+            <summary>Why does formation start at such a low current?</summary>
+            <div><p>The first charge builds the SEI on fresh graphite. A slow charge gives a thin, even, protective film. A fast one gives a poorer, uneven film that keeps consuming lithium, and can push lithium in faster than the graphite takes it, plating metal on the surface.</p></div>
+          </details>
+          <details>
+            <summary>Aging does not improve the cell. Why spend up to three weeks on it?</summary>
+            <div><p>It is a screen for internal defects. A cell with a tiny internal short discharges itself slowly, so its voltage falls a little faster than a good cell’s. The difference is only millivolts, so it takes days to weeks to tell the two apart reliably — and finding it in the factory is far cheaper than finding it in a customer’s pack.</p></div>
+          </details>
+          <details>
+            <summary>Which steps does the dry-electrode route remove, and why does that matter?</summary>
+            <div><p>It removes the solvent: there is no slurry, no long dryer and no solvent recovery. Drying is one of the most energy-hungry and space-hungry parts of the line, so removing it saves both. The cost is a harder problem in making the dry film adhere to the foil.</p></div>
+          </details>
+          <details>
+            <summary>A slitting knife slowly wears. Which end-of-line signal would catch it, and through which mechanism?</summary>
+            <div><p>Process: a worn knife leaves burrs on the electrode edge. Property: a burr can pierce the separator and form a small internal short. Signal: during aging, those cells lose open-circuit voltage faster than their neighbours, and they can fail an insulation test. All three links are needed for it to be an explanation.</p></div>
+          </details>
+        </section>
+
+        <section aria-labelledby="practice-quiz">
+          <h2 id="practice-quiz"><span class="section-number">10</span>Practice quiz</h2>
+          <p>Questions on this lesson: an ordering exercise and multiple choice, marked in your browser, and a written question you check against a model answer.</p>
+          <div id="study-coach" data-part="Lesson 3" data-module-base="../../chapter-1/"></div>
+          <noscript><p class="coach-noscript">The practice quiz needs JavaScript. The check-yourself questions above cover the same ground with written answers.</p></noscript>
+          <div class="complete-bar" hidden data-progress-ui>
+            <p>Finished the lesson, the simulator and the quiz?</p>
+            <div class="actions">
+              <button type="button" class="complete-button" data-complete="p03" aria-pressed="false">Mark as complete</button>
+              <a class="button button-primary" href="../solid-state-cell-production/">Next: Lesson 3B →</a>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="references">
+          <h2 id="references"><span class="section-number">11</span>References and further reading</h2>
+          <p>The step sequence and ranges follow the first source. The explanation here is written independently.</p>
+          <ol class="references">
+            <li>S. Michaelis, B. Rothhagen, H. H. Heimes, H. Born, A. Kampker, C. Scherer, P. Lingohr, <cite>Production Process of a Lithium-Ion Battery Cell</cite>, 5th ed., PEM of RWTH Aachen University and VDMA, Frankfurt am Main, 2026. ISBN 978-3-947920-71-6.</li>
+            <li>A. Kwade, W. Haselrieder, R. Leithoff, A. Modlinger, F. Dietrich, K. Droeder, “Current status and challenges for automotive battery production technologies,” <cite>Nature Energy</cite> 3, 290–300 (2018). <a href="https://doi.org/10.1038/s41560-018-0130-3">doi:10.1038/s41560-018-0130-3</a></li>
+            <li>D. L. Wood III, J. Li, C. Daniel, “Prospects for reducing the processing cost of lithium ion batteries,” <cite>Journal of Power Sources</cite> 275, 234–242 (2015). <a href="https://doi.org/10.1016/j.jpowsour.2014.11.019">doi:10.1016/j.jpowsour.2014.11.019</a></li>
+            <li>Y. Liu, R. Zhang, J. Wang, Y. Wang, “Current and future lithium-ion battery manufacturing,” <cite>iScience</cite> 24(4), 102332 (2021). <a href="https://doi.org/10.1016/j.isci.2021.102332">doi:10.1016/j.isci.2021.102332</a></li>
+            <li>IATA, <cite>Lithium Battery Guidance Document</cite>, Packing Instruction 965 (state of charge of lithium-ion cells and batteries shipped by air).</li>
+          </ol>
+        </section>
+      </article>
+    </div>
+
+    <nav class="lesson-pager" aria-label="Chapter 1 lessons">
+      <a class="pager-prev" href="../capacity-and-c-rate/" rel="prev"><span>← Lesson 2</span><strong>Capacity and C-rate</strong></a>
+      <a class="pager-next" href="../solid-state-cell-production/" rel="next"><span>Lesson 3B →</span><strong>All-solid-state cell production</strong></a>
+    </nav>
+  </main>
+
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../../">Course home</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">AGPL-3.0-or-later</a>
+      <a href="../../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+  <script src="../../assets/study-coach.js" defer></script>
+  <script src="../../assets/course-progress.js" defer></script>
+</body>
+</html>

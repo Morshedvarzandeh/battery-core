@@ -1,4 +1,4 @@
-"""Static checks for the reading lessons: Parts 02 and 04 and Fick's first law.
+"""Static checks for the reading lessons: Lessons 1 to 4 and Fick's first law.
 
 The lessons are the on-site, readable version of material that was previously
 only reachable as a notebook. These checks keep them honest in the same ways
@@ -23,15 +23,20 @@ from battery_core import (
     current_from_c_rate,
     ficks_first_law_flux,
     ideal_duration_hours,
+    nominal_energy_wh,
 )
 from battery_core.aging import arrhenius_factor
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
+ANATOMY = DOCS / "fundamentals" / "cell-anatomy" / "index.html"
+ARCHITECTURE = DOCS / "fundamentals" / "cell-architecture" / "index.html"
 CAPACITY = DOCS / "fundamentals" / "capacity-and-c-rate" / "index.html"
+PRODUCTION = DOCS / "fundamentals" / "cell-production" / "index.html"
+SOLID_STATE = DOCS / "fundamentals" / "solid-state-cell-production" / "index.html"
 AGING = DOCS / "fundamentals" / "battery-aging" / "index.html"
 FICK = DOCS / "transport" / "ficks-first-law" / "index.html"
-LESSONS = (CAPACITY, AGING, FICK)
+LESSONS = (ANATOMY, ARCHITECTURE, CAPACITY, PRODUCTION, SOLID_STATE, AGING, FICK)
 COACH = DOCS / "assets" / "study-coach.js"
 TIMES = "\N{MULTIPLICATION SIGN}"  # as printed in the lesson tables
 
@@ -93,8 +98,15 @@ def test_lesson_follows_the_course_discipline(page: Path) -> None:
 
 @pytest.mark.parametrize(
     ("page", "part", "item"),
-    [(CAPACITY, "Lesson 2", "p02"), (AGING, "Lesson 4", "p04")],
-    ids=["part-02", "part-04"],
+    [
+        (ANATOMY, "Lesson 1", "p01"),
+        (ARCHITECTURE, "Lesson 1B", "p01b"),
+        (CAPACITY, "Lesson 2", "p02"),
+        (PRODUCTION, "Lesson 3", "p03"),
+        (SOLID_STATE, "Lesson 3B", "p03b"),
+        (AGING, "Lesson 4", "p04"),
+    ],
+    ids=["lesson-1", "lesson-1b", "lesson-2", "lesson-3", "lesson-3b", "lesson-4"],
 )
 def test_practice_quiz_is_scoped_to_its_part(page: Path, part: str, item: str) -> None:
     html = page.read_text(encoding="utf-8")
@@ -102,13 +114,17 @@ def test_practice_quiz_is_scoped_to_its_part(page: Path, part: str, item: str) -
     assert 'src="../../assets/study-coach.js"' in html
     assert f'data-complete="{item}"' in html
     coach = COACH.read_text(encoding="utf-8")
-    assert coach.count(f'part: "{part}"') >= 3, "a quiz needs questions"
+    assert coach.count(f'part: "{part}"') >= 4, "a quiz needs questions"
 
 
 def test_coach_links_point_at_the_on_site_lessons() -> None:
     coach = COACH.read_text(encoding="utf-8")
-    assert 'module: "../fundamentals/capacity-and-c-rate/"' in coach
-    assert 'module: "../fundamentals/battery-aging/"' in coach
+    for page in (ANATOMY, ARCHITECTURE, CAPACITY, PRODUCTION, SOLID_STATE, AGING):
+        assert f'module: "../fundamentals/{page.parent.name}/"' in coach, page
+    # The labs are reached through their lessons, not directly from the quiz.
+    for lab in ("cell-anatomy-workbench", "lithium-ion-cell-architecture",
+                "battery-production", "solid-state-production"):
+        assert f'module: "../fundamentals/{lab}/"' not in coach, lab
     assert "data-part" in coach or "dataset.part" in coach
 
 
@@ -252,3 +268,88 @@ def test_lesson_structured_data_describes_a_learning_resource(page: Path) -> Non
     assert canonical and lesson["url"] == canonical.group(1)
     assert lesson["isAccessibleForFree"] is True
     assert lesson["teaches"]
+
+
+# --- Lesson 2: nominal energy -------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("capacity", "voltage", "printed"),
+    [(5.0, 3.85, "19.25 Wh"), (3.0, 3.6, "10.8 Wh"), (3.0, 3.2, "9.6 Wh"),
+     (20.0, 3.65, "73 Wh")],
+)
+def test_capacity_energy_table_matches_the_python(
+    capacity: float, voltage: float, printed: str
+) -> None:
+    energy = nominal_energy_wh(nominal_capacity_ah=capacity, nominal_voltage_v=voltage)
+    assert f"{energy:.2f}".rstrip("0").rstrip(".") + " Wh" == printed
+    assert f'<td class="num">{printed}</td>' in CAPACITY.read_text(encoding="utf-8")
+
+
+def test_capacity_pack_example_matches_the_python() -> None:
+    pack_voltage = 96 * 3.65
+    energy = nominal_energy_wh(nominal_capacity_ah=50.0, nominal_voltage_v=pack_voltage)
+    html = CAPACITY.read_text(encoding="utf-8")
+    assert f'<td class="num">{pack_voltage:.1f} V</td>' in html
+    assert f'<td class="num">{energy / 1000:.1f} kWh</td>' in html
+
+
+def test_capacity_energy_calculator_defaults_to_the_worked_example() -> None:
+    html = CAPACITY.read_text(encoding="utf-8")
+    assert 'data-calc="energy"' in html
+    energy = nominal_energy_wh(nominal_capacity_ah=20.0, nominal_voltage_v=3.65)
+    assert f'<dd data-out="energy">{energy:g} Wh</dd>' in html
+
+
+# --- Lessons 1 and 1B: the labs are framed, and the frames fit them -------------
+
+
+@pytest.mark.parametrize(
+    ("page", "lab"),
+    [
+        (ANATOMY, "cell-anatomy-workbench"),
+        (ARCHITECTURE, "lithium-ion-cell-architecture"),
+    ],
+    ids=["lesson-1", "lesson-1b"],
+)
+def test_lab_is_framed_in_its_lesson(page: Path, lab: str) -> None:
+    parser = _parse(page)
+    frames = [f for f in parser.iframes if f.get("src") == f"../{lab}/"]
+    assert len(frames) == 1
+    assert "data-fit" in frames[0]
+    assert frames[0].get("title")
+    html = page.read_text(encoding="utf-8")
+    assert 'src="../../assets/lab-frame.js"' in html
+    lab_html = (DOCS / "fundamentals" / lab / "index.html").read_text(encoding="utf-8")
+    # The lab hides its own course chrome when it is shown inside the lesson.
+    assert 'src="../../assets/embed.js"' in lab_html
+    assert lab_html.index("embed.js") < lab_html.index("</head>")
+
+
+def test_embedded_labs_cannot_grow_their_own_frame() -> None:
+    """A frame sized to its content, holding a page sized to the frame, would
+    grow without end."""
+    css = (DOCS / "assets" / "site-chrome.css").read_text(encoding="utf-8")
+    assert "html[data-embedded] body" in css
+    assert "min-height: 0 !important" in css
+
+
+# --- Lessons 3 and 3B: simulators are opened, with a preview -------------------
+
+
+@pytest.mark.parametrize(
+    ("page", "simulator", "preview"),
+    [
+        (PRODUCTION, "battery-production", "cellforge-preview.webp"),
+        (SOLID_STATE, "solid-state-production", "solidforge-preview.webp"),
+    ],
+    ids=["lesson-3", "lesson-3b"],
+)
+def test_simulator_lesson_links_its_simulator(
+    page: Path, simulator: str, preview: str
+) -> None:
+    html = page.read_text(encoding="utf-8")
+    assert f'href="../{simulator}/"' in html
+    assert f'<img src="{preview}"' in html
+    assert (page.parent / preview).is_file()
+    assert (page.parent / preview).stat().st_size < 100_000

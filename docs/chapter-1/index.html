@@ -32,20 +32,20 @@
         "courseCode": "BC-1",
         "inLanguage": "en",
         "educationalLevel": "Beginner",
-        "timeRequired": "PT3H30M",
+        "timeRequired": "PT5H",
         "isAccessibleForFree": true,
         "teaches": ["Lithium-ion cell anatomy", "C-rate and nominal capacity", "Lithium-ion cell production", "All-solid-state cell production", "Battery degradation mechanisms"],
         "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
         "provider": { "@id": "https://lemonergy.com/#organization" },
         "license": "https://www.gnu.org/licenses/agpl-3.0.html",
         "offers": { "@type": "Offer", "category": "Free", "price": 0, "priceCurrency": "EUR" },
-        "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "Online", "courseWorkload": "PT3H30M" },
+        "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "Online", "courseWorkload": "PT5H" },
         "hasPart": [
-          { "@type": "LearningResource", "name": "Cell anatomy and charge/discharge paths", "url": "https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/" },
-          { "@type": "LearningResource", "name": "Lithium-ion cell architecture", "url": "https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/" },
+          { "@type": "LearningResource", "name": "Cell anatomy and charge/discharge paths", "url": "https://learn.lemonergy.com/fundamentals/cell-anatomy/" },
+          { "@type": "LearningResource", "name": "Lithium-ion cell architecture", "url": "https://learn.lemonergy.com/fundamentals/cell-architecture/" },
           { "@type": "LearningResource", "name": "Nominal capacity and C-rate", "url": "https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/" },
-          { "@type": "LearningResource", "name": "Lithium-ion cell production", "url": "https://learn.lemonergy.com/fundamentals/battery-production/" },
-          { "@type": "LearningResource", "name": "All-solid-state cell production", "url": "https://learn.lemonergy.com/fundamentals/solid-state-production/" },
+          { "@type": "LearningResource", "name": "Lithium-ion cell production", "url": "https://learn.lemonergy.com/fundamentals/cell-production/" },
+          { "@type": "LearningResource", "name": "All-solid-state cell production", "url": "https://learn.lemonergy.com/fundamentals/solid-state-cell-production/" },
           { "@type": "LearningResource", "name": "Battery aging", "url": "https://learn.lemonergy.com/fundamentals/battery-aging/" }
         ]
       },
@@ -93,7 +93,7 @@
         <h1 id="guide-title">Battery Cell Foundations</h1>
         <p class="hero-summary">Four core lessons and two optional ones, from what is inside a lithium-ion cell to how it is rated, how it is made and how it wears out. Take them in order, practise with each lesson’s questions, and mark each one complete.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="../fundamentals/cell-anatomy-workbench/">Start lesson 1</a>
+          <a class="button button-primary" href="../fundamentals/cell-anatomy/">Start lesson 1</a>
           <a class="button button-secondary" href="#practice">Practice questions</a>
         </div>
       </div>
@@ -107,7 +107,7 @@
         <dl>
           <div><dt>Core lessons</dt><dd>1, 2, 3, 4 and the checkpoint</dd></div>
           <div><dt>Optional</dt><dd>1B and 3B — tracked, not counted</dd></div>
-          <div><dt>Time</dt><dd>About 3.5 hours</dd></div>
+          <div><dt>Time</dt><dd>About 5 hours</dd></div>
           <div><dt>Saved</dt><dd>In this browser only</dd></div>
         </dl>
       </aside>
@@ -194,7 +194,7 @@
         <article class="study-step">
           <div class="study-step-number"><span>Lesson</span><strong>1</strong></div>
           <div class="study-step-copy">
-            <p class="format">Interactive browser workbench · Foundation</p>
+            <p class="format">Reading + interactive workbench · Foundation</p>
             <h3>Cell anatomy and charge/discharge paths</h3>
             <p>Identify the electrodes, collectors, separator, and electrolyte, then distinguish the electron path from the lithium-ion path.</p>
             <div class="study-prompts">
@@ -202,10 +202,11 @@
               <p><strong>Checkpoint:</strong> Can you explain why electrons use the external circuit while lithium ions move inside the cell?</p>
             </div>
             <ul class="syllabus-items" aria-label="Lesson items">
+              <li data-progress-item="p01"><span class="item-type">Reading</span><a href="../fundamentals/cell-anatomy/">How a lithium-ion cell works</a><span class="item-time">15 min</span></li>
               <li data-progress-item="p01"><span class="item-type">Interactive lab</span><a href="../fundamentals/cell-anatomy-workbench/">Cell anatomy workbench</a><span class="item-time">15 min</span></li>
-              <li data-progress-item="p01"><span class="item-type">Practice quiz</span><a href="#practice">2 questions</a><span class="item-time">5 min</span></li>
+              <li data-progress-item="p01"><span class="item-type">Practice quiz</span><a href="../fundamentals/cell-anatomy/#practice-quiz">5 questions</a><span class="item-time">5 min</span></li>
             </ul>
-            <a class="card-action" href="../fundamentals/cell-anatomy-workbench/">Start lesson 1 <span aria-hidden="true">→</span></a>
+            <a class="card-action" href="../fundamentals/cell-anatomy/">Start lesson 1 <span aria-hidden="true">→</span></a>
             <button type="button" class="complete-button" data-complete="p01" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>
           </div>
         </article>
@@ -213,7 +214,7 @@
         <article class="study-step study-step-deeper">
           <div class="study-step-number"><span>Lesson</span><strong>1B</strong></div>
           <div class="study-step-copy">
-            <p class="format">Interactive browser tutorial · Deeper view</p>
+            <p class="format">Reading + interactive tutorial · Deeper view</p>
             <h3>Lithium-ion cell architecture</h3>
             <p>Move from the five-layer stack into porous electrodes, pore electrolyte, solvent molecules, ions, and transport paths.</p>
             <div class="study-prompts">
@@ -221,10 +222,11 @@
               <p><strong>Checkpoint:</strong> Can you explain why electrolyte in electrode pores is not a sixth structural layer?</p>
             </div>
             <ul class="syllabus-items" aria-label="Lesson items">
+              <li data-progress-item="p01b"><span class="item-type">Reading</span><a href="../fundamentals/cell-architecture/">Porous electrodes, separator and electrolyte</a><span class="item-time">15 min</span></li>
               <li data-progress-item="p01b"><span class="item-type">Interactive lab</span><a href="../fundamentals/lithium-ion-cell-architecture/">Five layers, pores and solvent</a><span class="item-time">20 min</span></li>
-              <li data-progress-item="p01b"><span class="item-type">Practice quiz</span><a href="#practice">1 question</a><span class="item-time">5 min</span></li>
+              <li data-progress-item="p01b"><span class="item-type">Practice quiz</span><a href="../fundamentals/cell-architecture/#practice-quiz">4 questions</a><span class="item-time">5 min</span></li>
             </ul>
-            <a class="card-action" href="../fundamentals/lithium-ion-cell-architecture/">Start lesson 1B <span aria-hidden="true">→</span></a>
+            <a class="card-action" href="../fundamentals/cell-architecture/">Start lesson 1B <span aria-hidden="true">→</span></a>
             <button type="button" class="complete-button" data-complete="p01b" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>
           </div>
         </article>
@@ -234,14 +236,14 @@
           <div class="study-step-copy">
             <p class="format">Reading + calculators · Quantitative foundation</p>
             <h3>Nominal capacity and C-rate</h3>
-            <p>Calculate current, C-rate, and ideal constant-current duration while keeping exact definitions separate from real cutoff behavior.</p>
+            <p>Calculate current, C-rate, ideal constant-current duration and nominal energy while keeping exact definitions separate from real cutoff behavior.</p>
             <div class="study-prompts">
               <p><strong>Focus:</strong> units, proportional reasoning, and model limits.</p>
               <p><strong>Checkpoint:</strong> Can you calculate the current for a 5 Ah cell at 2C and state why the real runtime may differ?</p>
             </div>
             <ul class="syllabus-items" aria-label="Lesson items">
-              <li data-progress-item="p02"><span class="item-type">Reading</span><a href="../fundamentals/capacity-and-c-rate/">Capacity and C-rate, with calculators</a><span class="item-time">15 min</span></li>
-              <li data-progress-item="p02"><span class="item-type">Practice quiz</span><a href="../fundamentals/capacity-and-c-rate/#practice-quiz">3 questions</a><span class="item-time">5 min</span></li>
+              <li data-progress-item="p02"><span class="item-type">Reading</span><a href="../fundamentals/capacity-and-c-rate/">Capacity, C-rate and energy, with calculators</a><span class="item-time">20 min</span></li>
+              <li data-progress-item="p02"><span class="item-type">Practice quiz</span><a href="../fundamentals/capacity-and-c-rate/#practice-quiz">5 questions</a><span class="item-time">5 min</span></li>
               <li data-progress-item="p02"><span class="item-type">Optional</span><a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb">Python notebook</a><span class="item-time">20 min</span></li>
             </ul>
             <a class="card-action" href="../fundamentals/capacity-and-c-rate/">Start lesson 2 <span aria-hidden="true">→</span></a>
@@ -252,7 +254,7 @@
         <article class="study-step">
           <div class="study-step-number"><span>Lesson</span><strong>3</strong></div>
           <div class="study-step-copy">
-            <p class="format">Interactive production simulator · Process chain</p>
+            <p class="format">Reading + production simulator · Process chain</p>
             <h3>Lithium-ion cell production</h3>
             <p>Follow reference graphite/NMC routes through electrode manufacturing, assembly, formation, aging, grading, and final testing.</p>
             <div class="study-prompts">
@@ -260,10 +262,11 @@
               <p><strong>Checkpoint:</strong> Can you identify one upstream process change that affects a downstream cell-quality signal?</p>
             </div>
             <ul class="syllabus-items" aria-label="Lesson items">
-              <li data-progress-item="p03"><span class="item-type">Simulator</span><a href="../fundamentals/battery-production/">CellForge production line</a><span class="item-time">40 min</span></li>
-              <li data-progress-item="p03"><span class="item-type">Practice quiz</span><a href="#practice">2 questions</a><span class="item-time">5 min</span></li>
+              <li data-progress-item="p03"><span class="item-type">Reading</span><a href="../fundamentals/cell-production/">From black powder to a tested cell</a><span class="item-time">20 min</span></li>
+              <li data-progress-item="p03"><span class="item-type">Simulator</span><a href="../fundamentals/battery-production/">CellForge production line</a><span class="item-time">30 min</span></li>
+              <li data-progress-item="p03"><span class="item-type">Practice quiz</span><a href="../fundamentals/cell-production/#practice-quiz">5 questions</a><span class="item-time">10 min</span></li>
             </ul>
-            <a class="card-action" href="../fundamentals/battery-production/">Start lesson 3 <span aria-hidden="true">→</span></a>
+            <a class="card-action" href="../fundamentals/cell-production/">Start lesson 3 <span aria-hidden="true">→</span></a>
             <button type="button" class="complete-button" data-complete="p03" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>
           </div>
         </article>
@@ -271,7 +274,7 @@
         <article class="study-step study-step-deeper">
           <div class="study-step-number"><span>Lesson</span><strong>3B</strong></div>
           <div class="study-step-copy">
-            <p class="format">Interactive route-comparison simulator · Deeper view</p>
+            <p class="format">Reading + route-comparison simulator · Deeper view</p>
             <h3>All-solid-state cell production</h3>
             <p>Compare how oxide, halide, sulfide, and polymer electrolyte choices change the line, atmosphere, interfaces, and process challenges.</p>
             <div class="study-prompts">
@@ -279,10 +282,11 @@
               <p><strong>Checkpoint:</strong> Can you explain why choosing a solid electrolyte changes the required machines rather than merely replacing one material?</p>
             </div>
             <ul class="syllabus-items" aria-label="Lesson items">
-              <li data-progress-item="p03b"><span class="item-type">Simulator</span><a href="../fundamentals/solid-state-production/">SolidForge route comparison</a><span class="item-time">30 min</span></li>
-              <li data-progress-item="p03b"><span class="item-type">Practice quiz</span><a href="#practice">2 questions</a><span class="item-time">5 min</span></li>
+              <li data-progress-item="p03b"><span class="item-type">Reading</span><a href="../fundamentals/solid-state-cell-production/">What changes when the electrolyte is a solid</a><span class="item-time">15 min</span></li>
+              <li data-progress-item="p03b"><span class="item-type">Simulator</span><a href="../fundamentals/solid-state-production/">SolidForge route comparison</a><span class="item-time">25 min</span></li>
+              <li data-progress-item="p03b"><span class="item-type">Practice quiz</span><a href="../fundamentals/solid-state-cell-production/#practice-quiz">5 questions</a><span class="item-time">5 min</span></li>
             </ul>
-            <a class="card-action" href="../fundamentals/solid-state-production/">Start lesson 3B <span aria-hidden="true">→</span></a>
+            <a class="card-action" href="../fundamentals/solid-state-cell-production/">Start lesson 3B <span aria-hidden="true">→</span></a>
             <button type="button" class="complete-button" data-complete="p03b" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>
           </div>
         </article>
@@ -299,7 +303,7 @@
             </div>
             <ul class="syllabus-items" aria-label="Lesson items">
               <li data-progress-item="p04"><span class="item-type">Reading + labs</span><a href="../fundamentals/battery-aging/">Six mechanisms, nine interactive panels</a><span class="item-time">60 min</span></li>
-              <li data-progress-item="p04"><span class="item-type">Practice quiz</span><a href="../fundamentals/battery-aging/#practice-quiz">4 questions</a><span class="item-time">10 min</span></li>
+              <li data-progress-item="p04"><span class="item-type">Practice quiz</span><a href="../fundamentals/battery-aging/#practice-quiz">5 questions</a><span class="item-time">10 min</span></li>
               <li data-progress-item="p04"><span class="item-type">Optional</span><a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb">Python notebook</a><span class="item-time">30 min</span></li>
             </ul>
             <a class="card-action" href="../fundamentals/battery-aging/">Start lesson 4 <span aria-hidden="true">→</span></a>

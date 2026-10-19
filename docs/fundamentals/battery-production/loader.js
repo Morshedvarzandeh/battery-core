@@ -40,6 +40,7 @@
     bar.innerHTML = '<span class="bc-modulebar-part">Lesson 3 &middot; Battery Cell Foundations</span>' +
       '<span>Lithium-ion battery production</span>' +
       '<span class="bc-modulebar-spacer"></span>' +
+      '<a href="../cell-production/">Lesson 3</a>' +
       '<a href="../../">Course home</a>' +
       '<a href="../../chapter-1/">Syllabus</a>';
     document.body.insertBefore(bar, document.body.firstChild);
@@ -59,10 +60,9 @@
     }
     const next = document.createElement("div");
     next.className = "bc-nextbar";
-    next.innerHTML = '<span>Done with this lesson?</span>' +
+    next.innerHTML = '<span>This simulator is part of Lesson 3, which explains each step and ends with a quiz.</span>' +
       '<span class="bc-nextbar-spacer"></span>' +
-      '<button type="button" data-complete="p03" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>' +
-      '<a href="../solid-state-production/">Next: Lesson 3B →</a>';
+      '<a href="../cell-production/">Go to Lesson 3 →</a>';
     document.body.appendChild(next);
     document.body.appendChild(footer);
     const progress = document.createElement("script");

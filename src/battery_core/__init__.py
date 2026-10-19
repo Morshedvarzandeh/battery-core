@@ -7,6 +7,7 @@ from battery_core.capacity import (
     c_rate_from_current,
     current_from_c_rate,
     ideal_duration_hours,
+    nominal_energy_wh,
 )
 from battery_core.diffusion import ficks_first_law_flux
 
@@ -16,6 +17,7 @@ __all__ = [
     "current_from_c_rate",
     "ficks_first_law_flux",
     "ideal_duration_hours",
+    "nominal_energy_wh",
     "parabolic_film_thickness",
 ]
 

@@ -541,3 +541,10 @@ svg { display: block; max-width: 100%; height: auto; }
 .ca-skip-link:focus { top: 12px; }
 #cell-architecture .ca-module-nav { margin-bottom: 8px; }
 #cell-architecture .ca-module-nav a { margin-left: 2px; }
+
+/* Inside a lesson frame (assets/embed.js): the lesson supplies the title and the course links. */
+html[data-embedded] .ca-skip-link,
+html[data-embedded] #cell-architecture .ca-module-nav,
+html[data-embedded] #cell-architecture .ca-title {
+  display: none;
+}

@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How all-solid-state batteries are made: oxide, sulfide, halide and polymer electrolytes, which production steps disappear, which appear, and why.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/solid-state-cell-production/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Lemonergy Learn">
+  <meta property="og:title" content="How solid-state batteries are made — and what changes from lithium-ion production">
+  <meta property="og:description" content="Oxide, sulfide, halide and polymer electrolytes each need a different line. What disappears, what appears, and why.">
+  <meta property="og:url" content="https://learn.lemonergy.com/fundamentals/solid-state-cell-production/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <title>How solid-state batteries are made: production steps compared | Lemonergy Learn</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LearningResource",
+        "@id": "https://learn.lemonergy.com/fundamentals/solid-state-cell-production/#lesson",
+        "name": "All-solid-state cell production",
+        "headline": "How solid-state batteries are made: production steps compared",
+        "description": "How all-solid-state battery cells are made with oxide, sulfide, halide and polymer electrolytes, which lithium-ion production steps disappear, which new ones appear, and why.",
+        "url": "https://learn.lemonergy.com/fundamentals/solid-state-cell-production/",
+        "inLanguage": "en",
+        "learningResourceType": "Lesson",
+        "educationalLevel": "Intermediate",
+        "timeRequired": "PT45M",
+        "isAccessibleForFree": true,
+        "teaches": ["Solid electrolyte families", "Lithium metal anode production", "Densification and stack pressure", "Differences from lithium-ion cell production"],
+        "keywords": "solid-state battery manufacturing, all-solid-state battery, sulfide electrolyte, oxide electrolyte LLZO, polymer electrolyte PEO, halide electrolyte, lithium metal anode",
+        "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
+        "position": 5,
+        "author": { "@id": "https://lemonergy.com/#organization" },
+        "publisher": { "@id": "https://lemonergy.com/#organization" },
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://lemonergy.com/#organization",
+        "name": "Lemonergy",
+        "url": "https://lemonergy.com/",
+        "email": "info@lemonergy.com"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Battery Cell Foundations", "item": "https://learn.lemonergy.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Syllabus", "item": "https://learn.lemonergy.com/chapter-1/" },
+          { "@type": "ListItem", "position": 3, "name": "Lesson 3B · Solid-state cell production" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the lesson</a>
+
+  <header class="site-header">
+    <a class="brand" href="../../" aria-label="Battery Core home">
+      <span class="brand-name">Lemonergy</span>
+      <span class="brand-sub">· battery engineering courses</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../../">Home</a>
+      <a href="../../chapter-1/">Syllabus</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">Licensing</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Battery Cell Foundations</a></li>
+        <li><a href="../../chapter-1/">Syllabus</a></li>
+        <li><span aria-current="page">Lesson 3B · Solid-state cell production</span></li>
+      </ol>
+    </nav>
+
+    <section class="page-hero" aria-labelledby="page-title">
+      <p class="eyebrow">Lesson 3B · Battery Cell Foundations · Optional, deeper view</p>
+      <h1 id="page-title">What changes when the electrolyte is a solid?</h1>
+      <p class="lede">An all-solid-state cell replaces the liquid electrolyte with a solid one. That sounds like swapping one material, but it changes the factory: a liquid soaks into every pore by itself, while a solid has to be put in place and pressed into contact. This lesson compares the four families of solid electrolyte, and follows which production steps disappear, which appear, and why.</p>
+      <ul class="lesson-meta">
+        <li><strong>Lesson 3B</strong> of Battery Cell Foundations · optional</li>
+        <li><strong>15 min</strong> reading</li>
+        <li><strong>25 min</strong> production simulator</li>
+        <li><strong>5 min</strong> practice quiz</li>
+      </ul>
+    </section>
+
+    <div class="lesson">
+      <aside class="lesson-toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">In this lesson</h2>
+        <ol>
+          <li><a href="#why">Why go solid?</a></li>
+          <li><a href="#families">Four electrolyte families</a></li>
+          <li><a href="#what-changes">What disappears, what appears</a></li>
+          <li><a href="#routes">Route by route</a></li>
+          <li><a href="#contact">The contact problem</a></li>
+          <li><a href="#simulator">SolidForge simulator</a></li>
+          <li><a href="#limitations">Assumptions and limits</a></li>
+          <li><a href="#check-yourself">Check yourself</a></li>
+          <li><a href="#practice-quiz">Practice quiz</a></li>
+          <li><a href="#references">References</a></li>
+        </ol>
+        <a class="lesson-toc-run" href="../solid-state-production/">Open the SolidForge simulator →</a>
+      </aside>
+
+      <article class="prose">
+        <section class="objectives" aria-labelledby="objectives-title">
+          <h2 id="objectives-title">Learning objectives</h2>
+          <p>By the end of this lesson you will be able to:</p>
+          <ul>
+            <li>explain what a solid electrolyte could offer, and what it makes harder;</li>
+            <li>compare oxide, sulfide, halide and polymer electrolytes by conductivity, processing and atmosphere;</li>
+            <li>name the lithium-ion production steps that disappear and the steps that take their place;</li>
+            <li>explain why solid-state cells depend on densification and stack pressure.</li>
+          </ul>
+          <p class="prerequisite"><strong>Before you start:</strong> <a href="../cell-production/">Lesson 3 · Cell production</a>. This lesson is written as a comparison with it.</p>
+        </section>
+
+        <section aria-labelledby="why">
+          <h2 id="why"><span class="section-number">01</span>Why go solid?</h2>
+          <p>The main prize is the negative electrode. Lithium metal can store about ten times as much charge per gram as graphite — around 3,860 mAh/g against 372 mAh/g in theory — so a cell with a thin lithium-metal negative electrode could hold considerably more energy for its size and weight. In liquid electrolytes, lithium metal tends to grow needle-like deposits and to keep reacting with the liquid. A solid electrolyte is expected to suppress both, though not to eliminate them.</p>
+          <p>The second argument is safety: most solid electrolytes do not burn the way carbonate solvents do. The case is real but narrower than it sounds, because lithium metal itself is very reactive, some solid electrolytes release toxic gas when they meet moisture, and lithium can still force its way through a solid electrolyte along grain boundaries and cracks if the current is too high.</p>
+          <p>What makes it hard is <strong>contact</strong>. Two solids only touch where they are pressed together, and the electrodes swell and shrink as lithium moves in and out. Much of what changes in the factory follows from that one fact.</p>
+        </section>
+
+        <section aria-labelledby="families">
+          <h2 id="families"><span class="section-number">02</span>Four electrolyte families</h2>
+          <p>There is no single solid-state cell. The electrolyte family decides the materials, the machines and the atmosphere of the whole line:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Solid electrolyte families compared, with a liquid electrolyte for reference</caption>
+              <thead><tr><th scope="col">Family</th><th scope="col">Example</th><th scope="col">Ionic conductivity, order of magnitude</th><th scope="col">How it is made dense</th><th scope="col">Main difficulty</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Sulfide</th><td>Li₁₀GeP₂S₁₂, Li₆PS₅Cl</td><td>about 1–10 mS/cm at room temperature, a few even higher</td><td>Soft enough to press or calender to density</td><td>Reacts with moisture, releasing toxic hydrogen sulfide</td></tr>
+                <tr><th scope="row">Oxide</th><td>Garnet Li₇La₃Zr₂O₁₂ (LLZO)</td><td>about 0.1–1 mS/cm</td><td>Sintered at high temperature</td><td>Hard and brittle; poor contact without sintering</td></tr>
+                <tr><th scope="row">Halide</th><td>Li₃InCl₆, Li₃YCl₆</td><td>around 1 mS/cm</td><td>Pressed, like sulfides</td><td>Moisture sensitivity and stability against lithium metal vary with the chemistry</td></tr>
+                <tr><th scope="row">Polymer</th><td>PEO with LiTFSI salt</td><td>about 0.1 mS/cm, but only when warm (60–80 °C)</td><td>Melted and extruded like a plastic</td><td>Too resistive at room temperature; limited voltage window</td></tr>
+                <tr><th scope="row">Liquid, for reference</th><td>LiPF₆ in carbonates</td><td>about 10 mS/cm at room temperature</td><td>Soaks into the pores by itself</td><td>Flammable solvent</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The conductivities are the best values reported for each family, not what every cell achieves. Sulfides are the closest to liquids, which is why many current development programmes use them, but they need a very dry, often inert, atmosphere throughout. Oxides are chemically robust but have to be fired, and their stiffness makes contact hard. Polymers are the easiest to process — the machines resemble those for plastic film — and have been used commercially, in vehicles that keep the battery warm.</p>
+        </section>
+
+        <section aria-labelledby="what-changes">
+          <h2 id="what-changes"><span class="section-number">03</span>What disappears, what appears</h2>
+          <p>Compared with the conventional line in <a href="../cell-production/">Lesson 3</a>:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>How the production line changes for an all-solid-state cell</caption>
+              <thead><tr><th scope="col">Change</th><th scope="col">Steps</th><th scope="col">Why</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Disappears</th><td>Electrolyte filling, wetting, and in most routes degassing</td><td>The electrolyte is already in the stack. There is no liquid to inject, no pore to soak, and little gas from liquid decomposition.</td></tr>
+                <tr><th scope="row">Appears</th><td>Making the electrolyte layer: tape casting, aerosol deposition, co-extrusion or dry coating</td><td>The separator’s job is now done by a thin layer of the electrolyte itself, which has to be made.</td></tr>
+                <tr><th scope="row">Appears</th><td>Densification: sintering, calendering or pressing</td><td>Particles must be pressed or fused together so ions can cross from one to the next.</td></tr>
+                <tr><th scope="row">Appears</th><td>Lithium metal anode: extruding and rolling lithium into thin foil, then laminating it onto the current collector</td><td>Lithium metal cannot be coated as a slurry; it is formed like a soft metal, under inert gas.</td></tr>
+                <tr><th scope="row">Changes</th><td>Stacking becomes stacking <em>and compression</em></td><td>The stack is pressed so its layers touch, and often stays under pressure in use.</td></tr>
+                <tr><th scope="row">Changes</th><td>Atmosphere control</td><td>Inert gas wherever lithium metal is handled; very dry or inert air throughout for sulfides.</td></tr>
+                <tr><th scope="row">Stays</th><td>Mixing, slitting, cutting, packaging, formation and aging</td><td>The cell still needs its materials prepared, cut, sealed, first charged and screened, under different conditions.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Some designs go further and leave out the lithium metal entirely. These <strong>anode-free</strong> cells are built with only a bare current collector on the negative side, and lithium from the positive electrode is plated onto it during the first charge. That removes the hardest material-handling step, at the cost of having no spare lithium to replace what is lost.</p>
+        </section>
+
+        <section aria-labelledby="routes">
+          <h2 id="routes"><span class="section-number">04</span>Route by route</h2>
+          <p>Following the PEM RWTH Aachen guide to solid-state cell production, the four families share the lithium-metal anode, the slitting and cutting, the stacking with compression, the packaging, and formation and aging. In between, they diverge:</p>
+          <ul>
+            <li><strong>Oxide:</strong> raw materials are ground in a ball mill and calcined into electrolyte powder, made into a slurry, cast as a tape or sprayed on by aerosol deposition, and then <strong>sintered</strong> together with the positive electrode — usually for several hours, at temperatures that the guide puts in a range of 500–1,500 °C.</li>
+            <li><strong>Sulfide:</strong> powders are mixed in inert gas or a dry room, formed into layers by tape casting from a slurry or by solvent-free dry coating, and densified by <strong>calendering</strong> or by isostatic pressing, which squeezes the stack evenly from all sides. The softness of sulfides lets pressure do what heat does for oxides.</li>
+            <li><strong>Halide:</strong> similar to sulfide — grinding, mixing, tape casting and calendering — with handling conditions set by the specific halide.</li>
+            <li><strong>Polymer:</strong> the positive-electrode mix and the electrolyte are each melted and mixed in twin-screw extruders, then <strong>co-extruded</strong> together into a bonded composite film and calendered warm. No solvent is needed.</li>
+          </ul>
+          <p>Across the families, very thin protective coatings, for example made by atomic layer deposition, can be added where two materials would otherwise react with each other at their interface.</p>
+        </section>
+
+        <section aria-labelledby="contact">
+          <h2 id="contact"><span class="section-number">05</span>The contact problem</h2>
+          <p>In a liquid cell, the electrolyte fills every gap, so every active particle is reached by ions. In a solid cell, an ion can only move between two particles where they actually touch. Any void left between electrolyte and active material is a dead spot, and every point of contact is a small resistance.</p>
+          <p>Contact also changes with time. As lithium is plated onto a lithium-metal electrode and stripped off again, the electrode grows and shrinks, and the positive electrode’s particles change volume a little on every cycle. Without pressure, gaps open. That is why many solid-state cells are held under an external <strong>stack pressure</strong> in use, by plates or a frame in the module, and why densification on the line matters so much: sulfides are pressed hard, polymers are laminated warm, and oxides are sintered so the particles grow together.</p>
+          <p>A related limit is the <strong>critical current density</strong>: above a certain current per area, lithium is deposited faster than it can spread out evenly, and it can penetrate the solid electrolyte. Values reported for the same material vary widely, which shows how strongly they depend on how the cell was made and tested.</p>
+        </section>
+
+        <section aria-labelledby="simulator">
+          <h2 id="simulator"><span class="section-number">06</span>Compare the routes in SolidForge</h2>
+          <p>SolidForge draws each station as a machine, and its electrolyte switch rebuilds the line for oxide, sulfide, halide or polymer, so you can watch stations appear and disappear. A setpoint lab links stack pressure, layer thickness and the other settings to illustrative estimates of resistance and contact. It opens full screen; come back here for the quiz.</p>
+          <div class="lab-launch">
+            <img src="solidforge-preview.webp" width="800" height="372" alt="SolidForge’s stacking and compression station: a vacuum gripper places elementary cells, a heated press laminates the stack, and a bipolar stack is shown alongside." loading="lazy">
+            <div class="lab-launch-copy">
+              <p class="format">Interactive simulator · about 25 min</p>
+              <h3>SolidForge — all-solid-state cell production</h3>
+              <ul>
+                <li>Four electrolyte families, four lines</li>
+                <li>Lithium-metal anode production</li>
+                <li>Sintering, calendering and compression</li>
+                <li>A setpoint lab and a guided tour</li>
+              </ul>
+              <a class="button button-primary" href="../solid-state-production/">Open SolidForge →</a>
+            </div>
+          </div>
+          <p><strong>Try this:</strong> switch from sulfide to oxide and note which station is added and how its temperature compares with anything on the conventional line. Then switch to polymer and see which steps are replaced by extrusion.</p>
+        </section>
+
+        <section aria-labelledby="limitations">
+          <h2 id="limitations"><span class="section-number">07</span>Assumptions and limits</h2>
+          <ul>
+            <li>Solid-state cells are still moving from pilot lines to mass production. No single process chain is established yet, and the guide’s sequences are reference routes, not the line any one company uses.</li>
+            <li>Conductivities and temperatures are orders of magnitude and reported ranges, chosen to compare families — not values to design with.</li>
+            <li>The SolidForge setpoint lab uses illustrative teaching relationships, not calibrated predictions.</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="check-yourself" class="answers">
+          <h2 id="check-yourself"><span class="section-number">08</span>Check yourself</h2>
+          <p>Work each one out before opening the answer.</p>
+          <details>
+            <summary>Which conventional step disappears completely, and why?</summary>
+            <div><p><strong>Electrolyte filling and wetting.</strong> The electrolyte is built into the stack as a solid layer, so there is no liquid to inject and no pores that need time to soak. In most routes degassing goes too, because there is no liquid to decompose into gas.</p></div>
+          </details>
+          <details>
+            <summary>Why must a sulfide line run in a very dry or inert atmosphere?</summary>
+            <div><p>Sulfide electrolytes react with water, even moisture in the air, releasing toxic hydrogen sulfide and degrading the electrolyte’s conductivity. The atmosphere protects both the workers and the material.</p></div>
+          </details>
+          <details>
+            <summary>Why is the oxide route likely to use more energy and take longer than the sulfide route?</summary>
+            <div><p>Oxides are hard and brittle, so pressing alone does not make good contact. They have to be <strong>sintered</strong> — held for hours at temperatures that can exceed 1,000 °C — so the particles grow together. Sulfides are soft enough to be densified by calendering or pressing at much lower temperatures.</p></div>
+          </details>
+          <details>
+            <summary>Why are many solid-state cells kept under pressure while they operate?</summary>
+            <div><p>Ions only cross where solids touch. The electrodes, and especially a lithium-metal electrode, change volume on every cycle, so gaps open between layers unless something holds them together. Stack pressure keeps the contact area, and so the resistance, under control.</p></div>
+          </details>
+          <details>
+            <summary>A polymer-electrolyte battery is designed to run at 60–80 °C. Why, and what does that cost?</summary>
+            <div><p>Polymer electrolytes conduct ions far too slowly at room temperature, and much better when warm. The cost is energy to heat the battery and keep it warm, plus insulation and a warm-up time, which suits a vehicle in regular use far better than a phone or a device that sits idle.</p></div>
+          </details>
+        </section>
+
+        <section aria-labelledby="practice-quiz">
+          <h2 id="practice-quiz"><span class="section-number">09</span>Practice quiz</h2>
+          <p>Questions on this lesson. The multiple-choice ones are marked in your browser; the written one you check against a model answer.</p>
+          <div id="study-coach" data-part="Lesson 3B" data-module-base="../../chapter-1/"></div>
+          <noscript><p class="coach-noscript">The practice quiz needs JavaScript. The check-yourself questions above cover the same ground with written answers.</p></noscript>
+          <div class="complete-bar" hidden data-progress-ui>
+            <p>Finished the lesson, the simulator and the quiz?</p>
+            <div class="actions">
+              <button type="button" class="complete-button" data-complete="p03b" aria-pressed="false">Mark as complete</button>
+              <a class="button button-primary" href="../battery-aging/">Next: Lesson 4 →</a>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="references">
+          <h2 id="references"><span class="section-number">10</span>References and further reading</h2>
+          <p>The step sequences follow the first two sources. The explanation here is written independently.</p>
+          <ol class="references">
+            <li>H. H. Heimes, A. Kampker, H. Born, J. F. Plumeyer, D. Kim, M. Smulka, S. Michaelis, B. Rothhagen, <cite>Production of a Solid-State Battery Cell</cite>, 3rd ed., PEM of RWTH Aachen University and VDMA, Aachen, 2026. ISBN 978-3-947920-75-4.</li>
+            <li>H. H. Heimes, A. Kampker, J. F. Plumeyer, A. Scheibe, S. Wennemar, S. Michaelis, J. Schütrumpf, <cite>Production of an All-Solid-State Battery Cell</cite>, 2nd ed., PEM of RWTH Aachen University and VDMA, Frankfurt am Main, 2023. ISBN 978-3-947920-29-7.</li>
+            <li>J. Janek, W. G. Zeier, “A solid future for battery development,” <cite>Nature Energy</cite> 1, 16141 (2016). <a href="https://doi.org/10.1038/nenergy.2016.141">doi:10.1038/nenergy.2016.141</a></li>
+            <li>J. Schnell et al., “All-solid-state lithium-ion and lithium metal batteries — paving the way to large-scale production,” <cite>Journal of Power Sources</cite> 382, 160–175 (2018). <a href="https://doi.org/10.1016/j.jpowsour.2018.02.062">doi:10.1016/j.jpowsour.2018.02.062</a></li>
+            <li>N. Kamaya et al., “A lithium superionic conductor,” <cite>Nature Materials</cite> 10, 682–686 (2011). <a href="https://doi.org/10.1038/nmat3066">doi:10.1038/nmat3066</a></li>
+            <li>R. Murugan, V. Thangadurai, W. Weppner, “Fast lithium ion conduction in garnet-type Li₇La₃Zr₂O₁₂,” <cite>Angewandte Chemie International Edition</cite> 46, 7778–7781 (2007). <a href="https://doi.org/10.1002/anie.200701144">doi:10.1002/anie.200701144</a></li>
+            <li>P. Albertus, S. Babinec, S. Litzelman, A. Newman, “Status and challenges in enabling the lithium metal electrode for high-energy and low-cost rechargeable batteries,” <cite>Nature Energy</cite> 3, 16–21 (2018). <a href="https://doi.org/10.1038/s41560-017-0047-2">doi:10.1038/s41560-017-0047-2</a></li>
+          </ol>
+        </section>
+      </article>
+    </div>
+
+    <nav class="lesson-pager" aria-label="Chapter 1 lessons">
+      <a class="pager-prev" href="../cell-production/" rel="prev"><span>← Lesson 3</span><strong>Cell production</strong></a>
+      <a class="pager-next" href="../battery-aging/" rel="next"><span>Lesson 4 →</span><strong>Battery aging</strong></a>
+    </nav>
+  </main>
+
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../../">Course home</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">AGPL-3.0-or-later</a>
+      <a href="../../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+  <script src="../../assets/study-coach.js" defer></script>
+  <script src="../../assets/course-progress.js" defer></script>
+</body>
+</html>

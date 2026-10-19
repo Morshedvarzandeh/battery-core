@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Plain-language definitions of 28 battery terms, from C-rate and SEI to lithium plating and calendering, each linked to the lesson that teaches it.">
+  <meta name="description" content="Plain-language definitions of 55 battery terms, from C-rate and SEI to lithium plating and calendering, each linked to the lesson that teaches it.">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://learn.lemonergy.com/glossary/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Lemonergy Learn">
   <meta property="og:title" content="Battery engineering glossary">
-  <meta property="og:description" content="28 battery terms in plain language, each linked to a free lesson.">
+  <meta property="og:description" content="55 battery terms in plain language, each linked to a free lesson.">
   <meta property="og:url" content="https://learn.lemonergy.com/glossary/">
   <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -33,10 +33,24 @@
       "hasDefinedTerm": [
         {
           "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#active-material",
+          "name": "Active material",
+          "description": "The part of an electrode that actually stores lithium — graphite on the negative side, an oxide or phosphate on the positive. It makes up most of the electrode coating; the rest is binder and conductive additive.",
+          "url": "https://learn.lemonergy.com/glossary/#active-material"
+        },
+        {
+          "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#ampere-hour",
           "name": "Ampere-hour (Ah)",
           "description": "A unit of electric charge: one ampere flowing for one hour. Battery capacity is usually rated in ampere-hours, which measure charge, not energy.",
           "url": "https://learn.lemonergy.com/glossary/#ampere-hour"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#anode",
+          "name": "Anode",
+          "description": "The electrode where oxidation happens. On discharge that is the negative electrode; on charge it is the positive one. Battery makers nonetheless call the negative electrode “the anode” at all times, after its role on discharge.",
+          "url": "https://learn.lemonergy.com/glossary/#anode"
         },
         {
           "@type": "DefinedTerm",
@@ -47,10 +61,10 @@
         },
         {
           "@type": "DefinedTerm",
-          "@id": "https://learn.lemonergy.com/glossary/#c-rate",
-          "name": "C-rate",
-          "description": "Current divided by nominal capacity, in reciprocal hours. 1C on a 20 Ah cell is 20 A; 2C is 40 A. C-rate lets you compare loads on cells of different sizes.",
-          "url": "https://learn.lemonergy.com/glossary/#c-rate"
+          "@id": "https://learn.lemonergy.com/glossary/#binder",
+          "name": "Binder",
+          "description": "A polymer that holds electrode particles to each other and to the foil — typically PVDF for positive electrodes and CMC with SBR for graphite. It stores no charge, so cell designers use as little as the electrode needs.",
+          "url": "https://learn.lemonergy.com/glossary/#binder"
         },
         {
           "@type": "DefinedTerm",
@@ -75,6 +89,27 @@
         },
         {
           "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#cathode",
+          "name": "Cathode",
+          "description": "The electrode where reduction happens: the positive electrode on discharge, the negative one on charge. In industry usage, “cathode” means the positive electrode and its material, whatever the cell is doing.",
+          "url": "https://learn.lemonergy.com/glossary/#cathode"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#conductive-additive",
+          "name": "Conductive additive",
+          "description": "Fine carbon, such as carbon black, added in small amounts to an electrode so that electrons can reach every active particle. Many active materials conduct electrons poorly on their own.",
+          "url": "https://learn.lemonergy.com/glossary/#conductive-additive"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#c-rate",
+          "name": "C-rate",
+          "description": "Current divided by nominal capacity, in reciprocal hours. 1C on a 20 Ah cell is 20 A; 2C is 40 A. C-rate lets you compare loads on cells of different sizes.",
+          "url": "https://learn.lemonergy.com/glossary/#c-rate"
+        },
+        {
+          "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#current-collector",
           "name": "Current collector",
           "description": "The thin metal foil that carries electrons between an electrode and the external circuit — usually copper on the negative side and aluminium on the positive side.",
@@ -86,6 +121,20 @@
           "name": "Cutoff voltage",
           "description": "The terminal-voltage limit that ends a discharge, or caps a charge — in constant-current, constant-voltage (CC-CV) charging the cell is then held at that voltage until the current falls to a cutoff. A real discharge ends at the lower cutoff, which is why actual runtime can differ from the ideal duration.",
           "url": "https://learn.lemonergy.com/glossary/#cutoff-voltage"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#cylindrical-cell",
+          "name": "Cylindrical cell",
+          "description": "A cell made by winding the electrodes into a jelly roll and sealing it in a round metal can. Sizes are named by their dimensions: a 21700 cell is 21 mm across and 70 mm long.",
+          "url": "https://learn.lemonergy.com/glossary/#cylindrical-cell"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#degassing",
+          "name": "Degassing",
+          "description": "Removing the gas a pouch cell releases during formation: its extra gas pocket is opened in a dry atmosphere, emptied, and sealed off.",
+          "url": "https://learn.lemonergy.com/glossary/#degassing"
         },
         {
           "@type": "DefinedTerm",
@@ -110,10 +159,38 @@
         },
         {
           "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#dry-electrode",
+          "name": "Dry electrode process",
+          "description": "A way of making electrodes without solvent: the powders are mixed with a binder that draws out into fine fibres under shear, and the resulting film is pressed onto the foil. It removes the slurry, the dryer and solvent recovery.",
+          "url": "https://learn.lemonergy.com/glossary/#dry-electrode"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#dry-room",
+          "name": "Dry room",
+          "description": "A production room whose air is kept extremely dry — dew points around −30 °C to −60 °C — so that no moisture reaches the cell while the electrolyte goes in. Water would react with the salt LiPF₆ to form hydrofluoric acid.",
+          "url": "https://learn.lemonergy.com/glossary/#dry-room"
+        },
+        {
+          "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#electrolyte",
           "name": "Electrolyte",
           "description": "The ion-conducting medium between the electrodes. In a liquid-electrolyte cell it fills the pores of both electrodes and the separator, so it is not a separate structural layer.",
           "url": "https://learn.lemonergy.com/glossary/#electrolyte"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#end-of-line-testing",
+          "name": "End-of-line testing",
+          "description": "The final measurements on every finished cell — capacity, internal resistance and open-circuit voltage — used to reject faulty cells and sort good ones into matched grades.",
+          "url": "https://learn.lemonergy.com/glossary/#end-of-line-testing"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#energy-density",
+          "name": "Energy density and specific energy",
+          "description": "Stored energy per volume, in watt-hours per litre (Wh/L), and per mass, in watt-hours per kilogram (Wh/kg). They are the usual figures for comparing cells and packs.",
+          "url": "https://learn.lemonergy.com/glossary/#energy-density"
         },
         {
           "@type": "DefinedTerm",
@@ -152,10 +229,45 @@
         },
         {
           "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#internal-short-circuit",
+          "name": "Internal short circuit",
+          "description": "An unintended electronic path between the electrodes inside a cell — through a metal particle, a burr, a damaged separator or lithium deposits. It discharges the cell internally and turns its energy into local heat.",
+          "url": "https://learn.lemonergy.com/glossary/#internal-short-circuit"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#jelly-roll",
+          "name": "Jelly roll",
+          "description": "Electrodes and separators wound together into a spiral. It is the inside of a cylindrical cell and of many prismatic cells; pouch cells usually use stacked sheets instead.",
+          "url": "https://learn.lemonergy.com/glossary/#jelly-roll"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#lfp",
+          "name": "LFP (lithium iron phosphate)",
+          "description": "A positive electrode material, LiFePO₄, giving cells a nominal voltage around 3.2 V, long cycle life and good thermal stability, but less energy per kilogram than nickel-rich oxides.",
+          "url": "https://learn.lemonergy.com/glossary/#lfp"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#lithium-metal-anode",
+          "name": "Lithium metal anode",
+          "description": "A negative electrode made of lithium metal itself. It stores about ten times more charge per gram than graphite, which is the main attraction of solid-state cells, but it is reactive and prone to uneven deposits.",
+          "url": "https://learn.lemonergy.com/glossary/#lithium-metal-anode"
+        },
+        {
+          "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#lithium-plating",
           "name": "Lithium plating",
           "description": "Lithium metal depositing on the negative-electrode surface instead of intercalating into it. It is promoted by charging at low temperature or high current.",
           "url": "https://learn.lemonergy.com/glossary/#lithium-plating"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#nmc",
+          "name": "NMC (nickel manganese cobalt oxide)",
+          "description": "A family of layered-oxide positive electrode materials used in many electric-vehicle cells. Variants are named by their metal ratio: NMC811 has eight parts nickel to one each of manganese and cobalt.",
+          "url": "https://learn.lemonergy.com/glossary/#nmc"
         },
         {
           "@type": "DefinedTerm",
@@ -166,6 +278,20 @@
         },
         {
           "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#nominal-voltage",
+          "name": "Nominal voltage",
+          "description": "A representative average voltage of a cell over a full discharge, such as 3.6–3.7 V for an oxide/graphite cell or about 3.2 V for LFP/graphite. Multiplied by capacity, it gives nominal energy.",
+          "url": "https://learn.lemonergy.com/glossary/#nominal-voltage"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#open-circuit-voltage",
+          "name": "Open-circuit voltage (OCV)",
+          "description": "The voltage across a cell’s terminals when no current flows. It depends on state of charge and temperature, and a cell whose open-circuit voltage falls unusually fast in storage may have an internal short.",
+          "url": "https://learn.lemonergy.com/glossary/#open-circuit-voltage"
+        },
+        {
+          "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#passivation",
           "name": "Passivation",
           "description": "The formation of a surface film that slows further reaction. In lithium-ion cells, the SEI passivates the graphite negative electrode.",
@@ -173,10 +299,31 @@
         },
         {
           "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#porosity",
+          "name": "Porosity",
+          "description": "The fraction of a layer’s volume that is empty space. In a lithium-ion electrode the pores — roughly 20–35 % of the volume after calendering — are filled with electrolyte, which carries ions to the particles.",
+          "url": "https://learn.lemonergy.com/glossary/#porosity"
+        },
+        {
+          "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#porous-electrode",
           "name": "Porous electrode",
           "description": "An electrode made of active-material particles, conductive additive and binder with electrolyte-filled pores between them. Its large internal surface is where the reaction happens.",
           "url": "https://learn.lemonergy.com/glossary/#porous-electrode"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#pouch-cell",
+          "name": "Pouch cell",
+          "description": "A cell sealed in a flexible bag of aluminium laminated with plastic, usually holding stacked electrode sheets. It is light and easy to cool, but needs outside support and can visibly swell if gas forms inside.",
+          "url": "https://learn.lemonergy.com/glossary/#pouch-cell"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#prismatic-cell",
+          "name": "Prismatic cell",
+          "description": "A cell in a rigid rectangular metal case, holding either a flattened jelly roll or stacked sheets. Large prismatic cells pack tightly into battery packs.",
+          "url": "https://learn.lemonergy.com/glossary/#prismatic-cell"
         },
         {
           "@type": "DefinedTerm",
@@ -191,6 +338,13 @@
           "name": "Separator",
           "description": "A porous, electronically insulating film between the electrodes. Electrons cannot cross it; ions move through the electrolyte in its pores.",
           "url": "https://learn.lemonergy.com/glossary/#separator"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#sintering",
+          "name": "Sintering",
+          "description": "Heating a powder below its melting point until the particles grow together into a dense solid. Oxide solid electrolytes are sintered at high temperature to give good ionic contact.",
+          "url": "https://learn.lemonergy.com/glossary/#sintering"
         },
         {
           "@type": "DefinedTerm",
@@ -215,6 +369,13 @@
         },
         {
           "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#stack-pressure",
+          "name": "Stack pressure",
+          "description": "Pressure applied to a cell stack, in production or in use, to keep its layers in contact. Solid-state cells depend on it, because ions can only cross where two solids touch.",
+          "url": "https://learn.lemonergy.com/glossary/#stack-pressure"
+        },
+        {
+          "@type": "DefinedTerm",
           "@id": "https://learn.lemonergy.com/glossary/#state-of-charge",
           "name": "State of charge (SOC)",
           "description": "How full a cell is, as a fraction of its available capacity. State of charge, like temperature, affects how fast a stored cell ages.",
@@ -226,6 +387,34 @@
           "name": "State of health (SOH)",
           "description": "A summary of how far a cell has aged, often expressed through remaining capacity or increased resistance compared with when it was new. By convention a cell has reached end of life at 80 % of its rated capacity.",
           "url": "https://learn.lemonergy.com/glossary/#state-of-health"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#thermal-runaway",
+          "name": "Thermal runaway",
+          "description": "Self-accelerating heating in a cell: heat speeds up reactions that release more heat, until the cell vents, catches fire or ruptures. An internal short, overcharge or external heating can trigger it.",
+          "url": "https://learn.lemonergy.com/glossary/#thermal-runaway"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#tortuosity",
+          "name": "Tortuosity",
+          "description": "How winding the path through a porous layer is, compared with a straight line through it. High tortuosity means ions travel much further than the layer is thick, which limits how fast a thick, dense electrode can be charged or discharged.",
+          "url": "https://learn.lemonergy.com/glossary/#tortuosity"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#watt-hour",
+          "name": "Watt-hour (Wh)",
+          "description": "A unit of energy: one watt for one hour. A cell’s nominal energy in watt-hours is its capacity in ampere-hours times its nominal voltage — 20 Ah at 3.65 V is 73 Wh.",
+          "url": "https://learn.lemonergy.com/glossary/#watt-hour"
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://learn.lemonergy.com/glossary/#wetting",
+          "name": "Wetting",
+          "description": "The soaking of electrolyte into every pore of the electrodes and separator after filling. It can take hours or more; a pore left dry is electrode area that never works properly.",
+          "url": "https://learn.lemonergy.com/glossary/#wetting"
         }
       ]
     },
@@ -235,7 +424,7 @@
         {
           "@type": "ListItem",
           "position": 1,
-          "name": "Battery Core",
+          "name": "Battery Cell Foundations",
           "item": "https://learn.lemonergy.com/"
         },
         {
@@ -276,57 +465,94 @@
     <section class="page-hero" aria-labelledby="page-title">
       <p class="eyebrow">Reference</p>
       <h1 id="page-title">Battery terms, in plain language.</h1>
-      <p class="lede">28 terms used across the course, each defined in a sentence or two and linked to the lesson where it is taught properly. Definitions describe the general idea; the lessons state the assumptions and limits.</p>
+      <p class="lede">55 terms used across the course, each defined in a sentence or two and linked to the lesson where it is taught properly. Definitions describe the general idea; the lessons state the assumptions and limits.</p>
     </section>
 
     <section class="section glossary" aria-labelledby="terms-title">
       <h2 id="terms-title" class="sr-only">Terms A–Z</h2>
       <div class="prose">
         <ul class="glossary-index" aria-label="Jump to a term">
+          <li><a href="#active-material">Active material</a></li>
           <li><a href="#ampere-hour">Ampere-hour</a></li>
+          <li><a href="#anode">Anode</a></li>
           <li><a href="#arrhenius">Arrhenius law</a></li>
-          <li><a href="#c-rate">C-rate</a></li>
+          <li><a href="#binder">Binder</a></li>
           <li><a href="#calendar-aging">Calendar aging</a></li>
           <li><a href="#calendering">Calendering</a></li>
           <li><a href="#capacity-fade">Capacity fade</a></li>
+          <li><a href="#cathode">Cathode</a></li>
+          <li><a href="#conductive-additive">Conductive additive</a></li>
+          <li><a href="#c-rate">C-rate</a></li>
           <li><a href="#current-collector">Current collector</a></li>
           <li><a href="#cutoff-voltage">Cutoff voltage</a></li>
+          <li><a href="#cylindrical-cell">Cylindrical cell</a></li>
+          <li><a href="#degassing">Degassing</a></li>
           <li><a href="#dendrite">Dendrite</a></li>
           <li><a href="#depth-of-discharge">Depth of discharge</a></li>
           <li><a href="#diffusion-coefficient">Diffusion coefficient</a></li>
+          <li><a href="#dry-electrode">Dry electrode process</a></li>
+          <li><a href="#dry-room">Dry room</a></li>
           <li><a href="#electrolyte">Electrolyte</a></li>
+          <li><a href="#end-of-line-testing">End-of-line testing</a></li>
+          <li><a href="#energy-density">Energy density and specific energy</a></li>
           <li><a href="#ficks-first-law">Fick’s first law</a></li>
           <li><a href="#formation">Formation</a></li>
           <li><a href="#ideal-duration">Ideal duration</a></li>
           <li><a href="#impedance-rise">Impedance rise</a></li>
           <li><a href="#intercalation">Intercalation</a></li>
+          <li><a href="#internal-short-circuit">Internal short circuit</a></li>
+          <li><a href="#jelly-roll">Jelly roll</a></li>
+          <li><a href="#lfp">LFP (lithium iron phosphate)</a></li>
+          <li><a href="#lithium-metal-anode">Lithium metal anode</a></li>
           <li><a href="#lithium-plating">Lithium plating</a></li>
+          <li><a href="#nmc">NMC (nickel manganese cobalt oxide)</a></li>
           <li><a href="#nominal-capacity">Nominal capacity</a></li>
+          <li><a href="#nominal-voltage">Nominal voltage</a></li>
+          <li><a href="#open-circuit-voltage">Open-circuit voltage</a></li>
           <li><a href="#passivation">Passivation</a></li>
+          <li><a href="#porosity">Porosity</a></li>
           <li><a href="#porous-electrode">Porous electrode</a></li>
+          <li><a href="#pouch-cell">Pouch cell</a></li>
+          <li><a href="#prismatic-cell">Prismatic cell</a></li>
           <li><a href="#self-discharge">Self-discharge</a></li>
           <li><a href="#separator">Separator</a></li>
+          <li><a href="#sintering">Sintering</a></li>
           <li><a href="#slurry">Slurry</a></li>
           <li><a href="#solid-electrolyte">Solid electrolyte</a></li>
           <li><a href="#sei">Solid–electrolyte interphase</a></li>
+          <li><a href="#stack-pressure">Stack pressure</a></li>
           <li><a href="#state-of-charge">State of charge</a></li>
           <li><a href="#state-of-health">State of health</a></li>
+          <li><a href="#thermal-runaway">Thermal runaway</a></li>
+          <li><a href="#tortuosity">Tortuosity</a></li>
+          <li><a href="#watt-hour">Watt-hour</a></li>
+          <li><a href="#wetting">Wetting</a></li>
         </ul>
         <dl>
+          <dt id="active-material">Active material</dt>
+          <dd>
+            <p>The part of an electrode that actually stores lithium — graphite on the negative side, an oxide or phosphate on the positive. It makes up most of the electrode coating; the rest is binder and conductive additive.</p>
+            <a class="term-link" href="../fundamentals/cell-architecture/#composite">Learn it in Lesson 1B · Cell architecture →</a>
+          </dd>
           <dt id="ampere-hour">Ampere-hour (Ah)</dt>
           <dd>
             <p>A unit of electric charge: one ampere flowing for one hour. Battery capacity is usually rated in ampere-hours, which measure charge, not energy.</p>
             <a class="term-link" href="../fundamentals/capacity-and-c-rate/#nominal-capacity">Learn it in Lesson 2 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="anode">Anode</dt>
+          <dd>
+            <p>The electrode where oxidation happens. On discharge that is the negative electrode; on charge it is the positive one. Battery makers nonetheless call the negative electrode “the anode” at all times, after its role on discharge.</p>
+            <a class="term-link" href="../fundamentals/cell-anatomy/#anode-cathode">Learn it in Lesson 1 · Cell anatomy →</a>
           </dd>
           <dt id="arrhenius">Arrhenius law</dt>
           <dd>
             <p>The rule that a rate constant is proportional to exp(−Ea/RT), so a thermally activated reaction speeds up steeply with temperature. Near room temperature many degradation reactions roughly double their rate for every +10 °C.</p>
             <a class="term-link" href="../fundamentals/battery-aging/#arrhenius">Learn it in Lesson 4 · Battery aging →</a>
           </dd>
-          <dt id="c-rate">C-rate</dt>
+          <dt id="binder">Binder</dt>
           <dd>
-            <p>Current divided by nominal capacity, in reciprocal hours. 1C on a 20 Ah cell is 20 A; 2C is 40 A. C-rate lets you compare loads on cells of different sizes.</p>
-            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#c-rate">Learn it in Lesson 2 · Capacity and C-rate →</a>
+            <p>A polymer that holds electrode particles to each other and to the foil — typically PVDF for positive electrodes and CMC with SBR for graphite. It stores no charge, so cell designers use as little as the electrode needs.</p>
+            <a class="term-link" href="../fundamentals/cell-architecture/#composite">Learn it in Lesson 1B · Cell architecture →</a>
           </dd>
           <dt id="calendar-aging">Calendar aging</dt>
           <dd>
@@ -336,22 +562,47 @@
           <dt id="calendering">Calendering</dt>
           <dd>
             <p>Compressing a dried electrode coating between rollers to set its thickness, density and porosity. It is one of the electrode-making steps in cell production.</p>
-            <a class="term-link" href="../fundamentals/battery-production/">Learn it in Lesson 3 · Cell production →</a>
+            <a class="term-link" href="../fundamentals/cell-production/#electrodes">Learn it in Lesson 3 · Cell production →</a>
           </dd>
           <dt id="capacity-fade">Capacity fade</dt>
           <dd>
             <p>The loss of charge a cell can store and deliver, for example through lithium locked into the SEI or active material that has cracked out of service.</p>
             <a class="term-link" href="../fundamentals/battery-aging/#chain">Learn it in Lesson 4 · Battery aging →</a>
           </dd>
+          <dt id="cathode">Cathode</dt>
+          <dd>
+            <p>The electrode where reduction happens: the positive electrode on discharge, the negative one on charge. In industry usage, “cathode” means the positive electrode and its material, whatever the cell is doing.</p>
+            <a class="term-link" href="../fundamentals/cell-anatomy/#anode-cathode">Learn it in Lesson 1 · Cell anatomy →</a>
+          </dd>
+          <dt id="conductive-additive">Conductive additive</dt>
+          <dd>
+            <p>Fine carbon, such as carbon black, added in small amounts to an electrode so that electrons can reach every active particle. Many active materials conduct electrons poorly on their own.</p>
+            <a class="term-link" href="../fundamentals/cell-architecture/#composite">Learn it in Lesson 1B · Cell architecture →</a>
+          </dd>
+          <dt id="c-rate">C-rate</dt>
+          <dd>
+            <p>Current divided by nominal capacity, in reciprocal hours. 1C on a 20 Ah cell is 20 A; 2C is 40 A. C-rate lets you compare loads on cells of different sizes.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#c-rate">Learn it in Lesson 2 · Capacity and C-rate →</a>
+          </dd>
           <dt id="current-collector">Current collector</dt>
           <dd>
             <p>The thin metal foil that carries electrons between an electrode and the external circuit — usually copper on the negative side and aluminium on the positive side.</p>
-            <a class="term-link" href="../fundamentals/lithium-ion-cell-architecture/">Learn it in Lesson 1B · Cell architecture →</a>
+            <a class="term-link" href="../fundamentals/cell-anatomy/#components">Learn it in Lesson 1 · Cell anatomy →</a>
           </dd>
           <dt id="cutoff-voltage">Cutoff voltage</dt>
           <dd>
             <p>The terminal-voltage limit that ends a discharge, or caps a charge — in constant-current, constant-voltage (CC-CV) charging the cell is then held at that voltage until the current falls to a cutoff. A real discharge ends at the lower cutoff, which is why actual runtime can differ from the ideal duration.</p>
             <a class="term-link" href="../fundamentals/capacity-and-c-rate/#real-cells">Learn it in Lesson 2 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="cylindrical-cell">Cylindrical cell</dt>
+          <dd>
+            <p>A cell made by winding the electrodes into a jelly roll and sealing it in a round metal can. Sizes are named by their dimensions: a 21700 cell is 21 mm across and 70 mm long.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#formats">Learn it in Lesson 3 · Cell production →</a>
+          </dd>
+          <dt id="degassing">Degassing</dt>
+          <dd>
+            <p>Removing the gas a pouch cell releases during formation: its extra gas pocket is opened in a dry atmosphere, emptied, and sealed off.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#finishing">Learn it in Lesson 3 · Cell production →</a>
           </dd>
           <dt id="dendrite">Dendrite</dt>
           <dd>
@@ -368,10 +619,30 @@
             <p>The proportionality constant D in Fick’s first law, in m²/s. It sets how fast a species spreads for a given concentration gradient.</p>
             <a class="term-link" href="../transport/ficks-first-law/#law">Learn it in Fick’s first law →</a>
           </dd>
+          <dt id="dry-electrode">Dry electrode process</dt>
+          <dd>
+            <p>A way of making electrodes without solvent: the powders are mixed with a binder that draws out into fine fibres under shear, and the resulting film is pressed onto the foil. It removes the slurry, the dryer and solvent recovery.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#electrodes">Learn it in Lesson 3 · Cell production →</a>
+          </dd>
+          <dt id="dry-room">Dry room</dt>
+          <dd>
+            <p>A production room whose air is kept extremely dry — dew points around −30 °C to −60 °C — so that no moisture reaches the cell while the electrolyte goes in. Water would react with the salt LiPF₆ to form hydrofluoric acid.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#assembly">Learn it in Lesson 3 · Cell production →</a>
+          </dd>
           <dt id="electrolyte">Electrolyte</dt>
           <dd>
             <p>The ion-conducting medium between the electrodes. In a liquid-electrolyte cell it fills the pores of both electrodes and the separator, so it is not a separate structural layer.</p>
-            <a class="term-link" href="../fundamentals/lithium-ion-cell-architecture/">Learn it in Lesson 1B · Cell architecture →</a>
+            <a class="term-link" href="../fundamentals/cell-architecture/#electrolyte">Learn it in Lesson 1B · Cell architecture →</a>
+          </dd>
+          <dt id="end-of-line-testing">End-of-line testing</dt>
+          <dd>
+            <p>The final measurements on every finished cell — capacity, internal resistance and open-circuit voltage — used to reject faulty cells and sort good ones into matched grades.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#finishing">Learn it in Lesson 3 · Cell production →</a>
+          </dd>
+          <dt id="energy-density">Energy density and specific energy</dt>
+          <dd>
+            <p>Stored energy per volume, in watt-hours per litre (Wh/L), and per mass, in watt-hours per kilogram (Wh/kg). They are the usual figures for comparing cells and packs.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#energy">Learn it in Lesson 2 · Capacity and C-rate →</a>
           </dd>
           <dt id="ficks-first-law">Fick’s first law</dt>
           <dd>
@@ -381,7 +652,7 @@
           <dt id="formation">Formation</dt>
           <dd>
             <p>The first controlled charge and discharge cycles of a newly assembled cell, during which the SEI forms. It is part of cell production, before aging and grading.</p>
-            <a class="term-link" href="../fundamentals/battery-production/">Learn it in Lesson 3 · Cell production →</a>
+            <a class="term-link" href="../fundamentals/cell-production/#finishing">Learn it in Lesson 3 · Cell production →</a>
           </dd>
           <dt id="ideal-duration">Ideal duration</dt>
           <dd>
@@ -398,25 +669,75 @@
             <p>Lithium inserting into, and leaving, the host structure of an electrode material — between graphite layers, for example — without destroying it.</p>
             <a class="term-link" href="../fundamentals/battery-aging/#plating">Learn it in Lesson 4 · Battery aging →</a>
           </dd>
+          <dt id="internal-short-circuit">Internal short circuit</dt>
+          <dd>
+            <p>An unintended electronic path between the electrodes inside a cell — through a metal particle, a burr, a damaged separator or lithium deposits. It discharges the cell internally and turns its energy into local heat.</p>
+            <a class="term-link" href="../fundamentals/cell-anatomy/#short-circuit">Learn it in Lesson 1 · Cell anatomy →</a>
+          </dd>
+          <dt id="jelly-roll">Jelly roll</dt>
+          <dd>
+            <p>Electrodes and separators wound together into a spiral. It is the inside of a cylindrical cell and of many prismatic cells; pouch cells usually use stacked sheets instead.</p>
+            <a class="term-link" href="../fundamentals/cell-architecture/#whole-cell">Learn it in Lesson 1B · Cell architecture →</a>
+          </dd>
+          <dt id="lfp">LFP (lithium iron phosphate)</dt>
+          <dd>
+            <p>A positive electrode material, LiFePO₄, giving cells a nominal voltage around 3.2 V, long cycle life and good thermal stability, but less energy per kilogram than nickel-rich oxides.</p>
+            <a class="term-link" href="../fundamentals/cell-anatomy/#voltage">Learn it in Lesson 1 · Cell anatomy →</a>
+          </dd>
+          <dt id="lithium-metal-anode">Lithium metal anode</dt>
+          <dd>
+            <p>A negative electrode made of lithium metal itself. It stores about ten times more charge per gram than graphite, which is the main attraction of solid-state cells, but it is reactive and prone to uneven deposits.</p>
+            <a class="term-link" href="../fundamentals/solid-state-cell-production/#why">Learn it in Lesson 3B · Solid-state production →</a>
+          </dd>
           <dt id="lithium-plating">Lithium plating</dt>
           <dd>
             <p>Lithium metal depositing on the negative-electrode surface instead of intercalating into it. It is promoted by charging at low temperature or high current.</p>
             <a class="term-link" href="../fundamentals/battery-aging/#plating">Learn it in Lesson 4 · Battery aging →</a>
+          </dd>
+          <dt id="nmc">NMC (nickel manganese cobalt oxide)</dt>
+          <dd>
+            <p>A family of layered-oxide positive electrode materials used in many electric-vehicle cells. Variants are named by their metal ratio: NMC811 has eight parts nickel to one each of manganese and cobalt.</p>
+            <a class="term-link" href="../fundamentals/cell-anatomy/#components">Learn it in Lesson 1 · Cell anatomy →</a>
           </dd>
           <dt id="nominal-capacity">Nominal capacity</dt>
           <dd>
             <p>The charge a cell is rated to deliver under specified test conditions — current, temperature, rest and voltage limits — usually in ampere-hours.</p>
             <a class="term-link" href="../fundamentals/capacity-and-c-rate/#nominal-capacity">Learn it in Lesson 2 · Capacity and C-rate →</a>
           </dd>
+          <dt id="nominal-voltage">Nominal voltage</dt>
+          <dd>
+            <p>A representative average voltage of a cell over a full discharge, such as 3.6–3.7 V for an oxide/graphite cell or about 3.2 V for LFP/graphite. Multiplied by capacity, it gives nominal energy.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#energy">Learn it in Lesson 2 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="open-circuit-voltage">Open-circuit voltage (OCV)</dt>
+          <dd>
+            <p>The voltage across a cell’s terminals when no current flows. It depends on state of charge and temperature, and a cell whose open-circuit voltage falls unusually fast in storage may have an internal short.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#finishing">Learn it in Lesson 3 · Cell production →</a>
+          </dd>
           <dt id="passivation">Passivation</dt>
           <dd>
             <p>The formation of a surface film that slows further reaction. In lithium-ion cells, the SEI passivates the graphite negative electrode.</p>
             <a class="term-link" href="../fundamentals/battery-aging/#sei">Learn it in Lesson 4 · Battery aging →</a>
           </dd>
+          <dt id="porosity">Porosity</dt>
+          <dd>
+            <p>The fraction of a layer’s volume that is empty space. In a lithium-ion electrode the pores — roughly 20–35 % of the volume after calendering — are filled with electrolyte, which carries ions to the particles.</p>
+            <a class="term-link" href="../fundamentals/cell-architecture/#porosity">Learn it in Lesson 1B · Cell architecture →</a>
+          </dd>
           <dt id="porous-electrode">Porous electrode</dt>
           <dd>
             <p>An electrode made of active-material particles, conductive additive and binder with electrolyte-filled pores between them. Its large internal surface is where the reaction happens.</p>
-            <a class="term-link" href="../fundamentals/lithium-ion-cell-architecture/">Learn it in Lesson 1B · Cell architecture →</a>
+            <a class="term-link" href="../fundamentals/cell-architecture/#porosity">Learn it in Lesson 1B · Cell architecture →</a>
+          </dd>
+          <dt id="pouch-cell">Pouch cell</dt>
+          <dd>
+            <p>A cell sealed in a flexible bag of aluminium laminated with plastic, usually holding stacked electrode sheets. It is light and easy to cool, but needs outside support and can visibly swell if gas forms inside.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#formats">Learn it in Lesson 3 · Cell production →</a>
+          </dd>
+          <dt id="prismatic-cell">Prismatic cell</dt>
+          <dd>
+            <p>A cell in a rigid rectangular metal case, holding either a flattened jelly roll or stacked sheets. Large prismatic cells pack tightly into battery packs.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#formats">Learn it in Lesson 3 · Cell production →</a>
           </dd>
           <dt id="self-discharge">Self-discharge</dt>
           <dd>
@@ -426,22 +747,32 @@
           <dt id="separator">Separator</dt>
           <dd>
             <p>A porous, electronically insulating film between the electrodes. Electrons cannot cross it; ions move through the electrolyte in its pores.</p>
-            <a class="term-link" href="../fundamentals/cell-anatomy-workbench/">Learn it in Lesson 1 · Cell anatomy →</a>
+            <a class="term-link" href="../fundamentals/cell-architecture/#separator">Learn it in Lesson 1B · Cell architecture →</a>
+          </dd>
+          <dt id="sintering">Sintering</dt>
+          <dd>
+            <p>Heating a powder below its melting point until the particles grow together into a dense solid. Oxide solid electrolytes are sintered at high temperature to give good ionic contact.</p>
+            <a class="term-link" href="../fundamentals/solid-state-cell-production/#routes">Learn it in Lesson 3B · Solid-state production →</a>
           </dd>
           <dt id="slurry">Slurry</dt>
           <dd>
             <p>The mixture of active material, conductive carbon, binder and solvent that is coated onto a current-collector foil to make an electrode.</p>
-            <a class="term-link" href="../fundamentals/battery-production/">Learn it in Lesson 3 · Cell production →</a>
+            <a class="term-link" href="../fundamentals/cell-production/#electrodes">Learn it in Lesson 3 · Cell production →</a>
           </dd>
           <dt id="solid-electrolyte">Solid electrolyte</dt>
           <dd>
             <p>A solid ion conductor that replaces the liquid electrolyte in an all-solid-state cell. Oxide, sulfide, halide and polymer families each need a different production route.</p>
-            <a class="term-link" href="../fundamentals/solid-state-production/">Learn it in Lesson 3B · Solid-state production →</a>
+            <a class="term-link" href="../fundamentals/solid-state-cell-production/#families">Learn it in Lesson 3B · Solid-state production →</a>
           </dd>
           <dt id="sei">Solid–electrolyte interphase (SEI)</dt>
           <dd>
             <p>A film of electrolyte reaction products on the negative-electrode particles — graphite, and also silicon or lithium metal. It protects the electrode from further reaction but grows slowly for the whole life of the cell, consuming cyclable lithium.</p>
             <a class="term-link" href="../fundamentals/battery-aging/#sei">Learn it in Lesson 4 · Battery aging →</a>
+          </dd>
+          <dt id="stack-pressure">Stack pressure</dt>
+          <dd>
+            <p>Pressure applied to a cell stack, in production or in use, to keep its layers in contact. Solid-state cells depend on it, because ions can only cross where two solids touch.</p>
+            <a class="term-link" href="../fundamentals/solid-state-cell-production/#contact">Learn it in Lesson 3B · Solid-state production →</a>
           </dd>
           <dt id="state-of-charge">State of charge (SOC)</dt>
           <dd>
@@ -452,6 +783,26 @@
           <dd>
             <p>A summary of how far a cell has aged, often expressed through remaining capacity or increased resistance compared with when it was new. By convention a cell has reached end of life at 80 % of its rated capacity.</p>
             <a class="term-link" href="../fundamentals/capacity-and-c-rate/#real-cells">Learn it in Lesson 2 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="thermal-runaway">Thermal runaway</dt>
+          <dd>
+            <p>Self-accelerating heating in a cell: heat speeds up reactions that release more heat, until the cell vents, catches fire or ruptures. An internal short, overcharge or external heating can trigger it.</p>
+            <a class="term-link" href="../fundamentals/cell-anatomy/#short-circuit">Learn it in Lesson 1 · Cell anatomy →</a>
+          </dd>
+          <dt id="tortuosity">Tortuosity</dt>
+          <dd>
+            <p>How winding the path through a porous layer is, compared with a straight line through it. High tortuosity means ions travel much further than the layer is thick, which limits how fast a thick, dense electrode can be charged or discharged.</p>
+            <a class="term-link" href="../fundamentals/cell-architecture/#porosity">Learn it in Lesson 1B · Cell architecture →</a>
+          </dd>
+          <dt id="watt-hour">Watt-hour (Wh)</dt>
+          <dd>
+            <p>A unit of energy: one watt for one hour. A cell’s nominal energy in watt-hours is its capacity in ampere-hours times its nominal voltage — 20 Ah at 3.65 V is 73 Wh.</p>
+            <a class="term-link" href="../fundamentals/capacity-and-c-rate/#energy">Learn it in Lesson 2 · Capacity and C-rate →</a>
+          </dd>
+          <dt id="wetting">Wetting</dt>
+          <dd>
+            <p>The soaking of electrolyte into every pore of the electrodes and separator after filling. It can take hours or more; a pore left dry is electrode area that never works properly.</p>
+            <a class="term-link" href="../fundamentals/cell-production/#assembly">Learn it in Lesson 3 · Cell production →</a>
           </dd>
         </dl>
       </div>

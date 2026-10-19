@@ -47,8 +47,8 @@
 
   /* The drills. Each generates fresh numbers, so the answer cannot be
      remembered from last time, and each mirrors one tested function:
-     `current_from_c_rate`, `ideal_duration_hours`, `arrhenius_factor`, and
-     `parabolic_film_thickness`. */
+     `current_from_c_rate`, `ideal_duration_hours`, `nominal_energy_wh`,
+     `arrhenius_factor`, and `parabolic_film_thickness`. */
   var DRILLS = {
     cRateCurrent: {
       label: "Constant current, in amperes",
@@ -155,6 +155,40 @@
       },
     },
 
+    nominalEnergy: {
+      label: "Nominal energy, in watt-hours",
+      tolerance: 0.01,
+      generate: function () {
+        var capacity = pick([2.5, 3, 4.8, 5, 20, 50, 100]);
+        var voltage = pick([3.2, 3.6, 3.65, 3.7, 3.85]);
+        return { capacity: capacity, voltage: voltage, energy: capacity * voltage };
+      },
+      prompt: function (d) {
+        return (
+          "A cell has a nominal capacity of " +
+          formatNumber(d.capacity) +
+          " Ah and a nominal voltage of " +
+          formatNumber(d.voltage) +
+          " V. What is its nominal energy?"
+        );
+      },
+      answer: function (d) {
+        return d.energy;
+      },
+      working: function (d) {
+        return [
+          "E = Q × V = " +
+            formatNumber(d.capacity) +
+            " Ah × " +
+            formatNumber(d.voltage) +
+            " V = " +
+            formatNumber(d.energy) +
+            " Wh",
+          "Ampere-hours times volts leaves watt-hours. The same ampere-hours at a lower voltage store less energy.",
+        ];
+      },
+    },
+
     filmGrowth: {
       label: "Film thickness, in nanometres",
       tolerance: 0.01,
@@ -209,7 +243,7 @@
       group: "part",
       tier: "core",
       part: "Lesson 1",
-      module: "../fundamentals/cell-anatomy-workbench/",
+      module: "../fundamentals/cell-anatomy/",
       moduleLabel: "Lesson 1 · Cell anatomy and charge/discharge paths",
       question:
         "Why do electrons travel the external circuit while lithium ions move inside the cell?",
@@ -231,7 +265,7 @@
       tier: "core",
       type: "choice",
       part: "Lesson 1",
-      module: "../fundamentals/cell-anatomy-workbench/",
+      module: "../fundamentals/cell-anatomy/",
       moduleLabel: "Lesson 1 · Cell anatomy and charge/discharge paths",
       question: "Which statement is true of the separator?",
       hints: ["Two currencies cross a cell. Ask which one the separator is there to stop."],
@@ -256,11 +290,103 @@
       ],
     },
     {
+      id: "p01-charge-anode",
+      group: "part",
+      tier: "core",
+      type: "choice",
+      part: "Lesson 1",
+      module: "../fundamentals/cell-anatomy/",
+      moduleLabel: "Lesson 1 · Cell anatomy and charge/discharge paths",
+      question: "While a cell is being charged, where does oxidation happen?",
+      hints: ["Oxidation is losing electrons. During charging, which electrode is the charger pulling electrons out of?"],
+      options: [
+        {
+          text: "At the positive electrode, which is therefore the anode during charging.",
+          correct: true,
+          why: "Yes. The charger pulls electrons out of the positive electrode, and losing electrons is oxidation. Anode and cathode are roles, so they swap sides between discharge and charge.",
+        },
+        {
+          text: "At the negative electrode, because graphite is always the anode.",
+          why: "Graphite is called the anode in industry, but that names its role on discharge. During charging it gains electrons, which is reduction.",
+        },
+        {
+          text: "In the separator, where the ions pass through.",
+          why: "The separator takes no part in the reaction. It only lets ions through and keeps electrons out.",
+        },
+        {
+          text: "Nowhere: charging is the absence of a reaction.",
+          why: "Charging runs both half-reactions backwards. Oxidation and reduction still happen, at the opposite electrodes.",
+        },
+      ],
+    },
+    {
+      id: "p01-conductors",
+      group: "part",
+      tier: "core",
+      type: "multi",
+      part: "Lesson 1",
+      module: "../fundamentals/cell-anatomy/",
+      moduleLabel: "Lesson 1 · Cell anatomy and charge/discharge paths",
+      question: "Select every part that is meant to carry electrons in a working cell.",
+      hints: ["Electrons must reach every active particle from the terminal, and must never cross between the electrodes inside the cell."],
+      options: [
+        {
+          text: "The copper current collector",
+          correct: true,
+          why: "Yes. It leads electrons between the negative electrode and the terminal.",
+        },
+        {
+          text: "The separator",
+          why: "No. It is an electronic insulator; if it carried electrons, the cell would short itself.",
+        },
+        {
+          text: "The liquid electrolyte",
+          why: "No. It carries lithium ions only. That is exactly what forces electrons round the outside.",
+        },
+        {
+          text: "The graphite of the negative electrode",
+          correct: true,
+          why: "Yes. Graphite conducts electrons, which is part of why it is such a convenient negative electrode.",
+        },
+        {
+          text: "The aluminium current collector",
+          correct: true,
+          why: "Yes. It leads electrons between the terminal and the positive electrode.",
+        },
+      ],
+    },
+    {
+      id: "p01-collectors",
+      group: "part",
+      tier: "core",
+      type: "choice",
+      part: "Lesson 1",
+      module: "../fundamentals/cell-anatomy/",
+      moduleLabel: "Lesson 1 · Cell anatomy and charge/discharge paths",
+      question: "Why is the negative current collector copper rather than aluminium?",
+      hints: ["Each collector sits at a very different potential. Ask what each metal does there."],
+      options: [
+        {
+          text: "At the negative electrode's low potential, aluminium would react with lithium and form an alloy; copper does not.",
+          correct: true,
+          why: "Yes. And the reverse holds on the other side: at the positive electrode's high potential copper would dissolve, while aluminium is protected by a passive film.",
+        },
+        {
+          text: "Copper conducts electricity better, and the negative side carries more current.",
+          why: "Both sides carry exactly the same current. Conductivity is not what decides the choice; chemical stability at each potential is.",
+        },
+        {
+          text: "Copper is cheaper and lighter than aluminium.",
+          why: "The opposite: copper is heavier and more expensive. It is used only where aluminium cannot survive.",
+        },
+      ],
+    },
+    {
       id: "p01b-pore-electrolyte",
       group: "part",
       tier: "deeper",
       part: "Lesson 1B",
-      module: "../fundamentals/lithium-ion-cell-architecture/",
+      module: "../fundamentals/cell-architecture/",
       moduleLabel: "Lesson 1B · Lithium-ion cell architecture",
       question:
         "Electrolyte fills the pores of both electrodes. Why is it not a sixth structural layer?",
@@ -274,6 +400,94 @@
         "The electrolyte has neither: it is a phase filling pore space inside layers that already exist.",
         "It is present in the negative electrode, the separator, and the positive electrode simultaneously.",
         "Calling it layer six would imply it occupies its own slice of the stack thickness, which it does not.",
+      ],
+    },
+    {
+      id: "p01b-wet-layers",
+      group: "part",
+      tier: "deeper",
+      type: "multi",
+      part: "Lesson 1B",
+      module: "../fundamentals/cell-architecture/",
+      moduleLabel: "Lesson 1B · Lithium-ion cell architecture",
+      question: "In a finished cell, where is the liquid electrolyte? Select every place.",
+      hints: ["Electrolyte can only be where there is connected pore space."],
+      options: [
+        {
+          text: "In the pores of the negative electrode",
+          correct: true,
+          why: "Yes. That is how ions reach graphite particles deep inside the coating.",
+        },
+        {
+          text: "In the pores of the separator",
+          correct: true,
+          why: "Yes. The soaked separator is the ions' bridge between the two electrodes.",
+        },
+        {
+          text: "In the pores of the positive electrode",
+          correct: true,
+          why: "Yes, for the same reason as on the negative side.",
+        },
+        {
+          text: "Inside the copper and aluminium foils",
+          why: "No. The foils are dense metal with no pores, so they hold no electrolyte.",
+        },
+      ],
+    },
+    {
+      id: "p01b-porosity",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 1B",
+      module: "../fundamentals/cell-architecture/",
+      moduleLabel: "Lesson 1B · Lithium-ion cell architecture",
+      question: "Pressing an electrode to a lower porosity mainly trades what for what?",
+      hints: ["Less empty space means more of something per volume, and less room for something else to move."],
+      options: [
+        {
+          text: "More energy per volume, for slower ion transport and so less power.",
+          correct: true,
+          why: "Yes. More active material fits in each cubic centimetre, but the pores that carry ions get narrower and more winding.",
+        },
+        {
+          text: "More power, for less energy.",
+          why: "That is the effect of a more open, thinner electrode — the opposite direction.",
+        },
+        {
+          text: "Better safety, for a lower voltage.",
+          why: "Porosity does not set the voltage; the two electrode materials do.",
+        },
+        {
+          text: "Nothing: porosity only changes how the electrode looks.",
+          why: "Porosity decides how far and how easily ions travel, which is central to rate capability.",
+        },
+      ],
+    },
+    {
+      id: "p01b-solvents",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 1B",
+      module: "../fundamentals/cell-architecture/",
+      moduleLabel: "Lesson 1B · Lithium-ion cell architecture",
+      question: "Why is ethylene carbonate mixed with linear carbonates instead of being used alone?",
+      hints: ["Each solvent is good at one thing the electrolyte needs and poor at another."],
+      options: [
+        {
+          text: "It dissolves the salt well and protects graphite, but is viscous and solid at room temperature; linear carbonates make the mixture runny.",
+          correct: true,
+          why: "Yes. The mixture gets both enough free ions and fast enough ion movement.",
+        },
+        {
+          text: "Ethylene carbonate is too expensive to use alone.",
+          why: "Cost is not the reason. Its physical properties are: on its own it is solid at room temperature.",
+        },
+        {
+          text: "Linear carbonates are what carry the lithium ions; ethylene carbonate is only a filler.",
+          why: "The lithium ions come from the salt. Ethylene carbonate is the component best at dissolving that salt.",
+        },
       ],
     },
     {
@@ -330,12 +544,51 @@
         "The course keeps these apart deliberately: the formula is exact, the runtime is a prediction that needs a validated cell model.",
     },
     {
+      id: "p02-energy",
+      group: "part",
+      tier: "core",
+      type: "drill",
+      drill: "nominalEnergy",
+      part: "Lesson 2",
+      module: "../fundamentals/capacity-and-c-rate/",
+      moduleLabel: "Lesson 2 · Nominal capacity and C-rate",
+      question: "Calculate the nominal energy of this cell.",
+      hints: ["Energy is charge times voltage: ampere-hours multiplied by volts give watt-hours."],
+      note: "`battery_core.nominal_energy_wh` implements exactly this. It is a rating, not the energy a particular discharge delivers.",
+    },
+    {
+      id: "p02-energy-compare",
+      group: "part",
+      tier: "core",
+      type: "choice",
+      part: "Lesson 2",
+      module: "../fundamentals/capacity-and-c-rate/",
+      moduleLabel: "Lesson 2 · Nominal capacity and C-rate",
+      question: "An NMC cell and an LFP cell are both rated 3 Ah. Which stores more energy?",
+      hints: ["Capacity counts charge. What else does energy depend on?"],
+      options: [
+        {
+          text: "The NMC cell, because its nominal voltage is higher (about 3.6 V against 3.2 V).",
+          correct: true,
+          why: "Yes: about 10.8 Wh against 9.6 Wh. Equal ampere-hours do not mean equal energy.",
+        },
+        {
+          text: "Neither: equal capacity means equal energy.",
+          why: "Capacity is charge, not energy. Energy is charge times voltage, and the two voltages differ.",
+        },
+        {
+          text: "The LFP cell, because it lasts more cycles.",
+          why: "Cycle life is about how long the cell lasts, not how much energy one charge holds.",
+        },
+      ],
+    },
+    {
       id: "p03-order",
       group: "part",
       tier: "core",
       type: "order",
       part: "Lesson 3",
-      module: "../fundamentals/battery-production/",
+      module: "../fundamentals/cell-production/",
       moduleLabel: "Lesson 3 · Lithium-ion cell production",
       question: "Put the conventional electrode and cell route into process order.",
       hints: [
@@ -359,7 +612,7 @@
       group: "part",
       tier: "core",
       part: "Lesson 3",
-      module: "../fundamentals/battery-production/",
+      module: "../fundamentals/cell-production/",
       moduleLabel: "Lesson 3 · Lithium-ion cell production",
       question:
         "Name one upstream process change and follow it to a downstream cell-quality signal.",
@@ -376,12 +629,108 @@
       ],
     },
     {
+      id: "p03-formation",
+      group: "part",
+      tier: "core",
+      type: "choice",
+      part: "Lesson 3",
+      module: "../fundamentals/cell-production/",
+      moduleLabel: "Lesson 3 · Lithium-ion cell production",
+      question: "Which production step builds the solid electrolyte interphase (SEI)?",
+      hints: ["The SEI forms from the electrolyte at the graphite surface the first time the cell is charged."],
+      options: [
+        {
+          text: "Formation",
+          correct: true,
+          why: "Yes. The first controlled charges grow the SEI, which is why formation starts at a low current.",
+        },
+        {
+          text: "Calendering",
+          why: "Calendering presses the dry electrode before any electrolyte is present, so no SEI can form.",
+        },
+        {
+          text: "Electrolyte filling",
+          why: "Filling brings the electrolyte in, but the SEI only forms once the graphite is charged to a low potential.",
+        },
+        {
+          text: "Aging",
+          why: "By aging, the SEI is already there. Aging is a screen for defects, not the step that builds the film.",
+        },
+      ],
+    },
+    {
+      id: "p03-aging-screen",
+      group: "part",
+      tier: "core",
+      type: "choice",
+      part: "Lesson 3",
+      module: "../fundamentals/cell-production/",
+      moduleLabel: "Lesson 3 · Lithium-ion cell production",
+      question: "What is the main purpose of the aging step at the end of the line?",
+      hints: ["A good cell barely changes during aging. What would a bad one do?"],
+      options: [
+        {
+          text: "To find cells with internal defects, whose open-circuit voltage drops faster than their neighbours'.",
+          correct: true,
+          why: "Yes. A tiny internal short slowly discharges the cell, and only time makes that small voltage difference measurable.",
+        },
+        {
+          text: "To let the cell gain capacity before it is shipped.",
+          why: "A cell does not gain capacity by resting. Aging improves nothing; it screens.",
+        },
+        {
+          text: "To dry out the last moisture.",
+          why: "Moisture is removed by vacuum drying before assembly. A sealed cell cannot be dried.",
+        },
+        {
+          text: "To bring every cell to its shipping temperature.",
+          why: "Temperature is controlled, but it is not the purpose. The voltage record is.",
+        },
+      ],
+    },
+    {
+      id: "p03-dry-room",
+      group: "part",
+      tier: "core",
+      type: "multi",
+      part: "Lesson 3",
+      module: "../fundamentals/cell-production/",
+      moduleLabel: "Lesson 3 · Lithium-ion cell production",
+      question: "Which of these steps take place in the dry room? Select every one.",
+      hints: ["The dry room protects anything that is about to meet, or already holds, the electrolyte before the cell is sealed."],
+      options: [
+        {
+          text: "Stacking or winding",
+          correct: true,
+          why: "Yes. Once the electrodes are vacuum-dried, they stay dry until the cell is sealed.",
+        },
+        {
+          text: "Electrolyte filling",
+          correct: true,
+          why: "Yes. LiPF₆ reacts with water, so filling needs the driest air on the line.",
+        },
+        {
+          text: "Slurry mixing",
+          why: "No. Mixing happens in electrode manufacturing, and graphite slurry is made with water anyway.",
+        },
+        {
+          text: "Degassing a pouch cell",
+          correct: true,
+          why: "Yes. The cell is opened to release the formation gas, so the dry atmosphere is needed again.",
+        },
+        {
+          text: "Formation",
+          why: "No. During formation the cell is sealed, so it runs in ordinary controlled production air.",
+        },
+      ],
+    },
+    {
       id: "p03b-step",
       group: "part",
       tier: "deeper",
       type: "choice",
       part: "Lesson 3B",
-      module: "../fundamentals/solid-state-production/",
+      module: "../fundamentals/solid-state-cell-production/",
       moduleLabel: "Lesson 3B · All-solid-state cell production",
       question: "Moving to an all-solid-state route, which process step disappears?",
       hints: ["Ask which step exists only because the electrolyte arrives as a liquid."],
@@ -410,7 +759,7 @@
       group: "part",
       tier: "deeper",
       part: "Lesson 3B",
-      module: "../fundamentals/solid-state-production/",
+      module: "../fundamentals/solid-state-cell-production/",
       moduleLabel: "Lesson 3B · All-solid-state cell production",
       question:
         "Why does choosing a solid electrolyte change which machines the line needs, rather than just swapping one material for another?",
@@ -424,6 +773,84 @@
         "Interfacial contact must be made mechanically — stack pressure, calendering, sintering — because nothing flows into the pores.",
         "The family decides the equipment: oxides need high-temperature sintering, sulfides need a tightly controlled dry or inert atmosphere, polymers need heat and pressure.",
         "So the unit operations themselves change; the same line with a different drum would not build the cell.",
+      ],
+    },
+    {
+      id: "p03b-sulfide-air",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 3B",
+      module: "../fundamentals/solid-state-cell-production/",
+      moduleLabel: "Lesson 3B · All-solid-state cell production",
+      question: "Why does a sulfide solid-electrolyte line need a very dry or inert atmosphere?",
+      hints: ["Think about what sulfides do when they meet water."],
+      options: [
+        {
+          text: "Sulfides react with moisture, releasing toxic hydrogen sulfide and losing conductivity.",
+          correct: true,
+          why: "Yes. The atmosphere protects the workers and the material.",
+        },
+        {
+          text: "Sulfides burn in air at room temperature.",
+          why: "Their problem is a reaction with water, not combustion in dry air.",
+        },
+        {
+          text: "Because the lithium metal is the only reactive material on the line.",
+          why: "Lithium metal also needs protection, but sulfides add their own, separate moisture problem.",
+        },
+      ],
+    },
+    {
+      id: "p03b-sintering",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 3B",
+      module: "../fundamentals/solid-state-cell-production/",
+      moduleLabel: "Lesson 3B · All-solid-state cell production",
+      question: "Which solid-electrolyte family typically needs high-temperature sintering to become dense?",
+      hints: ["Which family is too hard and brittle to press into contact?"],
+      options: [
+        {
+          text: "Oxides, such as garnet LLZO",
+          correct: true,
+          why: "Yes. Oxide particles are fused by holding them hot for hours, because pressure alone does not make good contact.",
+        },
+        {
+          text: "Sulfides",
+          why: "Sulfides are soft enough to densify by pressing or calendering at much lower temperatures.",
+        },
+        {
+          text: "Polymers",
+          why: "Polymers are melted, extruded and laminated warm, never sintered.",
+        },
+      ],
+    },
+    {
+      id: "p03b-pressure",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 3B",
+      module: "../fundamentals/solid-state-cell-production/",
+      moduleLabel: "Lesson 3B · All-solid-state cell production",
+      question: "Why are many solid-state cells held under stack pressure while they operate?",
+      hints: ["Ions only cross where two solids touch. What changes with every cycle?"],
+      options: [
+        {
+          text: "The electrodes change volume as they cycle, and pressure keeps the solid layers in contact.",
+          correct: true,
+          why: "Yes. Without pressure, gaps open at the interfaces and the resistance rises.",
+        },
+        {
+          text: "Pressure raises the cell voltage.",
+          why: "The voltage comes from the electrode materials. Pressure is about contact, not voltage.",
+        },
+        {
+          text: "Pressure stops the electrolyte from leaking.",
+          why: "A solid electrolyte cannot leak. The pressure is there for contact.",
+        },
       ],
     },
     {
@@ -525,11 +952,37 @@
         "`battery_core.aging` implements those two rate laws and supplies no chemistry-specific constants. It does not predict any particular cell's fade.",
     },
     {
+      id: "p04-plating",
+      group: "part",
+      tier: "core",
+      type: "choice",
+      part: "Lesson 4",
+      module: "../fundamentals/battery-aging/",
+      moduleLabel: "Lesson 4 · Battery aging",
+      question: "Which operating condition most favours lithium plating?",
+      hints: ["Plating happens when lithium arrives at the graphite faster than it can be taken in."],
+      options: [
+        {
+          text: "Fast charging at low temperature",
+          correct: true,
+          why: "Yes. Cold slows intercalation while the charger keeps pushing current, so lithium is deposited as metal on the surface.",
+        },
+        {
+          text: "Storage at high temperature",
+          why: "Heat in storage drives SEI growth and gassing, not plating — no current is flowing.",
+        },
+        {
+          text: "Slow discharge at room temperature",
+          why: "Plating happens on charge, when lithium is driven into the negative electrode, not on discharge.",
+        },
+      ],
+    },
+    {
       id: "ch-trace",
       group: "chapter",
       tier: "core",
       part: "Chapter checkpoint",
-      module: "../fundamentals/cell-anatomy-workbench/",
+      module: "../fundamentals/cell-anatomy/",
       moduleLabel: "Chapter checkpoint · Trace",
       question:
         "Trace the electron path and the lithium-ion path through a cell, first on discharge and then on charge.",
@@ -550,7 +1003,7 @@
       group: "chapter",
       tier: "core",
       part: "Chapter checkpoint",
-      module: "../fundamentals/solid-state-production/",
+      module: "../fundamentals/solid-state-cell-production/",
       moduleLabel: "Chapter checkpoint · Compare",
       question:
         "Compare a conventional lithium-ion route with one solid-state route, and say which process steps actually change.",

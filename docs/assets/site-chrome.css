@@ -166,3 +166,18 @@
   outline: 3px solid var(--bc-accent);
   outline-offset: 3px;
 }
+
+/* Shown inside a lesson's lab frame (see assets/embed.js): the lesson around
+   the frame already has the course bar, the next/complete bar and the footer. */
+html[data-embedded] .bc-modulebar,
+html[data-embedded] .bc-nextbar,
+html[data-embedded] .bc-footer {
+  display: none;
+}
+
+/* A frame sized to its content must not contain anything sized to the frame,
+   or each would keep growing the other. */
+html[data-embedded],
+html[data-embedded] body {
+  min-height: 0 !important;
+}

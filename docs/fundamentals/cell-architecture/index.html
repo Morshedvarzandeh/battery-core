@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Inside a lithium-ion cell, layer by layer: porous electrodes, binder and carbon, the separator, the carbonate electrolyte, and why a good electrode is full of holes.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/cell-architecture/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Lemonergy Learn">
+  <meta property="og:title" content="Inside a lithium-ion cell, layer by layer">
+  <meta property="og:description" content="Porous electrodes, separator and electrolyte: what each layer is made of, what moves through it, and why a good electrode is full of holes.">
+  <meta property="og:url" content="https://learn.lemonergy.com/fundamentals/cell-architecture/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <title>Lithium-ion cell architecture: porous electrodes, separator and electrolyte | Lemonergy Learn</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LearningResource",
+        "@id": "https://learn.lemonergy.com/fundamentals/cell-architecture/#lesson",
+        "name": "Lithium-ion cell architecture",
+        "headline": "Lithium-ion cell architecture: porous electrodes, separator and electrolyte",
+        "description": "Inside a lithium-ion cell, layer by layer: composite porous electrodes, the separator, the carbonate electrolyte and the solid electrolyte interphase, and how electrons and ions move through them.",
+        "url": "https://learn.lemonergy.com/fundamentals/cell-architecture/",
+        "inLanguage": "en",
+        "learningResourceType": "Lesson",
+        "educationalLevel": "Beginner",
+        "timeRequired": "PT40M",
+        "isAccessibleForFree": true,
+        "teaches": ["Composite electrode structure", "Porosity and the energy–power trade-off", "Separator function", "Liquid electrolyte composition", "Electronic and ionic transport paths"],
+        "keywords": "lithium-ion cell structure, porous electrode, electrode porosity, binder, conductive carbon, separator, LiPF6 electrolyte, ethylene carbonate",
+        "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
+        "position": 2,
+        "author": { "@id": "https://lemonergy.com/#organization" },
+        "publisher": { "@id": "https://lemonergy.com/#organization" },
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://lemonergy.com/#organization",
+        "name": "Lemonergy",
+        "url": "https://lemonergy.com/",
+        "email": "info@lemonergy.com"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Battery Cell Foundations", "item": "https://learn.lemonergy.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Syllabus", "item": "https://learn.lemonergy.com/chapter-1/" },
+          { "@type": "ListItem", "position": 3, "name": "Lesson 1B · Cell architecture" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the lesson</a>
+
+  <header class="site-header">
+    <a class="brand" href="../../" aria-label="Battery Core home">
+      <span class="brand-name">Lemonergy</span>
+      <span class="brand-sub">· battery engineering courses</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../../">Home</a>
+      <a href="../../chapter-1/">Syllabus</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">Licensing</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Battery Cell Foundations</a></li>
+        <li><a href="../../chapter-1/">Syllabus</a></li>
+        <li><span aria-current="page">Lesson 1B · Cell architecture</span></li>
+      </ol>
+    </nav>
+
+    <section class="page-hero" aria-labelledby="page-title">
+      <p class="eyebrow">Lesson 1B · Battery Cell Foundations · Optional, deeper view</p>
+      <h1 id="page-title">Why is a good electrode full of holes?</h1>
+      <p class="lede">Lesson 1 drew the electrodes as solid blocks. They are not. Each one is a porous mat of particles, glue and carbon, and about a quarter to a third of it is empty space filled with electrolyte. This lesson zooms into that structure: what each layer is made of, what moves through it, and why the holes decide how much power a cell can deliver.</p>
+      <ul class="lesson-meta">
+        <li><strong>Lesson 1B</strong> of Battery Cell Foundations · optional</li>
+        <li><strong>15 min</strong> reading</li>
+        <li><strong>20 min</strong> interactive tutorial</li>
+        <li><strong>5 min</strong> practice quiz</li>
+      </ul>
+    </section>
+
+    <div class="lesson">
+      <aside class="lesson-toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">In this lesson</h2>
+        <ol>
+          <li><a href="#whole-cell">From one sandwich to a cell</a></li>
+          <li><a href="#tutorial">Interactive tutorial</a></li>
+          <li><a href="#composite">Inside a composite electrode</a></li>
+          <li><a href="#porosity">Why the holes matter</a></li>
+          <li><a href="#separator">The separator</a></li>
+          <li><a href="#electrolyte">The electrolyte</a></li>
+          <li><a href="#sei">A layer nobody assembles</a></li>
+          <li><a href="#check-yourself">Check yourself</a></li>
+          <li><a href="#practice-quiz">Practice quiz</a></li>
+          <li><a href="#references">References</a></li>
+        </ol>
+        <a class="lesson-toc-run" href="../lithium-ion-cell-architecture/">Open the tutorial full screen →</a>
+      </aside>
+
+      <article class="prose">
+        <section class="objectives" aria-labelledby="objectives-title">
+          <h2 id="objectives-title">Learning objectives</h2>
+          <p>By the end of this lesson you will be able to:</p>
+          <ul>
+            <li>describe how one five-layer repeat unit becomes a stacked or wound cell;</li>
+            <li>name the ingredients of a composite electrode and the job of each;</li>
+            <li>explain where electrons and ions travel inside a porous electrode, and where the reaction happens;</li>
+            <li>explain the trade-off porosity sets between energy and power;</li>
+            <li>describe what the separator and the electrolyte are made of, and why.</li>
+          </ul>
+          <p class="prerequisite"><strong>Before you start:</strong> <a href="../cell-anatomy/">Lesson 1 · Cell anatomy</a> for the five parts and the two paths.</p>
+        </section>
+
+        <section aria-labelledby="whole-cell">
+          <h2 id="whole-cell"><span class="section-number">01</span>From one sandwich to a whole cell</h2>
+          <p>The repeating unit of a lithium-ion cell is five layers: copper foil, negative electrode, separator, positive electrode, aluminium foil. Together they are only around a tenth to a fifth of a millimetre thick. A single unit would store very little, so manufacturers make the most of every foil by coating it on <strong>both</strong> faces and then repeating the arrangement many times:</p>
+          <ul>
+            <li><strong>Stacked</strong> — the electrodes are cut into sheets and laid on top of each other with separator between them. This is the usual route for pouch cells and some prismatic cells. A large pouch cell can hold dozens of electrode sheets.</li>
+            <li><strong>Wound</strong> — long strips of both electrodes and two separators are rolled into a spiral called a <strong>jelly roll</strong>. This is how cylindrical cells, and many prismatic cells, are built.</li>
+          </ul>
+          <p>Either way, every negative electrode faces a positive electrode across a separator, and all the negative foils are joined to one terminal and all the positive foils to the other, so the repeat units work in parallel. <a href="../cell-production/">Lesson 3</a> shows the machines that do the stacking and winding.</p>
+        </section>
+
+        <section aria-labelledby="tutorial">
+          <h2 id="tutorial"><span class="section-number">02</span>Interactive tutorial</h2>
+          <p>Build the five-layer stack one layer at a time, then zoom into a layer, then into the liquid inside one of its pores. Keep an eye on the rail at the top: it shows where in the stack each zoom comes from.</p>
+          <figure class="panel-frame lab-frame">
+            <div class="lab-frame-head"><strong>Cell architecture, one layer at a time</strong><a href="../lithium-ion-cell-architecture/">Open full screen →</a></div>
+            <iframe src="../lithium-ion-cell-architecture/" title="Interactive tutorial: the five layers of a lithium-ion cell, its porous electrodes and its electrolyte" data-fit loading="lazy"></iframe>
+            <figcaption>Conceptual, not to scale: layer widths, particle and pore sizes, and molecule shapes are drawn for clarity.</figcaption>
+          </figure>
+        </section>
+
+        <section aria-labelledby="composite">
+          <h2 id="composite"><span class="section-number">03</span>Inside a composite electrode</h2>
+          <p>An electrode coating is a <strong>composite</strong>: a mixture of several solids, pressed into a thin porous layer on the foil. Three ingredients do three different jobs:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Example electrode recipes, by dry mass (after the PEM RWTH Aachen process guide)</caption>
+              <thead><tr><th scope="col">Ingredient</th><th scope="col">Job</th><th scope="col" class="num">Negative electrode</th><th scope="col" class="num">Positive electrode</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Active material</th><td>Stores lithium — the only part that holds charge</td><td class="num">graphite, 95 %</td><td class="num">NMC oxide, 95 %</td></tr>
+                <tr><th scope="row">Conductive additive</th><td>Carbon black that links particles into an electronic network</td><td class="num">1 %</td><td class="num">1 %</td></tr>
+                <tr><th scope="row">Binder</th><td>Glues particles to each other and to the foil</td><td class="num">CMC 2 % + SBR 2 %</td><td class="num">PVDF 4 %</td></tr>
+                <tr><th scope="row">Solvent (removed)</th><td>Turns the powders into a coatable slurry, then is dried off</td><td class="num">water</td><td class="num">NMP</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The active material is made of particles typically around 5–20 µm across. The conductive carbon is far finer and coats the gaps between them, because many active materials conduct electrons poorly on their own. The binder is a polymer: PVDF dissolved in the solvent NMP for most positive electrodes, and a water-based pair, CMC and SBR, for graphite. Water is cheaper and safer than NMP, but many positive-electrode materials, especially nickel-rich oxides, react with moisture, which is one reason the two sides are still often made differently.</p>
+          <p>Everything that is not active material adds mass and volume without storing charge. Cell designers squeeze the binder and carbon down to the few percent the electrode needs to stay mechanically and electrically connected for thousands of cycles.</p>
+        </section>
+
+        <section aria-labelledby="porosity">
+          <h2 id="porosity"><span class="section-number">04</span>Why the holes matter</h2>
+          <p>After it is pressed in manufacturing, a typical electrode is still roughly 20–35 % empty space by volume — its <strong>porosity</strong>. Those pores are connected, and the electrolyte fills them. That is deliberate. The electrochemical reaction can only happen where three things meet: an active particle that can take or give lithium, an electronic connection to bring or remove the electron, and electrolyte to bring or remove the ion. Pores carry electrolyte to particles deep inside the coating, so the whole thickness takes part, not just the surface facing the separator.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Two transport networks share one porous electrode</caption>
+              <thead><tr><th scope="col"></th><th scope="col">Electrons</th><th scope="col">Lithium ions</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Travel through</th><td>Active particles, the carbon network and the metal foil</td><td>Electrolyte in the pores, then into the particle</td></tr>
+                <tr><th scope="row">Blocked by</th><td>Electrolyte, separator, loose or isolated particles</td><td>Solid binder, the foil, closed or dry pores</td></tr>
+                <tr><th scope="row">Slowed by</th><td>Poor particle contact, too little carbon</td><td>Long, winding pore paths — high <em>tortuosity</em> — and thick coatings</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Here is the trade-off. Less porosity and thicker coatings put more active material into each cubic centimetre, so the cell stores more energy. But the ions then have to travel further, through narrower and more winding pores, so the far side of the electrode cannot keep up at high current. That is why <strong>energy cells</strong>, for example in an electric car meant for long range, use thick, dense electrodes, while <strong>power cells</strong>, for power tools or hybrids, use thin, more open ones. The speed of that ion supply is a diffusion problem, which <a href="../../transport/ficks-first-law/">Fick’s first law</a> starts to describe, and the pressing step that sets porosity is calendering, in <a href="../cell-production/#electrodes">Lesson 3</a>.</p>
+        </section>
+
+        <section aria-labelledby="separator">
+          <h2 id="separator"><span class="section-number">05</span>The separator</h2>
+          <p>The separator is a thin plastic film, usually polyethylene, polypropylene or layers of both, typically 10–25 µm thick and around 40 % porous. It has to do two contradictory things at once: block every electronic contact between the electrodes, and let ions through as freely as possible. Its pores are far smaller than the electrode particles, so a particle cannot pass, but they fill with electrolyte, so ions can.</p>
+          <p>Many separators carry a thin ceramic coating, often aluminium oxide, which keeps them from shrinking when hot and resists puncture. Polyethylene also softens at around 130 °C and its pores close up, cutting off ion flow: a <strong>shutdown</strong> that can stop an overheating cell before it gets worse. Shutdown helps, but it is not a guarantee. If the temperature keeps rising, the film can shrink or melt away entirely, and a short through a hole in it is not stopped by shutdown at all.</p>
+        </section>
+
+        <section aria-labelledby="electrolyte">
+          <h2 id="electrolyte"><span class="section-number">06</span>The electrolyte</h2>
+          <p>A standard lithium-ion electrolyte is a lithium salt, usually lithium hexafluorophosphate (LiPF₆) at about one mole per litre, dissolved in a mixture of organic carbonate solvents. The mixture is a compromise between two kinds of solvent:</p>
+          <ul>
+            <li><strong>Ethylene carbonate (EC)</strong>, a cyclic carbonate, is very good at pulling the salt apart into free ions and forms a protective film on graphite. On its own, though, it is viscous, and it is solid at room temperature.</li>
+            <li><strong>Linear carbonates</strong> — dimethyl, ethyl methyl or diethyl carbonate (DMC, EMC, DEC) — are thin, runny liquids that let ions move quickly but dissolve the salt less well.</li>
+          </ul>
+          <p>Mixed, they give a liquid with enough free ions and low enough viscosity, conducting on the order of 10 mS/cm at room temperature. Small amounts of <strong>additives</strong>, a few percent of compounds such as vinylene carbonate or fluoroethylene carbonate, are added to shape the protective film described next.</p>
+          <p>The electrolyte is also the weakest point for safety. The carbonate solvents are flammable, and LiPF₆ reacts with traces of water to form hydrofluoric acid, which attacks the electrodes. That is why cells are assembled in very dry rooms, which <a href="../cell-production/#assembly">Lesson 3</a> describes, and why solid electrolytes, in <a href="../solid-state-cell-production/">Lesson 3B</a>, are attractive.</p>
+        </section>
+
+        <section aria-labelledby="sei">
+          <h2 id="sei"><span class="section-number">07</span>A layer nobody assembles</h2>
+          <p>The electrolyte is not stable at the very low potential of a charged graphite electrode. During the first charges, a small part of it reacts on the graphite surface and leaves a film of solid products a few nanometres to tens of nanometres thick: the <strong>solid electrolyte interphase</strong>, or SEI. A good SEI lets lithium ions through but blocks further electrolyte from reaching the graphite, so the reaction almost stops.</p>
+          <p>Nobody coats the SEI on. It grows inside the finished cell during <a href="../cell-production/#finishing">formation</a>, the first controlled charges at the factory, and it keeps growing slowly for the rest of the cell’s life. That slow growth is one of the main reasons a cell loses capacity even while it sits unused, which is where <a href="../battery-aging/#sei">Lesson 4</a> picks it up.</p>
+        </section>
+
+        <section aria-labelledby="check-yourself" class="answers">
+          <h2 id="check-yourself"><span class="section-number">08</span>Check yourself</h2>
+          <p>Work each one out before opening the answer.</p>
+          <details>
+            <summary>Electrolyte fills the pores of both electrodes. Why is it not a sixth layer?</summary>
+            <div><p>Because a layer has its own place in the left-to-right stack and its own thickness. The electrolyte has neither: it is a liquid filling the pore space inside three layers that already exist — the negative electrode, the separator and the positive electrode — all at once. The metal foils contain none.</p></div>
+          </details>
+          <details>
+            <summary>A manufacturer presses an electrode harder to lower its porosity from 35 % to 22 %. What does the cell gain, and what does it risk?</summary>
+            <div><p><strong>Gain:</strong> more active material per volume, so more energy per litre, and better particle-to-particle contact. <strong>Risk:</strong> less pore volume and narrower, more winding pores, so ions move more slowly; the cell delivers less at high current, takes longer to fill with electrolyte, and may plate lithium sooner when fast-charged. Pressed too hard, particles can also crack.</p></div>
+          </details>
+          <details>
+            <summary>Why does the electrode recipe need conductive carbon if the active material is already a solid?</summary>
+            <div><p>Because many active materials conduct electrons poorly, and particles only touch each other at small points. A few percent of fine carbon fills the gaps and makes a continuous electronic network from every particle to the foil. Without it, particles that are chemically fine would be electrically stranded and their lithium unusable.</p></div>
+          </details>
+          <details>
+            <summary>Why mix ethylene carbonate with a linear carbonate instead of using one solvent?</summary>
+            <div><p>Each one fixes the other’s weakness. Ethylene carbonate dissolves the salt well and protects graphite, but it is viscous and solid at room temperature. Linear carbonates are runny but dissolve the salt less well. The mixture gives both enough free ions and fast enough ion movement.</p></div>
+          </details>
+          <details>
+            <summary>Separator shutdown sounds like a complete safety feature. Why is it not?</summary>
+            <div><p>Shutdown only closes the pores, and only once the separator reaches its softening temperature. If heating continues, the film can shrink or melt, letting the electrodes touch over a large area. And a short through a puncture or a metal particle carries electrons directly, so closing the pores around it does not stop it.</p></div>
+          </details>
+        </section>
+
+        <section aria-labelledby="practice-quiz">
+          <h2 id="practice-quiz"><span class="section-number">09</span>Practice quiz</h2>
+          <p>Questions on this lesson. The multiple-choice ones are marked in your browser; the written one you check against a model answer.</p>
+          <div id="study-coach" data-part="Lesson 1B" data-module-base="../../chapter-1/"></div>
+          <noscript><p class="coach-noscript">The practice quiz needs JavaScript. The check-yourself questions above cover the same ground with written answers.</p></noscript>
+          <div class="complete-bar" hidden data-progress-ui>
+            <p>Finished the lesson, the tutorial and the quiz?</p>
+            <div class="actions">
+              <button type="button" class="complete-button" data-complete="p01b" aria-pressed="false">Mark as complete</button>
+              <a class="button button-primary" href="../capacity-and-c-rate/">Next: Lesson 2 →</a>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="references">
+          <h2 id="references"><span class="section-number">10</span>References and further reading</h2>
+          <p>These sources go deeper. The explanation here is written independently.</p>
+          <ol class="references">
+            <li>K. Xu, “Nonaqueous liquid electrolytes for lithium-based rechargeable batteries,” <cite>Chemical Reviews</cite> 104(10), 4303–4418 (2004). <a href="https://doi.org/10.1021/cr030203g">doi:10.1021/cr030203g</a></li>
+            <li>P. Arora, Z. Zhang, “Battery separators,” <cite>Chemical Reviews</cite> 104(10), 4419–4462 (2004). <a href="https://doi.org/10.1021/cr020738u">doi:10.1021/cr020738u</a></li>
+            <li>E. Peled, “The electrochemical behavior of alkali and alkaline earth metals in nonaqueous battery systems — the solid electrolyte interphase model,” <cite>Journal of The Electrochemical Society</cite> 126(12), 2047–2051 (1979). <a href="https://doi.org/10.1149/1.2128859">doi:10.1149/1.2128859</a></li>
+            <li>A. Kwade et al., “Current status and challenges for automotive battery production technologies,” <cite>Nature Energy</cite> 3, 290–300 (2018). <a href="https://doi.org/10.1038/s41560-018-0130-3">doi:10.1038/s41560-018-0130-3</a></li>
+            <li>S. Michaelis et al., <cite>Production Process of a Lithium-Ion Battery Cell</cite>, 5th ed., PEM of RWTH Aachen University and VDMA, 2026. ISBN 978-3-947920-71-6.</li>
+            <li>J. Newman, K. E. Thomas-Alyea, <cite>Electrochemical Systems</cite>, 3rd ed., Wiley-Interscience, 2004.</li>
+          </ol>
+        </section>
+      </article>
+    </div>
+
+    <nav class="lesson-pager" aria-label="Chapter 1 lessons">
+      <a class="pager-prev" href="../cell-anatomy/" rel="prev"><span>← Lesson 1</span><strong>Cell anatomy</strong></a>
+      <a class="pager-next" href="../capacity-and-c-rate/" rel="next"><span>Lesson 2 →</span><strong>Capacity and C-rate</strong></a>
+    </nav>
+  </main>
+
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../../">Course home</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../license/">AGPL-3.0-or-later</a>
+      <a href="../../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+  <script src="../../assets/lab-frame.js" defer></script>
+  <script src="../../assets/study-coach.js" defer></script>
+  <script src="../../assets/course-progress.js" defer></script>
+</body>
+</html>

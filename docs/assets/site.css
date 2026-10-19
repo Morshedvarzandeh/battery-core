@@ -3022,29 +3022,116 @@ math {
    let the reader scroll sideways, instead of shrinking the labels to a few
    pixels. The caption stays in place and says so. */
 @media (max-width: 760px) {
-  .panel-frame {
+  .panel-frame:not(.lab-frame):not(.figure-fluid) {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  .panel-frame iframe {
+  .panel-frame:not(.lab-frame) iframe {
     width: 720px;
     max-width: none;
   }
 
-  .panel-frame > svg {
+  .panel-frame:not(.figure-fluid) > svg {
     min-width: 600px;
   }
 
-  .panel-frame figcaption {
+  .panel-frame:not(.lab-frame):not(.figure-fluid) figcaption {
     position: sticky;
     left: 0;
     max-width: calc(100vw - 2rem);
   }
 
-  .panel-frame figcaption::before {
+  .panel-frame:not(.lab-frame):not(.figure-fluid) figcaption::before {
     content: "Scroll sideways to see the whole figure. ";
     font-weight: 700;
+  }
+}
+
+/* An interactive lab shown inside a lesson. The frame follows the lab's own
+   height (assets/lab-frame.js), so it never scrolls inside the page. */
+.lab-frame {
+  background: var(--surface);
+}
+
+.lab-frame iframe {
+  min-height: 0;
+  height: 900px;
+}
+
+.lab-frame-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+
+.lab-frame-head strong {
+  color: var(--text);
+}
+
+.lab-frame-head a {
+  font-weight: 700;
+}
+
+/* A full-page simulator is opened rather than framed: a card with a preview
+   picture, what the lab covers, and one clear way in. */
+.lab-launch {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 0;
+  margin: 1.6rem 0 1.8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.lab-launch img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+  border-right: 1px solid var(--line);
+}
+
+.lab-launch-copy {
+  padding: 1.3rem 1.4rem;
+}
+
+.lab-launch-copy .format {
+  margin: 0 0 0.35rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lab-launch-copy h3 {
+  margin: 0 0 0.5rem;
+}
+
+.lab-launch-copy ul {
+  margin: 0.6rem 0 1rem;
+  padding-left: 1.1rem;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 760px) {
+  .lab-launch {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-launch img {
+    max-height: 220px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
   }
 }
 
