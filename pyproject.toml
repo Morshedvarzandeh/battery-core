@@ -67,6 +67,10 @@ select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
 # battery engineer, and degree, approximation, and multiplication signs belong
 # in the prose. Prose line length is not enforced in narrative cells.
 "notebooks/**/*.ipynb" = ["E501", "N803", "N806", "RUF001", "RUF002", "RUF003"]
+# The drawing scripts hold SVG and page markup as long literal lines, and label
+# text uses typographic characters (minus sign, multiplication sign, en dash).
+"scripts/draw_lesson_art.py" = ["E501", "RUF001"]
+"scripts/render_preview_images.py" = ["E501", "RUF001"]
 
 [tool.mypy]
 # No python_version is pinned on purpose. mypy reads the type stubs of the

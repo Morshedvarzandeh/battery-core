@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="A roll-to-roll electrode line: unwind, slot-die coating, dryer, calender, rewind">
+<title>A roll-to-roll electrode line: unwind, slot-die coating, dryer, calender, rewind</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2459a8"/></marker><marker id="k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#202938"/></marker></defs>
+<g fill="none" stroke="#202938" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" font-family="Arial, Helvetica, sans-serif">
+
+<path d="M24 262 H456" stroke="#c3cad5"/>
+<circle cx="62" cy="168" r="36" fill="#ffffff"/><circle cx="62" cy="168" r="11"/><path d="M62 168 m-26 0 a26 26 0 0 1 26 -26" stroke="#c3cad5"/>
+<path d="M62 204 H186" stroke="#a8784f" stroke-width="3"/>
+<path d="M126 204 H186" stroke="#64748b" stroke-width="7"/>
+<path d="M104 132 H140 L130 186 H114 Z" fill="#ffffff"/>
+<path d="M122 186 V198" stroke="#2459a8" stroke-width="3"/>
+<path d="M122 96 V132" />
+<rect x="186" y="150" width="122" height="92" rx="6" fill="#ffffff"/>
+<path d="M186 204 H308" stroke="#64748b" stroke-width="7"/>
+<path d="M208 182 q8 -10 0 -20 q-8 -10 0 -20 M240 182 q8 -10 0 -20 q-8 -10 0 -20 M272 182 q8 -10 0 -20 q-8 -10 0 -20" stroke="#c8693f"/>
+<path d="M308 204 H422" stroke="#64748b" stroke-width="5"/>
+<circle cx="350" cy="179" r="24" fill="#ffffff"/><circle cx="350" cy="179" r="5" fill="#202938" stroke="none"/>
+<circle cx="350" cy="229" r="24" fill="#ffffff"/><circle cx="350" cy="229" r="5" fill="#202938" stroke="none"/>
+<path d="M350 132 V150" marker-end="url(#k)"/>
+<circle cx="422" cy="168" r="34" fill="#ffffff"/><circle cx="422" cy="168" r="11"/><path d="M422 168 m0 -24 a24 24 0 0 1 24 24" stroke="#64748b" stroke-width="4"/>
+<path d="M150 228 H176" stroke="#2459a8" marker-end="url(#a)"/><path d="M372 254 H398" stroke="#2459a8" marker-end="url(#a)"/>
+
+</g>
+</svg>

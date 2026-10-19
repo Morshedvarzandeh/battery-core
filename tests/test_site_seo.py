@@ -171,3 +171,37 @@ def test_internal_links_and_fragments_resolve(page: Path) -> None:
         ):
             broken.append(href)
     assert broken == []
+
+
+@pytest.mark.parametrize("rel", PAGES, ids=lambda r: r or "home")
+def test_preview_image_exists_at_the_recommended_size(rel: str) -> None:
+    """Each page may have its own link-preview image; whichever it names must
+    be on the site, be a PNG and be 1200 by 630 pixels."""
+    html = _page(rel).read_text(encoding="utf-8")
+    url = re.search(r'<meta property="og:image" content="([^"]+)">', html)
+    assert url and url.group(1).startswith(SITE + "assets/"), rel
+    image = DOCS / url.group(1).removeprefix(SITE)
+    header = image.read_bytes()[:24]
+    assert header[:8] == b"\x89PNG\r\n\x1a\n"
+    assert struct.unpack(">II", header[16:24]) == (1200, 630)
+    assert image.stat().st_size < 150_000
+    alt = re.search(r'<meta property="og:image:alt" content="([^"]+)">', html)
+    assert alt and len(alt.group(1)) > 10
+
+
+@pytest.mark.parametrize("rel", PAGES, ids=lambda r: r or "home")
+def test_every_local_image_exists(rel: str) -> None:
+    page = _page(rel)
+    html = page.read_text(encoding="utf-8")
+    for src in re.findall(r'<img [^>]*src="([^"]+)"', html):
+        assert not src.startswith(("http:", "https:", "//")), src
+        assert (page.parent / src).resolve().is_file(), src
+
+
+def test_lesson_illustrations_are_self_contained() -> None:
+    art = sorted((DOCS / "assets" / "art").glob("*.svg"))
+    assert len(art) >= 9
+    for drawing in art:
+        svg = drawing.read_text(encoding="utf-8")
+        assert "<title>" in svg, drawing.name
+        assert "href=" not in svg, drawing.name

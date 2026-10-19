@@ -128,44 +128,34 @@ a:focus-visible {
 
 .brand {
   display: inline-grid;
-  gap: 0.15rem;
+  grid-template-columns: auto auto;
+  column-gap: 0.6rem;
+  row-gap: 0.15rem;
+  align-items: center;
   text-decoration: none;
   line-height: 1.15;
 }
 
+/* The mark: a lemon that is also a cell — a terminal at one end and three
+   charge bars inside. It sits beside the two lines of the wordmark. */
+.brand-logo {
+  grid-row: 1 / span 2;
+  width: 40px;
+  height: 25px;
+}
+
 .brand-name {
+  grid-column: 2;
   font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
 .brand-sub {
+  grid-column: 2;
   color: var(--muted);
   font-size: 0.72rem;
 }
-
-.brand-mark {
-  display: none;
-  grid-template-columns: repeat(4, 6px);
-  gap: 3px;
-  align-items: end;
-  width: 34px;
-  height: 24px;
-  padding: 4px;
-  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
-  border-radius: var(--radius);
-}
-
-.brand-mark span {
-  display: block;
-  border-radius: 3px;
-  background: var(--accent);
-}
-
-.brand-mark span:nth-child(1) { height: 35%; }
-.brand-mark span:nth-child(2) { height: 55%; }
-.brand-mark span:nth-child(3) { height: 75%; }
-.brand-mark span:nth-child(4) { height: 100%; }
 
 nav {
   display: flex;
@@ -3158,5 +3148,90 @@ math {
 
   .flow-figure .flow-narrow {
     display: block;
+  }
+}
+
+/* Lesson illustrations: one line drawing per lesson, on the course cards and
+   beside each lesson's title. Decorative — the text says everything. */
+.card-art {
+  display: block;
+  width: calc(100% + 2.5rem);
+  height: 150px;
+  margin: -1.15rem -1.25rem 0;
+  padding: 0.9rem 1.25rem 0.5rem;
+  object-fit: contain;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.wide-card.has-art {
+  grid-template-columns: 150px minmax(0, 1fr) auto;
+}
+
+.wide-art {
+  display: block;
+  width: 150px;
+  height: auto;
+}
+
+.page-hero.has-art {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 340px);
+  column-gap: 3rem;
+  align-items: center;
+}
+
+.page-hero.has-art > * {
+  grid-column: 1;
+}
+
+.page-hero.has-art > .hero-art {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 860px) {
+  .page-hero.has-art {
+    display: block;
+  }
+
+  .page-hero.has-art > .hero-art {
+    display: none;
+  }
+
+  .wide-card.has-art {
+    grid-template-columns: 1fr;
+  }
+
+  .wide-art {
+    display: none;
+  }
+}
+
+.course-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+  column-gap: 3rem;
+  align-items: center;
+}
+
+.course-hero > .course-facts-strip {
+  grid-column: 1 / -1;
+}
+
+.course-hero-art {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 860px) {
+  .course-hero {
+    display: block;
+  }
+
+  .course-hero-art {
+    display: none;
   }
 }

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="A lithium-ion cell lighting a lamp, surrounded by the course topics: how it is rated, how it is made and how it ages">
+<title>A lithium-ion cell lighting a lamp, surrounded by the course topics: how it is rated, how it is made and how it ages</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2459a8"/></marker><marker id="k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#202938"/></marker></defs>
+<g fill="none" stroke="#202938" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" font-family="Arial, Helvetica, sans-serif">
+
+<rect x="150" y="144" width="180" height="102" rx="9" fill="#ffffff"/>
+<rect x="158" y="150" width="10" height="90" fill="#d6a37a" stroke="#a8784f" stroke-width="1.4"/>
+<circle cx="198.6" cy="199.9" r="6.1" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="217.4" cy="219.0" r="5.4" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="189.8" cy="228.7" r="5.7" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="196.4" cy="177.6" r="6.2" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="184.6" cy="214.2" r="6.3" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="223.6" cy="202.4" r="7.0" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="177.3" cy="165.5" r="5.1" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="181.0" cy="200.4" r="5.9" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="206.9" cy="164.4" r="5.7" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/>
+<path d="M238 150 V240 M244 150 V240 M250 150 V240" stroke="#c3cad5" stroke-width="1.4" stroke-dasharray="3 4"/>
+<circle cx="267.1" cy="169.0" r="6.6" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="306.9" cy="189.0" r="6.6" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="269.9" cy="205.3" r="5.9" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="282.8" cy="156.1" r="5.7" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="278.1" cy="180.4" r="6.4" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="283.4" cy="200.4" r="5.2" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="303.9" cy="207.3" r="5.8" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="287.2" cy="225.6" r="5.5" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="266.6" cy="190.4" r="5.2" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/>
+<rect x="312" y="150" width="10" height="90" fill="#cfd5dd" stroke="#8a95a6" stroke-width="1.4"/>
+<path d="M163 144 V92 H226 M254 92 H317 V144"/>
+<circle cx="240" cy="92" r="15" fill="#ffffff"/>
+<path d="M233 97 Q236 85 240 95 Q244 85 247 97" stroke-width="1.5"/>
+<path d="M240 68 V60 M258 74 L264 68 M222 74 L216 68" stroke="#c8693f"/>
+<circle cx="190" cy="92" r="4.5" fill="#2459a8" stroke="none"/><circle cx="290" cy="92" r="4.5" fill="#2459a8" stroke="none"/>
+<path d="M182 218 H300" stroke="#2459a8" stroke-width="3" marker-end="url(#a)"/>
+<circle cx="74" cy="104" r="44" fill="#ffffff" stroke="#c3cad5"/>
+<rect x="46" y="86" width="56" height="30" rx="5" fill="#ffffff"/><rect x="102" y="94" width="5" height="14" rx="1.5" fill="#202938" stroke="none"/>
+<rect x="53" y="92" width="11" height="18" rx="2" fill="#2459a8" stroke="none"/><rect x="68" y="92" width="11" height="18" rx="2" fill="#2459a8" stroke="none"/><rect x="83" y="92" width="11" height="18" rx="2" fill="#2459a8" stroke="none" fill-opacity="0.35"/>
+<circle cx="82" cy="226" r="44" fill="#ffffff" stroke="#c3cad5"/>
+<circle cx="68" cy="214" r="13" fill="#ffffff"/><circle cx="68" cy="214" r="3" fill="#202938" stroke="none"/>
+<circle cx="68" cy="240" r="13" fill="#ffffff"/><circle cx="68" cy="240" r="3" fill="#202938" stroke="none"/>
+<path d="M40 227 H112" stroke="#64748b" stroke-width="4"/>
+<circle cx="406" cy="104" r="44" fill="#ffffff" stroke="#c3cad5"/>
+<path d="M378 86 C392 88 404 92 414 98 C424 104 430 114 436 128" stroke="#2459a8" stroke-width="2.6"/>
+<path d="M376 104 H436" stroke="#c8693f" stroke-dasharray="4 4"/>
+<circle cx="402" cy="226" r="44" fill="#ffffff" stroke="#c3cad5"/>
+<path d="M372 226 C380 214 390 214 398 226 C406 238 416 238 424 226" stroke="#2459a8" stroke-width="2.4"/>
+<rect x="414" y="198" width="10" height="40" rx="5" fill="#ffffff" stroke-width="1.6"/><circle cx="419" cy="242" r="7" fill="#c8693f" stroke="#202938" stroke-width="1.6"/>
+
+</g>
+</svg>
