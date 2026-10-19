@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="Three discharges with equal area: higher current, shorter time, same charge">
+<title>Three discharges with equal area: higher current, shorter time, same charge</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2459a8"/></marker><marker id="k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#202938"/></marker></defs>
+<g fill="none" stroke="#202938" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" font-family="Arial, Helvetica, sans-serif">
+
+<path d="M70 40 V250 H430" stroke="#596579"/>
+<rect x="70" y="206" width="320" height="44" fill="#eef4ff" stroke="#2459a8"/>
+<rect x="70" y="162" width="160" height="88" fill="#2459a8" fill-opacity="0.16" stroke="#2459a8"/>
+<rect x="70" y="74" width="80" height="176" fill="#2459a8" fill-opacity="0.3" stroke="#2459a8"/>
+<rect x="300" y="64" width="104" height="54" rx="7" fill="#ffffff"/>
+<rect x="404" y="80" width="9" height="22" rx="2" fill="#202938" stroke="none"/>
+<rect x="312" y="76" width="20" height="30" rx="3" fill="#2459a8" stroke="none"/>
+<rect x="340" y="76" width="20" height="30" rx="3" fill="#2459a8" stroke="none"/>
+<rect x="368" y="76" width="20" height="30" rx="3" fill="#2459a8" stroke="none" fill-opacity="0.35"/>
+<circle cx="330" cy="176" r="26" fill="#ffffff"/>
+<path d="M330 176 V160 M330 176 L342 184" stroke-width="2.4"/>
+<path d="M324 146 H336" stroke-width="2.4"/>
+
+</g>
+</svg>

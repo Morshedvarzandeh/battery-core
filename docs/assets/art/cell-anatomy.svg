@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="A lithium-ion cell powering a lamp: electrons go round the wire, lithium ions cross inside">
+<title>A lithium-ion cell powering a lamp: electrons go round the wire, lithium ions cross inside</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2459a8"/></marker><marker id="k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#202938"/></marker></defs>
+<g fill="none" stroke="#202938" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" font-family="Arial, Helvetica, sans-serif">
+
+<rect x="118" y="116" width="244" height="138" rx="10" fill="#ffffff"/>
+<rect x="126" y="122" width="12" height="126" fill="#d6a37a" stroke="#a8784f" stroke-width="1.4"/>
+<rect x="138" y="122" width="88" height="126" fill="#ffffff" stroke="none"/>
+<circle cx="207.0" cy="213.8" r="6.4" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="182.7" cy="179.5" r="6.8" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="202.1" cy="141.9" r="8.0" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="206.4" cy="177.6" r="6.1" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="150.4" cy="179.2" r="8.3" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="165.2" cy="232.1" r="8.2" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="152.7" cy="135.4" r="8.7" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="177.6" cy="133.8" r="6.6" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="164.5" cy="154.5" r="6.7" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="186.7" cy="199.9" r="8.5" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="171.4" cy="209.2" r="6.4" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="194.1" cy="164.3" r="8.5" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="197.2" cy="238.0" r="6.1" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/><circle cx="213.3" cy="193.3" r="7.5" fill="#e3e7ed" stroke="#64748b" stroke-width="1.4"/>
+<path d="M228 122 V248 M234 122 V248 M240 122 V248 M246 122 V248 M252 122 V248" stroke="#c3cad5" stroke-width="1.4" stroke-dasharray="3 4"/>
+<circle cx="282.9" cy="190.1" r="7.4" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="267.2" cy="214.6" r="8.9" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="322.4" cy="210.3" r="8.5" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="288.7" cy="168.5" r="7.5" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="306.0" cy="197.0" r="7.6" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="267.2" cy="156.0" r="7.4" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="303.7" cy="224.3" r="6.5" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="265.4" cy="131.8" r="6.2" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="282.1" cy="143.8" r="8.3" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="299.8" cy="148.8" r="6.5" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="312.0" cy="180.1" r="6.8" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="296.3" cy="133.5" r="7.0" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="284.4" cy="236.3" r="6.2" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/><circle cx="323.1" cy="134.5" r="8.6" fill="#f5e9dc" stroke="#c8693f" stroke-width="1.4"/>
+<rect x="342" y="122" width="12" height="126" fill="#cfd5dd" stroke="#8a95a6" stroke-width="1.4"/>
+<path d="M132 116 V46 H222 M258 46 H348 V116"/>
+<circle cx="240" cy="46" r="18" fill="#ffffff"/>
+<path d="M232 52 Q236 38 240 50 Q244 38 248 52" stroke-width="1.6"/>
+<path d="M240 18 V10 M262 24 L268 18 M218 24 L212 18 M270 46 H278 M210 46 H202" stroke="#c8693f" stroke-width="2"/>
+<circle cx="134" cy="78" r="5" fill="#2459a8" stroke="none"/><circle cx="180" cy="46" r="5" fill="#2459a8" stroke="none"/><circle cx="300" cy="46" r="5" fill="#2459a8" stroke="none"/><circle cx="346" cy="78" r="5" fill="#2459a8" stroke="none"/>
+<path d="M154 96 L154 70" stroke="#2459a8" marker-end="url(#a)"/>
+<path d="M326 70 L326 96" stroke="#2459a8" marker-end="url(#a)"/>
+<path d="M160 214 H318" stroke="#2459a8" stroke-width="3.2" marker-end="url(#a)"/>
+<text x="110" y="196" font-size="22" fill="#202938" stroke="none" text-anchor="end" font-weight="700">−</text>
+<text x="370" y="196" font-size="22" fill="#202938" stroke="none" font-weight="700">+</text>
+
+</g>
+</svg>

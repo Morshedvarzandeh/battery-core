@@ -111,8 +111,8 @@ svg { display: block; max-width: 100%; height: auto; }
     max-width: 84ch;
     margin-top: 10px;
     padding: 9px 12px;
-    border-radius: var(--radius-lg);
-    border-left: 3px solid var(--destructive);
+    border-radius: 0;
+    border-left: 2px solid var(--border);
     background: #ffffff;
     color: var(--muted-foreground);
   }
