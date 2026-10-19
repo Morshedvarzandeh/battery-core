@@ -137,6 +137,7 @@
           <li><a href="#how-it-works">How this course works</a></li>
           <li><a href="#check-yourself">Check yourself</a></li>
           <li><a href="#practice-quiz">Practice quiz</a></li>
+          <li><a href="#references">References</a></li>
         </ol>
       </aside>
 
@@ -155,13 +156,13 @@
 
         <section aria-labelledby="energy-you-can-carry">
           <h2 id="energy-you-can-carry"><span class="section-number">01</span>Energy you can carry</h2>
-          <p>A battery stores energy in chemical form and gives it back as electricity, on demand, wherever it is. Some batteries are used once and thrown away. A <strong>rechargeable</strong> battery runs its chemistry backwards when it is charged, so the same materials can store and release energy thousands of times. Lithium-ion is the rechargeable battery of our time because it stores a lot of energy for its weight and lasts for many cycles.</p>
+          <p>A battery stores energy in chemical form and gives it back as electricity, on demand, wherever it is. Some batteries are used once and thrown away. A <strong>rechargeable</strong> battery runs its chemistry backwards when it is charged, so the same materials can store and release energy hundreds to thousands of times. Lithium-ion is the rechargeable battery of our time because it stores a lot of energy for its weight and lasts for many cycles.</p>
           <div class="table-wrap">
             <table>
               <caption>Roughly how much energy batteries hold, by application</caption>
               <thead><tr><th scope="col">Application</th><th scope="col" class="num">Typical energy</th></tr></thead>
               <tbody>
-                <tr><th scope="row">Smartphone</th><td class="num">about 15–20 Wh</td></tr>
+                <tr><th scope="row">Smartphone</th><td class="num">about 10–25 Wh</td></tr>
                 <tr><th scope="row">Laptop</th><td class="num">about 50–100 Wh</td></tr>
                 <tr><th scope="row">Electric bicycle</th><td class="num">about 0.4–0.75 kWh</td></tr>
                 <tr><th scope="row">Home storage battery</th><td class="num">about 5–15 kWh</td></tr>
@@ -180,7 +181,7 @@
             <li>A <strong>module</strong> is a group of cells connected and held together mechanically, often with sensing wires and cooling.</li>
             <li>A <strong>pack</strong> is the complete battery a product uses: modules or cells, connected in <strong>series</strong> to raise the voltage and in <strong>parallel</strong> to raise the capacity, plus the enclosure, cooling, wiring, fuses and the battery management system.</li>
           </ul>
-          <p>The <strong>battery management system</strong>, or BMS, is the pack’s electronics. It measures every cell’s voltage, the current and the temperatures, estimates how full the pack is, keeps the cells balanced, and switches the pack off before any cell is charged or discharged too far, or gets too hot or too cold. A cell cannot protect itself; the BMS does it for every cell in the pack. A phone has a single cell and a tiny BMS; an electric car can have thousands of cells.</p>
+          <p>The <strong>battery management system</strong>, or BMS, is the pack’s electronics. It measures the voltage of every cell, or of every group of cells wired in parallel, plus the current and the temperature at several points. It estimates how full the pack is, keeps the cells balanced, and switches the pack off before any cell is charged or discharged too far, or gets too hot or too cold. A cell cannot keep itself inside these limits: at most it has a one-shot safety device, such as a vent or a current-interrupt device that disconnects it for good. A phone usually has a single cell and a tiny BMS; an electric car can have thousands of cells.</p>
         </section>
 
         <section aria-labelledby="datasheet">
@@ -224,7 +225,7 @@
             <li><strong>Mark the lesson complete.</strong> Your progress shows on the <a href="../../chapter-1/">syllabus</a>. It is saved in this browser only, with no account.</li>
             <li><strong>Pass the final exam.</strong> When the core lessons are done, the <a href="../../exam/">final exam</a> checks the whole course and gives you a printable statement of completion.</li>
           </ol>
-          <p>Along the way, the <a href="../../glossary/">glossary</a> defines every term in plain language and the <a href="../../cheat-sheet/">cheat sheet</a> puts the formulas and key numbers on one page. If you like code, every calculation also exists as a tested Python function and a notebook you can run.</p>
+          <p>Along the way, the <a href="../../glossary/">glossary</a> defines every term in plain language and the <a href="../../cheat-sheet/">cheat sheet</a> puts the formulas and key numbers on one page. If you like code, the calculations in Lessons 2 and 4 and in Fick’s law also exist as tested Python functions, with notebooks you can run.</p>
         </section>
 
         <section aria-labelledby="check-yourself" class="answers">
@@ -236,7 +237,7 @@
           </details>
           <details>
             <summary>What does a battery management system do that a cell cannot do for itself?</summary>
-            <div><p>It measures and protects. A cell has no way to stop being overcharged, over-discharged or overheated; the BMS watches every cell’s voltage and temperature and the current, and disconnects the pack before a limit is crossed. It also balances the cells and estimates the state of charge.</p></div>
+            <div><p>It measures and protects. A cell cannot keep itself from being overcharged, over-discharged or overheated — at most it has a one-shot safety device that disconnects it for good. The BMS watches the voltage of every cell (or parallel group of cells), the temperatures and the current, and disconnects the pack before a limit is crossed. It also balances the cells and estimates the state of charge.</p></div>
           </details>
           <details>
             <summary>Why does a datasheet state cycle life “to 80 %”?</summary>
@@ -256,6 +257,16 @@
               <a class="button button-primary" href="../../fundamentals/cell-anatomy/">Next: Lesson 1 →</a>
             </div>
           </div>
+        </section>
+
+        <section aria-labelledby="references">
+          <h2 id="references"><span class="section-number">08</span>References and further reading</h2>
+          <p>These sources go deeper. The explanation here is written independently.</p>
+          <ol class="references">
+            <li>T. B. Reddy (ed.), <cite>Linden’s Handbook of Batteries</cite>, 4th ed., McGraw-Hill, 2011.</li>
+            <li>G. L. Plett, <cite>Battery Management Systems, Volume II: Equivalent-Circuit Methods</cite>, Artech House, 2015, chapter 1.</li>
+            <li>IATA, <cite>Lithium Batteries: Passenger Guidance</cite> (watt-hour limits for batteries carried by passengers).</li>
+          </ol>
         </section>
       </article>
     </div>
