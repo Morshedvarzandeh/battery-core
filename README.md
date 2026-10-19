@@ -174,6 +174,15 @@ print(current_a)          # 200.0
 print(duration_minutes)   # 6.0
 ```
 
+### Nominal energy
+
+```python
+from battery_core import nominal_energy_wh
+
+energy_wh = nominal_energy_wh(nominal_capacity_ah=20.0, nominal_voltage_v=3.65)
+print(energy_wh)  # 73.0 — a rating, not the energy of a particular discharge
+```
+
 ### Fick's first law
 
 ```python
