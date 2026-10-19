@@ -6,6 +6,25 @@ All notable changes to `battery-core` are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **The course now looks like the rest of Lemonergy.** It uses the design
+  workbench's visual system — Arial, white header with a thin rule, grey
+  bands, one blue (`#2459a8`), small grey labels, 4–6px corners — with no
+  gradients and no green. The homepage is now a plain course page: title band
+  with a facts strip, what you will learn, the six lessons as cards, labs and
+  reference, and how the course works. The header carries the Lemonergy name
+  on every page. Module bridge, module chrome, workbench palette, Part 04
+  panels (via the exporter), favicon and the social-share image follow the
+  same palette.
+- **Every background is white.** Pages, title bands, cards, panels, diagrams,
+  quiz feedback, simulator surfaces and status badges no longer use grey,
+  blue, peach or pink fills; thin grey lines separate them instead. The oxide
+  positive electrode is terracotta on every page (it was green in Lesson 1B
+  and the simulators), the materials lab and the layout editor drop their
+  green, pink and dark-theme colours, and the lab's chart palette matches the
+  course.
+
 ### Added
 
 - **Every Chapter 1 lesson is now readable on the website**, not only as a

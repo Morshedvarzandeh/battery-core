@@ -732,10 +732,22 @@ svg.fig.tall { max-height: 430px; }
 
 /* --- Battery Core website theme (added by scripts/export_aging_panels.py) --- */
 :root {
-  --hue-accent: 168;
-  --chroma-accent: 0.12;
-  --hue-neutral: 232;
-  --chroma-neutral: 0.022;
+  --hue-accent: 259;
+  --chroma-accent: 0.14;
+  --hue-neutral: 255;
+  --chroma-neutral: 0.012;
+  --font-sans: Arial, Helvetica, sans-serif;
+  --series-3: #5b6b8a;
+  --series-6: #8a5a2b;
+  --ok: #2459a8;
+  --ok-wash: #ffffff;
+  /* Every background on the course is white: no grey, blue or tinted wells. */
+  --surface: #ffffff;
+  --surface-sunken: #ffffff;
+  --surface-raised: #ffffff;
+  --accent-wash: #ffffff;
+  --warn-wash: #ffffff;
+  --danger-wash: #ffffff;
 }
 body {
   background: transparent;

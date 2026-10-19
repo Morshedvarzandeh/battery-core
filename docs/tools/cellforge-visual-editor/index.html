@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="CellForge layout editor — reposition, rename, and resize the machine diagrams used by the Chapter 1 production simulator, and start a new one from the standard template.">
-  <meta name="theme-color" content="#07131d">
+  <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://learn.lemonergy.com/tools/cellforge-visual-editor/">
   <link rel="stylesheet" href="../../assets/site.css">
   <meta property="og:type" content="website">
@@ -25,8 +25,8 @@
 
   <header class="site-header">
     <a class="brand" href="../../" aria-label="Battery Core home">
-      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-      <span>Battery Core</span>
+      <span class="brand-name">Lemonergy</span>
+      <span class="brand-sub">· battery engineering courses</span>
     </a>
     <nav aria-label="Primary navigation">
       <a href="../../">Home</a>
@@ -209,14 +209,14 @@
 #cf-editor .cf-grid { fill: url(#cf-grid-pattern); opacity: .5; pointer-events: none; }
 #cf-editor .cf-editable { cursor: grab; }
 #cf-editor .cf-editable:active { cursor: grabbing; }
-#cf-editor .cf-selected { filter: drop-shadow(0 0 4px rgba(104, 224, 189, .7)); }
+#cf-editor .cf-selected { filter: drop-shadow(0 0 3px rgba(36, 89, 168, .6)); }
 #cf-editor .cf-selected-box { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; pointer-events: none; }
 #cf-editor text.cf-collision { fill: var(--orange); paint-order: stroke fill; stroke: var(--surface); stroke-width: 4; }
 
-#cf-editor .mSteel { fill: #1b3242; stroke: #7f9aa6; stroke-width: 1.7; }
-#cf-editor .mSteel2 { fill: #16293a; stroke: #7f9aa6; stroke-width: 1.7; }
-#cf-editor .mDark { fill: #0a1822; stroke: #7f9aa6; stroke-width: 1.7; }
-#cf-editor .mGlass { fill: rgba(104, 224, 189, .16); stroke: var(--accent); stroke-width: 1.5; }
+#cf-editor .mSteel { fill: #e8ecf1; stroke: #7f8a99; stroke-width: 1.7; }
+#cf-editor .mSteel2 { fill: #d5dbe3; stroke: #7f8a99; stroke-width: 1.7; }
+#cf-editor .mDark { fill: #5b6b8a; stroke: #3e4a60; stroke-width: 1.7; }
+#cf-editor .mGlass { fill: #ffffff; stroke: var(--accent); stroke-width: 1.5; }
 #cf-editor .mHot { fill: var(--orange); stroke: #c9763a; stroke-width: 1.5; }
 #cf-editor .mCu { fill: #bccbd1; stroke: #7f9aa6; stroke-width: 1.2; }
 #cf-editor .mAn { fill: var(--orange); stroke: #c9763a; stroke-width: 1.2; }
@@ -226,16 +226,16 @@
 #cf-editor .mPipe { stroke: var(--accent); stroke-width: 5; fill: none; stroke-linecap: round; }
 #cf-editor .mWeb { stroke: #bccbd1; stroke-width: 5; fill: none; stroke-linecap: round; }
 #cf-editor .mWebA { stroke: var(--orange); stroke-width: 6; fill: none; stroke-linecap: round; }
-#cf-editor .mLead { stroke: rgba(159, 179, 189, .8); stroke-width: 1; fill: none; }
+#cf-editor .mLead { stroke: #a3adbb; stroke-width: 1; fill: none; }
 #cf-editor .mArrow { fill: var(--accent); }
 #cf-editor .mFloor { stroke: var(--line); stroke-width: 2; fill: none; }
-#cf-editor .mFrame { fill: rgba(255, 255, 255, .03); stroke: var(--line); stroke-width: 1.5; }
-#cf-editor .mZone { fill: rgba(104, 224, 189, .07); stroke: rgba(104, 224, 189, .34); stroke-width: 1.2; }
-#cf-editor .mBadge { fill: rgba(4, 14, 22, .72); stroke: var(--line); stroke-width: 1.2; }
+#cf-editor .mFrame { fill: #ffffff; stroke: var(--line); stroke-width: 1.5; }
+#cf-editor .mZone { fill: #ffffff; stroke: #a5b8d5; stroke-width: 1.2; }
+#cf-editor .mBadge { fill: #ffffff; stroke: var(--line); stroke-width: 1.2; }
 
 #cf-editor .mTxt { fill: var(--text); font-size: 13px; font-weight: 650; }
 #cf-editor .mTxtS { fill: var(--muted); font-size: 11px; font-weight: 650; }
-#cf-editor .mTxtW { fill: #04251e; font-size: 11px; font-weight: 750; }
+#cf-editor .mTxtW { fill: #202938; font-size: 11px; font-weight: 750; }
 #cf-editor .mFlowLabel { fill: var(--text); font-size: 11px; font-weight: 750; letter-spacing: .08em; }
 #cf-editor .mTxt, #cf-editor .mTxtS, #cf-editor .mFlowLabel {
   paint-order: stroke fill;

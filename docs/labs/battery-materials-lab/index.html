@@ -153,12 +153,14 @@
 /* Generic mobile code-block hosts provide light/dark mode but no series palette.
    AppBlock hosts set all six variables themselves. */
 :root:not([data-app-block-surface]) {
-  --viz-series-1: var(--primary);
-  --viz-series-2: light-dark(#f3883b, #f59a56);
-  --viz-series-3: light-dark(#5dc977, #74d58b);
-  --viz-series-4: light-dark(#eb77b1, #f08fc0);
-  --viz-series-5: light-dark(#9b79ec, #aa91ef);
-  --viz-series-6: light-dark(#3ab9b1, #5acbc2);
+  /* Course palette (assets/module-theme.css): blue, terracotta, slate,
+     ochre, violet, grey. No green and no pink. */
+  --viz-series-1: #2459a8;
+  --viz-series-2: #c8693f;
+  --viz-series-3: #5b6b8a;
+  --viz-series-4: #a16207;
+  --viz-series-5: #6d28d9;
+  --viz-series-6: #64748b;
 }
 
 :root[data-theme="light"] {
@@ -506,7 +508,7 @@ a.btn {
 }
 
 .btn:not(:disabled):hover {
-  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+  background: #ffffff;
 }
 
 .btn-primary {
@@ -537,7 +539,7 @@ a.btn {
 
 .btn-ghost:not(:disabled):hover {
   color: var(--foreground);
-  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+  background: #ffffff;
 }
 
 .btn:disabled {
@@ -590,7 +592,7 @@ a.btn {
 }
 
 .form-control[type="file"]:not(:disabled):hover::file-selector-button {
-  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+  background: #ffffff;
 }
 
 .form-control-color[type="color"] {
@@ -651,7 +653,7 @@ textarea.form-control {
 }
 
 .form-select:not(:disabled):hover {
-  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+  background: #ffffff;
 }
 
 .form-select:focus-visible {
@@ -1741,8 +1743,8 @@ svg {
     top: calc(var(--bml-axis-y) - 44px);
     height: 88px;
     border-radius: var(--radius-sm);
-    background: color-mix(in srgb, var(--viz-series-6) 16%, transparent);
-    border-inline: 1px dashed color-mix(in srgb, var(--viz-series-6) 60%, transparent);
+    background: transparent;
+    border-inline: 1px dashed var(--viz-series-6);
   }
 
   #battery-materials-lab .bml-water-label {
@@ -2046,7 +2048,7 @@ svg {
     padding: 8px 10px;
     border-radius: var(--radius-lg);
     border: 1px solid color-mix(in srgb, var(--destructive) 40%, transparent);
-    background: color-mix(in srgb, var(--destructive) 8%, transparent);
+    background: #ffffff;
     color: var(--foreground);
   }
 
@@ -2401,7 +2403,7 @@ svg {
     padding: 11px 13px;
     border-radius: var(--radius-lg);
     border-left: 3px solid var(--viz-series-6);
-    background: color-mix(in srgb, var(--viz-series-6) 8%, transparent);
+    background: #ffffff;
     font-size: var(--font-size-small);
   }
 
@@ -2553,7 +2555,7 @@ svg {
     padding: 11px 13px;
     border-radius: var(--radius-lg);
     border-left: 3px solid var(--destructive);
-    background: color-mix(in srgb, var(--destructive) 7%, transparent);
+    background: #ffffff;
     font-size: var(--font-size-small);
   }
 
@@ -2751,7 +2753,7 @@ svg {
     position: relative;
     height: 16px;
     border-radius: 3px;
-    background: color-mix(in srgb, var(--foreground) 4%, transparent);
+    background: #ffffff;
   }
 
   #battery-materials-lab .bml-energy-fill {

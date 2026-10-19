@@ -30,8 +30,8 @@ ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "notebooks" / "fundamentals" / "04_battery_aging.ipynb"
 OUTPUT = ROOT / "docs" / "fundamentals" / "battery-aging" / "panels"
 
-# The notebook's own light/dark switch. The website is dark-only, so the
-# switch is left out and every panel is pinned to the dark theme below.
+# The notebook's own light/dark switch. The website has one light theme, so
+# the switch is left out and every panel is pinned to the light theme below.
 SKIPPED = {"theme"}
 
 TITLES = {
@@ -46,16 +46,29 @@ TITLES = {
     "window": "Temperature window",
 }
 
-# Re-tune the notebook's design knobs to the course palette: navy neutrals and
-# the mint core-path accent, on a transparent ground so the lesson's panel
-# frame shows through.
+# Re-tune the notebook's design knobs to the course palette — the design
+# workbench's blue and cool greys, Arial, on a transparent ground so the
+# lesson's panel frame shows through — and take green out of the chart series
+# and status colours, which the course does not use.
 SITE_THEME = """
 /* --- Battery Core website theme (added by scripts/export_aging_panels.py) --- */
 :root {
-  --hue-accent: 168;
-  --chroma-accent: 0.12;
-  --hue-neutral: 232;
-  --chroma-neutral: 0.022;
+  --hue-accent: 259;
+  --chroma-accent: 0.14;
+  --hue-neutral: 255;
+  --chroma-neutral: 0.012;
+  --font-sans: Arial, Helvetica, sans-serif;
+  --series-3: #5b6b8a;
+  --series-6: #8a5a2b;
+  --ok: #2459a8;
+  --ok-wash: #ffffff;
+  /* Every background on the course is white: no grey, blue or tinted wells. */
+  --surface: #ffffff;
+  --surface-sunken: #ffffff;
+  --surface-raised: #ffffff;
+  --accent-wash: #ffffff;
+  --warn-wash: #ffffff;
+  --danger-wash: #ffffff;
 }
 body {
   background: transparent;
@@ -63,14 +76,14 @@ body {
 }
 """
 
-PIN_DARK = """
-/* Battery Core website: the course is dark-only, so pin every panel to the
-   dark theme instead of following the operating system. */
-document.documentElement.dataset.theme = "dark";
+PIN_LIGHT = """
+/* Battery Core website: the course has one light theme, so pin every panel to
+   it instead of following the operating system. */
+document.documentElement.dataset.theme = "light";
 """
 
 PAGE = """<!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -101,7 +114,7 @@ def render(assets: dict) -> dict[str, str]:
     """Return {file name: content} for every exported file."""
     files = {
         "panels.css": assets["css"] + SITE_THEME,
-        "panels.js": assets["lib"] + PIN_DARK,
+        "panels.js": assets["lib"] + PIN_LIGHT,
     }
     for name, widget in assets["widgets"].items():
         if name in SKIPPED:
