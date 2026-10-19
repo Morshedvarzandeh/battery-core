@@ -8,12 +8,15 @@ All notable changes to `battery-core` are recorded here. The format follows
 
 ### Changed
 
-- **A light, professional look for the whole course.** White pages, one deep
-  blue for the core path (teal for "B" parts, amber for the toolkit), Source
-  Sans 3 served from `assets/fonts/` (SIL OFL, no external font host), calmer
-  heading sizes and weights, small-radius buttons, and no decorative
-  gradients. `module-theme.css`, `site-chrome.css`, the workbench palette, the
-  Part 04 panels and the social-share image follow the same palette.
+- **The course now looks like the rest of Lemonergy.** It uses the design
+  workbench's visual system — Arial, white header with a thin rule, grey
+  bands, one blue (`#2459a8`), small grey labels, 4–6px corners — with no
+  gradients and no green. The homepage is now a plain course page: title band
+  with a facts strip, what you will learn, the six lessons as cards, labs and
+  reference, and how the course works. The header carries the Lemonergy name
+  on every page. Module bridge, module chrome, workbench palette, Part 04
+  panels (via the exporter), favicon and the social-share image follow the
+  same palette.
 
 ### Added
 

@@ -46,18 +46,22 @@ TITLES = {
     "window": "Temperature window",
 }
 
-# Re-tune the notebook's design knobs to the course palette: cool neutrals and
-# the blue core-path accent, on a transparent ground so the lesson's panel
-# frame shows through.
+# Re-tune the notebook's design knobs to the course palette — the design
+# workbench's blue and cool greys, Arial, on a transparent ground so the
+# lesson's panel frame shows through — and take green out of the chart series
+# and status colours, which the course does not use.
 SITE_THEME = """
 /* --- Battery Core website theme (added by scripts/export_aging_panels.py) --- */
 :root {
-  --hue-accent: 258;
-  --chroma-accent: 0.17;
+  --hue-accent: 259;
+  --chroma-accent: 0.14;
   --hue-neutral: 255;
-  --chroma-neutral: 0.01;
-  --font-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Arial, sans-serif;
+  --chroma-neutral: 0.012;
+  --font-sans: Arial, Helvetica, sans-serif;
+  --series-3: #5b6b8a;
+  --series-6: #8a5a2b;
+  --ok: #2459a8;
+  --ok-wash: #eef4ff;
 }
 body {
   background: transparent;
@@ -78,7 +82,6 @@ PAGE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>{title} — Battery aging panel</title>
-<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="panels.css">
 </head>
 <body>

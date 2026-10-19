@@ -22,41 +22,20 @@
  * `site-chrome.css` so such a page can still have them.
  */
 
-@font-face {
-  font-family: "Source Sans 3";
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/source-sans-3-latin-400-normal.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Source Sans 3";
-  font-weight: 600;
-  font-display: swap;
-  src: url("fonts/source-sans-3-latin-600-normal.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Source Sans 3";
-  font-weight: 700;
-  font-display: swap;
-  src: url("fonts/source-sans-3-latin-700-normal.woff2") format("woff2");
-}
-
 :root {
   color-scheme: light;
 
   /* Course palette — the source of truth, identical to site.css. */
   --bc-background: #ffffff;
   --bc-surface: #ffffff;
-  --bc-surface-raised: #f6f8fb;
-  --bc-text: #1d2433;
-  --bc-muted: #5a6577;
-  --bc-line: #dfe3ea;
-  --bc-accent: #0b5bd3;
-  --bc-accent-strong: #0848aa;
-  --bc-blue: #0f766e;
-  --bc-orange: #b45309;
+  --bc-surface-raised: #f8f9fb;
+  --bc-text: #202938;
+  --bc-muted: #596579;
+  --bc-line: #dce1e8;
+  --bc-accent: #2459a8;
+  --bc-accent-strong: #1c4786;
+  --bc-blue: #5b6b8a;
+  --bc-orange: #9a5b13;
 
   /* Generic contract, restated in course colours. Names and meanings are the
      modules' own; only the values change. */
@@ -74,11 +53,11 @@
   --muted-foreground: var(--bc-muted);
   /* Generic --accent is a tinted surface, not the course blue; --bc-accent is
      the blue. Keeping the distinction stops soft washes turning saturated. */
-  --accent: color-mix(in srgb, #0b5bd3 8%, #ffffff);
+  --accent: #eef4ff;
   --accent-foreground: var(--bc-accent-strong);
   --destructive: #c2410c;
   --red: #c0392b;
-  --green: #15803d;
+  --green: var(--bc-accent);  /* "in window" / OK states: blue, not green */
   --border: var(--bc-line);
   --input: #ffffff;
   --ring: var(--bc-accent);
@@ -92,8 +71,7 @@
   --viz-series-5: #a16207;
   --viz-series-6: #be185d;
 
-  --font-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  --font-sans: Arial, Helvetica, sans-serif;
 
   /* Legacy aliases some modules still read. */
   --viz-bg: var(--background);

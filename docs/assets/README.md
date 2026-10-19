@@ -10,19 +10,21 @@ Three files, in the order you reach for them.
 
 ## Colour roles
 
-The palette is a white ground, one text pair, and three hues. Each hue means
-one thing, so a reader can tell a module's tier before reading its label.
+The site uses the same visual system as the Lemonergy design workbench
+(`design.lemonergy.com`), so the islands read as one product: Arial, a white
+header over a thin grey rule, pale grey bands, one blue for actions, small
+grey uppercase labels and 4–6px corners. There are no gradients and no green.
 
 | Token | Hue | Means |
 | --- | --- | --- |
-| `--accent` | blue `#0b5bd3` | The core path: required parts, primary actions, part numbers, the brand mark. |
-| `--blue` | teal `#0f766e` | Optional depth: the `B` parts that go further into a topic without being required to finish the chapter. (The token name is historical.) |
-| `--orange` | amber `#b45309` | The toolkit: authoring and maintenance tools that build the course rather than teach it. |
+| `--accent` | blue `#2459a8` | The core path and every action: primary buttons, links, the current nav item. |
+| `--blue` | slate `#5b6b8a` | Optional depth: the `B` lessons that go further into a topic without being required to finish the chapter. (The token name is historical.) |
+| `--orange` | amber `#9a5b13` | The toolkit: authoring and maintenance tools that build the course rather than teach it. |
 
-Type is **Source Sans 3** at 400, 600 and 700, served from `assets/fonts/`
-under the SIL Open Font License (`assets/fonts/OFL.txt`), so no page fetches a
-font from another host. Headings are 700 with normal tracking; there is no
-weight above 700 and no decorative gradient anywhere on the site.
+Text is `#202938` (`--text`) and `#596579` (`--muted`); lines are `#dce1e8`;
+the grey band is `#f5f6f8`; a selected item uses `--accent-wash` with
+`--accent-edge`. Tiers show as a 3px top rule on cards and a short bar in the
+legend — never as tinted card backgrounds.
 
 Components never read those three directly. They read `--tier`, which a single
 modifier class sets:
@@ -37,9 +39,9 @@ modifier class sets:
 `:root`. Recolour a tier there and every card, number, and link that belongs to
 it follows.
 
-Surfaces are white (`--background`, `--surface`) and two pale greys
-(`--surface-soft`, `--surface-raised`), separated by `--line`; text is
-`--text` or `--muted`, and text on a filled accent is `--on-accent`. A page that
+Surfaces are white (`--background`, `--surface`), the grey band (`--band`)
+and two pale greys (`--surface-soft`, `--surface-raised`), separated by
+`--line`; text on a filled accent is `--on-accent`. A page that
 needs a colour not on this list is a page that needs a new documented role
 first.
 
