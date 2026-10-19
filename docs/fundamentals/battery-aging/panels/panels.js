@@ -211,6 +211,6 @@ function segmented(sel, fn) {
   }));
 }
 
-/* Battery Core website: the course is dark-only, so pin every panel to the
-   dark theme instead of following the operating system. */
-document.documentElement.dataset.theme = "dark";
+/* Battery Core website: the course has one light theme, so pin every panel to
+   it instead of following the operating system. */
+document.documentElement.dataset.theme = "light";

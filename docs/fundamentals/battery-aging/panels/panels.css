@@ -732,10 +732,12 @@ svg.fig.tall { max-height: 430px; }
 
 /* --- Battery Core website theme (added by scripts/export_aging_panels.py) --- */
 :root {
-  --hue-accent: 168;
-  --chroma-accent: 0.12;
-  --hue-neutral: 232;
-  --chroma-neutral: 0.022;
+  --hue-accent: 258;
+  --chroma-accent: 0.17;
+  --hue-neutral: 255;
+  --chroma-neutral: 0.01;
+  --font-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Arial, sans-serif;
 }
 body {
   background: transparent;

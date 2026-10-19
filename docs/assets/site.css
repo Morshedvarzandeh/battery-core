@@ -1,33 +1,73 @@
 /* Battery Core — course design system.
  *
+ * A light, quiet course-platform look: white pages, one deep-blue accent, a
+ * single readable sans-serif, and colour used only where it means something.
+ *
  * Colour roles. Every hue on the site means one thing, so a reader can tell a
  * module's tier before reading its label:
  *
- *   --accent  (mint)    the core learning path: primary parts, primary
+ *   --accent  (blue)    the core learning path: primary parts, primary
  *                       actions, part numbers, the brand mark.
- *   --blue              optional depth: the "B" parts that go further into a
+ *   --blue    (teal)    optional depth: the "B" parts that go further into a
  *                       topic without being required to finish the chapter.
- *   --orange            the toolkit: authoring and maintenance tools that
+ *                       (The name is historical; components read --tier-*.)
+ *   --orange  (amber)   the toolkit: authoring and maintenance tools that
  *                       build the course rather than teach it.
  *
- * Nothing else introduces a hue. Surfaces are the four navy steps below, and
+ * Nothing else introduces a hue. Surfaces are white and two pale greys, and
  * text is --text or --muted. Standalone module pages get the same palette
  * through `module-theme.css`; new pages start from `page-template.html`.
  */
 
+/* Source Sans 3, served from this site (SIL Open Font License, see
+   assets/fonts/OFL.txt). Nothing is fetched from another host. */
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/source-sans-3-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/source-sans-3-latin-400-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/source-sans-3-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/source-sans-3-latin-700-normal.woff2") format("woff2");
+}
+
 :root {
-  color-scheme: dark;
-  --background: #07131d;
-  --surface: #0d1d29;
-  --surface-raised: #122635;
-  --surface-soft: #0a1822;
-  --text: #edf6f8;
-  --muted: #9fb3bd;
-  --line: rgba(196, 224, 231, 0.16);
-  --accent: #68e0bd;
-  --accent-strong: #95f1d5;
-  --blue: #71b7ff;
-  --orange: #ffb067;
+  color-scheme: light;
+  --background: #ffffff;
+  --surface: #ffffff;
+  --surface-raised: #f6f8fb;
+  --surface-soft: #f3f5f8;
+  --text: #1d2433;
+  --muted: #5a6577;
+  --line: #dfe3ea;
+  --line-strong: #c7ced9;
+  --accent: #0b5bd3;
+  --accent-strong: #0848aa;
+  --on-accent: #ffffff;
+  --blue: #0f766e;
+  --orange: #b45309;
 
   /* Tier aliases. Components read these, never the raw hues, so a tier can be
      recoloured in one place. */
@@ -40,9 +80,9 @@
      and nowhere else. */
   --lemon: #ffd94a;
 
-  --radius: 22px;
-  --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 6px 18px rgba(16, 24, 40, 0.06);
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 * {
@@ -56,12 +96,11 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(circle at 15% 0%, rgba(60, 141, 169, 0.16), transparent 34rem),
-    radial-gradient(circle at 85% 12%, rgba(74, 210, 170, 0.10), transparent 30rem),
-    var(--background);
+  background: var(--background);
   color: var(--text);
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -81,8 +120,8 @@ a:focus-visible {
   z-index: 20;
   padding: 0.75rem 1rem;
   background: var(--accent);
-  color: #03251d;
-  font-weight: 800;
+  color: var(--on-accent);
+  font-weight: 600;
   transform: translateY(-160%);
 }
 
@@ -105,8 +144,8 @@ a:focus-visible {
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .brand-mark {
@@ -117,7 +156,7 @@ a:focus-visible {
   width: 34px;
   height: 24px;
   padding: 4px;
-  border: 1px solid rgba(104, 224, 189, 0.55);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
   border-radius: 7px;
 }
 
@@ -141,7 +180,7 @@ nav a {
   color: var(--muted);
   text-decoration: none;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 nav a:hover {
@@ -159,20 +198,20 @@ footer {
 }
 
 .hero {
-  min-height: 660px;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
   gap: clamp(2rem, 6vw, 6rem);
   align-items: center;
-  padding: 6.5rem 0 7rem;
+  padding: 4.5rem 0 4.5rem;
 }
 
 .eyebrow {
   margin: 0 0 0.8rem;
   color: var(--accent);
   font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -186,26 +225,27 @@ p {
 h1,
 h2,
 h3 {
-  line-height: 1.12;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 h1 {
   max-width: 820px;
   margin: 0;
-  font-size: clamp(3rem, 7vw, 5.8rem);
-  letter-spacing: -0.065em;
+  font-size: clamp(2.25rem, 4.2vw, 3.4rem);
+  letter-spacing: -0.01em;
 }
 
 h2 {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.4rem);
-  letter-spacing: -0.045em;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  letter-spacing: -0.01em;
 }
 
 h3 {
   margin: 0;
-  font-size: 1.45rem;
-  letter-spacing: -0.025em;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
 }
 
 .hero-summary {
@@ -226,22 +266,22 @@ h3 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 50px;
-  padding: 0.8rem 1.2rem;
+  min-height: 46px;
+  padding: 0.7rem 1.25rem;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: 8px;
   text-decoration: none;
-  font-weight: 800;
+  font-weight: 600;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
 }
 
 .button:hover {
-  transform: translateY(-2px);
+  transform: none;
 }
 
 .button-primary {
   background: var(--accent);
-  color: #04251e;
+  color: var(--on-accent);
 }
 
 .button-primary:hover {
@@ -249,13 +289,14 @@ h3 {
 }
 
 .button-secondary {
-  border-color: var(--line);
-  background: rgba(255, 255, 255, 0.035);
-  color: var(--text);
+  border-color: var(--accent);
+  background: var(--surface);
+  color: var(--accent);
 }
 
 .button-secondary:hover {
-  border-color: rgba(104, 224, 189, 0.55);
+  border-color: var(--accent-strong);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
 }
 
 .hero-visual {
@@ -265,15 +306,14 @@ h3 {
   place-items: center;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 34px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)),
-    var(--surface-soft);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
   box-shadow: var(--shadow);
 }
 
 .hero-visual::before,
 .hero-visual::after {
+  display: none;
   content: "";
   position: absolute;
   width: 280px;
@@ -285,13 +325,13 @@ h3 {
 .hero-visual::before {
   top: -130px;
   right: -100px;
-  background: rgba(104, 224, 189, 0.13);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
 }
 
 .hero-visual::after {
   bottom: -160px;
   left: -100px;
-  background: rgba(113, 183, 255, 0.12);
+  background: color-mix(in srgb, var(--blue) 12%, transparent);
 }
 
 .cell-shell {
@@ -302,10 +342,10 @@ h3 {
   display: flex;
   align-items: center;
   padding: 20px 28px;
-  border: 2px solid rgba(224, 245, 247, 0.6);
-  border-radius: 30px;
-  background: rgba(3, 16, 24, 0.74);
-  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.025);
+  border: 2px solid var(--line-strong);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
 .cell-shell::after {
@@ -317,7 +357,7 @@ h3 {
   height: 66px;
   transform: translateY(-50%);
   border-radius: 0 8px 8px 0;
-  background: rgba(224, 245, 247, 0.58);
+  background: var(--line-strong);
 }
 
 .cell-layers {
@@ -347,14 +387,14 @@ h3 {
   height: 38px;
   transform: translateY(-50%);
   border-radius: 50%;
-  color: #06131c;
+  color: var(--on-accent);
   font-size: 1.5rem;
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .terminal-negative {
   left: 9px;
-  background: #bccbd1;
+  background: #5a6577;
 }
 
 .terminal-positive {
@@ -371,7 +411,7 @@ h3 {
   align-items: center;
   color: var(--muted);
   font-size: 0.88rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .visual-caption span:nth-child(even) {
@@ -379,7 +419,7 @@ h3 {
 }
 
 .section {
-  padding: 6rem 0;
+  padding: 4.5rem 0;
   border-top: 1px solid var(--line);
 }
 
@@ -407,21 +447,24 @@ h3 {
 }
 
 .module-card {
-  min-height: 430px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 1.1rem;
   padding: 1.45rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
+  background: var(--surface);
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
 .module-card.available:hover {
-  transform: translateY(-5px);
-  border-color: rgba(104, 224, 189, 0.45);
-  background: linear-gradient(150deg, rgba(104, 224, 189, 0.08), rgba(255, 255, 255, 0.018));
+  border-color: color-mix(in srgb, var(--tier, var(--accent)) 45%, var(--line));
+  box-shadow: var(--shadow);
+}
+
+.module-card .card-action {
+  margin-top: auto;
 }
 
 .module-card.planned {
@@ -438,7 +481,7 @@ h3 {
 .part-number {
   color: var(--accent);
   font-size: 1.1rem;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: 0.08em;
 }
 
@@ -448,16 +491,16 @@ h3 {
   border-radius: 999px;
   color: var(--muted);
   font-size: 0.72rem;
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .format {
-  margin: 0 0 0.7rem;
-  color: var(--blue);
+  margin: 0 0 0.6rem;
+  color: var(--muted);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
@@ -483,7 +526,7 @@ h3 {
   border-top: 1px solid var(--line);
   color: var(--accent);
   text-decoration: none;
-  font-weight: 850;
+  font-weight: 600;
 }
 
 .card-action:hover {
@@ -506,7 +549,7 @@ h3 {
   margin-top: 1.6rem;
   color: var(--accent);
   text-decoration: none;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .text-link-secondary {
@@ -545,7 +588,7 @@ h3 {
   display: block;
   margin-bottom: 2rem;
   color: var(--accent);
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .closing {
@@ -554,7 +597,6 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 30px;
   background:
-    radial-gradient(circle at 90% 0%, rgba(104, 224, 189, 0.16), transparent 25rem),
     var(--surface-raised);
   box-shadow: var(--shadow);
 }
@@ -586,7 +628,6 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 28px;
   background:
-    radial-gradient(circle at 100% 0%, rgba(104, 224, 189, 0.14), transparent 18rem),
     var(--surface);
   box-shadow: var(--shadow);
 }
@@ -595,7 +636,7 @@ h3 {
   display: block;
   font-size: clamp(1.6rem, 4vw, 2.4rem);
   line-height: 1.15;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.01em;
 }
 
 .progress-track {
@@ -603,7 +644,7 @@ h3 {
   margin: 1.5rem 0 1.8rem;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--surface-soft);
 }
 
 .progress-track span {
@@ -633,7 +674,7 @@ h3 {
 .chapter-status dd {
   margin: 0;
   text-align: right;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .question-path {
@@ -651,7 +692,7 @@ h3 {
 
 .question-path span {
   color: var(--accent);
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .question-path p {
@@ -676,12 +717,12 @@ h3 {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  background: var(--surface);
 }
 
 .study-step-deeper {
-  border-color: rgba(113, 183, 255, 0.28);
-  background: linear-gradient(150deg, rgba(113, 183, 255, 0.07), rgba(255, 255, 255, 0.012));
+  border-color: color-mix(in srgb, var(--blue) 28%, transparent);
+  background: color-mix(in srgb, var(--blue) 4%, var(--surface));
 }
 
 .study-step-number {
@@ -690,13 +731,13 @@ h3 {
   justify-content: space-between;
   padding: 1.7rem;
   border-right: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.018);
+  background: var(--surface-soft);
 }
 
 .study-step-number span {
   color: var(--muted);
   font-size: 0.75rem;
-  font-weight: 850;
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -728,7 +769,7 @@ h3 {
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.12);
+  background: rgba(16, 24, 40, 0.04);
 }
 
 .study-prompts strong {
@@ -797,7 +838,7 @@ footer a {
   }
 
   .module-card {
-    min-height: 360px;
+    min-height: 0;
   }
 
   .section-heading {
@@ -821,7 +862,7 @@ footer a {
   }
 
   h1 {
-    font-size: clamp(2.8rem, 14vw, 4.2rem);
+    font-size: clamp(2rem, 8vw, 2.6rem);
   }
 
   .hero {
@@ -913,14 +954,14 @@ footer a {
 .module-card.deeper {
   --tier: var(--tier-deeper);
   border-color: color-mix(in srgb, var(--tier) 28%, transparent);
-  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 7%, transparent), rgba(255, 255, 255, 0.012));
+  background: color-mix(in srgb, var(--tier) 3%, var(--surface));
 }
 
 .study-step-toolkit,
 .module-card.toolkit {
   --tier: var(--tier-toolkit);
   border-color: color-mix(in srgb, var(--tier) 28%, transparent);
-  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 7%, transparent), rgba(255, 255, 255, 0.012));
+  background: color-mix(in srgb, var(--tier) 3%, var(--surface));
 }
 
 .study-step-toolkit .study-step-number strong,
@@ -935,7 +976,7 @@ footer a {
 .module-card.available.deeper:hover,
 .module-card.available.toolkit:hover {
   border-color: color-mix(in srgb, var(--tier) 45%, transparent);
-  background: linear-gradient(150deg, color-mix(in srgb, var(--tier) 11%, transparent), rgba(255, 255, 255, 0.018));
+  background: color-mix(in srgb, var(--tier) 5%, var(--surface));
 }
 
 /* A legend that states the colour roles rather than leaving them to be
@@ -970,7 +1011,7 @@ footer a {
 
 .tier-legend strong {
   color: var(--text);
-  font-weight: 800;
+  font-weight: 600;
 }
 
 /* ===========================================================================
@@ -984,7 +1025,7 @@ footer a {
 }
 
 .page-hero h1 {
-  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-size: clamp(2rem, 3.6vw, 2.8rem);
 }
 
 .page-hero .lede {
@@ -1029,7 +1070,7 @@ footer a {
   padding: 1.15rem;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  background: var(--surface);
 }
 
 .panel + .panel {
@@ -1045,7 +1086,7 @@ footer a {
   margin: 0 0 0.85rem;
   color: var(--muted);
   font-size: 0.72rem;
-  font-weight: 850;
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -1065,11 +1106,11 @@ footer a {
   padding: 0.45rem 0.85rem;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.035);
+  background: var(--surface-soft);
   color: var(--text);
   font: inherit;
   font-size: 0.88rem;
-  font-weight: 750;
+  font-weight: 600;
   cursor: pointer;
   transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
 }
@@ -1091,7 +1132,7 @@ footer a {
 .chip-primary {
   border-color: transparent;
   background: var(--accent);
-  color: #04251e;
+  color: var(--on-accent);
 }
 
 .chip-primary:hover:not(:disabled) {
@@ -1123,7 +1164,7 @@ footer a {
   margin-bottom: 0.9rem;
   color: var(--muted);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -1140,7 +1181,7 @@ footer a {
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.22);
+  background: rgba(16, 24, 40, 0.07);
   color: var(--text);
   font: inherit;
   font-size: 0.9rem;
@@ -1188,7 +1229,7 @@ footer a {
   gap: 0.6rem;
   color: var(--muted);
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -1217,7 +1258,7 @@ footer a {
   border-radius: 999px;
   color: var(--muted);
   font-size: 0.76rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .pill::before {
@@ -1256,7 +1297,6 @@ footer a {
   height: auto;
   border-radius: 14px;
   background:
-    radial-gradient(circle at 20% 0%, rgba(104, 224, 189, 0.07), transparent 22rem),
     var(--surface);
 }
 
@@ -1351,7 +1391,7 @@ footer a {
   border: 1px solid var(--line);
   border-left: 3px solid var(--accent);
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.16);
+  background: rgba(16, 24, 40, 0.05);
   color: var(--text);
 }
 
@@ -1398,7 +1438,7 @@ footer a {
   padding: 0.8rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(16, 24, 40, 0.04);
   color: var(--muted);
   cursor: pointer;
   transition: border-color 160ms ease, color 160ms ease;
@@ -1424,7 +1464,7 @@ footer a {
   padding: 0.8rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(16, 24, 40, 0.04);
   color: var(--text);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.88rem;
@@ -1454,7 +1494,7 @@ footer a {
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.16);
+  background: rgba(16, 24, 40, 0.05);
   color: var(--text);
   white-space: pre-wrap;
 }
@@ -1648,7 +1688,7 @@ footer a {
   padding: 0.85rem 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(16, 24, 40, 0.04);
   color: var(--muted);
   cursor: pointer;
   transition: border-color 160ms ease, color 160ms ease;
@@ -1700,7 +1740,7 @@ footer a {
   padding: 0.6rem 0.7rem 0.6rem 1rem;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(16, 24, 40, 0.04);
   color: var(--text);
 }
 
@@ -1710,7 +1750,7 @@ footer a {
   flex: 0 0 auto;
   width: 22px;
   color: var(--accent);
-  font-weight: 900;
+  font-weight: 600;
   font-size: 0.85rem;
 }
 
@@ -1747,7 +1787,7 @@ footer a {
 .coach-verdict {
   margin: 0 0 1rem;
   font-size: 1.05rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .coach-verdict[data-verdict="right"] {
@@ -1781,7 +1821,7 @@ footer a {
   margin: 0 0 1.5rem;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  background: var(--surface);
 }
 
 .table-scroll table {
@@ -1801,7 +1841,7 @@ footer a {
 .table-scroll thead th {
   color: var(--muted);
   font-size: 0.72rem;
-  font-weight: 850;
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1814,7 +1854,7 @@ footer a {
 
 .table-scroll tbody th {
   color: var(--tier, var(--tier-core));
-  font-weight: 900;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -1822,7 +1862,7 @@ footer a {
 
 .table-scroll td a {
   color: var(--accent);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .status-cell {
@@ -1918,8 +1958,8 @@ footer a {
   margin: 0 0 0.8rem;
   color: var(--tier);
   font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -1950,7 +1990,7 @@ footer a {
   display: inline-block;
   margin-top: 1.4rem;
   color: var(--tier);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 0.88rem;
   text-decoration: none;
 }
@@ -1971,7 +2011,7 @@ footer a {
 
 .prose h2 {
   margin: 0 0 1.1rem;
-  font-size: clamp(1.7rem, 3.2vw, 2.35rem);
+  font-size: clamp(1.45rem, 2.3vw, 1.85rem);
   scroll-margin-top: 1.5rem;
 }
 
@@ -1980,8 +2020,8 @@ footer a {
   margin-bottom: 0.5rem;
   color: var(--tier);
   font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -2020,7 +2060,7 @@ footer a {
 
 .prose .button-primary,
 .prose .button-primary:hover {
-  color: #04251e;
+  color: var(--on-accent);
 }
 
 .prose code,
@@ -2089,7 +2129,7 @@ footer a {
 .prose thead th {
   color: var(--muted);
   font-size: 0.84rem;
-  font-weight: 750;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -2139,8 +2179,8 @@ math {
   margin-bottom: 0.45rem;
   color: var(--tier);
   font-size: 0.76rem;
-  font-weight: 850;
-  letter-spacing: 0.14em;
+  font-weight: 600;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
@@ -2171,7 +2211,7 @@ math {
 .answers summary {
   padding: 0.95rem 1.2rem;
   cursor: pointer;
-  font-weight: 750;
+  font-weight: 600;
   line-height: 1.5;
 }
 
@@ -2246,8 +2286,8 @@ math {
   margin: 0 0 1rem;
   color: var(--tier);
   font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.14em;
+  font-weight: 600;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
@@ -2262,7 +2302,7 @@ math {
   gap: 0.35rem;
   color: var(--muted);
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .calc input,
@@ -2301,16 +2341,16 @@ math {
 .calc-results dt {
   color: var(--muted);
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .calc-results dd {
   margin: 0.15rem 0 0;
   color: var(--text);
   font-size: 1.35rem;
-  font-weight: 850;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .calc-note,
@@ -2349,14 +2389,14 @@ math {
 }
 
 .lesson-pager a:hover {
-  border-color: rgba(104, 224, 189, 0.55);
-  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  transform: none;
 }
 
 .lesson-pager span {
   color: var(--muted);
   font-size: 0.8rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -2387,7 +2427,7 @@ math {
   border-radius: 999px;
   color: var(--muted);
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -2403,8 +2443,8 @@ math {
 .glossary dt {
   margin-top: 2rem;
   font-size: 1.2rem;
-  font-weight: 850;
-  letter-spacing: -0.015em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   scroll-margin-top: 1.5rem;
 }
 
@@ -2418,7 +2458,7 @@ math {
 
 .glossary .term-link {
   font-size: 0.9rem;
-  font-weight: 750;
+  font-weight: 600;
 }
 
 @media (max-width: 920px) {
@@ -2499,8 +2539,8 @@ math {
   margin: 0 0 0.7rem;
   color: var(--tier, var(--tier-core));
   font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.14em;
+  font-weight: 600;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
@@ -2556,10 +2596,10 @@ math {
   padding: 0.65rem 1.15rem;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-soft);
   color: var(--text);
   font: inherit;
-  font-weight: 800;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -2575,7 +2615,7 @@ math {
 .complete-button[aria-pressed="true"] {
   border-color: transparent;
   background: var(--accent);
-  color: #04251e;
+  color: var(--on-accent);
 }
 
 .complete-bar .button {
@@ -2623,7 +2663,7 @@ math {
   position: absolute;
   left: 0;
   color: var(--accent);
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .skill-chips {
@@ -2642,7 +2682,7 @@ math {
   border-radius: 999px;
   color: var(--text);
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .course-facts dl {
@@ -2664,7 +2704,7 @@ math {
 
 .course-facts dd {
   margin: 0;
-  font-weight: 750;
+  font-weight: 600;
 }
 
 .course-progress {
@@ -2675,7 +2715,7 @@ math {
 
 .course-progress p {
   margin: 0 0 0.6rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 /* Syllabus items inside a study step */
@@ -2701,7 +2741,7 @@ math {
 .syllabus-items li::before {
   content: "○";
   color: var(--muted);
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .syllabus-items li[data-done="true"]::before {
@@ -2712,7 +2752,7 @@ math {
 .syllabus-items .item-type {
   color: var(--muted);
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -2720,7 +2760,7 @@ math {
 .syllabus-items a {
   color: var(--text);
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .syllabus-items a:hover {

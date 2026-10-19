@@ -1,0 +1,22 @@
+/* Source Sans 3 for pages that do not load site.css (the embedded panels).
+   SIL Open Font License; see OFL.txt beside this file. */
+@font-face {
+  font-family: "Source Sans 3";
+  font-weight: 400;
+  font-display: swap;
+  src: url("source-sans-3-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-weight: 600;
+  font-display: swap;
+  src: url("source-sans-3-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-weight: 700;
+  font-display: swap;
+  src: url("source-sans-3-latin-700-normal.woff2") format("woff2");
+}

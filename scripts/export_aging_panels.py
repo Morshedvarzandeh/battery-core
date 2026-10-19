@@ -30,8 +30,8 @@ ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "notebooks" / "fundamentals" / "04_battery_aging.ipynb"
 OUTPUT = ROOT / "docs" / "fundamentals" / "battery-aging" / "panels"
 
-# The notebook's own light/dark switch. The website is dark-only, so the
-# switch is left out and every panel is pinned to the dark theme below.
+# The notebook's own light/dark switch. The website has one light theme, so
+# the switch is left out and every panel is pinned to the light theme below.
 SKIPPED = {"theme"}
 
 TITLES = {
@@ -46,16 +46,18 @@ TITLES = {
     "window": "Temperature window",
 }
 
-# Re-tune the notebook's design knobs to the course palette: navy neutrals and
-# the mint core-path accent, on a transparent ground so the lesson's panel
+# Re-tune the notebook's design knobs to the course palette: cool neutrals and
+# the blue core-path accent, on a transparent ground so the lesson's panel
 # frame shows through.
 SITE_THEME = """
 /* --- Battery Core website theme (added by scripts/export_aging_panels.py) --- */
 :root {
-  --hue-accent: 168;
-  --chroma-accent: 0.12;
-  --hue-neutral: 232;
-  --chroma-neutral: 0.022;
+  --hue-accent: 258;
+  --chroma-accent: 0.17;
+  --hue-neutral: 255;
+  --chroma-neutral: 0.01;
+  --font-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Arial, sans-serif;
 }
 body {
   background: transparent;
@@ -63,19 +65,20 @@ body {
 }
 """
 
-PIN_DARK = """
-/* Battery Core website: the course is dark-only, so pin every panel to the
-   dark theme instead of following the operating system. */
-document.documentElement.dataset.theme = "dark";
+PIN_LIGHT = """
+/* Battery Core website: the course has one light theme, so pin every panel to
+   it instead of following the operating system. */
+document.documentElement.dataset.theme = "light";
 """
 
 PAGE = """<!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>{title} — Battery aging panel</title>
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="panels.css">
 </head>
 <body>
@@ -101,7 +104,7 @@ def render(assets: dict) -> dict[str, str]:
     """Return {file name: content} for every exported file."""
     files = {
         "panels.css": assets["css"] + SITE_THEME,
-        "panels.js": assets["lib"] + PIN_DARK,
+        "panels.js": assets["lib"] + PIN_LIGHT,
     }
     for name, widget in assets["widgets"].items():
         if name in SKIPPED:

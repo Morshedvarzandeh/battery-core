@@ -6,6 +6,15 @@ All notable changes to `battery-core` are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **A light, professional look for the whole course.** White pages, one deep
+  blue for the core path (teal for "B" parts, amber for the toolkit), Source
+  Sans 3 served from `assets/fonts/` (SIL OFL, no external font host), calmer
+  heading sizes and weights, small-radius buttons, and no decorative
+  gradients. `module-theme.css`, `site-chrome.css`, the workbench palette, the
+  Part 04 panels and the social-share image follow the same palette.
+
 ### Added
 
 - **Every Chapter 1 lesson is now readable on the website**, not only as a

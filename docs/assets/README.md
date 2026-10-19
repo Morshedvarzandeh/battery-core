@@ -10,30 +10,36 @@ Three files, in the order you reach for them.
 
 ## Colour roles
 
-The palette is one dark navy ground, one text pair, and three hues. Each hue
-means one thing, so a reader can tell a module's tier before reading its label.
+The palette is a white ground, one text pair, and three hues. Each hue means
+one thing, so a reader can tell a module's tier before reading its label.
 
 | Token | Hue | Means |
 | --- | --- | --- |
-| `--accent` | mint `#68e0bd` | The core path: required parts, primary actions, part numbers, the brand mark. |
-| `--blue` | `#71b7ff` | Optional depth: the `B` parts that go further into a topic without being required to finish the chapter. |
-| `--orange` | `#ffb067` | The toolkit: authoring and maintenance tools that build the course rather than teach it. |
+| `--accent` | blue `#0b5bd3` | The core path: required parts, primary actions, part numbers, the brand mark. |
+| `--blue` | teal `#0f766e` | Optional depth: the `B` parts that go further into a topic without being required to finish the chapter. (The token name is historical.) |
+| `--orange` | amber `#b45309` | The toolkit: authoring and maintenance tools that build the course rather than teach it. |
+
+Type is **Source Sans 3** at 400, 600 and 700, served from `assets/fonts/`
+under the SIL Open Font License (`assets/fonts/OFL.txt`), so no page fetches a
+font from another host. Headings are 700 with normal tracking; there is no
+weight above 700 and no decorative gradient anywhere on the site.
 
 Components never read those three directly. They read `--tier`, which a single
 modifier class sets:
 
 ```html
-<article class="study-step">…</article>                   <!-- core, mint   -->
-<article class="study-step study-step-deeper">…</article>  <!-- depth, blue  -->
-<article class="study-step study-step-toolkit">…</article> <!-- tool, orange -->
+<article class="study-step">…</article>                   <!-- core, blue   -->
+<article class="study-step study-step-deeper">…</article>  <!-- depth, teal  -->
+<article class="study-step study-step-toolkit">…</article> <!-- tool, amber  -->
 ```
 
 `--tier-core`, `--tier-deeper` and `--tier-toolkit` are the aliases in
 `:root`. Recolour a tier there and every card, number, and link that belongs to
 it follows.
 
-Surfaces are the four navy steps — `--background`, `--surface-soft`,
-`--surface`, `--surface-raised` — and text is `--text` or `--muted`. A page that
+Surfaces are white (`--background`, `--surface`) and two pale greys
+(`--surface-soft`, `--surface-raised`), separated by `--line`; text is
+`--text` or `--muted`, and text on a filled accent is `--on-accent`. A page that
 needs a colour not on this list is a page that needs a new documented role
 first.
 
