@@ -4,8 +4,10 @@ Every `index.html` under `docs/` is a public page and goes in the sitemap,
 except the ones search engines should not index on their own:
 
 - `assets/` holds the page template, not a page;
-- `fundamentals/battery-aging/panels/` are fragments embedded in the Part 04
-  lesson, and each carries `<meta name="robots" content="noindex">`.
+- `fundamentals/battery-aging/panels/` are fragments embedded in the Lesson 4
+  page;
+- any page that carries `<meta name="robots" content="noindex">` — the
+  CellForge layout editor, for one, is a working tool rather than a lesson.
 
 Run it from the repository root after adding or removing a page:
 
@@ -24,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 SITE = "https://learn.lemonergy.com/"
 EXCLUDED_PREFIXES = ("assets/", "fundamentals/battery-aging/panels/")
+NOINDEX = '<meta name="robots" content="noindex">'
 
 # Higher for the pages a learner starts from; everything else is the default.
 PRIORITY = {"": "1.0", "chapter-1/": "0.9", "glossary/": "0.7"}
@@ -36,6 +39,8 @@ def page_paths(docs: Path = DOCS) -> list[str]:
         rel = page.parent.relative_to(docs).as_posix()
         rel = "" if rel == "." else rel + "/"
         if rel.startswith(EXCLUDED_PREFIXES):
+            continue
+        if NOINDEX in page.read_text(encoding="utf-8"):
             continue
         paths.append(rel)
     return sorted(paths, key=lambda p: (p.count("/"), p))

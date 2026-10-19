@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta name="description" content="Interactive battery materials lab: build a Zn/Cu cell, change voltage references, see the water stability window, and compare lithium-ion electrode materials with stated assumptions.">
+<meta name="description" content="Interactive battery materials lab: build a Zn/Cu cell, change voltage references, see water's stability window and compare lithium-ion electrode materials.">
 <link rel="canonical" href="https://learn.lemonergy.com/labs/battery-materials-lab/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Battery Core by Lemonergy">
+<meta property="og:site_name" content="Lemonergy Learn">
 <meta property="og:title" content="Battery materials lab — electrode potentials and material selection">
-<meta property="og:description" content="Interactive battery materials lab: build a Zn/Cu cell, change voltage references, see the water stability window, and compare lithium-ion electrode materials with stated assumptions.">
+<meta property="og:description" content="Interactive battery materials lab: build a Zn/Cu cell, change voltage references, see water's stability window and compare lithium-ion electrode materials.">
 <meta property="og:url" content="https://learn.lemonergy.com/labs/battery-materials-lab/">
 <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -24,7 +24,7 @@
       "@type": "LearningResource",
       "@id": "https://learn.lemonergy.com/labs/battery-materials-lab/#lesson",
       "name": "Electrode potentials and battery materials",
-      "description": "Interactive battery materials lab: build a Zn/Cu cell, change voltage references, see the water stability window, and compare lithium-ion electrode materials with stated assumptions.",
+      "description": "Interactive battery materials lab: build a Zn/Cu cell, change voltage references, see water's stability window and compare lithium-ion electrode materials.",
       "url": "https://learn.lemonergy.com/labs/battery-materials-lab/",
       "inLanguage": "en",
       "learningResourceType": "Interactive lab",
@@ -68,7 +68,7 @@
   ]
 }
 </script>
-<title>Battery Materials Lab — Electrode Potentials &amp; Material Selection</title>
+<title>Battery materials lab: electrode potentials and material selection | Lemonergy Learn</title>
 <style>:root {
   color-scheme: light dark;
   background-color: transparent !important;
@@ -906,7 +906,7 @@ svg {
 <section id="battery-materials-lab" aria-label="Interactive periodic table and battery materials lesson">
 
   <div class="bml-header">
-    <h2 class="bml-title">Battery Materials Lab: electrode potentials &amp; material selection</h2>
+    <h1 class="bml-title">Battery materials lab: electrode potentials and material selection</h1>
     <p class="text-small text-muted bml-subtitle">
       An advanced electrochemistry lab. Start with a zinc–copper aqueous cell, then explore reference
       electrodes, standard reduction potentials E° at 25&nbsp;°C and unit activity, the water stability window,
@@ -1002,7 +1002,7 @@ svg {
     ></div>
   </div>
 
-  <div class="bml-table-legend text-small" aria-label="Periodic table colour legend">
+  <div class="bml-table-legend text-small" aria-label="Periodic table color legend">
     <span><i class="bml-swatch bml-swatch-donor" aria-hidden="true"></i>selected couple: E° &lt; −1 V</span>
     <span><i class="bml-swatch bml-swatch-weak" aria-hidden="true"></i>selected couple: −1 to 0 V</span>
     <span><i class="bml-swatch bml-swatch-noble-metal" aria-hidden="true"></i>selected couple: 0 to +1 V</span>
@@ -1011,9 +1011,9 @@ svg {
   </div>
 
   <div class="bml-direction" aria-label="Qualitative atomic trends">
-    <span>← lower ionisation energy can favour oxidation</span>
+    <span>← lower ionization energy can favor oxidation</span>
     <span class="text-small">context only — not an E° predictor</span>
-    <span>higher electron affinity can favour reduction →</span>
+    <span>higher electron affinity can favor reduction →</span>
   </div>
 
   <div class="viz-grid bml-stats" aria-live="polite">
@@ -1069,7 +1069,7 @@ svg {
     <p class="text-small bml-note" id="bml-window-note">
       <strong>Shaded band = the thermodynamic stability window of water</strong> (0 V to +1.229 V vs SHE at pH 0;
       both edges shift by −0.059 V per pH unit, so the band stays 1.23 V wide and simply slides down as pH rises).
-      An electrode below the band should reduce water to H₂, above it should oxidise water to O₂.
+      An electrode below the band should reduce water to H₂, above it should oxidize water to O₂.
       Kinetics buys some room — lead–acid runs at 2.05 V in water because H₂ evolution on lead is extremely slow —
       but not the 3.7 V a lithium-ion cell needs, which is why those use an organic electrolyte.
     </p>
@@ -1150,8 +1150,9 @@ svg {
   <details class="bml-details" id="bml-real-cells" open>
     <summary>Aqueous cells you can build straight from the table above</summary>
     <p class="text-small text-muted bml-details-intro">
-      For water-based cells the tabulated E° values do the job exactly — pick both half-reactions
-      in the periodic table above and the widget reproduces the real cell voltage.
+      For water-based cells the tabulated E° values give a close first estimate — pick both half-reactions
+      in the periodic table above and the widget lands near the real cell voltage. Real cells differ by up to
+      about a tenth of a volt, because their voltage also depends on electrolyte concentration and temperature.
       Lithium and sodium chemistries do not work this way; they get their own section below.
     </p>
     <div class="table-responsive">
@@ -1217,7 +1218,7 @@ svg {
         <span class="text-small text-muted" id="bml-interc-neg-note"></span>
       </div>
       <div class="card bml-atom-card bml-atom-card-pos">
-        <span class="text-small bml-atom-role" id="bml-interc-pos-role">Positive electrode · oxide host</span>
+        <span class="text-small bml-atom-role" id="bml-interc-pos-role">Positive electrode · phosphate host</span>
         <strong id="bml-interc-pos-name">Lithium iron phosphate, LiFePO₄</strong>
         <code id="bml-interc-pos-eq">FePO₄ + Li⁺ + e⁻ → LiFePO₄</code>
         <span class="text-small text-muted" id="bml-interc-pos-note"></span>
@@ -1262,7 +1263,7 @@ svg {
     <p class="text-small text-muted bml-market-note">
       Dots sit at the true potential; where labels would collide they are spread apart and joined back by a
       leader line, so read the number on the label rather than its height. The crowding is the point —
-      every oxide cathode from LFP to LMO lives inside a single 0.65 V band. Voltage is <em>not</em> what
+      every common cathode, from phosphate LFP to oxide LMO, lives inside a single 0.65 V band. Voltage is <em>not</em> what
       separates these materials. Capacity, cost, cycle life and thermal stability are.
     </p>
 
@@ -1399,7 +1400,7 @@ svg {
       <li><strong>E° is thermodynamics, not kinetics.</strong> A large positive E°<sub>cell</sub> says a reaction <em>can</em> go, not that it goes fast. Overpotential and internal resistance always make the delivered voltage lower than E°<sub>cell</sub>.</li>
       <li><strong>Alkali and alkaline-earth values are calculated, not measured in water.</strong> These metals reduce water on contact; their aqueous E° values are derived from thermochemical cycles.</li>
       <li><strong>Concentration matters.</strong> Away from standard conditions, use the Nernst equation: E = E° − (RT/nF)·lnQ ≈ E° − (0.05916/n)·logQ at 25 °C.</li>
-      <li><strong>Anode and cathode swap on charging.</strong> "Negative" and "positive" are fixed terminal labels; "anode" and "cathode" are defined by which electrode is oxidising, so they reverse when a rechargeable cell is charged.</li>
+      <li><strong>Anode and cathode swap on charging.</strong> "Negative" and "positive" are fixed terminal labels; "anode" and "cathode" are defined by which electrode is oxidizing, so they reverse when a rechargeable cell is charged.</li>
       <li><strong>Energy needs capacity too.</strong> Voltage is only half the story — specific energy is voltage × charge stored per unit mass, which is why light elements dominate battery chemistry.</li>
     </ul>
   </details>
@@ -1410,12 +1411,41 @@ svg {
     --bml-axis-y: 118px;
     --bml-neg: var(--viz-series-1);
     --bml-pos: var(--viz-series-2);
-    width: 100%;
+    /* E° above zero: amber, so the periodic table reads blue-to-sand rather than
+       blue-to-pink, and stays distinct from the terracotta positive-electrode role. */
+    --bml-ox: #a16207;
+    /* Same column as the course bar above it. */
+    width: min(1180px, calc(100% - 2rem));
+    margin: 1.75rem auto 3rem;
     color: var(--foreground);
   }
 
+  /* Give each part of the lab room to breathe: a heading should not sit
+     directly under the last line of the section before it. */
+  #battery-materials-lab .bml-inside-title,
+  #battery-materials-lab .bml-market-title {
+    margin-top: 2.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.35rem;
+  }
+
+  #battery-materials-lab .bml-ladder-title {
+    margin-top: 1.75rem;
+    margin-bottom: 0.35rem;
+  }
+
+  #battery-materials-lab .bml-subtitle,
+  #battery-materials-lab .bml-market-intro,
+  #battery-materials-lab .bml-details-intro {
+    max-width: 75ch;
+    line-height: 1.6;
+  }
+
   #battery-materials-lab .bml-title {
-    margin-bottom: 2px;
+    margin-bottom: 0.5rem;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   #battery-materials-lab .bml-course-map {
@@ -1634,11 +1664,11 @@ svg {
   }
 
   #battery-materials-lab .bml-element[data-band="weak-oxidiser"] {
-    background-color: color-mix(in srgb, var(--viz-series-2) 14%, var(--secondary));
+    background-color: color-mix(in srgb, var(--bml-ox) 12%, var(--secondary));
   }
 
   #battery-materials-lab .bml-element[data-band="strong-oxidiser"] {
-    background-color: color-mix(in srgb, var(--viz-series-2) 32%, var(--secondary));
+    background-color: color-mix(in srgb, var(--bml-ox) 28%, var(--secondary));
   }
 
   #battery-materials-lab .bml-element[data-band="none"] {
@@ -1688,11 +1718,11 @@ svg {
   }
 
   #battery-materials-lab .bml-swatch-noble-metal {
-    background: color-mix(in srgb, var(--viz-series-2) 22%, var(--secondary));
+    background: color-mix(in srgb, var(--bml-ox) 22%, var(--secondary));
   }
 
   #battery-materials-lab .bml-swatch-acceptor {
-    background: color-mix(in srgb, var(--viz-series-2) 55%, var(--secondary));
+    background: color-mix(in srgb, var(--bml-ox) 55%, var(--secondary));
   }
 
   #battery-materials-lab .bml-swatch-none {
@@ -1924,12 +1954,14 @@ svg {
 
   #battery-materials-lab .bml-badge-negative {
     color: var(--foreground);
-    background: color-mix(in srgb, var(--bml-neg) 26%, transparent);
+    background: #ffffff;
+    box-shadow: inset 0 0 0 1.5px var(--bml-neg);
   }
 
   #battery-materials-lab .bml-badge-positive {
     color: var(--foreground);
-    background: color-mix(in srgb, var(--bml-pos) 26%, transparent);
+    background: #ffffff;
+    box-shadow: inset 0 0 0 1.5px var(--bml-pos);
   }
 
   #battery-materials-lab .bml-conductors {
@@ -3553,10 +3585,10 @@ svg {
         return "f-block element: multiple oxidation states and strong solvation effects mean the specific half-reaction, not table position alone, determines E°.";
       }
       if (element.group === 1) {
-        return "Low ionisation energy often favors oxidation, but aqueous E° also depends on solvation, products, activity, and the specific half-reaction.";
+        return "Low ionization energy often favors oxidation, but aqueous E° also depends on solvation, products, activity, and the specific half-reaction.";
       }
       if (element.group === 2) {
-        return "Low ionisation energy can favor oxidation, but removing two electrons and solvating the products means the specific aqueous couple must be checked.";
+        return "Low ionization energy can favor oxidation, but removing two electrons and solvating the products means the specific aqueous couple must be checked.";
       }
       if (element.group === 17) {
         return "High electron affinity can favor reduction of the halogen couple, but E° belongs to the complete half-reaction under specified conditions.";
@@ -3569,7 +3601,7 @@ svg {
           ? "Transition metal: partly filled d orbitals give several accessible oxidation states, so a single trend is not enough — use E° for each specific couple."
           : "Transition metal: several accessible oxidation states, so the couple matters as much as the element. Its M/Mⁿ⁺ couple sits at " + formatPotential(value) + ".";
       }
-      return "p-block: behaviour depends on oxidation state and on the partner in the reaction, so read E° for the specific couple rather than the group.";
+      return "p-block: behavior depends on oxidation state and on the partner in the reaction, so read E° for the specific couple rather than the group.";
     }
 
     function metadataFor(element) {
@@ -3842,7 +3874,7 @@ svg {
         );
       }
       if (positive.e > highLimit(positive) + 0.05) {
-        messages.push(positive.label + " sits above the O₂-evolution line, so it can oxidise water. Practical cells rely on a sluggish O₂ reaction, a non-aqueous solvent, or accept some gassing.");
+        messages.push(positive.label + " sits above the O₂-evolution line, so it can oxidize water. Practical cells rely on a sluggish O₂ reaction, a non-aqueous solvent, or accept some gassing.");
       }
       if (cellVoltage > 2.5) {
         messages.push("At " + cellVoltage.toFixed(2) + " V this is far outside the 1.23 V water window — overpotential cannot bridge that gap, so it needs a non-aqueous electrolyte. This is the reason lithium-ion cells use organic carbonates.");
@@ -4038,7 +4070,7 @@ svg {
       { id: "lfp",   name: "LFP",      formula: "LiFePO₄",                v: 3.40, cap: 155,  note: "flat voltage plateau and strong thermal stability; practical cost and life depend on cell design" },
       { id: "nmc1",  name: "NMC111",   formula: "LiNi⅓Mn⅓Co⅓O₂",          v: 3.75, cap: 155,  note: "the original balanced ternary; being displaced by Ni-rich grades" },
       { id: "nmc6",  name: "NMC622",   formula: "LiNi₀.₆Mn₀.₂Co₀.₂O₂",    v: 3.80, cap: 175,  note: "a nickel-rich layered oxide balancing capacity, life, cost, and thermal management" },
-      { id: "nca",   name: "NCA",      formula: "LiNi₀.₈Co₀.₁₅Al₀.₀₅O₂",  v: 3.80, cap: 195,  note: "aluminium-stabilised nickel-rich oxide used in high-energy cylindrical and other cell formats" },
+      { id: "nca",   name: "NCA",      formula: "LiNi₀.₈Co₀.₁₅Al₀.₀₅O₂",  v: 3.80, cap: 195,  note: "aluminum-stabilized nickel-rich oxide used in high-energy cylindrical and other cell formats" },
       { id: "nmc8",  name: "NMC811",   formula: "LiNi₀.₈Mn₀.₁Co₀.₁O₂",    v: 3.85, cap: 195,  note: "high practical capacity, with tighter requirements for coatings, electrolyte, charging, and thermal management" },
       { id: "lmfp",  name: "LMFP",     formula: "LiMn₀.₆Fe₀.₄PO₄",        v: 3.85, cap: 145,  note: "manganese substitution raises average voltage; life, energy, and thermal behavior depend on composition and processing" },
       { id: "lco",   name: "LCO",      formula: "LiCoO₂",                 v: 3.95, cap: 150,  note: "high volumetric energy and mature processing; cobalt content raises cost and supply concerns" },
@@ -4535,7 +4567,7 @@ svg {
 
     addText("bml-cell-head bml-head-neg", tabL, HOST_TOP - 56, "NEGATIVE · GRAPHITE HOST");
     const negFormula = addText("bml-interc-formula", tabL, HOST_TOP - 32, "LiC₆");
-    addText("bml-cell-head bml-head-pos", tabR, HOST_TOP - 56, "POSITIVE · OXIDE HOST");
+    const posHead = addText("bml-cell-head bml-head-pos", tabR, HOST_TOP - 56, "POSITIVE · PHOSPHATE HOST");
     const posFormula = addText("bml-interc-formula", tabR, HOST_TOP - 32, "LiFePO₄");
     addText("bml-cell-sub", W / 2, HOST_TOP - 44, "ELECTROLYTE");
     const arrowLabel = addText("bml-flow-tag", W / 2, HOST_TOP - 24, "Li⁺ →");
@@ -4549,15 +4581,15 @@ svg {
         name: "Lithium iron phosphate, LiFePO₄",
         formula: "LiFePO₄",
         lithiated: "LiFePO₄", delithiated: "FePO₄",
-        metal: "Fe", low: "Fe²⁺", high: "Fe³⁺",
-        note: "Iron sits at +2 in LiFePO₄ and +3 in FePO₄. Charging pulls the lithium out and oxidises the iron; discharging pushes it back in and reduces it. The phosphate framework never moves.",
+        metal: "Fe", low: "Fe²⁺", high: "Fe³⁺", host: "phosphate host",
+        note: "Iron sits at +2 in LiFePO₄ and +3 in FePO₄. Charging pulls the lithium out and oxidizes the iron; discharging pushes it back in and reduces it. The phosphate framework never moves.",
         other: "Show LiCoO₂ instead"
       },
       lco: {
         name: "Lithium cobalt oxide, LiCoO₂",
         formula: "LiCoO₂",
         lithiated: "LiCoO₂", delithiated: "Li₁₋ₓCoO₂",
-        metal: "Co", low: "Co³⁺", high: "Co⁴⁺",
+        metal: "Co", low: "Co³⁺", high: "Co⁴⁺", host: "oxide host",
         note: "Cobalt sits at +3 in LiCoO₂ and is driven towards +4 as lithium is removed on charging. Take out too much lithium and the layered framework starts to collapse — which is why these cells have a charge-voltage limit.",
         other: "Show LiFePO₄ instead"
       }
@@ -4606,6 +4638,7 @@ svg {
       root.querySelector("#bml-interc-pos-role").textContent =
         "Positive electrode · " + (discharging ? "reduction on discharge" : "gives lithium up while charging");
       root.querySelector("#bml-interc-pos-name").textContent = cathode.name;
+      posHead.textContent = "POSITIVE · " + cathode.host.toUpperCase();
 
       root.querySelector("#bml-interc-neg-eq").textContent = discharging
         ? "LiC₆ → 6C + Li⁺ + e⁻"
@@ -4672,7 +4705,7 @@ svg {
   <p>Battery Core · A project of Lemonergy</p>
   <div class="bc-footer-links">
     <a href="../../">Course home</a>
-    <a href="../../chapter-1/">Chapter 1</a>
+    <a href="../../chapter-1/">Syllabus</a>
     <a href="../../license/">AGPL-3.0-or-later</a>
     <a href="../../license/#commercial">Commercial use</a>
   </div>

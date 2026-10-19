@@ -3,21 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="CellForge layout editor — reposition, rename, and resize the machine diagrams used by the Chapter 1 production simulator, and start a new one from the standard template.">
+  <meta name="description" content="CellForge layout editor: reposition, rename and resize the coating and calendering diagrams from the Lesson 3 simulator, or start from a blank template.">
   <meta name="theme-color" content="#ffffff">
+  <meta name="robots" content="noindex">
   <link rel="canonical" href="https://learn.lemonergy.com/tools/cellforge-visual-editor/">
   <link rel="stylesheet" href="../../assets/site.css">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Battery Core by Lemonergy">
+  <meta property="og:site_name" content="Lemonergy Learn">
   <meta property="og:title" content="CellForge layout editor">
-  <meta property="og:description" content="CellForge layout editor — reposition, rename, and resize the machine diagrams used by the Chapter 1 production simulator, and start a new one from the standard template.">
+  <meta property="og:description" content="CellForge layout editor: reposition, rename and resize the coating and calendering diagrams from the Lesson 3 simulator, or start from a blank template.">
   <meta property="og:url" content="https://learn.lemonergy.com/tools/cellforge-visual-editor/">
   <meta property="og:image" content="https://learn.lemonergy.com/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
   <meta name="twitter:card" content="summary_large_image">
-  <title>CellForge Layout Editor — Battery Core</title>
+  <title>CellForge layout editor | Lemonergy Learn</title>
   <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
 </head>
 <body>
@@ -30,7 +31,7 @@
     </a>
     <nav aria-label="Primary navigation">
       <a href="../../">Home</a>
-      <a href="../../chapter-1/">Chapter 1</a>
+      <a href="../../chapter-1/">Syllabus</a>
       <a href="#editor" aria-current="page">Editor</a>
       <a href="../../license/">Licensing</a>
     </nav>
@@ -53,7 +54,7 @@
       </div>
 
       <ol class="question-path">
-        <li><span>01</span><p><strong>Pick a diagram.</strong> Coating and calendering are the two machines Part 03 draws. The standard template is an empty line to build a new one from.</p></li>
+        <li><span>01</span><p><strong>Pick a diagram.</strong> The editor can change two of the machine diagrams from the Lesson 3 simulator so far: coating and calendering. The standard template is an empty line to build a new one from.</p></li>
         <li><span>02</span><p><strong>Select a part.</strong> Click any label or machine on the canvas. Drag it, nudge it with the arrow keys, rewrite its text, or resize it.</p></li>
         <li><span>03</span><p><strong>Watch the collision count.</strong> It rechecks after every change, and marks any two labels whose boxes overlap.</p></li>
         <li><span>04</span><p><strong>Export.</strong> Copy or download the changes as JSON — offsets, scales, and rewritten text only, keyed by part.</p></li>
@@ -185,7 +186,7 @@
       <div class="closing">
         <p class="eyebrow" data-tier="toolkit">Where the output goes</p>
         <h2>Changes belong in the module source.</h2>
-        <p>The exported JSON records only offsets, scales, and rewritten labels, keyed by part. Apply it to the coordinates in the Part 03 payload, then re-run the module's static tests so the change is checked the same way the rest of the course is.</p>
+        <p>The exported JSON records only offsets, scales, and rewritten labels, keyed by part. Apply it to the coordinates in the Lesson 3 payload, then re-run the module's static tests so the change is checked the same way the rest of the course is.</p>
         <a class="button button-primary" href="../../chapter-1/">Back to the Chapter 1 study guide</a>
       </div>
     </section>

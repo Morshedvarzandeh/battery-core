@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="How lithium-ion batteries age: corrosion, SEI growth, gas generation, crystal formation, lithium plating and particle cracking, and how temperature and cycling drive capacity fade, impedance rise and self-discharge. Nine interactive panels.">
+  <meta name="description" content="How lithium-ion batteries age: SEI growth, gas, lithium plating and cracking, and how temperature and cycling cause capacity fade. Nine interactive panels.">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/battery-aging/">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="Battery Core by Lemonergy">
+  <meta property="og:site_name" content="Lemonergy Learn">
   <meta property="og:title" content="Battery aging: how a lithium-ion cell wears out">
   <meta property="og:description" content="SEI growth, gas, crystals, lithium plating and cracking — and why temperature decides which one gets you first. Interactive panels you can drive.">
   <meta property="og:url" content="https://learn.lemonergy.com/fundamentals/battery-aging/">
@@ -17,7 +17,7 @@
   <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../../assets/site.css">
-  <title>Battery aging: SEI, lithium plating, cracking and temperature — Battery Core</title>
+  <title>Battery aging: SEI, lithium plating, cracking and temperature | Lemonergy Learn</title>
   <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
   <script type="application/ld+json">
   {
@@ -33,11 +33,11 @@
         "inLanguage": "en",
         "learningResourceType": "Lesson",
         "educationalLevel": "Intermediate",
-        "timeRequired": "PT40M",
+        "timeRequired": "PT1H10M",
         "isAccessibleForFree": true,
         "teaches": ["Corrosion", "Solid-electrolyte interphase growth", "Gas generation", "Lithium plating", "Particle cracking", "Arrhenius temperature dependence", "Capacity fade and impedance rise"],
         "keywords": "battery aging, lithium-ion degradation, SEI growth, lithium plating, capacity fade, impedance rise, self-discharge, Arrhenius",
-        "isPartOf": { "@id": "https://learn.lemonergy.com/chapter-1/#course" },
+        "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
         "position": 6,
         "author": { "@id": "https://lemonergy.com/#organization" },
         "publisher": { "@id": "https://lemonergy.com/#organization" },
@@ -53,9 +53,9 @@
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Battery Core", "item": "https://learn.lemonergy.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Chapter 1", "item": "https://learn.lemonergy.com/chapter-1/" },
-          { "@type": "ListItem", "position": 3, "name": "Part 04 · Battery aging" }
+          { "@type": "ListItem", "position": 1, "name": "Battery Cell Foundations", "item": "https://learn.lemonergy.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Syllabus", "item": "https://learn.lemonergy.com/chapter-1/" },
+          { "@type": "ListItem", "position": 3, "name": "Lesson 4 · Battery aging" }
         ]
       }
     ]
@@ -72,7 +72,7 @@
     </a>
     <nav aria-label="Primary navigation">
       <a href="../../">Home</a>
-      <a href="../../chapter-1/">Chapter 1</a>
+      <a href="../../chapter-1/">Syllabus</a>
       <a href="../../glossary/">Glossary</a>
       <a href="../../license/">Licensing</a>
     </nav>
@@ -81,20 +81,20 @@
   <main id="main-content">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol>
-        <li><a href="../../">Battery Core</a></li>
-        <li><a href="../../chapter-1/">Chapter 1</a></li>
-        <li><span aria-current="page">Part 04 · Battery aging</span></li>
+        <li><a href="../../">Battery Cell Foundations</a></li>
+        <li><a href="../../chapter-1/">Syllabus</a></li>
+        <li><span aria-current="page">Lesson 4 · Battery aging</span></li>
       </ol>
     </nav>
 
     <section class="page-hero" aria-labelledby="page-title">
-      <p class="eyebrow">Part 04 · Chapter 1 · Chapter synthesis</p>
+      <p class="eyebrow">Lesson 4 · Battery Cell Foundations · Chapter synthesis</p>
       <h1 id="page-title">Why does a lithium-ion cell wear out?</h1>
       <p class="lede">A cell loses performance gradually, through unwanted side reactions and physical changes in its materials. The damage is essentially irreversible and eventually ends in failure. This lesson takes that sentence apart: six mechanisms, where each one happens, what speeds it up, and which of three observable signals it feeds — impedance up, capacity down, self-discharge up.</p>
       <ul class="lesson-meta">
-        <li>Lesson <strong>6 of 6</strong></li>
-        <li><strong>40 min</strong> reading and labs</li>
-        <li><strong>8 min</strong> practice quiz</li>
+        <li><strong>Lesson 4</strong> of Battery Cell Foundations</li>
+        <li><strong>60 min</strong> reading and labs</li>
+        <li><strong>10 min</strong> practice quiz</li>
         <li><strong>9</strong> interactive panels</li>
         <li><strong>15</strong> references, 11 with DOI links</li>
       </ul>
@@ -133,7 +133,7 @@
             <li>use the Arrhenius factor to estimate how temperature changes a degradation rate;</li>
             <li>explain why charging a cold cell makes the temperature–aging curve U-shaped.</li>
           </ul>
-          <p class="prerequisite"><strong>Before you start:</strong> <a href="../lithium-ion-cell-architecture/">Part 01B · Cell architecture</a> for the electrode sandwich, and <a href="../capacity-and-c-rate/">Part 02 · Capacity and C-rate</a> for what “2C” means.</p>
+          <p class="prerequisite"><strong>Before you start:</strong> <a href="../lithium-ion-cell-architecture/">Lesson 1B · Cell architecture</a> for the electrode sandwich, and <a href="../capacity-and-c-rate/">Lesson 2 · Capacity and C-rate</a> for what “2C” means.</p>
         </section>
 
         <div class="callout callout-limits">
@@ -149,12 +149,13 @@
             <iframe src="panels/map.html" title="Interactive panel: map from six aging mechanisms to three observable effects" height="470" loading="lazy"></iframe>
             <figcaption>Select a mechanism on the left to follow it to the effect it feeds.</figcaption>
           </figure>
+          <p id="end-of-life"><strong>When is a cell worn out?</strong> By convention, when it is down to <strong>80 % of its rated capacity</strong>. That is the end-of-life line in most cell datasheets and in the standard cycle-life tests for electric-vehicle cells; batteries for stationary storage are often run on to 70 % or lower. Nothing dramatic happens at 80 %: the cell still works, it just holds a fifth less than when it was new, and its resistance has usually risen too. This lesson uses the same line throughout, in “cycles to 80 %” and “years to 80 %”.</p>
           <p class="sources">Where this comes from — <a href="https://doi.org/10.1016/j.jpowsour.2005.01.006">Vetter et al. 2005</a> (the canonical taxonomy of these mechanisms) · <a href="https://doi.org/10.1039/D1CP00359C">Edge et al. 2021</a> (how they interact) · <a href="https://doi.org/10.1016/j.jpowsour.2016.12.011">Birkl et al. 2017</a> (why they collapse into three measurable effects).</p>
         </section>
 
         <section aria-labelledby="where">
           <h2 id="where"><span class="section-number">02</span>Where it happens</h2>
-          <p>The panel shows a zoomed cross-section of <strong>one repeating electrode sandwich</strong>: copper current collector, porous graphite negative electrode, separator, porous NMC positive electrode, aluminium current collector. Electrolyte fills every pore of the three middle layers — the structure from <a href="../lithium-ion-cell-architecture/">Part 01B</a>.</p>
+          <p>The panel shows a zoomed cross-section of <strong>one repeating electrode sandwich</strong>: copper current collector, porous graphite negative electrode, separator, porous NMC positive electrode, aluminium current collector. Electrolyte fills every pore of the three middle layers — the structure from <a href="../lithium-ion-cell-architecture/">Lesson 1B</a>.</p>
           <p>The most common misconception is that these mechanisms happen in separate places. They do not. They happen on particle surfaces, inside particles and at material interfaces, distributed through the whole cell. In a pouch cell these sandwiches are stacked; in a cylindrical cell they are wound.</p>
           <figure class="panel-frame">
             <iframe src="panels/cell.html" title="Interactive panel: aging mechanisms inside one electrode sandwich" height="640" loading="lazy"></iframe>
@@ -183,7 +184,7 @@
               </tbody>
             </table>
           </div>
-          <p class="sources">Where this comes from — <a href="https://doi.org/10.1016/j.jpowsour.2005.03.172">Broussely et al. 2005</a> measured calendar-aging rates that follow Arrhenius behaviour · <a href="https://doi.org/10.1016/j.jpowsour.2014.03.112">Waldmann et al. 2014</a> mapped how the dominant mechanism itself changes with temperature.</p>
+          <p class="sources">Where this comes from — <a href="https://doi.org/10.1016/j.jpowsour.2005.03.172">Broussely et al. 2005</a> measured calendar-aging rates that follow Arrhenius behavior · <a href="https://doi.org/10.1016/j.jpowsour.2014.03.112">Waldmann et al. 2014</a> mapped how the dominant mechanism itself changes with temperature.</p>
 
           <h3 id="corrosion">Corrosion — the catch-all mechanism</h3>
           <p>Corrosion is deterioration by chemical reaction with the surroundings, and inside a cell it is a catch-all for unwanted side reactions: the electrolyte solvent attacking the current collectors, or reacting with electrode materials. The products can themselves be corrosive, so the process can feed itself.</p>
@@ -219,12 +220,14 @@
             </table>
           </div>
           <p>Four times the time gives twice the film: 12 nm after one year at 25 °C, 24 nm after four.</p>
+          <p id="storage-soc"><strong>State of charge matters too.</strong> In a full cell the graphite sits at its lowest potential, where the electrolyte is least stable, so a cell stored full grows its film faster than one stored half full. That is why cells leave the factory part-charged, and why the usual advice for a battery that will sit unused for months is to store it part-charged rather than at 100 %. The teaching model leaves state of charge out and uses one fixed value.</p>
           <p class="sources">Where this comes from — <a href="https://doi.org/10.1149/2.044302jes">Pinson &amp; Bazant 2013</a> derive the √t law and its lifetime consequences · <a href="https://doi.org/10.1016/j.jpowsour.2005.03.172">Broussely et al. 2005</a> for the storage measurements · <a href="https://doi.org/10.1016/j.jpowsour.2005.01.006">Vetter et al. 2005</a> for the film chemistry.</p>
         </section>
 
         <section aria-labelledby="gas">
           <h2 id="gas"><span class="section-number">04</span>Gas generation</h2>
-          <p>Some chemistries produce gas while charging that, ideally, returns to its earlier aqueous state on discharge — lead-acid is the classic example. In lithium-ion cells, gas comes mainly from irreversible electrolyte decomposition, so the recombination term in the model below is a simplification. Either way, two quite different failure paths follow:</p>
+          <p>In a lithium-ion cell, gas comes mainly from the electrolyte decomposing: a burst during the first formation charges, which the manufacturer lets out before the cell is finally sealed, then a slow trickle for the rest of its life that heat, high voltage and overcharge speed up. Some of it is consumed again by later reactions, but in a sealed cell most of it stays.</p>
+          <p>Some other chemistries can take their gas back. In a sealed lead-acid battery, the oxygen given off at the positive plate during overcharge travels to the negative plate and recombines into water while the battery is still on charge — the <em>oxygen cycle</em> that lets a valve-regulated battery stay sealed. Lithium-ion cells have no such cycle, so the recombination term in the model below is a simplification. Either way, two quite different failure paths follow:</p>
           <ul>
             <li><strong>The gas escapes.</strong> Through a breach in the enclosure, that capacity is gone for good — and in some cells the released gases are flammable or explosive. Overcharged lead-acid cells, for example, give off oxygen and hydrogen.</li>
             <li><strong>The gas stays.</strong> In a sealed cell, pressure builds until the cell swells or ruptures unless it has a <strong>release vent</strong>. A vent makes the failure survivable, not free: venting loses electrolyte too.</li>
@@ -243,7 +246,8 @@
 
         <section aria-labelledby="crystals">
           <h2 id="crystals"><span class="section-number">05</span>Crystal formation</h2>
-          <p>Material that leaves an electrode during discharge does not generally return to the same place when the cell is recharged. Instead, crystal structures tend to build up on the electrode surfaces. This is a very general mechanism in redox cells, and its consequence is geometric rather than chemical.</p>
+          <p>In cells whose electrodes dissolve and re-form on every cycle — lead-acid is the classic case — material that leaves an electrode during discharge does not return to the same place on recharge. It re-deposits as larger, less reactive crystals. In lead-acid this is <strong>sulfation</strong>: coarse lead-sulfate crystals that charging no longer converts back.</p>
+          <p>A lithium-ion electrode is not rebuilt on each cycle; lithium moves in and out of a host structure that stays in place. The same outcome arrives by other routes. Transition-metal ions dissolve from the positive electrode and deposit on the negative one, the surface of layered-oxide particles turns into a denser phase that conducts lithium poorly, and solid decomposition products settle in the pores. The teaching model lumps all of these together as “crystals” on the active surface. Their consequence is geometric rather than chemical.</p>
           <p>A porous electrode works <em>because</em> it has an enormous internal surface area — that is where the reaction happens. As crystals accumulate, the active area shrinks and the reaction has to squeeze through a smaller doorway. Resistance rises, so the cell loses its ability to deliver <strong>high power</strong>. This is a power problem before it is a capacity problem.</p>
           <figure class="panel-frame">
             <iframe src="panels/crystal.html" title="Interactive panel: crystal formation reducing active area and peak power" height="440" loading="lazy"></iframe>
@@ -346,7 +350,7 @@
             <li><strong>Cold fast-charging</strong> hands the blame to plating instead — a different mechanism, a different warning sign, and a safety problem rather than a performance one.</li>
           </ul>
           <p>One caveat the panel cannot show: measured capacity can appear to recover slightly after rest, temperature equilibration or a different diagnostic procedure. That does not reverse the underlying degradation, and deep discharge should not be used as a general rejuvenation method.</p>
-          <p class="sources">Where this comes from — <a href="https://doi.org/10.1016/j.jpowsour.2016.12.011">Birkl et al. 2017</a> on separating the modes from measurable behaviour · <a href="https://doi.org/10.1016/j.etran.2019.100005">Han et al. 2019</a> for whole-life-cycle behaviour · <a href="https://doi.org/10.1149/1945-7111/ac6d13">Attia et al. 2022</a> on why the trajectory can bend sharply downward (“knees”).</p>
+          <p class="sources">Where this comes from — <a href="https://doi.org/10.1016/j.jpowsour.2016.12.011">Birkl et al. 2017</a> on separating the modes from measurable behavior · <a href="https://doi.org/10.1016/j.etran.2019.100005">Han et al. 2019</a> for whole-life-cycle behavior · <a href="https://doi.org/10.1149/1945-7111/ac6d13">Attia et al. 2022</a> on why the trajectory can bend sharply downward (“knees”).</p>
         </section>
 
         <section aria-labelledby="temperature">
@@ -382,7 +386,7 @@
                 <tr><th scope="row">Corrosion</th><td>Collectors, active and inactive materials</td><td>Impedance ↑</td><td>Temperature</td><td>A catch-all term; not every chemistry suffers every reaction</td></tr>
                 <tr><th scope="row">Passivation (SEI)</th><td>Graphite particle surfaces</td><td>Capacity ↓</td><td>Temperature, time</td><td>Forms on low-potential negative electrodes (graphite, silicon, lithium metal)</td></tr>
                 <tr><th scope="row">Gas generation</th><td>Pores, then the cell’s free volume</td><td>Capacity ↓, safety</td><td>Temperature, overcharge</td><td>Species and rates depend on chemistry, SOC and abuse history</td></tr>
-                <tr><th scope="row">Crystal formation</th><td>Electrode surfaces</td><td>Impedance ↑ → power fade</td><td>Cycling</td><td>Very general to redox cells; morphology varies enormously</td></tr>
+                <tr><th scope="row">Crystal formation</th><td>Electrode surfaces</td><td>Impedance ↑ → power fade</td><td>Cycling</td><td>Sulfation in lead-acid; in lithium-ion, surface deposits and reconstruction</td></tr>
                 <tr><th scope="row">Dendrites / plating</th><td>Negative electrode → through the separator</td><td>Self-discharge ↑, shorts</td><td>Cold charging, high current</td><td>A risk condition, not normal operation</td></tr>
                 <tr><th scope="row">Volume change</th><td>Inside particles, binder, additives</td><td>Capacity ↓ and impedance ↑</td><td>Deep cycling</td><td>Severity depends on chemistry, particle size, electrode design</td></tr>
               </tbody>
@@ -392,7 +396,7 @@
             <span class="callout-title">Three sentences worth keeping</span>
             <ol>
               <li>Aging is <strong>gradual and essentially irreversible</strong>, and it ends in failure. Rest or a different diagnostic procedure can show an apparent short-term recovery, but it does not undo degradation.</li>
-              <li>This teaching model summarises aging through <strong>impedance ↑, capacity ↓ and self-discharge ↑</strong>.</li>
+              <li>This teaching model summarizes aging through <strong>impedance ↑, capacity ↓ and self-discharge ↑</strong>.</li>
               <li><strong>Temperature strongly changes degradation rates</strong>, while cold charging adds a distinct plating risk.</li>
             </ol>
           </div>
@@ -419,14 +423,14 @@
           </details>
           <details>
             <summary>Your pack lives in a hot climate and is fast-charged. You can fix one thing. Which?</summary>
-            <div><p>Keep the cells inside their validated operating window and <strong>manage charge power with temperature</strong>. For the illustrative <em>cold / fast charge</em> duty, the model favours around 20 °C over 45 °C. For a pack that is already cold, reduce the charge current or pre-heat it — extra cooling would raise the plating risk.</p></div>
+            <div><p><strong>Temperature: cool the pack.</strong> In a hot climate heat is the accelerator. Every +10 °C roughly doubles the side-reaction rates, and fast charging adds its own heat on top, so keeping the cells near 25 °C while and after they charge slows SEI growth, gassing and corrosion all at once. In section 09, select <em>hot operation</em>: years to 80 % is about 4.8 at 25 °C and about 2.5 at 40 °C. Do not overdo it, though. For fast charging the model’s best temperature is around 20 °C, and below about 10 °C plating takes over, so the target is a moderate window, not as cold as possible.</p></div>
           </details>
         </section>
 
         <section aria-labelledby="practice-quiz">
           <h2 id="practice-quiz"><span class="section-number">12</span>Practice quiz</h2>
-          <p>Four questions on this lesson, marked in your browser — including Arrhenius and film-growth drills with fresh numbers every time.</p>
-          <div id="study-coach" data-part="Part 04" data-module-base="../../chapter-1/"></div>
+          <p>Four questions on this lesson. Three are marked in your browser, including Arrhenius and film-growth drills with fresh numbers every time; the written one you check against a model answer.</p>
+          <div id="study-coach" data-part="Lesson 4" data-module-base="../../chapter-1/"></div>
           <noscript><p class="coach-noscript">The practice quiz needs JavaScript. The check-yourself questions above cover the same ground with written answers.</p></noscript>
           <div class="complete-bar" hidden data-progress-ui>
             <p>Finished the lesson and the quiz? That completes the last lesson of Chapter 1.</p>
@@ -470,13 +474,13 @@
             <li>NREL, <a href="https://www.osti.gov/servlets/purl/1834314">SEI, plating and cracking degradation models</a>.</li>
             <li>DOE / Idaho National Laboratory, <a href="https://www.osti.gov/servlets/purl/1855577">Degradation during fast charge</a>.</li>
           </ol>
-          <p>Prefer to change the equations yourself? <a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb">Run the Part 04 notebook in your browser</a> — the same panels plus the Python model behind every number on this page.</p>
+          <p>Prefer to change the equations yourself? <a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/04_battery_aging.ipynb">Run the Lesson 4 notebook in your browser</a> — the same panels plus the Python model behind every number on this page.</p>
         </section>
       </article>
     </div>
 
     <nav class="lesson-pager" aria-label="Chapter 1 lessons">
-      <a class="pager-prev" href="../solid-state-production/" rel="prev"><span>← Part 03B</span><strong>All-solid-state cell production</strong></a>
+      <a class="pager-prev" href="../solid-state-production/" rel="prev"><span>← Lesson 3B</span><strong>All-solid-state cell production</strong></a>
       <a class="pager-next" href="../../chapter-1/#checkpoint" rel="next"><span>Chapter checkpoint →</span><strong>Connect the whole cell story</strong></a>
     </nav>
   </main>

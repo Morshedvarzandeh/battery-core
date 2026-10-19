@@ -37,11 +37,11 @@
     head.appendChild(icon);
     const bar = document.createElement("div");
     bar.className = "bc-modulebar";
-    bar.innerHTML = '<span class="bc-modulebar-part">Part 03 &middot; Chapter 1</span>' +
+    bar.innerHTML = '<span class="bc-modulebar-part">Lesson 3 &middot; Battery Cell Foundations</span>' +
       '<span>Lithium-ion battery production</span>' +
       '<span class="bc-modulebar-spacer"></span>' +
       '<a href="../../">Course home</a>' +
-      '<a href="../../chapter-1/">Chapter 1</a>';
+      '<a href="../../chapter-1/">Syllabus</a>';
     document.body.insertBefore(bar, document.body.firstChild);
     const footer = document.createElement("footer");
     footer.className = "bc-footer";
@@ -62,7 +62,7 @@
     next.innerHTML = '<span>Done with this lesson?</span>' +
       '<span class="bc-nextbar-spacer"></span>' +
       '<button type="button" data-complete="p03" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>' +
-      '<a href="../solid-state-production/">Next: Part 03B →</a>';
+      '<a href="../solid-state-production/">Next: Lesson 3B →</a>';
     document.body.appendChild(next);
     document.body.appendChild(footer);
     const progress = document.createElement("script");

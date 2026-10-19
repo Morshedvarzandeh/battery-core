@@ -64,7 +64,7 @@
     else delete el.dataset.state;
   }
 
-  /* ---- Part 02: current from C-rate -------------------------------------- */
+  /* ---- Lesson 2: current from C-rate -------------------------------------- */
   function forwardCalculator(root) {
     const cap = $("[name=capacity]", root);
     const rate = $("[name=c_rate]", root);
@@ -113,7 +113,7 @@
     update();
   }
 
-  /* ---- Part 02: C-rate from current -------------------------------------- */
+  /* ---- Lesson 2: C-rate from current -------------------------------------- */
   function inverseCalculator(root) {
     const cap = $("[name=capacity]", root);
     const cur = $("[name=current]", root);

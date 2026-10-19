@@ -496,6 +496,29 @@ svg { display: block; max-width: 100%; height: auto; }
     #cell-architecture .ca-mini-stack { min-width: 240px; }
   }
 
+  /* On a phone the five layers stack as rows (copper at the top, aluminium at
+     the bottom) instead of a 640px strip that has to be scrolled sideways.
+     Thickness keeps the same proportions, now as row height. */
+  @media (max-width: 600px) {
+    #cell-architecture .ca-scroll { overflow: visible; }
+    #cell-architecture .ca-layer-stack {
+      min-width: 0;
+      min-height: 0;
+      grid-template-columns: 1fr;
+      grid-template-rows: 44px 112px 52px 112px 44px;
+      padding: 4px;
+    }
+    #cell-architecture .ca-tile {
+      flex-direction: row;
+      gap: 8px;
+      padding: 6px 10px;
+    }
+    #cell-architecture .ca-tile .ca-name {
+      writing-mode: horizontal-tb;
+      transform: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     #cell-architecture .ca-tile,
     #cell-architecture .ca-ion,

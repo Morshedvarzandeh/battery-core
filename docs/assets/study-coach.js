@@ -129,7 +129,7 @@
       },
       prompt: function (d) {
         return (
-          "A thermally activated ageing process has an activation energy of " +
+          "A thermally activated aging process has an activation energy of " +
           d.activation / 1000 +
           " kJ/mol. How many times faster does it run at " +
           d.temperature +
@@ -208,9 +208,9 @@
       id: "p01-paths",
       group: "part",
       tier: "core",
-      part: "Part 01",
+      part: "Lesson 1",
       module: "../fundamentals/cell-anatomy-workbench/",
-      moduleLabel: "Part 01 · Cell anatomy workbench",
+      moduleLabel: "Lesson 1 · Cell anatomy and charge/discharge paths",
       question:
         "Why do electrons travel the external circuit while lithium ions move inside the cell?",
       hints: [
@@ -230,9 +230,9 @@
       group: "part",
       tier: "core",
       type: "choice",
-      part: "Part 01",
+      part: "Lesson 1",
       module: "../fundamentals/cell-anatomy-workbench/",
-      moduleLabel: "Part 01 · Cell anatomy workbench",
+      moduleLabel: "Lesson 1 · Cell anatomy and charge/discharge paths",
       question: "Which statement is true of the separator?",
       hints: ["Two currencies cross a cell. Ask which one the separator is there to stop."],
       options: [
@@ -259,9 +259,9 @@
       id: "p01b-pore-electrolyte",
       group: "part",
       tier: "deeper",
-      part: "Part 01B",
+      part: "Lesson 1B",
       module: "../fundamentals/lithium-ion-cell-architecture/",
-      moduleLabel: "Part 01B · Lithium-ion cell architecture",
+      moduleLabel: "Lesson 1B · Lithium-ion cell architecture",
       question:
         "Electrolyte fills the pores of both electrodes. Why is it not a sixth structural layer?",
       hints: [
@@ -282,9 +282,9 @@
       tier: "core",
       type: "drill",
       drill: "cRateCurrent",
-      part: "Part 02",
+      part: "Lesson 2",
       module: "../fundamentals/capacity-and-c-rate/",
-      moduleLabel: "Part 02 · Nominal capacity and C-rate",
+      moduleLabel: "Lesson 2 · Nominal capacity and C-rate",
       question: "Calculate the constant current for this cell and rate.",
       hints: [
         "Current is nominal capacity multiplied by C-rate, with capacity in ampere-hours and C-rate in reciprocal hours.",
@@ -299,9 +299,9 @@
       tier: "core",
       type: "drill",
       drill: "idealDuration",
-      part: "Part 02",
+      part: "Lesson 2",
       module: "../fundamentals/capacity-and-c-rate/",
-      moduleLabel: "Part 02 · Nominal capacity and C-rate",
+      moduleLabel: "Lesson 2 · Nominal capacity and C-rate",
       question: "Calculate the ideal duration at this rate.",
       hints: ["The ideal duration is the reciprocal of the C-rate, in hours."],
       note: "Exact by definition, and still not what a real cell will do.",
@@ -310,9 +310,9 @@
       id: "p02-real-runtime",
       group: "part",
       tier: "core",
-      part: "Part 02",
+      part: "Lesson 2",
       module: "../fundamentals/capacity-and-c-rate/",
-      moduleLabel: "Part 02 · Nominal capacity and C-rate",
+      moduleLabel: "Lesson 2 · Nominal capacity and C-rate",
       question:
         "Ideal duration is 1 / C-rate. Why will a real cell usually run for less than that?",
       hints: [
@@ -334,9 +334,9 @@
       group: "part",
       tier: "core",
       type: "order",
-      part: "Part 03",
+      part: "Lesson 3",
       module: "../fundamentals/battery-production/",
-      moduleLabel: "Part 03 · Lithium-ion battery production",
+      moduleLabel: "Lesson 3 · Lithium-ion cell production",
       question: "Put the conventional electrode and cell route into process order.",
       hints: [
         "The electrode is finished as a coated, dried, densified web before anything is assembled.",
@@ -358,9 +358,9 @@
       id: "p03-upstream-downstream",
       group: "part",
       tier: "core",
-      part: "Part 03",
+      part: "Lesson 3",
       module: "../fundamentals/battery-production/",
-      moduleLabel: "Part 03 · Lithium-ion battery production",
+      moduleLabel: "Lesson 3 · Lithium-ion cell production",
       question:
         "Name one upstream process change and follow it to a downstream cell-quality signal.",
       hints: [
@@ -368,7 +368,7 @@
         "A complete answer has three links, not two: process change, electrode property, measurable signal.",
       ],
       points: [
-        "The chain has three links: a process window changes an electrode property, which changes electrochemical behaviour, which shows up as a measured signal at end of line.",
+        "The chain has three links: a process window changes an electrode property, which changes electrochemical behavior, which shows up as a measured signal at end of line.",
         "Coating: areal mass loading sets areal capacity, which shows up in formation and in final capacity grading.",
         "Calendering: line force sets porosity, which changes electrolyte wetting and shows up as formation time and cell impedance.",
         "Drying: too fast a rate drives binder migration, which weakens adhesion and shows up as cycle life.",
@@ -380,9 +380,9 @@
       group: "part",
       tier: "deeper",
       type: "choice",
-      part: "Part 03B",
+      part: "Lesson 3B",
       module: "../fundamentals/solid-state-production/",
-      moduleLabel: "Part 03B · All-solid-state cell production",
+      moduleLabel: "Lesson 3B · All-solid-state cell production",
       question: "Moving to an all-solid-state route, which process step disappears?",
       hints: ["Ask which step exists only because the electrolyte arrives as a liquid."],
       options: [
@@ -409,9 +409,9 @@
       id: "p03b-solid-electrolyte",
       group: "part",
       tier: "deeper",
-      part: "Part 03B",
+      part: "Lesson 3B",
       module: "../fundamentals/solid-state-production/",
-      moduleLabel: "Part 03B · All-solid-state cell production",
+      moduleLabel: "Lesson 3B · All-solid-state cell production",
       question:
         "Why does choosing a solid electrolyte change which machines the line needs, rather than just swapping one material for another?",
       hints: [
@@ -431,9 +431,9 @@
       group: "part",
       tier: "core",
       type: "multi",
-      part: "Part 04",
+      part: "Lesson 4",
       module: "../fundamentals/battery-aging/",
-      moduleLabel: "Part 04 · Battery aging",
+      moduleLabel: "Lesson 4 · Battery aging",
       question: "Select every symptom of impedance rise rather than capacity fade.",
       hints: [
         "One of the two costs you stored charge. The other costs you voltage while the charge is still there.",
@@ -473,9 +473,9 @@
       tier: "core",
       type: "drill",
       drill: "arrhenius",
-      part: "Part 04",
+      part: "Lesson 4",
       module: "../fundamentals/battery-aging/",
-      moduleLabel: "Part 04 · Battery aging",
+      moduleLabel: "Lesson 4 · Battery aging",
       question: "How much does temperature accelerate this process?",
       hints: [
         "Convert both temperatures to kelvin first — the relation is not linear in Celsius.",
@@ -490,24 +490,24 @@
       tier: "core",
       type: "drill",
       drill: "filmGrowth",
-      part: "Part 04",
+      part: "Lesson 4",
       module: "../fundamentals/battery-aging/",
-      moduleLabel: "Part 04 · Battery aging",
+      moduleLabel: "Lesson 4 · Battery aging",
       question: "How thick is the film after this much time?",
       hints: [
         "A growing film is its own diffusion barrier, so it does not grow linearly.",
         "δ(t) = δ_ref × √(t / t_ref).",
       ],
       note:
-        "This is why ageing slows down rather than running away: quadrupling the time only doubles the film.",
+        "This is why aging slows down rather than running away: quadrupling the time only doubles the film.",
     },
     {
       id: "p04-fade-vs-impedance",
       group: "part",
       tier: "core",
-      part: "Part 04",
+      part: "Lesson 4",
       module: "../fundamentals/battery-aging/",
-      moduleLabel: "Part 04 · Battery aging",
+      moduleLabel: "Lesson 4 · Battery aging",
       question:
         "Distinguish capacity fade from impedance rise, and name a condition that accelerates each.",
       hints: [
@@ -528,7 +528,7 @@
       id: "ch-trace",
       group: "chapter",
       tier: "core",
-      part: "Checkpoint 01",
+      part: "Chapter checkpoint",
       module: "../fundamentals/cell-anatomy-workbench/",
       moduleLabel: "Chapter checkpoint · Trace",
       question:
@@ -549,7 +549,7 @@
       id: "ch-compare",
       group: "chapter",
       tier: "core",
-      part: "Checkpoint 03",
+      part: "Chapter checkpoint",
       module: "../fundamentals/solid-state-production/",
       moduleLabel: "Chapter checkpoint · Compare",
       question:
@@ -572,7 +572,7 @@
       id: "ch-connect",
       group: "chapter",
       tier: "core",
-      part: "Checkpoint 04",
+      part: "Chapter checkpoint",
       module: "../fundamentals/battery-aging/",
       moduleLabel: "Chapter checkpoint · Connect",
       question:
@@ -655,7 +655,7 @@
 
   function mount(root) {
     var state = loadState();
-    /* A lesson page mounts the coach with `data-part="Part 02"` to ask only
+    /* A lesson page mounts the coach with `data-part="Lesson 2"` to ask only
        that part's questions, as the lesson's practice quiz. The chapter guide
        sets nothing and gets every question. */
     var only = (root.dataset.part || "").trim();
@@ -1184,7 +1184,7 @@
 
       var bar = element("div", "coach-bar");
       var counter = element("span", "pill", "Question 1 of " + pool.length);
-      var part = element("span", "pill coach-part", "Part 01");
+      var part = element("span", "pill coach-part", "Lesson 1");
       var mode = element("span", "pill coach-mode", "Checked");
       var spacer = element("span", "spacer");
       var filters = element("div", "control-row");
