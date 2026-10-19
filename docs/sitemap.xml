@@ -46,7 +46,27 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://learn.lemonergy.com/fundamentals/cell-anatomy/</loc>
+    <lastmod>2026-10-19</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://learn.lemonergy.com/fundamentals/cell-architecture/</loc>
+    <lastmod>2026-10-19</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://learn.lemonergy.com/fundamentals/cell-production/</loc>
+    <lastmod>2026-10-19</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/</loc>
+    <lastmod>2026-10-19</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://learn.lemonergy.com/fundamentals/solid-state-cell-production/</loc>
     <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>

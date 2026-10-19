@@ -125,8 +125,8 @@ closed-form question instead — which is also better teaching, since a
 well-chosen distractor names the misconception the learner actually holds.
 
 Every number in a drill comes from the same relationship the tested Python
-implements — `current_from_c_rate`, `ideal_duration_hours`, `arrhenius_factor`,
-`parabolic_film_thickness` — and the two physical constants the browser cannot
+implements — `current_from_c_rate`, `ideal_duration_hours`, `nominal_energy_wh`,
+`arrhenius_factor`, `parabolic_film_thickness` — and the two physical constants the browser cannot
 import are compared against `battery_core.aging` by a test, so the copy cannot
 drift.
 
@@ -381,8 +381,10 @@ examples, check-yourself answers and references on the page itself. Start from
 | Tables | `div.table-wrap` › `table` | `.num` for right-aligned figures. Header case is preserved: units change meaning in capitals. |
 | Calculators | `form.calc[data-calc=…]` | Defined in `lesson-tools.js`. Write the worked-example results into the HTML. |
 | Panels | `figure.panel-frame` › `iframe` | Local pages only; lazy-loaded; a `title` that starts "Interactive panel:". |
+| Lab frames | `figure.panel-frame.lab-frame` › `.lab-frame-head` + `iframe[data-fit]` | A whole lab shown inside the lesson. `lab-frame.js` sizes the frame to the lab; the lab loads `embed.js` in its `<head>` so it hides its own course bar, next bar and footer when framed. |
+| Simulator card | `div.lab-launch` › `img` + `.lab-launch-copy` | For a full-page simulator that is opened rather than framed. A local preview image under 100 kB. |
 | Answers | `section.answers` › `details` | Written answers, revealed on demand. |
-| Quiz | `div#study-coach[data-part="Part 0X"][data-module-base="../../chapter-1/"]` | The study coach, scoped to one part. |
+| Quiz | `div#study-coach[data-part="Lesson N"][data-module-base="../../chapter-1/"]` | The study coach, scoped to one lesson. |
 | Completion | `div.complete-bar[hidden][data-progress-ui]` › `button[data-complete=id]` | Plus a next-item link. |
 | Pager | `nav.lesson-pager` | Previous and next lesson. |
 

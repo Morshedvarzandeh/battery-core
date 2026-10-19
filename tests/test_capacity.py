@@ -7,6 +7,7 @@ from battery_core.capacity import (
     c_rate_from_current,
     current_from_c_rate,
     ideal_duration_hours,
+    nominal_energy_wh,
 )
 
 
@@ -156,3 +157,45 @@ def test_positional_call_raises_type_error() -> None:
         current_from_c_rate(20.0, 10.0)  # type: ignore[misc]
     with pytest.raises(TypeError):
         c_rate_from_current(20.0, 40.0)  # type: ignore[misc]
+
+
+# --- nominal energy ------------------------------------------------------------
+
+
+def test_nominal_energy_is_capacity_times_voltage() -> None:
+    assert nominal_energy_wh(
+        nominal_capacity_ah=20.0, nominal_voltage_v=3.65
+    ) == pytest.approx(73.0)
+
+
+def test_nominal_energy_of_a_phone_cell() -> None:
+    """5000 mAh at 3.85 V is 19.25 Wh: well under the 100 Wh airline line."""
+    assert nominal_energy_wh(
+        nominal_capacity_ah=5.0, nominal_voltage_v=3.85
+    ) == pytest.approx(19.25)
+
+
+def test_nominal_energy_is_vectorized() -> None:
+    np.testing.assert_allclose(
+        nominal_energy_wh(
+            nominal_capacity_ah=np.array([3.0, 3.0]),
+            nominal_voltage_v=np.array([3.6, 3.2]),
+        ),
+        np.array([10.8, 9.6]),
+    )
+
+
+@pytest.mark.parametrize(
+    ("capacity", "voltage"),
+    [(0.0, 3.6), (-1.0, 3.6), (3.0, 0.0), (3.0, -3.6), (float("nan"), 3.6)],
+)
+def test_nominal_energy_rejects_non_positive_inputs(
+    capacity: float, voltage: float
+) -> None:
+    with pytest.raises(ValueError):
+        nominal_energy_wh(nominal_capacity_ah=capacity, nominal_voltage_v=voltage)
+
+
+def test_nominal_energy_is_keyword_only() -> None:
+    with pytest.raises(TypeError):
+        nominal_energy_wh(20.0, 3.65)  # type: ignore[misc]

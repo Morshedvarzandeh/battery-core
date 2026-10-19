@@ -1,4 +1,4 @@
-"""Ideal capacity and C-rate relationships for battery cells."""
+"""Ideal capacity, C-rate and nominal-energy relationships for battery cells."""
 
 from typing import TypeAlias
 
@@ -104,3 +104,40 @@ def ideal_duration_hours(
     """
     rate = positive_finite_array("c_rate", c_rate)
     return scalar_or_array(1.0 / rate)
+
+
+def nominal_energy_wh(
+    *,
+    nominal_capacity_ah: float | npt.ArrayLike,
+    nominal_voltage_v: float | npt.ArrayLike,
+) -> float | FloatArray:
+    """Calculate nominal energy from nominal capacity and nominal voltage.
+
+    The rating relationship is ``E = Q_nominal * V_nominal``: ampere-hours
+    multiplied by volts give watt-hours. It is how datasheets and pack
+    specifications state energy. It is not the energy a particular discharge
+    delivers, which is the integral of voltage times current and falls at high
+    current, low temperature, or as the cell ages.
+
+    This function is keyword-only: ``nominal_capacity_ah`` and
+    ``nominal_voltage_v`` must be passed by name so a transposed call cannot
+    silently return a plausible but wrong number.
+
+    Args:
+        nominal_capacity_ah: Nominal cell capacity in ampere-hours (Ah). Must
+            be strictly positive.
+        nominal_voltage_v: Nominal (average discharge) voltage in volts (V).
+            Must be strictly positive.
+
+    Returns:
+        Nominal energy in watt-hours (Wh). Inputs follow NumPy broadcasting.
+        Scalar inputs produce a float.
+
+    Raises:
+        TypeError: If either input is not a real numeric value.
+        ValueError: If either input is non-finite or not strictly positive.
+
+    """
+    capacity = positive_finite_array("nominal_capacity_ah", nominal_capacity_ah)
+    voltage = positive_finite_array("nominal_voltage_v", nominal_voltage_v)
+    return scalar_or_array(capacity * voltage)

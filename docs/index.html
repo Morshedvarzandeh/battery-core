@@ -37,7 +37,8 @@
     {
       "@type": "Course",
       "@id": "https://learn.lemonergy.com/#course",
-      "name": "Battery Core — battery engineering fundamentals",
+      "name": "Battery Cell Foundations",
+      "alternateName": "Battery Core — battery engineering fundamentals",
       "description": "A free, open-source battery engineering course: lithium-ion cell anatomy, capacity and C-rate, cell production, solid-state production and battery aging, with interactive labs, practice quizzes and tested Python models.",
       "url": "https://learn.lemonergy.com/",
       "inLanguage": "en",
@@ -56,12 +57,15 @@
       "hasCourseInstance": {
         "@type": "CourseInstance",
         "courseMode": "Online",
-        "courseWorkload": "PT3H30M"
+        "courseWorkload": "PT5H"
       },
       "hasPart": [
-        {
-          "@id": "https://learn.lemonergy.com/#course"
-        }
+        { "@id": "https://learn.lemonergy.com/fundamentals/cell-anatomy/#lesson" },
+        { "@id": "https://learn.lemonergy.com/fundamentals/cell-architecture/#lesson" },
+        { "@id": "https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/#lesson" },
+        { "@id": "https://learn.lemonergy.com/fundamentals/cell-production/#lesson" },
+        { "@id": "https://learn.lemonergy.com/fundamentals/solid-state-cell-production/#lesson" },
+        { "@id": "https://learn.lemonergy.com/fundamentals/battery-aging/#lesson" }
       ]
     },
     {
@@ -89,7 +93,7 @@
       <a href="#labs">Labs</a>
       <a href="glossary/">Glossary</a>
       <a href="license/">Licensing</a>
-      <a class="nav-cta" href="fundamentals/cell-anatomy-workbench/">Start learning</a>
+      <a class="nav-cta" href="fundamentals/cell-anatomy/">Start learning</a>
     </nav>
   </header>
 
@@ -101,7 +105,7 @@
         <p class="hero-summary">Learn how a lithium-ion cell is built, how it is rated, how it is manufactured and why it ages — through short readings, interactive labs and practice quizzes.</p>
         <p class="offered-by">Offered by <strong>Lemonergy</strong> · Open source under the AGPL</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="fundamentals/cell-anatomy-workbench/">Start lesson 1</a>
+          <a class="button button-primary" href="fundamentals/cell-anatomy/">Start lesson 1</a>
           <a class="button button-secondary" href="chapter-1/">View syllabus and track progress</a>
         </div>
       </div>
@@ -109,7 +113,7 @@
       <dl class="course-facts-strip" aria-label="Course facts">
         <div><dt>6 lessons</dt><dd>4 core, 2 optional, and a checkpoint</dd></div>
         <div><dt>Beginner level</dt><dd>no battery background needed</dd></div>
-        <div><dt>About 3.5 hours</dt><dd>at your own pace</dd></div>
+        <div><dt>About 5 hours</dt><dd>at your own pace</dd></div>
         <div><dt>Free</dt><dd>no account, nothing to install</dd></div>
       </dl>
     </section>
@@ -120,7 +124,7 @@
           <h2 id="learn-title">What you’ll learn</h2>
           <ul class="learn-list">
             <li>Trace electron and lithium-ion paths through a cell during charge and discharge.</li>
-            <li>Calculate current, C-rate and ideal duration with correct units.</li>
+            <li>Calculate current, C-rate, ideal duration and energy with correct units.</li>
             <li>Follow a lithium-ion cell from slurry mixing to formation, aging and testing.</li>
             <li>Connect an operating condition to a degradation mechanism and a measurable signal.</li>
           </ul>
@@ -155,33 +159,33 @@
       <div class="module-grid">
         <article class="module-card available">
           <div class="module-meta"><span class="part-number">Lesson 1</span><span class="status">Available</span></div>
-          <div><p class="format">Interactive lab · quiz · 20 min</p><h3>Cell anatomy and charge/discharge paths</h3><p>Inspect the electrodes, current collectors, separator and electrolyte, and follow electrons and lithium ions.</p></div>
-          <a class="card-action" href="fundamentals/cell-anatomy-workbench/">Start lesson <span aria-hidden="true">→</span></a>
+          <div><p class="format">Reading · interactive workbench · quiz · 35 min</p><h3>Cell anatomy and charge/discharge paths</h3><p>Name every part of a cell, follow electrons and lithium ions on discharge and charge, and see what an internal short is.</p></div>
+          <a class="card-action" href="fundamentals/cell-anatomy/">Start lesson <span aria-hidden="true">→</span></a>
         </article>
 
         <article class="module-card available deeper">
           <div class="module-meta"><span class="part-number">Lesson 1B · Optional</span><span class="status">Available</span></div>
-          <div><p class="format">Interactive tutorial · quiz · 25 min</p><h3>Lithium-ion cell architecture</h3><p>Assemble the five layers, then zoom into porous electrodes, pore electrolyte, solvent molecules and ions.</p></div>
-          <a class="card-action" href="fundamentals/lithium-ion-cell-architecture/">Start lesson <span aria-hidden="true">→</span></a>
+          <div><p class="format">Reading · interactive tutorial · quiz · 40 min</p><h3>Lithium-ion cell architecture</h3><p>Zoom into porous electrodes, the separator and the electrolyte, and see why porosity trades energy for power.</p></div>
+          <a class="card-action" href="fundamentals/cell-architecture/">Start lesson <span aria-hidden="true">→</span></a>
         </article>
 
         <article class="module-card available">
           <div class="module-meta"><span class="part-number">Lesson 2</span><span class="status">Available</span></div>
-          <div><p class="format">Reading · calculators · quiz · 20 min</p><h3>Nominal capacity and C-rate</h3><p>Connect capacity, current and ideal duration with worked examples, two calculators and a practice quiz.</p></div>
+          <div><p class="format">Reading · calculators · quiz · 25 min</p><h3>Nominal capacity and C-rate</h3><p>Connect capacity, current, ideal duration and energy with worked examples, three calculators and a practice quiz.</p></div>
           <a class="card-action" href="fundamentals/capacity-and-c-rate/">Start lesson <span aria-hidden="true">→</span></a>
           <p class="launch-note">Prefer Python? <a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb">Run the notebook</a>.</p>
         </article>
 
         <article class="module-card available">
           <div class="module-meta"><span class="part-number">Lesson 3</span><span class="status">Available</span></div>
-          <div><p class="format">Production simulator · quiz · 45 min</p><h3>Lithium-ion cell production</h3><p>Follow a graphite/NMC route from mixing and coating through assembly, formation, aging, testing and packing.</p></div>
-          <a class="card-action" href="fundamentals/battery-production/">Open simulator <span aria-hidden="true">→</span></a>
+          <div><p class="format">Reading · production simulator · quiz · 60 min</p><h3>Lithium-ion cell production</h3><p>Walk the line from mixing and coating through the dry room to formation, aging and testing, and link each step to cell quality.</p></div>
+          <a class="card-action" href="fundamentals/cell-production/">Start lesson <span aria-hidden="true">→</span></a>
         </article>
 
         <article class="module-card available deeper">
           <div class="module-meta"><span class="part-number">Lesson 3B · Optional</span><span class="status">Available</span></div>
-          <div><p class="format">Route-comparison simulator · quiz · 35 min</p><h3>All-solid-state cell production</h3><p>Compare oxide, halide, sulfide and polymer electrolyte routes from material preparation to formation.</p></div>
-          <a class="card-action" href="fundamentals/solid-state-production/">Open simulator <span aria-hidden="true">→</span></a>
+          <div><p class="format">Reading · route simulator · quiz · 45 min</p><h3>All-solid-state cell production</h3><p>Compare oxide, sulfide, halide and polymer electrolytes, and see which production steps disappear and which appear.</p></div>
+          <a class="card-action" href="fundamentals/solid-state-cell-production/">Start lesson <span aria-hidden="true">→</span></a>
         </article>
 
         <article class="module-card available">
@@ -220,7 +224,11 @@
           <a class="button button-secondary" href="transport/ficks-first-law/">Open the lesson</a>
         </article>
         <article class="wide-card">
-          <div><p class="format">Reference</p><h3>Battery glossary</h3><p>28 battery terms in plain language, each linked to the lesson that teaches it.</p></div>
+          <div><p class="format">Interactive labs</p><h3>The labs from the lessons, full screen</h3><p>The <a href="fundamentals/cell-anatomy-workbench/">cell anatomy workbench</a>, the <a href="fundamentals/lithium-ion-cell-architecture/">cell architecture tutorial</a>, and the two production simulators, <a href="fundamentals/battery-production/">CellForge</a> and <a href="fundamentals/solid-state-production/">SolidForge</a>.</p></div>
+          <a class="button button-secondary" href="fundamentals/battery-production/">Open CellForge</a>
+        </article>
+        <article class="wide-card">
+          <div><p class="format">Reference</p><h3>Battery glossary</h3><p>55 battery terms in plain language, each linked to the lesson that teaches it.</p></div>
           <a class="button button-secondary" href="glossary/">Open the glossary</a>
         </article>
       </div>

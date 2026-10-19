@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="What battery capacity (Ah) and C-rate mean, how to convert current, C-rate and discharge time, and why real cells fall short. Worked examples and a calculator.">
+  <meta name="description" content="Battery capacity (Ah), C-rate and energy (Wh): convert current, C-rate and discharge time, and see why real cells fall short. Worked examples and calculators.">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/">
   <meta property="og:type" content="article">
@@ -33,10 +33,10 @@
         "inLanguage": "en",
         "learningResourceType": "Lesson",
         "educationalLevel": "Beginner",
-        "timeRequired": "PT20M",
+        "timeRequired": "PT25M",
         "isAccessibleForFree": true,
-        "teaches": ["Nominal capacity in ampere-hours", "C-rate", "Ideal constant-current duration", "Limits of ideal C-rate arithmetic"],
-        "keywords": "battery C-rate, nominal capacity, ampere-hour, discharge time, C-rate calculator, lithium-ion",
+        "teaches": ["Nominal capacity in ampere-hours", "C-rate", "Ideal constant-current duration", "Nominal energy in watt-hours", "Limits of ideal C-rate arithmetic"],
+        "keywords": "battery C-rate, nominal capacity, ampere-hour, watt-hour, battery energy, discharge time, C-rate calculator, lithium-ion",
         "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
         "position": 3,
         "author": { "@id": "https://lemonergy.com/#organization" },
@@ -93,9 +93,9 @@
       <p class="lede">Nominal capacity tells you how much charge a cell is rated to deliver under specified test conditions. C-rate tells you how large a current is relative to that capacity. After this lesson you can convert between current, C-rate and ideal duration — and say exactly why the ideal duration is not a runtime prediction for a real cell.</p>
       <ul class="lesson-meta">
         <li><strong>Lesson 2</strong> of Battery Cell Foundations</li>
-        <li><strong>15 min</strong> reading</li>
+        <li><strong>20 min</strong> reading</li>
         <li><strong>5 min</strong> practice quiz</li>
-        <li><strong>2</strong> calculators</li>
+        <li><strong>3</strong> calculators</li>
         <li>Example cell: <strong>20 Ah</strong></li>
       </ul>
     </section>
@@ -109,6 +109,7 @@
           <li><a href="#reading-the-table">Reading the rate table</a></li>
           <li><a href="#area">Why duration is reciprocal</a></li>
           <li><a href="#real-cells">Ideal versus real cells</a></li>
+          <li><a href="#energy">Energy in watt-hours</a></li>
           <li><a href="#worked-example">Worked example</a></li>
           <li><a href="#python">Calculate it in Python</a></li>
           <li><a href="#limitations">Assumptions and limits</a></li>
@@ -127,9 +128,10 @@
             <li>calculate C-rate from a measured or datasheet current;</li>
             <li>calculate the ideal duration associated with a C-rate;</li>
             <li>use charge as the area under a current–time curve to explain why the ideal duration is 1 / C-rate;</li>
-            <li>separate exact C-rate arithmetic from real-cell voltage-cutoff behavior.</li>
+            <li>separate exact C-rate arithmetic from real-cell voltage-cutoff behavior;</li>
+            <li>calculate nominal energy in watt-hours from capacity and voltage.</li>
           </ul>
-          <p class="prerequisite"><strong>Before you start:</strong> <a href="../cell-anatomy-workbench/">Lesson 1 · Cell anatomy</a>. Arithmetic with units is all the maths you need.</p>
+          <p class="prerequisite"><strong>Before you start:</strong> <a href="../cell-anatomy/">Lesson 1 · Cell anatomy</a>. Arithmetic with units is all the maths you need.</p>
         </section>
 
         <section aria-labelledby="nominal-capacity">
@@ -209,7 +211,7 @@
             <svg viewBox="0 0 720 340" role="img" aria-labelledby="area-svg-title area-svg-desc" style="display:block;width:100%;height:auto">
               <title id="area-svg-title">Three constant-current discharges with equal area</title>
               <desc id="area-svg-desc">C/2 is 10 amperes for 2 hours, 1C is 20 amperes for 1 hour, and 2C is 40 amperes for half an hour. All three rectangles have an area of 20 ampere-hours.</desc>
-              <g font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13" fill="#596579">
+              <g font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#596579">
                 <line x1="80" y1="290" x2="690" y2="290" stroke="#c3cad5"/>
                 <line x1="80" y1="290" x2="80" y2="30" stroke="#c3cad5"/>
                 <text x="80" y="312" text-anchor="middle">0</text>
@@ -256,8 +258,45 @@
           </div>
         </section>
 
+        <section aria-labelledby="energy">
+          <h2 id="energy"><span class="section-number">06</span>From charge to energy: watt-hours</h2>
+          <p>Capacity counts charge. How much <em>work</em> that charge can do also depends on the voltage it is delivered at, just as the same flow of water does more work falling from a greater height. Multiplying the two gives energy, in <strong>watt-hours (Wh)</strong>:</p>
+          <div class="equation" role="math" aria-label="nominal energy equals nominal capacity times nominal voltage">
+            <math display="block"><msub><mi>E</mi><mtext>nominal</mtext></msub><mo>=</mo><msub><mi>Q</mi><mtext>nominal</mtext></msub><mo>×</mo><msub><mi>V</mi><mtext>nominal</mtext></msub><mspace width="2em"/><mo stretchy="false">[</mo><mtext>Ah</mtext><mo>×</mo><mtext>V</mtext><mo>=</mo><mtext>Wh</mtext><mo stretchy="false">]</mo></math>
+          </div>
+          <p>The 20 Ah example cell, with a nominal voltage of 3.65 V, is rated at 20 × 3.65 = <strong>73 Wh</strong>. The nominal voltage is a representative average over a full discharge — the voltage itself slides from about 4.2 V down to about 3 V for a typical oxide cell — so the result is a rating, not the energy of any one discharge.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Same idea at different scales</caption>
+              <thead><tr><th scope="col">Cell or pack</th><th scope="col" class="num">Capacity</th><th scope="col" class="num">Nominal voltage</th><th scope="col" class="num">Nominal energy</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Phone cell, “5,000 mAh”</th><td class="num">5 Ah</td><td class="num">3.85 V</td><td class="num">19.25 Wh</td></tr>
+                <tr><th scope="row">Oxide cell (NMC)</th><td class="num">3 Ah</td><td class="num">3.6 V</td><td class="num">10.8 Wh</td></tr>
+                <tr><th scope="row">Phosphate cell (LFP), same capacity</th><td class="num">3 Ah</td><td class="num">3.2 V</td><td class="num">9.6 Wh</td></tr>
+                <tr><th scope="row">The 20 Ah example cell</th><td class="num">20 Ah</td><td class="num">3.65 V</td><td class="num">73 Wh</td></tr>
+                <tr><th scope="row">A pack of 96 cells, 50 Ah and 3.65 V each, in series</th><td class="num">50 Ah</td><td class="num">350.4 V</td><td class="num">17.5 kWh</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Two lessons hide in that table. First, <strong>equal ampere-hours do not mean equal energy</strong>: the LFP cell stores about 11 % less energy than the oxide cell with the same capacity, because its voltage is lower. Second, in a pack, cells in <strong>series</strong> add their voltages and cells in <strong>parallel</strong> add their capacities, but either way the pack’s energy is simply the sum of its cells’ energies. Divide a cell’s energy by its mass and you get its <strong>specific energy</strong>, in Wh/kg; divide by its volume and you get its <strong>energy density</strong>, in Wh/L — the two figures most often used to compare cells.</p>
+          <p>That is also why airlines ask about batteries in watt-hours, not milliampere-hours: a spare battery of up to 100 Wh can generally travel in hand luggage, and larger ones need the airline’s approval or are not allowed. And it is why the energy a cell actually delivers falls faster than its charge at high current — the voltage sags under load, so each ampere-hour carries fewer watt-hours.</p>
+          <form class="calc" data-calc="energy" aria-labelledby="calc-energy-title" onsubmit="return false">
+            <p class="calc-title" id="calc-energy-title">Calculator · nominal energy</p>
+            <div class="calc-inputs">
+              <label>Nominal capacity (Ah)<input name="capacity" type="number" inputmode="decimal" min="0" step="any" value="20"></label>
+              <label>Nominal voltage (V)<input name="voltage" type="number" inputmode="decimal" min="0" step="any" value="3.65"></label>
+              <label>Identical cells<input name="cells" type="number" inputmode="numeric" min="1" step="1" value="1"></label>
+            </div>
+            <dl class="calc-results" aria-live="polite">
+              <div><dt>Energy per cell</dt><dd data-out="cell_energy">73 Wh</dd></div>
+              <div><dt>Total energy</dt><dd data-out="energy">73 Wh</dd></div>
+            </dl>
+            <p class="calc-note">A rating: delivered energy is lower at high current, at low temperature and in an aged cell.</p>
+          </form>
+        </section>
+
         <section aria-labelledby="worked-example">
-          <h2 id="worked-example"><span class="section-number">06</span>Worked example: reading a datasheet</h2>
+          <h2 id="worked-example"><span class="section-number">07</span>Worked example: reading a datasheet</h2>
           <p>A datasheet lists a <strong>3.2 Ah</strong> cell with a maximum continuous discharge current of <strong>15 A</strong>. What C-rate is that, and what is its ideal duration?</p>
           <div class="equation" role="math" aria-label="C-rate equals 15 amperes divided by 3.2 ampere-hours, about 4.69 per hour; ideal duration is one over 4.69 per hour, about 0.213 hours or 12.8 minutes">
             <math display="block"><msub><mi>C</mi><mtext>rate</mtext></msub><mo>=</mo><mfrac><mrow><mn>15</mn><mtext>&#8202;A</mtext></mrow><mrow><mn>3.2</mn><mtext>&#8202;Ah</mtext></mrow></mfrac><mo>≈</mo><mn>4.69</mn><mtext>&#8202;h⁻¹</mtext><mspace width="2em"/><msub><mi>t</mi><mtext>ideal</mtext></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>4.69</mn><mtext>&#8202;h⁻¹</mtext></mrow></mfrac><mo>≈</mo><mn>0.213</mn><mtext>&#8202;h</mtext><mo>≈</mo><mn>12.8</mn><mtext>&#8202;min</mtext></math>
@@ -278,33 +317,35 @@
         </section>
 
         <section aria-labelledby="python">
-          <h2 id="python"><span class="section-number">07</span>Calculate it in Python</h2>
-          <p>Every number on this page comes from the same three tested functions in the open-source <code>battery_core</code> package:</p>
+          <h2 id="python"><span class="section-number">08</span>Calculate it in Python</h2>
+          <p>Every number on this page comes from the same four tested functions in the open-source <code>battery_core</code> package:</p>
 <pre><code>from battery_core import (
     c_rate_from_current,
     current_from_c_rate,
     ideal_duration_hours,
+    nominal_energy_wh,
 )
 
-current_from_c_rate(nominal_capacity_ah=20.0, c_rate=10.0)   # 200.0 A
-ideal_duration_hours(10.0) * 60.0                            # 6.0 min
-c_rate_from_current(current_a=15.0, nominal_capacity_ah=3.2) # 4.6875</code></pre>
-          <p>The two conversion functions accept <strong>keyword arguments only</strong>. Capacity is the first parameter of one and the second of the other, so a transposed positional call would return a plausible but wrong number with no error. Requiring names makes that mistake impossible.</p>
+current_from_c_rate(nominal_capacity_ah=20.0, c_rate=10.0)       # 200.0 A
+ideal_duration_hours(10.0) * 60.0                                # 6.0 min
+c_rate_from_current(current_a=15.0, nominal_capacity_ah=3.2)     # 4.6875
+nominal_energy_wh(nominal_capacity_ah=20.0, nominal_voltage_v=3.65)  # 73.0 Wh</code></pre>
+          <p>The conversion functions accept <strong>keyword arguments only</strong>. Capacity is the first parameter of one and the second of another, so a transposed positional call would return a plausible but wrong number with no error. Requiring names makes that mistake impossible.</p>
           <p>Want to change the code and plot it yourself? <a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb">Run the Lesson 2 notebook in your browser</a> (no installation; the first launch can take a few minutes).</p>
         </section>
 
         <section aria-labelledby="limitations">
-          <h2 id="limitations"><span class="section-number">08</span>Assumptions and limits</h2>
+          <h2 id="limitations"><span class="section-number">09</span>Assumptions and limits</h2>
           <ul>
             <li>Current is a positive magnitude; charge and discharge sign conventions belong to a later module.</li>
             <li>Nominal capacity must be strictly positive. Current and C-rate may be zero — a rest step is physical, and its C-rate is exactly 0.</li>
             <li>The ideal duration still needs a strictly positive C-rate, because <math><mn>1</mn><mo>/</mo><mn>0</mn></math> is undefined.</li>
-            <li>No voltage, energy, heat, aging, kinetics or rate-dependent capacity is calculated.</li>
+            <li>Energy is the nominal rating, capacity times nominal voltage. No voltage curve, delivered energy, heat, aging, kinetics or rate-dependent capacity is calculated.</li>
           </ul>
         </section>
 
         <section aria-labelledby="check-yourself" class="answers">
-          <h2 id="check-yourself"><span class="section-number">09</span>Check yourself</h2>
+          <h2 id="check-yourself"><span class="section-number">10</span>Check yourself</h2>
           <p>Work each one out before opening the answer.</p>
           <details>
             <summary>A 50 Ah cell is discharged at 25 A. What is its C-rate and ideal duration?</summary>
@@ -319,27 +360,31 @@ c_rate_from_current(current_a=15.0, nominal_capacity_ah=3.2) # 4.6875</code></pr
             <div><p>40 × (25 / 60) = <strong>16.7 Ah</strong>, about 3.3 Ah below the nominal rating under those test conditions. On its own this does not tell you how much charge would be usable at a different current, temperature or cutoff voltage.</p></div>
           </details>
           <details>
+            <summary>A power bank is labelled 20,000 mAh, and its cells have a nominal voltage of 3.7 V. Is it under the 100 Wh limit for hand luggage?</summary>
+            <div><p>20,000 mAh is 20 Ah, so its nominal energy is 20 × 3.7 = <strong>74 Wh</strong> — under 100 Wh. The milliampere-hour figure alone could not answer the question, because a pack of the same capacity at a higher voltage would hold more energy.</p></div>
+          </details>
+          <details>
             <summary>Why is “10C always lasts exactly 6 minutes” not a valid real-cell prediction?</summary>
             <div><p>Six minutes follows from the ideal reciprocal relationship. Real cutoff time also depends on voltage limits, resistance, polarization, temperature, chemistry, design, state of health and the capacity-rating procedure.</p></div>
           </details>
         </section>
 
         <section aria-labelledby="practice-quiz">
-          <h2 id="practice-quiz"><span class="section-number">10</span>Practice quiz</h2>
-          <p>Three questions on this lesson. The two numeric drills are marked in your browser and generate fresh numbers every time, so you can repeat them until the method is automatic; the written question you check against a model answer.</p>
+          <h2 id="practice-quiz"><span class="section-number">11</span>Practice quiz</h2>
+          <p>Questions on this lesson. The numeric drills are marked in your browser and generate fresh numbers every time, so you can repeat them until the method is automatic; the written question you check against a model answer.</p>
           <div id="study-coach" data-part="Lesson 2" data-module-base="../../chapter-1/"></div>
           <noscript><p class="coach-noscript">The practice quiz needs JavaScript. The check-yourself questions above cover the same ground with written answers.</p></noscript>
           <div class="complete-bar" hidden data-progress-ui>
             <p>Finished the lesson and the quiz?</p>
             <div class="actions">
               <button type="button" class="complete-button" data-complete="p02" aria-pressed="false">Mark as complete</button>
-              <a class="button button-primary" href="../battery-production/">Next: Lesson 3 →</a>
+              <a class="button button-primary" href="../cell-production/">Next: Lesson 3 →</a>
             </div>
           </div>
         </section>
 
         <section aria-labelledby="references">
-          <h2 id="references"><span class="section-number">11</span>References and further reading</h2>
+          <h2 id="references"><span class="section-number">12</span>References and further reading</h2>
           <p>These sources give broader battery-modeling context. The explanation, examples, code and tests in Battery Core are written independently.</p>
           <ol class="references">
             <li>T. B. Reddy (ed.), <cite>Linden’s Handbook of Batteries</cite>, 4th ed., McGraw-Hill, 2011.</li>
@@ -350,8 +395,8 @@ c_rate_from_current(current_a=15.0, nominal_capacity_ah=3.2) # 4.6875</code></pr
     </div>
 
     <nav class="lesson-pager" aria-label="Chapter 1 lessons">
-      <a class="pager-prev" href="../lithium-ion-cell-architecture/" rel="prev"><span>← Lesson 1B</span><strong>Lithium-ion cell architecture</strong></a>
-      <a class="pager-next" href="../battery-production/" rel="next"><span>Lesson 3 →</span><strong>Battery production</strong></a>
+      <a class="pager-prev" href="../cell-architecture/" rel="prev"><span>← Lesson 1B</span><strong>Lithium-ion cell architecture</strong></a>
+      <a class="pager-next" href="../cell-production/" rel="next"><span>Lesson 3 →</span><strong>Cell production</strong></a>
     </nav>
   </main>
 
