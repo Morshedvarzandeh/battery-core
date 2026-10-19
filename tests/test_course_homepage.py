@@ -70,7 +70,7 @@ def test_course_homepage_distinguishes_available_and_planned_parts() -> None:
     assert html.count('<span class="status">Available</span>') == 6
     assert '<span class="status">Planned</span>' in html
     assert "Equivalent Circuit Models" in html
-    assert "Battery production" in html
+    assert "Lithium-ion cell production" in html
     assert "All-solid-state cell production" in html
     assert "Battery aging" in html
 
@@ -99,14 +99,17 @@ def test_chapter_1_guide_uses_course_design_and_complete_sequence() -> None:
     assert 'href="#main-content"' in html
     assert 'id="main-content"' in html
     assert 'aria-label="Primary navigation"' in html
+    # The bar shows the learner's own progress over the core lessons and the
+    # checkpoint, not how many modules exist (that read as "already done").
     assert 'role="progressbar"' in html
-    assert 'aria-valuenow="6"' in html
+    assert 'data-items="p01 p02 p03 p04 checkpoint"' in html
+    assert 'aria-valuemax="5"' in html
     # Four core parts, two deeper views, and one toolkit entry.
     assert html.count('<article class="study-step">') == 4
     assert html.count("study-step-deeper") == 2
     assert html.count("study-step-toolkit") == 1
-    for part in ("01", "01B", "02", "03", "03B", "04"):
-        assert f"<strong>{part}</strong>" in html
+    for lesson in ("1", "1B", "2", "3", "3B", "4"):
+        assert f"<span>Lesson</span><strong>{lesson}</strong>" in html
 
 
 def test_chapter_1_guide_links_every_module() -> None:

@@ -221,7 +221,7 @@ def test_site_hosts_the_roadmap_it_links_to() -> None:
     roadmap = ROOT / "docs" / "roadmap" / "index.html"
     assert roadmap.is_file()
     html = roadmap.read_text(encoding="utf-8")
-    assert "Battery cell foundations" in html
+    assert "Battery Cell Foundations" in html
     assert "Equivalent circuit models" in html
     docs = ROOT / "docs"
     for page in (docs / "index.html", docs / "chapter-1" / "index.html"):

@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Fick's first law, J = −D dc/dx, for battery materials: units, the sign convention, a worked lithium-diffusion example, a flux calculator, and what the law does not model.">
+  <meta name="description" content="Fick's first law, J = −D dc/dx, for battery materials: units, the sign convention, a worked lithium-diffusion example, a flux calculator and its limits.">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://learn.lemonergy.com/transport/ficks-first-law/">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="Battery Core by Lemonergy">
+  <meta property="og:site_name" content="Lemonergy Learn">
   <meta property="og:title" content="Fick's first law for battery materials — which way does lithium move?">
   <meta property="og:description" content="J = −D dc/dx with units, the sign convention, a lithium-diffusion example and a flux calculator.">
   <meta property="og:url" content="https://learn.lemonergy.com/transport/ficks-first-law/">
@@ -17,7 +17,7 @@
   <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../../assets/site.css">
-  <title>Fick's first law: diffusion flux, sign convention and calculator — Battery Core</title>
+  <title>Fick's first law: diffusion flux, sign convention and calculator | Lemonergy Learn</title>
   <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
   <script type="application/ld+json">
   {
@@ -52,7 +52,7 @@
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Battery Core", "item": "https://learn.lemonergy.com/" },
+          { "@type": "ListItem", "position": 1, "name": "Battery Cell Foundations", "item": "https://learn.lemonergy.com/" },
           { "@type": "ListItem", "position": 2, "name": "Labs and reference", "item": "https://learn.lemonergy.com/#labs" },
           { "@type": "ListItem", "position": 3, "name": "Fick's first law" }
         ]
@@ -71,7 +71,7 @@
     </a>
     <nav aria-label="Primary navigation">
       <a href="../../">Home</a>
-      <a href="../../chapter-1/">Chapter 1</a>
+      <a href="../../chapter-1/">Syllabus</a>
       <a href="../../glossary/">Glossary</a>
       <a href="../../license/">Licensing</a>
     </nav>
@@ -80,7 +80,7 @@
   <main id="main-content">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol>
-        <li><a href="../../">Battery Core</a></li>
+        <li><a href="../../">Battery Cell Foundations</a></li>
         <li><a href="../../#labs">Labs and reference</a></li>
         <li><span aria-current="page">Fick’s first law</span></li>
       </ol>
@@ -122,7 +122,7 @@
             <li>predict the direction of the flux from the sign of the concentration gradient;</li>
             <li>list the assumptions behind the law and what it does not model.</li>
           </ul>
-          <p class="prerequisite"><strong>Before you start:</strong> comfort with a derivative as a slope. <a href="../../fundamentals/lithium-ion-cell-architecture/">Part 01B</a> shows where lithium travels inside a cell.</p>
+          <p class="prerequisite"><strong>Before you start:</strong> comfort with a derivative as a slope. <a href="../../fundamentals/lithium-ion-cell-architecture/">Lesson 1B</a> shows where lithium travels inside a cell.</p>
         </section>
 
         <section aria-labelledby="law">
@@ -180,7 +180,7 @@
         <section aria-labelledby="example">
           <h2 id="example"><span class="section-number">03</span>A battery-material example</h2>
           <p>Take an illustrative solid-state diffusivity of 10⁻¹⁴ m²/s and a concentration change of −5000 mol/m³ across 5 µm of active material. The gradient is −5000 / (5 × 10⁻⁶) = −10⁹ mol/m⁴, so:</p>
-          <div class="equation" role="math" aria-label="J equals minus ten to the minus fourteen times minus ten to the nine, which equals ten to the minus five moles per square metre per second">
+          <div class="equation" role="math" aria-label="J equals minus ten to the minus fourteen times minus ten to the nine, which equals ten to the minus five moles per square meter per second">
             <math display="block"><mi>J</mi><mo>=</mo><mrow><mo form="prefix">−</mo><mo stretchy="false">(</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>14</mn></mrow></msup><mo stretchy="false">)</mo></mrow><mrow><mo stretchy="false">(</mo><mrow><mo form="prefix">−</mo><msup><mn>10</mn><mn>9</mn></msup></mrow><mo stretchy="false">)</mo></mrow><mo>=</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup><mtext>&#8195;mol m⁻² s⁻¹</mtext></math>
           </div>
           <form class="calc" data-calc="fick-flux" aria-labelledby="calc-fick-title" onsubmit="return false">
@@ -202,8 +202,8 @@
 
         <section aria-labelledby="in-a-cell">
           <h2 id="in-a-cell"><span class="section-number">04</span>Where it shows up in a cell</h2>
-          <p>Diffusion acts wherever there is a concentration gradient: inside active-material particles during intercalation (solid-state diffusion), and in the electrolyte filling the pores of the electrodes and separator described in <a href="../../fundamentals/lithium-ion-cell-architecture/">Part 01B</a>, where it acts alongside migration in the electric field. It also explains the shape of one aging curve: in the diffusion-limited model of <a href="../../fundamentals/battery-aging/#sei">Part 04</a>, the SEI film grows like √t because the film acts as its own diffusion barrier.</p>
-          <p>Applying the law inside a porous electrode usually needs an <strong>effective</strong> transport coefficient and extra homogenisation assumptions, because the species moves through a tortuous network of pores rather than a uniform medium.</p>
+          <p>Diffusion acts wherever there is a concentration gradient: inside active-material particles during intercalation (solid-state diffusion), and in the electrolyte filling the pores of the electrodes and separator described in <a href="../../fundamentals/lithium-ion-cell-architecture/">Lesson 1B</a>, where it acts alongside migration in the electric field. It also explains the shape of one aging curve: in the diffusion-limited model of <a href="../../fundamentals/battery-aging/#sei">Lesson 4</a>, the SEI film grows like √t because the film acts as its own diffusion barrier.</p>
+          <p>Applying the law inside a porous electrode usually needs an <strong>effective</strong> transport coefficient and extra homogenization assumptions, because the species moves through a tortuous network of pores rather than a uniform medium.</p>
         </section>
 
         <section aria-labelledby="assumptions">
@@ -264,7 +264,7 @@ ficks_first_law_flux(1.0e-14, [-3e6, 0.0, 3e6])      # array: one flux per gradi
 
         <section aria-labelledby="references">
           <h2 id="references"><span class="section-number">09</span>References and further reading</h2>
-          <p>These sources give historical and modern context; this page summarises the equation independently rather than reproducing textbook prose.</p>
+          <p>These sources give historical and modern context; this page summarizes the equation independently rather than reproducing textbook prose.</p>
           <ol class="references">
             <li>A. Fick, “On liquid diffusion,” <cite>The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science</cite> 10(63), 30–39 (1855). <a href="https://doi.org/10.1080/14786445508641925">doi:10.1080/14786445508641925</a></li>
             <li>J. Newman, K. E. Thomas-Alyea, <cite>Electrochemical Systems</cite>, 3rd ed., Wiley-Interscience, 2004.</li>
@@ -275,7 +275,7 @@ ficks_first_law_flux(1.0e-14, [-3e6, 0.0, 3e6])      # array: one flux per gradi
 
     <nav class="lesson-pager" aria-label="Related lessons">
       <a class="pager-prev" href="../../" rel="prev"><span>← Course home</span><strong>All modules</strong></a>
-      <a class="pager-next" href="../../fundamentals/battery-aging/" rel="next"><span>Part 04 →</span><strong>Battery aging</strong></a>
+      <a class="pager-next" href="../../fundamentals/battery-aging/" rel="next"><span>Lesson 4 →</span><strong>Battery aging</strong></a>
     </nav>
   </main>
 

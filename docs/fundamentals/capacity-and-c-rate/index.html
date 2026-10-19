@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="What battery nominal capacity (Ah) and C-rate mean, how to convert between current, C-rate and ideal discharge time, and why a real cell can reach its voltage limit sooner. Worked examples and a calculator.">
+  <meta name="description" content="What battery capacity (Ah) and C-rate mean, how to convert current, C-rate and discharge time, and why real cells fall short. Worked examples and a calculator.">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="Battery Core by Lemonergy">
+  <meta property="og:site_name" content="Lemonergy Learn">
   <meta property="og:title" content="Battery capacity and C-rate, explained with a calculator">
   <meta property="og:description" content="Convert between current, C-rate and ideal discharge time — and learn why a real cell can reach its cutoff voltage sooner.">
   <meta property="og:url" content="https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/">
@@ -17,7 +17,7 @@
   <meta property="og:image:alt" content="Battery Core — battery engineering fundamentals by Lemonergy">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../../assets/site.css">
-  <title>Capacity and C-rate: formulas, worked examples and calculator — Battery Core</title>
+  <title>Capacity and C-rate: formulas, worked examples and calculator | Lemonergy Learn</title>
   <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
   <script type="application/ld+json">
   {
@@ -33,11 +33,11 @@
         "inLanguage": "en",
         "learningResourceType": "Lesson",
         "educationalLevel": "Beginner",
-        "timeRequired": "PT15M",
+        "timeRequired": "PT20M",
         "isAccessibleForFree": true,
         "teaches": ["Nominal capacity in ampere-hours", "C-rate", "Ideal constant-current duration", "Limits of ideal C-rate arithmetic"],
         "keywords": "battery C-rate, nominal capacity, ampere-hour, discharge time, C-rate calculator, lithium-ion",
-        "isPartOf": { "@id": "https://learn.lemonergy.com/chapter-1/#course" },
+        "isPartOf": { "@id": "https://learn.lemonergy.com/#course" },
         "position": 3,
         "author": { "@id": "https://lemonergy.com/#organization" },
         "publisher": { "@id": "https://lemonergy.com/#organization" },
@@ -53,9 +53,9 @@
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Battery Core", "item": "https://learn.lemonergy.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Chapter 1", "item": "https://learn.lemonergy.com/chapter-1/" },
-          { "@type": "ListItem", "position": 3, "name": "Part 02 · Capacity and C-rate" }
+          { "@type": "ListItem", "position": 1, "name": "Battery Cell Foundations", "item": "https://learn.lemonergy.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Syllabus", "item": "https://learn.lemonergy.com/chapter-1/" },
+          { "@type": "ListItem", "position": 3, "name": "Lesson 2 · Capacity and C-rate" }
         ]
       }
     ]
@@ -72,7 +72,7 @@
     </a>
     <nav aria-label="Primary navigation">
       <a href="../../">Home</a>
-      <a href="../../chapter-1/">Chapter 1</a>
+      <a href="../../chapter-1/">Syllabus</a>
       <a href="../../glossary/">Glossary</a>
       <a href="../../license/">Licensing</a>
     </nav>
@@ -81,18 +81,18 @@
   <main id="main-content">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol>
-        <li><a href="../../">Battery Core</a></li>
-        <li><a href="../../chapter-1/">Chapter 1</a></li>
-        <li><span aria-current="page">Part 02 · Capacity and C-rate</span></li>
+        <li><a href="../../">Battery Cell Foundations</a></li>
+        <li><a href="../../chapter-1/">Syllabus</a></li>
+        <li><span aria-current="page">Lesson 2 · Capacity and C-rate</span></li>
       </ol>
     </nav>
 
     <section class="page-hero" aria-labelledby="page-title">
-      <p class="eyebrow">Part 02 · Chapter 1 · Quantitative foundation</p>
+      <p class="eyebrow">Lesson 2 · Battery Cell Foundations · Quantitative foundation</p>
       <h1 id="page-title">How much current is “2C”, and how long does it last?</h1>
       <p class="lede">Nominal capacity tells you how much charge a cell is rated to deliver under specified test conditions. C-rate tells you how large a current is relative to that capacity. After this lesson you can convert between current, C-rate and ideal duration — and say exactly why the ideal duration is not a runtime prediction for a real cell.</p>
       <ul class="lesson-meta">
-        <li>Lesson <strong>3 of 6</strong></li>
+        <li><strong>Lesson 2</strong> of Battery Cell Foundations</li>
         <li><strong>15 min</strong> reading</li>
         <li><strong>5 min</strong> practice quiz</li>
         <li><strong>2</strong> calculators</li>
@@ -127,9 +127,9 @@
             <li>calculate C-rate from a measured or datasheet current;</li>
             <li>calculate the ideal duration associated with a C-rate;</li>
             <li>use charge as the area under a current–time curve to explain why the ideal duration is 1 / C-rate;</li>
-            <li>separate exact C-rate arithmetic from real-cell voltage-cutoff behaviour.</li>
+            <li>separate exact C-rate arithmetic from real-cell voltage-cutoff behavior.</li>
           </ul>
-          <p class="prerequisite"><strong>Before you start:</strong> <a href="../cell-anatomy-workbench/">Part 01 · Cell anatomy</a>. Arithmetic with units is all the maths you need.</p>
+          <p class="prerequisite"><strong>Before you start:</strong> <a href="../cell-anatomy-workbench/">Lesson 1 · Cell anatomy</a>. Arithmetic with units is all the maths you need.</p>
         </section>
 
         <section aria-labelledby="nominal-capacity">
@@ -142,7 +142,7 @@
         </section>
 
         <section aria-labelledby="c-rate">
-          <h2 id="c-rate"><span class="section-number">02</span>C-rate is a normalised current</h2>
+          <h2 id="c-rate"><span class="section-number">02</span>C-rate is a normalized current</h2>
           <p>C-rate divides the current by the nominal capacity, so the same number means the same <em>relative</em> load on a 3 Ah phone cell and a 300 Ah stationary cell:</p>
           <div class="equation" role="math" aria-label="C-rate equals current divided by nominal capacity">
             <math display="block"><msub><mi>C</mi><mtext>rate</mtext></msub><mo>=</mo><mfrac><mi>I</mi><msub><mi>Q</mi><mtext>nominal</mtext></msub></mfrac></math>
@@ -155,7 +155,7 @@
           <div class="equation" role="math" aria-label="current equals C-rate times nominal capacity; ideal duration equals one over C-rate">
             <math display="block"><mi>I</mi><mo>=</mo><msub><mi>C</mi><mtext>rate</mtext></msub><mspace width="0.2em"/><msub><mi>Q</mi><mtext>nominal</mtext></msub><mspace width="2.5em"/><msub><mi>t</mi><mtext>ideal</mtext></msub><mo>=</mo><mfrac><mn>1</mn><msub><mi>C</mi><mtext>rate</mtext></msub></mfrac></math>
           </div>
-          <p>The second expression contains no capacity, because the current has already been normalised by it. It is an <strong>ideal charge-transfer duration</strong>, not a prediction of when a real cell reaches its cutoff voltage.</p>
+          <p>The second expression contains no capacity, because the current has already been normalized by it. It is an <strong>ideal charge-transfer duration</strong>, not a prediction of when a real cell reaches its cutoff voltage.</p>
 
           <div class="table-wrap">
             <table data-out="table">
@@ -195,7 +195,7 @@
           <p><strong>1C is the reference point.</strong> For the 20 Ah example, 1C is 20 A and an ideal duration of one hour.</p>
           <p><strong>Doubling the C-rate doubles the current and halves the ideal duration.</strong> Moving from 1C to 2C changes 20 A to 40 A, and one hour to thirty minutes.</p>
           <p><strong>At the same C-rate, the ideal duration is the same for every capacity.</strong> A 3 Ah cell and a 300 Ah cell both have an ideal duration of 30 minutes at 2C — but they need 6 A and 600 A respectively.</p>
-          <p>That normalisation is the whole point of C-rate. A current on its own does not tell you how demanding a load is until you know the capacity of the cell carrying it.</p>
+          <p>That normalization is the whole point of C-rate. A current on its own does not tell you how demanding a load is until you know the capacity of the cell carrying it.</p>
         </section>
 
         <section aria-labelledby="area">
@@ -241,10 +241,10 @@
               <thead><tr><th scope="col">Effect</th><th scope="col">Why the measured duration can change</th></tr></thead>
               <tbody>
                 <tr><th scope="row">Ohmic voltage drop</th><td>A larger current produces a larger instantaneous terminal-voltage drop, so the lower cutoff can be reached sooner.</td></tr>
-                <tr><th scope="row">Polarisation and transport</th><td>Concentration gradients and reaction overpotentials generally grow with current, changing how much charge is accessible before cutoff.</td></tr>
+                <tr><th scope="row">Polarization and transport</th><td>Concentration gradients and reaction overpotentials generally grow with current, changing how much charge is accessible before cutoff.</td></tr>
                 <tr><th scope="row">Temperature</th><td>Temperature changes resistance, kinetics, transport and usable capacity.</td></tr>
                 <tr><th scope="row">Chemistry and design</th><td>Electrode thickness, particle size, electrolyte and other design choices set the rate capability.</td></tr>
-                <tr><th scope="row">State of health</th><td>Aging changes both capacity and resistance — see <a href="../battery-aging/">Part 04</a>.</td></tr>
+                <tr><th scope="row">State of health</th><td>Aging changes both capacity and resistance — see <a href="../battery-aging/">Lesson 4</a>.</td></tr>
                 <tr><th scope="row">Rating and test definition</th><td>Nominal capacity is tied to a specified current, temperature, rest conditions and voltage limits.</td></tr>
               </tbody>
             </table>
@@ -290,7 +290,7 @@ current_from_c_rate(nominal_capacity_ah=20.0, c_rate=10.0)   # 200.0 A
 ideal_duration_hours(10.0) * 60.0                            # 6.0 min
 c_rate_from_current(current_a=15.0, nominal_capacity_ah=3.2) # 4.6875</code></pre>
           <p>The two conversion functions accept <strong>keyword arguments only</strong>. Capacity is the first parameter of one and the second of the other, so a transposed positional call would return a plausible but wrong number with no error. Requiring names makes that mistake impossible.</p>
-          <p>Want to change the code and plot it yourself? <a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb">Run the Part 02 notebook in your browser</a> (no installation; the first launch can take a few minutes).</p>
+          <p>Want to change the code and plot it yourself? <a href="https://mybinder.org/v2/gh/Morshedvarzandeh/battery-core/main?urlpath=lab/tree/notebooks/fundamentals/02_capacity_and_c_rate.ipynb">Run the Lesson 2 notebook in your browser</a> (no installation; the first launch can take a few minutes).</p>
         </section>
 
         <section aria-labelledby="limitations">
@@ -320,27 +320,27 @@ c_rate_from_current(current_a=15.0, nominal_capacity_ah=3.2) # 4.6875</code></pr
           </details>
           <details>
             <summary>Why is “10C always lasts exactly 6 minutes” not a valid real-cell prediction?</summary>
-            <div><p>Six minutes follows from the ideal reciprocal relationship. Real cutoff time also depends on voltage limits, resistance, polarisation, temperature, chemistry, design, state of health and the capacity-rating procedure.</p></div>
+            <div><p>Six minutes follows from the ideal reciprocal relationship. Real cutoff time also depends on voltage limits, resistance, polarization, temperature, chemistry, design, state of health and the capacity-rating procedure.</p></div>
           </details>
         </section>
 
         <section aria-labelledby="practice-quiz">
           <h2 id="practice-quiz"><span class="section-number">10</span>Practice quiz</h2>
-          <p>Three questions on this lesson, marked in your browser. The numeric drills generate fresh numbers every time, so you can repeat them until the method is automatic.</p>
-          <div id="study-coach" data-part="Part 02" data-module-base="../../chapter-1/"></div>
+          <p>Three questions on this lesson. The two numeric drills are marked in your browser and generate fresh numbers every time, so you can repeat them until the method is automatic; the written question you check against a model answer.</p>
+          <div id="study-coach" data-part="Lesson 2" data-module-base="../../chapter-1/"></div>
           <noscript><p class="coach-noscript">The practice quiz needs JavaScript. The check-yourself questions above cover the same ground with written answers.</p></noscript>
           <div class="complete-bar" hidden data-progress-ui>
             <p>Finished the lesson and the quiz?</p>
             <div class="actions">
               <button type="button" class="complete-button" data-complete="p02" aria-pressed="false">Mark as complete</button>
-              <a class="button button-primary" href="../battery-production/">Next: Part 03 →</a>
+              <a class="button button-primary" href="../battery-production/">Next: Lesson 3 →</a>
             </div>
           </div>
         </section>
 
         <section aria-labelledby="references">
           <h2 id="references"><span class="section-number">11</span>References and further reading</h2>
-          <p>These sources give broader battery-modelling context. The explanation, examples, code and tests in Battery Core are written independently.</p>
+          <p>These sources give broader battery-modeling context. The explanation, examples, code and tests in Battery Core are written independently.</p>
           <ol class="references">
             <li>T. B. Reddy (ed.), <cite>Linden’s Handbook of Batteries</cite>, 4th ed., McGraw-Hill, 2011.</li>
             <li>G. L. Plett, <cite>Battery Management Systems, Volume I: Battery Modeling</cite>, Artech House, 2015.</li>
@@ -350,8 +350,8 @@ c_rate_from_current(current_a=15.0, nominal_capacity_ah=3.2) # 4.6875</code></pr
     </div>
 
     <nav class="lesson-pager" aria-label="Chapter 1 lessons">
-      <a class="pager-prev" href="../lithium-ion-cell-architecture/" rel="prev"><span>← Part 01B</span><strong>Lithium-ion cell architecture</strong></a>
-      <a class="pager-next" href="../battery-production/" rel="next"><span>Part 03 →</span><strong>Battery production</strong></a>
+      <a class="pager-prev" href="../lithium-ion-cell-architecture/" rel="prev"><span>← Lesson 1B</span><strong>Lithium-ion cell architecture</strong></a>
+      <a class="pager-next" href="../battery-production/" rel="next"><span>Lesson 3 →</span><strong>Battery production</strong></a>
     </nav>
   </main>
 

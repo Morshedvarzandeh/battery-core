@@ -2,72 +2,67 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://learn.lemonergy.com/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/chapter-1/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/glossary/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/license/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/roadmap/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/fundamentals/battery-aging/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/fundamentals/battery-production/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/fundamentals/cell-anatomy-workbench/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/fundamentals/lithium-ion-cell-architecture/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/fundamentals/solid-state-production/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/labs/battery-materials-lab/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://learn.lemonergy.com/tools/cellforge-visual-editor/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://learn.lemonergy.com/transport/ficks-first-law/</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>

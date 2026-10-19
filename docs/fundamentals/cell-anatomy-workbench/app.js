@@ -15,7 +15,7 @@ const details={
 "electrolyte":{title:"Electrolyte",discharge:"The nonaqueous lithium-salt electrolyte conducts lithium ions inside the cell while blocking electronic current.",charge:"The electrolyte conducts lithium ions back toward the negative electrode while still blocking electrons."},
 "separator":{title:"Separator",discharge:"The separator is electronically insulating and ionically permeable. It keeps the electrodes physically apart and reduces the risk of an internal short circuit.",charge:"Its function is unchanged during charge: keep the electrodes apart while allowing lithium-ion transport."},
 "negative-collector":{title:"Negative current collector — copper",discharge:"The copper collector conducts electrons from the graphite coating to the negative terminal without being the active lithium-storage material.",charge:"It carries electrons from the external charger into the graphite electrode."},
-"positive-collector":{title:"Positive current collector — aluminum",discharge:"The aluminum collector distributes electrons from the positive terminal into the positive-electrode coating.",charge:"It carries electrons away from the positive electrode toward the external charger."}
+"positive-collector":{title:"Positive current collector — aluminium",discharge:"The aluminium collector distributes electrons from the positive terminal into the positive-electrode coating.",charge:"It carries electrons away from the positive electrode toward the external charger."}
 };
 let mode="discharge",running=true,selected=null,animations=[];
 function clearMotion(){animations.forEach(a=>a.cancel());animations=[];document.querySelectorAll(".particle").forEach(p=>p.remove())}

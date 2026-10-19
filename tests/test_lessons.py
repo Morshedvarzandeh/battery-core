@@ -93,7 +93,7 @@ def test_lesson_follows_the_course_discipline(page: Path) -> None:
 
 @pytest.mark.parametrize(
     ("page", "part", "item"),
-    [(CAPACITY, "Part 02", "p02"), (AGING, "Part 04", "p04")],
+    [(CAPACITY, "Lesson 2", "p02"), (AGING, "Lesson 4", "p04")],
     ids=["part-02", "part-04"],
 )
 def test_practice_quiz_is_scoped_to_its_part(page: Path, part: str, item: str) -> None:
