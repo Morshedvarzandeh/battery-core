@@ -239,6 +239,110 @@
      between an exact definition and a prediction. */
   var QUESTIONS = [
     {
+      id: "p00-pack",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 0",
+      module: "../fundamentals/battery-basics/",
+      moduleLabel: "Lesson 0 · Battery basics",
+      question: "Which of these is a battery pack rather than a cell?",
+      hints: ["A cell is one electrochemical unit. What does a pack add around the cells?"],
+      options: [
+        {
+          text: "An electric car's battery: many cells with cooling, wiring and a battery management system.",
+          correct: true,
+          why: "Yes. A pack combines cells in series and parallel and adds the enclosure, cooling, protection and electronics.",
+        },
+        {
+          text: "A single cylindrical 21700 cell.",
+          why: "That is one electrochemical unit — a cell. A pack is built from many of them.",
+        },
+        {
+          text: "A single pouch cell with its two tabs.",
+          why: "Still one cell, whatever its format. The tabs are just its terminals.",
+        },
+      ],
+    },
+    {
+      id: "p00-bms",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 0",
+      module: "../fundamentals/battery-basics/",
+      moduleLabel: "Lesson 0 · Battery basics",
+      question: "What is the main job of a battery management system (BMS)?",
+      hints: ["A cell cannot protect itself. What has to watch over it?"],
+      options: [
+        {
+          text: "Measure cell voltages, current and temperatures, and disconnect the pack before any limit is crossed.",
+          correct: true,
+          why: "Yes. It also balances the cells and estimates how full the pack is.",
+        },
+        {
+          text: "Store extra energy when the cells are full.",
+          why: "The BMS is electronics; it stores no energy. Only the cells do.",
+        },
+        {
+          text: "Raise each cell's voltage so the pack lasts longer.",
+          why: "A cell's voltage is set by its chemistry. Pack voltage is raised by connecting cells in series, not by the BMS.",
+        },
+      ],
+    },
+    {
+      id: "p00-energy-number",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 0",
+      module: "../fundamentals/battery-basics/",
+      moduleLabel: "Lesson 0 · Battery basics",
+      question: "Which datasheet number tells you directly how much energy a cell stores?",
+      hints: ["Energy needs both how much charge, and at what voltage."],
+      options: [
+        {
+          text: "The energy in watt-hours — capacity times nominal voltage.",
+          correct: true,
+          why: "Yes. Ampere-hours count charge; multiplied by volts they give watt-hours of energy.",
+        },
+        {
+          text: "The capacity in ampere-hours.",
+          why: "Capacity is charge, not energy. Two cells with the same ampere-hours can store different energy at different voltages.",
+        },
+        {
+          text: "The maximum discharge current.",
+          why: "That says how fast the cell may be discharged, not how much it holds.",
+        },
+      ],
+    },
+    {
+      id: "p00-series",
+      group: "part",
+      tier: "deeper",
+      type: "choice",
+      part: "Lesson 0",
+      module: "../fundamentals/battery-basics/",
+      moduleLabel: "Lesson 0 · Battery basics",
+      question: "Connecting identical cells in series, rather than in parallel, raises which quantity?",
+      hints: ["In series, each cell's voltage stacks on the one before."],
+      options: [
+        {
+          text: "The pack voltage",
+          correct: true,
+          why: "Yes. Series adds voltages; parallel adds capacities. Either way the pack's energy is the sum of its cells' energies.",
+        },
+        {
+          text: "The pack capacity in ampere-hours",
+          why: "That is what parallel connection does. In series the same current flows through every cell, so the capacity stays that of one cell.",
+        },
+        {
+          text: "Neither: only the BMS can change them",
+          why: "The BMS protects and balances the cells; how they are wired sets the voltage and capacity.",
+        },
+      ],
+    },
+    {
       id: "p01-paths",
       group: "part",
       tier: "core",

@@ -325,3 +325,52 @@ svg(
 <rect x="414" y="198" width="10" height="40" rx="5" fill="#ffffff" stroke-width="1.6"/><circle cx="419" cy="242" r="7" fill="{TERRA}" stroke="{INK}" stroke-width="1.6"/>
 ''',
 )
+
+
+# 9 · Chapter 2 teaser: an equivalent circuit -------------------------------------
+def resistor(x, y, w):
+    pts = [f"{x},{y}"]
+    step = w / 8
+    for i in range(1, 8):
+        pts.append(f"{x + i * step:.1f},{y + (-10 if i % 2 else 10)}")
+    pts.append(f"{x + w},{y}")
+    return f'<polyline points="{" ".join(pts)}"/>'
+
+
+svg(
+    "equivalent-circuit",
+    "An equivalent-circuit model: a voltage source, a series resistor and a resistor-capacitor pair",
+    f"""
+<circle cx="80" cy="150" r="26" fill="#ffffff"/>
+<path d="M80 136 V164 M66 150 H94" stroke="{BLUE}" stroke-width="2.4"/>
+<path d="M80 124 V80 H130"/>
+{resistor(130, 80, 70)}
+<path d="M200 80 H250"/>
+<path d="M250 80 V50 H280"/>{resistor(280, 50, 60)}<path d="M340 50 H370 V80"/>
+<path d="M250 80 V110 H296 M314 110 H370 V80"/>
+<path d="M296 94 V126 M314 94 V126" stroke-width="3"/>
+<path d="M370 80 H420 V220 H80 V176"/>
+<circle cx="420" cy="80" r="5" fill="{INK}" stroke="none"/><circle cx="420" cy="220" r="5" fill="{INK}" stroke="none"/>
+<path d="M110 248 H170 V266 C200 266 230 258 270 255 C320 252 360 251 420 251" stroke="{TERRA}" stroke-width="2.6"/>
+""",
+)
+
+# 10 · CellForge layout editor: a machine drawing with selection handles -----------
+svg(
+    "layout-editor",
+    "A machine diagram being edited: one roller is selected, with handles to move and resize it",
+    f"""
+<path d="M40 210 H440" stroke="{SLATE}" stroke-width="5"/>
+<circle cx="90" cy="176" r="32" fill="#ffffff"/><circle cx="90" cy="176" r="9"/>
+<rect x="160" y="110" width="110" height="80" rx="6" fill="#ffffff"/>
+<path d="M182 168 q8 -10 0 -20 q-8 -10 0 -20 M214 168 q8 -10 0 -20 q-8 -10 0 -20 M246 168 q8 -10 0 -20 q-8 -10 0 -20" stroke="{TERRA}"/>
+<circle cx="330" cy="186" r="22" fill="#ffffff"/><circle cx="330" cy="186" r="5" fill="{INK}" stroke="none"/>
+<circle cx="330" cy="234" r="22" fill="#ffffff"/><circle cx="330" cy="234" r="5" fill="{INK}" stroke="none"/>
+<rect x="300" y="156" width="60" height="60" fill="none" stroke="{BLUE}" stroke-width="1.6" stroke-dasharray="5 4"/>
+<rect x="295" y="151" width="10" height="10" fill="#ffffff" stroke="{BLUE}"/><rect x="355" y="151" width="10" height="10" fill="#ffffff" stroke="{BLUE}"/>
+<rect x="295" y="211" width="10" height="10" fill="#ffffff" stroke="{BLUE}"/><rect x="355" y="211" width="10" height="10" fill="#ffffff" stroke="{BLUE}"/>
+<path d="M392 120 L392 154 L401 146 L408 162 L414 159 L407 143 L419 143 Z" fill="#ffffff" stroke="{INK}" stroke-width="1.8"/>
+<rect x="60" y="60" width="150" height="28" rx="5" fill="#ffffff" stroke="{LINE}"/>
+<path d="M72 74 H160" stroke="{LINE}" stroke-width="6"/>
+""",
+)

@@ -85,6 +85,12 @@
     render();
   });
 
+  /* Another script on this page recorded an item (the final exam does). */
+  window.addEventListener("battery-core-progress", () => {
+    state = load();
+    render();
+  });
+
   /* Another tab marked something complete: follow it. */
   window.addEventListener("storage", event => {
     if (event.key === KEY) {

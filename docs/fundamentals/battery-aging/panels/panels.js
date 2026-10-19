@@ -144,7 +144,7 @@ const MECH = {
     result: "Less active area → higher resistance → the cell can no longer deliver high power.",
     caveat: "Lumps several surface processes together; what actually forms differs enormously between chemistries." },
   dendrite: { n: "05", cls: "m-dendrite", title: "Dendrites (lithium plating)",
-    where: "From the negative electrode through the separator", feeds: "Self-discharge ↑, shorts", driver: "Cold charging, high current",
+    where: "From the negative electrode through the separator", feeds: "Capacity ↓; self-discharge ↑, shorts", driver: "Cold charging, high current",
     body: "Crystal growth that turns into a safety problem: metallic, tree-like structures growing from the electrode surface. Low temperature or overcurrent during charging deposits lithium as metal instead of inserting it, and those deposits can grow right through the separator.",
     result: "Rising self-discharge, then an internal short; the deposits also lock up lithium.",
     caveat: "A risk condition rather than normal operation — but it is exactly what cold fast-charging invites." },

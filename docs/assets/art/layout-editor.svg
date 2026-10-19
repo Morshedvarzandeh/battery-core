@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="A machine diagram being edited: one roller is selected, with handles to move and resize it">
+<title>A machine diagram being edited: one roller is selected, with handles to move and resize it</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2459a8"/></marker><marker id="k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#202938"/></marker></defs>
+<g fill="none" stroke="#202938" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" font-family="Arial, Helvetica, sans-serif">
+
+<path d="M40 210 H440" stroke="#64748b" stroke-width="5"/>
+<circle cx="90" cy="176" r="32" fill="#ffffff"/><circle cx="90" cy="176" r="9"/>
+<rect x="160" y="110" width="110" height="80" rx="6" fill="#ffffff"/>
+<path d="M182 168 q8 -10 0 -20 q-8 -10 0 -20 M214 168 q8 -10 0 -20 q-8 -10 0 -20 M246 168 q8 -10 0 -20 q-8 -10 0 -20" stroke="#c8693f"/>
+<circle cx="330" cy="186" r="22" fill="#ffffff"/><circle cx="330" cy="186" r="5" fill="#202938" stroke="none"/>
+<circle cx="330" cy="234" r="22" fill="#ffffff"/><circle cx="330" cy="234" r="5" fill="#202938" stroke="none"/>
+<rect x="300" y="156" width="60" height="60" fill="none" stroke="#2459a8" stroke-width="1.6" stroke-dasharray="5 4"/>
+<rect x="295" y="151" width="10" height="10" fill="#ffffff" stroke="#2459a8"/><rect x="355" y="151" width="10" height="10" fill="#ffffff" stroke="#2459a8"/>
+<rect x="295" y="211" width="10" height="10" fill="#ffffff" stroke="#2459a8"/><rect x="355" y="211" width="10" height="10" fill="#ffffff" stroke="#2459a8"/>
+<path d="M392 120 L392 154 L401 146 L408 162 L414 159 L407 143 L419 143 Z" fill="#ffffff" stroke="#202938" stroke-width="1.8"/>
+<rect x="60" y="60" width="150" height="28" rx="5" fill="#ffffff" stroke="#c3cad5"/>
+<path d="M72 74 H160" stroke="#c3cad5" stroke-width="6"/>
+
+</g>
+</svg>
