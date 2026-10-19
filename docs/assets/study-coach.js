@@ -676,7 +676,7 @@
         },
         {
           text: "To let the cell gain capacity before it is shipped.",
-          why: "A cell does not gain capacity by resting. Aging improves nothing; it screens.",
+          why: "Resting does not add capacity. Aging lets the SEI settle a little, but its main job is to screen.",
         },
         {
           text: "To dry out the last moisture.",
@@ -720,7 +720,7 @@
         },
         {
           text: "Formation",
-          why: "No. During formation the cell is sealed, so it runs in ordinary controlled production air.",
+          why: "No. A pouch or cylindrical cell is sealed during formation, so it runs in ordinary controlled production air.",
         },
       ],
     },
