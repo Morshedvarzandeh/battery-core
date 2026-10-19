@@ -3139,3 +3139,24 @@ math {
 .complete-bar + section {
   margin-top: 3rem;
 }
+
+/* A figure drawn twice: wide for screens, as a two-column list for phones. */
+.flow-figure .flow-wide,
+.flow-figure .flow-narrow {
+  display: block;
+  padding: 0.6rem 0.8rem 0.2rem;
+}
+
+.flow-figure .flow-narrow {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .flow-figure .flow-wide {
+    display: none;
+  }
+
+  .flow-figure .flow-narrow {
+    display: block;
+  }
+}
