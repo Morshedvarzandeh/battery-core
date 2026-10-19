@@ -60,6 +60,7 @@
         "courseWorkload": "PT5H"
       },
       "hasPart": [
+        { "@id": "https://learn.lemonergy.com/fundamentals/battery-basics/#lesson" },
         { "@id": "https://learn.lemonergy.com/fundamentals/cell-anatomy/#lesson" },
         { "@id": "https://learn.lemonergy.com/fundamentals/cell-architecture/#lesson" },
         { "@id": "https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/#lesson" },
@@ -93,7 +94,7 @@
       <a href="#syllabus">Syllabus</a>
       <a href="#labs">Labs</a>
       <a href="glossary/">Glossary</a>
-      <a href="license/">Licensing</a>
+      <a href="about/">About</a>
       <a class="nav-cta" href="fundamentals/cell-anatomy/">Start learning</a>
     </nav>
   </header>
@@ -114,7 +115,7 @@
       <img class="course-hero-art" src="assets/art/course.svg" alt="" width="480" height="300">
 
       <dl class="course-facts-strip" aria-label="Course facts">
-        <div><dt>6 lessons</dt><dd>4 core, 2 optional, and a checkpoint</dd></div>
+        <div><dt>7 lessons</dt><dd>4 core, 3 optional, and a final exam</dd></div>
         <div><dt>Beginner level</dt><dd>no battery background needed</dd></div>
         <div><dt>About 5 hours</dt><dd>at your own pace</dd></div>
         <div><dt>Free</dt><dd>no account, nothing to install</dd></div>
@@ -149,7 +150,7 @@
 
     <section id="syllabus" class="section" aria-labelledby="learning-title">
       <div class="section-heading">
-        <div><p class="eyebrow">Chapter 1 · Syllabus</p><h2 id="learning-title">There are 6 lessons in this course</h2></div>
+        <div><p class="eyebrow">Chapter 1 · Syllabus</p><h2 id="learning-title">There are 7 lessons in this course</h2></div>
         <p>Take the core lessons in order. Optional lessons go deeper into the lesson before them.</p>
       </div>
 
@@ -160,6 +161,13 @@
       </ul>
 
       <div class="module-grid">
+        <article class="module-card available deeper">
+          <img class="card-art" src="assets/art/course.svg" alt="" width="480" height="300" loading="lazy">
+          <div class="module-meta"><span class="part-number">Lesson 0 · Optional</span><span class="status">Available</span></div>
+          <div><p class="format">Reading · quiz · 15 min</p><h3>Battery basics</h3><p>What a battery does, cell versus module versus pack, the six numbers on a datasheet, and how this course works.</p></div>
+          <a class="card-action" href="fundamentals/battery-basics/">Start lesson <span aria-hidden="true">→</span></a>
+        </article>
+
         <article class="module-card available">
           <img class="card-art" src="assets/art/cell-anatomy.svg" alt="" width="480" height="300" loading="lazy">
           <div class="module-meta"><span class="part-number">Lesson 1</span><span class="status">Available</span></div>
@@ -205,12 +213,14 @@
         </article>
 
         <article class="module-card available toolkit">
+          <img class="card-art" src="assets/art/layout-editor.svg" alt="" width="480" height="300" loading="lazy">
           <div class="module-meta"><span class="part-number">Tool</span><span class="status">Toolkit</span></div>
           <div><p class="format">Browser editor</p><h3>CellForge layout editor</h3><p>Reposition, rename and resize the machine diagrams Lesson 3 draws, or start a new process step from the template.</p></div>
           <a class="card-action" href="tools/cellforge-visual-editor/">Open the editor <span aria-hidden="true">→</span></a>
         </article>
 
         <article class="module-card planned">
+          <img class="card-art" src="assets/art/equivalent-circuit.svg" alt="" width="480" height="300" loading="lazy">
           <div class="module-meta"><span class="part-number">Chapter 2</span><span class="status">Planned</span></div>
           <div><p class="format">Lessons · Python models</p><h3>Equivalent Circuit Models</h3><p>From terminal-voltage conventions and OCV to R0, one-RC and multiple-RC models, identification and validation.</p></div>
           <span class="card-action muted">Coming next</span>
@@ -239,6 +249,14 @@
           <a class="button button-secondary" href="fundamentals/battery-production/">Open CellForge</a>
         </article>
         <article class="wide-card">
+          <div><p class="format">Final exam</p><h3>Finish with the final exam</h3><p>Twenty questions across the whole course, marked in your browser. Pass and print a statement of completion.</p></div>
+          <a class="button button-secondary" href="exam/">Take the exam</a>
+        </article>
+        <article class="wide-card">
+          <div><p class="format">Reference</p><h3>Cheat sheet</h3><p>The formulas, rules and typical numbers from the course on one printable page.</p></div>
+          <a class="button button-secondary" href="cheat-sheet/">Open the cheat sheet</a>
+        </article>
+        <article class="wide-card">
           <div><p class="format">Reference</p><h3>Battery glossary</h3><p>55 battery terms in plain language, each linked to the lesson that teaches it.</p></div>
           <a class="button button-secondary" href="glossary/">Open the glossary</a>
         </article>
@@ -256,6 +274,8 @@
   </main>
 
   <footer><p>Battery Core · A project of Lemonergy · Free, open-source battery engineering education</p><div>
-<a href="https://lemonergy.com/">Lemonergy</a><a href="glossary/">Glossary</a><a href="license/">AGPL-3.0-or-later</a><a href="license/#commercial">Commercial use</a></div></footer>
+<a href="https://lemonergy.com/">Lemonergy</a><a href="glossary/">Glossary</a><a href="cheat-sheet/">Cheat sheet</a>
+      <a href="about/">About and FAQ</a>
+      <a href="license/">AGPL-3.0-or-later</a><a href="license/#commercial">Commercial use</a></div></footer>
 </body>
 </html>

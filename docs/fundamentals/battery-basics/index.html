@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="What a rechargeable battery does, how cells become packs, the six numbers on a cell datasheet, and the lithium-ion chemistries. A free starting lesson.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://learn.lemonergy.com/fundamentals/battery-basics/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Lemonergy Learn">
+  <meta property="og:title" content="Battery basics: cells, packs and the numbers on a datasheet">
+  <meta property="og:description" content="What a battery does, cell vs module vs pack, the six datasheet numbers that matter, and the lithium-ion family.">
+  <meta property="og:url" content="https://learn.lemonergy.com/fundamentals/battery-basics/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og/battery-basics.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="What does a battery actually do? — Lesson 0, Lemonergy Learn">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../assets/site.css">
+  <title>Battery basics: cells, packs and the numbers on a datasheet | Lemonergy Learn</title>
+  <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LearningResource",
+      "@id": "https://learn.lemonergy.com/fundamentals/battery-basics/#lesson",
+      "name": "Battery basics",
+      "headline": "Battery basics: cells, packs and the numbers on a datasheet",
+      "description": "What a rechargeable battery does, cells, modules and packs, the six headline numbers on a cell datasheet, the lithium-ion chemistries and formats, and how the course works.",
+      "url": "https://learn.lemonergy.com/fundamentals/battery-basics/",
+      "inLanguage": "en",
+      "learningResourceType": "Lesson",
+      "educationalLevel": "Beginner",
+      "timeRequired": "PT15M",
+      "isAccessibleForFree": true,
+      "teaches": [
+        "Cell, module and pack",
+        "Battery management system",
+        "Cell datasheet numbers",
+        "Lithium-ion chemistries and formats"
+      ],
+      "keywords": "battery basics, cell module pack, battery management system, battery datasheet, NMC, LFP, lithium-ion chemistries",
+      "isPartOf": {
+        "@id": "https://learn.lemonergy.com/#course"
+      },
+      "position": 0,
+      "author": {
+        "@id": "https://lemonergy.com/#organization"
+      },
+      "publisher": {
+        "@id": "https://lemonergy.com/#organization"
+      },
+      "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Battery Cell Foundations",
+          "item": "https://learn.lemonergy.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Syllabus",
+          "item": "https://learn.lemonergy.com/chapter-1/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Lesson 0 · Battery basics"
+        }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://lemonergy.com/#organization",
+      "name": "Lemonergy",
+      "url": "https://lemonergy.com/",
+      "email": "info@lemonergy.com"
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the lesson</a>
+
+  <header class="site-header">
+    <a class="brand" href="../../" aria-label="Lemonergy Learn home">
+      <svg class="brand-logo" viewBox="0 6 32 20" aria-hidden="true" focusable="false"><path d="M3.6 16 C3.6 10.4 9.2 7 15.6 7 C22 7 27 10.4 27 16 C27 21.6 22 25 15.6 25 C9.2 25 3.6 21.6 3.6 16 Z" fill="#ffd94a" stroke="#b8901f" stroke-width="1.8"/><path d="M1.4 16 L3.9 14.4 L3.9 17.6 Z" fill="#b8901f"/><rect x="27.4" y="13" width="3.2" height="6" rx="1.2" fill="#2459a8"/><rect x="9" y="11.6" width="3.2" height="8.8" rx="1.1" fill="#2459a8"/><rect x="14" y="11.6" width="3.2" height="8.8" rx="1.1" fill="#2459a8"/><rect x="19" y="11.6" width="3.2" height="8.8" rx="1.1" fill="#2459a8"/></svg>
+      <span class="brand-name">Lemonergy</span>
+      <span class="brand-sub">· battery engineering courses</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../../">Home</a>
+      <a href="../../chapter-1/">Syllabus</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../about/">About</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Battery Cell Foundations</a></li>
+        <li><a href="../../chapter-1/">Syllabus</a></li>
+        <li><span aria-current="page">Lesson 0 · Battery basics</span></li>
+      </ol>
+    </nav>
+
+    <section class="page-hero has-art" aria-labelledby="page-title">
+      <img class="hero-art" src="../../assets/art/course.svg" alt="" width="480" height="300">
+      <p class="eyebrow">Lesson 0 · Battery Cell Foundations · Start here</p>
+      <h1 id="page-title">What does a battery actually do?</h1>
+      <p class="lede">Before the electrodes and the equations: what a battery is for, how cells become packs, which numbers on a datasheet matter, and why “lithium-ion” is a family rather than one thing. It ends with how this course works, so you can get the most out of the lessons that follow.</p>
+      <ul class="lesson-meta">
+        <li><strong>Lesson 0</strong> of Battery Cell Foundations · optional</li>
+        <li><strong>10 min</strong> reading</li>
+        <li><strong>5 min</strong> practice quiz</li>
+        <li>No prerequisites</li>
+      </ul>
+    </section>
+
+    <div class="lesson">
+      <aside class="lesson-toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">In this lesson</h2>
+        <ol>
+          <li><a href="#energy-you-can-carry">Energy you can carry</a></li>
+          <li><a href="#cell-module-pack">Cell, module, pack</a></li>
+          <li><a href="#datasheet">Six numbers on a datasheet</a></li>
+          <li><a href="#family">A family, not one thing</a></li>
+          <li><a href="#how-it-works">How this course works</a></li>
+          <li><a href="#check-yourself">Check yourself</a></li>
+          <li><a href="#practice-quiz">Practice quiz</a></li>
+        </ol>
+      </aside>
+
+      <article class="prose">
+        <section class="objectives" aria-labelledby="objectives-title">
+          <h2 id="objectives-title">Learning objectives</h2>
+          <p>By the end of this lesson you will be able to:</p>
+          <ul>
+            <li>say what a rechargeable battery does, and tell a cell from a module and a pack;</li>
+            <li>read the six headline numbers on a cell datasheet and say which lesson explains each;</li>
+            <li>name the main lithium-ion chemistries and cell formats;</li>
+            <li>find your way around the course: lessons, labs, quizzes, progress and the final exam.</li>
+          </ul>
+          <p class="prerequisite"><strong>Before you start:</strong> nothing at all. This lesson is the starting point.</p>
+        </section>
+
+        <section aria-labelledby="energy-you-can-carry">
+          <h2 id="energy-you-can-carry"><span class="section-number">01</span>Energy you can carry</h2>
+          <p>A battery stores energy in chemical form and gives it back as electricity, on demand, wherever it is. Some batteries are used once and thrown away. A <strong>rechargeable</strong> battery runs its chemistry backwards when it is charged, so the same materials can store and release energy thousands of times. Lithium-ion is the rechargeable battery of our time because it stores a lot of energy for its weight and lasts for many cycles.</p>
+          <div class="table-wrap">
+            <table>
+              <caption>Roughly how much energy batteries hold, by application</caption>
+              <thead><tr><th scope="col">Application</th><th scope="col" class="num">Typical energy</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Smartphone</th><td class="num">about 15–20 Wh</td></tr>
+                <tr><th scope="row">Laptop</th><td class="num">about 50–100 Wh</td></tr>
+                <tr><th scope="row">Electric bicycle</th><td class="num">about 0.4–0.75 kWh</td></tr>
+                <tr><th scope="row">Home storage battery</th><td class="num">about 5–15 kWh</td></tr>
+                <tr><th scope="row">Electric car</th><td class="num">about 40–100 kWh</td></tr>
+                <tr><th scope="row">Electric city bus</th><td class="num">about 300–600 kWh</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A watt-hour (Wh) is the energy of one watt for one hour; 1 kWh is 1,000 Wh. The range spans more than four orders of magnitude, but the cells inside work the same way. That is what this course is about.</p>
+        </section>
+
+        <section aria-labelledby="cell-module-pack">
+          <h2 id="cell-module-pack"><span class="section-number">02</span>Cell, module, pack</h2>
+          <ul>
+            <li>A <strong>cell</strong> is one electrochemical unit: two electrodes, a separator and electrolyte in a sealed case. Its voltage is set by its chemistry, a few volts at most.</li>
+            <li>A <strong>module</strong> is a group of cells connected and held together mechanically, often with sensing wires and cooling.</li>
+            <li>A <strong>pack</strong> is the complete battery a product uses: modules or cells, connected in <strong>series</strong> to raise the voltage and in <strong>parallel</strong> to raise the capacity, plus the enclosure, cooling, wiring, fuses and the battery management system.</li>
+          </ul>
+          <p>The <strong>battery management system</strong>, or BMS, is the pack’s electronics. It measures every cell’s voltage, the current and the temperatures, estimates how full the pack is, keeps the cells balanced, and switches the pack off before any cell is charged or discharged too far, or gets too hot or too cold. A cell cannot protect itself; the BMS does it for every cell in the pack. A phone has a single cell and a tiny BMS; an electric car can have thousands of cells.</p>
+        </section>
+
+        <section aria-labelledby="datasheet">
+          <h2 id="datasheet"><span class="section-number">03</span>Six numbers on a cell datasheet</h2>
+          <p>Every cell comes with a datasheet. Six of its numbers come up again and again, and each one has a lesson in this course:</p>
+          <div class="table-wrap">
+            <table>
+              <caption>The headline numbers on a cell datasheet</caption>
+              <thead><tr><th scope="col">Number</th><th scope="col">What it says</th><th scope="col">Learn it in</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Nominal capacity (Ah)</th><td>How much charge the cell delivers under stated test conditions</td><td><a href="../../fundamentals/capacity-and-c-rate/#nominal-capacity">Lesson 2</a></td></tr>
+                <tr><th scope="row">Nominal voltage (V)</th><td>A representative average voltage over a discharge</td><td><a href="../../fundamentals/cell-anatomy/#voltage">Lesson 1</a></td></tr>
+                <tr><th scope="row">Energy (Wh)</th><td>Capacity times nominal voltage</td><td><a href="../../fundamentals/capacity-and-c-rate/#energy">Lesson 2</a></td></tr>
+                <tr><th scope="row">Maximum current (A, or a C-rate)</th><td>How hard the cell may be charged and discharged</td><td><a href="../../fundamentals/capacity-and-c-rate/#c-rate">Lesson 2</a></td></tr>
+                <tr><th scope="row">Cycle life</th><td>How many cycles until the capacity falls to a stated level, usually 80 %</td><td><a href="../../fundamentals/battery-aging/#end-of-life">Lesson 4</a></td></tr>
+                <tr><th scope="row">Temperature range</th><td>Where the cell may be charged, discharged and stored</td><td><a href="../../fundamentals/battery-aging/#temperature">Lesson 4</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Mass and dimensions complete the picture: divide the energy by them and you get the energy per kilogram and per litre that cells are usually compared by.</p>
+        </section>
+
+        <section aria-labelledby="family">
+          <h2 id="family"><span class="section-number">04</span>Lithium-ion is a family, not one thing</h2>
+          <p>All lithium-ion cells shuttle lithium ions between two host materials, but the materials vary, and they change the voltage, the energy, the lifetime, the safety and the cost. The positive electrode is what usually gives a cell its name:</p>
+          <ul>
+            <li><strong>NMC and NCA</strong> — layered oxides of nickel with manganese or aluminium and cobalt. High energy; common in electric cars.</li>
+            <li><strong>LFP</strong> — lithium iron phosphate. Lower voltage and energy, but long life, good thermal stability and no nickel or cobalt; common in buses, stationary storage and many cars.</li>
+            <li><strong>LCO</strong> — lithium cobalt oxide, the original commercial material, still used in many phones and laptops.</li>
+          </ul>
+          <p>The negative electrode is graphite in most cells, sometimes with silicon added for more capacity. And the same chemistry can be packaged three ways: as a <strong>cylindrical</strong>, a <strong>prismatic</strong> or a <strong>pouch</strong> cell. <a href="../../fundamentals/cell-production/#formats">Lesson 3</a> shows how the format changes the factory.</p>
+        </section>
+
+        <section aria-labelledby="how-it-works">
+          <h2 id="how-it-works"><span class="section-number">05</span>How this course works</h2>
+          <ol>
+            <li><strong>Read the lesson.</strong> Each one opens with its learning objectives and states its assumptions and limits.</li>
+            <li><strong>Use the lab.</strong> Most lessons include an interactive workbench, tutorial, simulator or panels. Change things and watch what follows.</li>
+            <li><strong>Check yourself.</strong> Work out each check-yourself question before opening its answer.</li>
+            <li><strong>Take the practice quiz.</strong> Multiple-choice and numeric questions are marked in your browser; written ones you compare with a model answer.</li>
+            <li><strong>Mark the lesson complete.</strong> Your progress shows on the <a href="../../chapter-1/">syllabus</a>. It is saved in this browser only, with no account.</li>
+            <li><strong>Pass the final exam.</strong> When the core lessons are done, the <a href="../../exam/">final exam</a> checks the whole course and gives you a printable statement of completion.</li>
+          </ol>
+          <p>Along the way, the <a href="../../glossary/">glossary</a> defines every term in plain language and the <a href="../../cheat-sheet/">cheat sheet</a> puts the formulas and key numbers on one page. If you like code, every calculation also exists as a tested Python function and a notebook you can run.</p>
+        </section>
+
+        <section aria-labelledby="check-yourself" class="answers">
+          <h2 id="check-yourself"><span class="section-number">06</span>Check yourself</h2>
+          <p>Work each one out before opening the answer.</p>
+          <details>
+            <summary>A phone battery is labelled 5,000 mAh and an e-bike battery 14 Ah. Which stores more energy?</summary>
+            <div><p>You cannot tell from ampere-hours alone: energy also depends on voltage. The phone’s single cell runs at about 3.85 V, so it holds about 5 × 3.85 ≈ 19 Wh. A typical e-bike pack runs at about 36 V, so 14 Ah is about 500 Wh — some 25 times more. <a href="../../fundamentals/capacity-and-c-rate/#energy">Lesson 2</a> has the details.</p></div>
+          </details>
+          <details>
+            <summary>What does a battery management system do that a cell cannot do for itself?</summary>
+            <div><p>It measures and protects. A cell has no way to stop being overcharged, over-discharged or overheated; the BMS watches every cell’s voltage and temperature and the current, and disconnects the pack before a limit is crossed. It also balances the cells and estimates the state of charge.</p></div>
+          </details>
+          <details>
+            <summary>Why does a datasheet state cycle life “to 80 %”?</summary>
+            <div><p>Because a cell does not suddenly die; it slowly holds less. By convention it is called worn out when its capacity has fallen to 80 % of the rated value, so cycle life is the number of cycles until that point, under stated test conditions.</p></div>
+          </details>
+        </section>
+
+        <section aria-labelledby="practice-quiz">
+          <h2 id="practice-quiz"><span class="section-number">07</span>Practice quiz</h2>
+          <p>Four quick questions, marked in your browser.</p>
+          <div id="study-coach" data-part="Lesson 0" data-module-base="../../chapter-1/"></div>
+          <noscript><p class="coach-noscript">The practice quiz needs JavaScript. The check-yourself questions above cover the same ground with written answers.</p></noscript>
+          <div class="complete-bar" hidden data-progress-ui>
+            <p>Ready for the first lesson?</p>
+            <div class="actions">
+              <button type="button" class="complete-button" data-complete="p00" aria-pressed="false">Mark as complete</button>
+              <a class="button button-primary" href="../../fundamentals/cell-anatomy/">Next: Lesson 1 →</a>
+            </div>
+          </div>
+        </section>
+      </article>
+    </div>
+
+    <nav class="lesson-pager" aria-label="Chapter 1 lessons">
+      <a class="pager-prev" href="../../chapter-1/" rel="prev"><span>← Syllabus</span><strong>Battery Cell Foundations</strong></a>
+      <a class="pager-next" href="../../fundamentals/cell-anatomy/" rel="next"><span>Lesson 1 →</span><strong>How a lithium-ion cell works</strong></a>
+    </nav>
+  </main>
+
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../../">Course home</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="../../cheat-sheet/">Cheat sheet</a>
+      <a href="../../about/">About and FAQ</a>
+      <a href="../../license/">AGPL-3.0-or-later</a>
+      <a href="../../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+  <script src="../../assets/study-coach.js" defer></script>
+  <script src="../../assets/course-progress.js" defer></script>
+</body>
+</html>

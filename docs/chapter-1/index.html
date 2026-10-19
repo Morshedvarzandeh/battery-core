@@ -10,7 +10,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Lemonergy Learn">
   <meta property="og:title" content="Battery cell foundations — a free, open course">
-  <meta property="og:description" content="Six lessons from cell anatomy and C-rate to production and aging, with interactive labs, practice quizzes and progress tracking.">
+  <meta property="og:description" content="Seven lessons from battery basics and cell anatomy to production and aging, with interactive labs, practice quizzes, progress tracking and a final exam.">
   <meta property="og:url" content="https://learn.lemonergy.com/chapter-1/">
   <meta property="og:image" content="https://learn.lemonergy.com/assets/og/syllabus.png">
   <meta property="og:image:width" content="1200">
@@ -41,6 +41,7 @@
         "offers": { "@type": "Offer", "category": "Free", "price": 0, "priceCurrency": "EUR" },
         "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "Online", "courseWorkload": "PT5H" },
         "hasPart": [
+          { "@type": "LearningResource", "name": "Battery basics", "url": "https://learn.lemonergy.com/fundamentals/battery-basics/" },
           { "@type": "LearningResource", "name": "Cell anatomy and charge/discharge paths", "url": "https://learn.lemonergy.com/fundamentals/cell-anatomy/" },
           { "@type": "LearningResource", "name": "Lithium-ion cell architecture", "url": "https://learn.lemonergy.com/fundamentals/cell-architecture/" },
           { "@type": "LearningResource", "name": "Nominal capacity and C-rate", "url": "https://learn.lemonergy.com/fundamentals/capacity-and-c-rate/" },
@@ -92,22 +93,22 @@
       <div>
         <p class="eyebrow">Syllabus</p>
         <h1 id="guide-title">Battery Cell Foundations</h1>
-        <p class="hero-summary">Four core lessons and two optional ones, from what is inside a lithium-ion cell to how it is rated, how it is made and how it wears out. Take them in order, practise with each lesson’s questions, and mark each one complete.</p>
+        <p class="hero-summary">Four core lessons, three optional ones and a final exam, from what is inside a lithium-ion cell to how it is rated, how it is made and how it wears out. Take them in order, practice with each lesson’s questions, mark each one complete, and finish with the final exam.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="../fundamentals/cell-anatomy/">Start lesson 1</a>
           <a class="button button-secondary" href="#practice">Practice questions</a>
         </div>
       </div>
 
-      <aside class="chapter-status" aria-label="Your progress" data-progress-summary data-items="p01 p02 p03 p04 checkpoint">
+      <aside class="chapter-status" aria-label="Your progress" data-progress-summary data-items="p01 p02 p03 p04 checkpoint exam">
         <p class="format">Your progress</p>
-        <strong data-progress-count>0 of 5 complete</strong>
-        <div class="progress-track" role="progressbar" aria-label="Core lessons and checkpoint completed" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
+        <strong data-progress-count>0 of 6 complete</strong>
+        <div class="progress-track" role="progressbar" aria-label="Core lessons, checkpoint and final exam completed" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0">
           <span style="width:0%"></span>
         </div>
         <dl>
-          <div><dt>Core lessons</dt><dd>1, 2, 3, 4 and the checkpoint</dd></div>
-          <div><dt>Optional</dt><dd>1B and 3B — tracked, not counted</dd></div>
+          <div><dt>Core</dt><dd>Lessons 1, 2, 3, 4, the checkpoint and the final exam</dd></div>
+          <div><dt>Optional</dt><dd>Lessons 0, 1B and 3B — tracked, not counted</dd></div>
           <div><dt>Time</dt><dd>About 5 hours</dd></div>
           <div><dt>Saved</dt><dd>In this browser only</dd></div>
         </dl>
@@ -120,7 +121,7 @@
           <p class="eyebrow">About this course</p>
           <h2 id="about-title">Battery cell foundations</h2>
         </div>
-        <p>Six lessons that take you from what is inside a lithium-ion cell to how it is rated, how it is made, and how it wears out. Every lesson has practice questions and can be marked complete; the reading lessons also open with learning objectives.</p>
+        <p>Seven lessons that take you from what a battery does and what is inside a lithium-ion cell to how it is rated, how it is made, and how it wears out. Every lesson opens with learning objectives, has practice questions and can be marked complete, and a final exam checks the whole course.</p>
       </div>
 
       <div class="course-about">
@@ -192,6 +193,25 @@
       </ul>
 
       <div class="study-sequence">
+        <article class="study-step study-step-deeper">
+          <div class="study-step-number"><span>Lesson</span><strong>0</strong></div>
+          <div class="study-step-copy">
+            <p class="format">Reading · Start here, optional</p>
+            <h3>Battery basics</h3>
+            <p>What a battery does, how cells become modules and packs, the six numbers on a cell datasheet, the lithium-ion chemistries, and how this course works.</p>
+            <div class="study-prompts">
+              <p><strong>For:</strong> anyone new to batteries. Skip it if “cell, module, pack” and “Ah versus Wh” are already familiar.</p>
+              <p><strong>Checkpoint:</strong> Can you say why a 14 Ah e-bike pack stores far more energy than a 5,000 mAh phone?</p>
+            </div>
+            <ul class="syllabus-items" aria-label="Lesson items">
+              <li data-progress-item="p00"><span class="item-type">Reading</span><a href="../fundamentals/battery-basics/">What does a battery actually do?</a><span class="item-time">10 min</span></li>
+              <li data-progress-item="p00"><span class="item-type">Practice quiz</span><a href="../fundamentals/battery-basics/#practice-quiz">4 questions</a><span class="item-time">5 min</span></li>
+            </ul>
+            <a class="card-action" href="../fundamentals/battery-basics/">Start lesson 0 <span aria-hidden="true">→</span></a>
+            <button type="button" class="complete-button" data-complete="p00" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>
+          </div>
+        </article>
+
         <article class="study-step">
           <div class="study-step-number"><span>Lesson</span><strong>1</strong></div>
           <div class="study-step-copy">
@@ -367,8 +387,10 @@
 
       <ul class="syllabus-items" aria-label="Checkpoint items">
         <li data-progress-item="checkpoint"><span class="item-type">Chapter quiz</span><a href="#practice">3 synthesis questions — filter by “Chapter checkpoints”</a><span class="item-time">10 min</span></li>
+        <li data-progress-item="exam"><span class="item-type">Final exam</span><a href="../exam/">20 questions, pass with 15 — with a statement of completion</a><span class="item-time">20 min</span></li>
       </ul>
       <button type="button" class="complete-button" data-complete="checkpoint" aria-pressed="false" hidden data-progress-ui>Mark as complete</button>
+      <a class="button button-primary exam-cta" href="../exam/">Take the final exam</a>
 
       <div class="checkpoint-grid">
         <article>
@@ -406,6 +428,8 @@
     <p>Battery Core · A project of Lemonergy</p>
     <div>
       <a href="../">Course home</a>
+      <a href="../cheat-sheet/">Cheat sheet</a>
+      <a href="../about/">About and FAQ</a>
       <a href="../license/">AGPL-3.0-or-later</a>
       <a href="../license/#commercial">Commercial use</a>
     </div>

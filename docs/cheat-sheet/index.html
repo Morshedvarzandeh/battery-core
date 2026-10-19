@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Formulas, rules and typical numbers for lithium-ion cells on one printable page: C-rate, energy, cell structure, production, solid-state and aging.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://learn.lemonergy.com/cheat-sheet/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Lemonergy Learn">
+  <meta property="og:title" content="Lithium-ion cell cheat sheet">
+  <meta property="og:description" content="C-rate, energy, Arrhenius, the production chain and the aging mechanisms — on one printable page.">
+  <meta property="og:url" content="https://learn.lemonergy.com/cheat-sheet/">
+  <meta property="og:image" content="https://learn.lemonergy.com/assets/og/cheat-sheet.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Lithium-ion cell cheat sheet — Lemonergy Learn">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../assets/site.css">
+  <title>Lithium-ion cell cheat sheet: formulas and key numbers | Lemonergy Learn</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LearningResource",
+      "@id": "https://learn.lemonergy.com/cheat-sheet/#sheet",
+      "name": "Lithium-ion cell cheat sheet",
+      "description": "Formulas, rules and typical numbers for lithium-ion cells on one printable page: cell structure, C-rate and energy, production, solid-state electrolytes and aging.",
+      "url": "https://learn.lemonergy.com/cheat-sheet/",
+      "inLanguage": "en",
+      "learningResourceType": "Reference",
+      "educationalLevel": "Beginner",
+      "isAccessibleForFree": true,
+      "isPartOf": {
+        "@id": "https://learn.lemonergy.com/#course"
+      },
+      "keywords": "lithium-ion cheat sheet, C-rate formula, battery energy Wh, battery formulas, battery aging mechanisms"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Battery Cell Foundations",
+          "item": "https://learn.lemonergy.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Cheat sheet"
+        }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://lemonergy.com/#organization",
+      "name": "Lemonergy",
+      "url": "https://lemonergy.com/",
+      "email": "info@lemonergy.com"
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the cheat sheet</a>
+
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="Lemonergy Learn home">
+      <svg class="brand-logo" viewBox="0 6 32 20" aria-hidden="true" focusable="false"><path d="M3.6 16 C3.6 10.4 9.2 7 15.6 7 C22 7 27 10.4 27 16 C27 21.6 22 25 15.6 25 C9.2 25 3.6 21.6 3.6 16 Z" fill="#ffd94a" stroke="#b8901f" stroke-width="1.8"/><path d="M1.4 16 L3.9 14.4 L3.9 17.6 Z" fill="#b8901f"/><rect x="27.4" y="13" width="3.2" height="6" rx="1.2" fill="#2459a8"/><rect x="9" y="11.6" width="3.2" height="8.8" rx="1.1" fill="#2459a8"/><rect x="14" y="11.6" width="3.2" height="8.8" rx="1.1" fill="#2459a8"/><rect x="19" y="11.6" width="3.2" height="8.8" rx="1.1" fill="#2459a8"/></svg>
+      <span class="brand-name">Lemonergy</span>
+      <span class="brand-sub">· battery engineering courses</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="../">Home</a>
+      <a href="../chapter-1/">Syllabus</a>
+      <a href="../glossary/">Glossary</a>
+      <a href="../about/">About</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../">Battery Cell Foundations</a></li>
+        <li><span aria-current="page">Cheat sheet</span></li>
+      </ol>
+    </nav>
+
+    <section class="page-hero cheat-hero" aria-labelledby="page-title">
+      <p class="eyebrow">Reference · Battery Cell Foundations</p>
+      <h1 id="page-title">Lithium-ion cell cheat sheet</h1>
+      <p class="lede">The formulas, rules and typical numbers from the whole course on one page. Numbers are indicative ranges for orientation, not design values; each card links to the lesson that explains it.</p>
+      <p class="cheat-actions"><button type="button" class="button button-primary" onclick="window.print()">Print or save as PDF</button></p>
+    </section>
+
+    <div class="cheat-grid">
+      <section class="cheat-card" aria-labelledby="cheat-cell">
+        <h2 id="cheat-cell">Inside a cell</h2>
+        <p class="cheat-stack"><span>Cu foil</span><span>negative electrode<br><small>graphite</small></span><span>separator</span><span>positive electrode<br><small>NMC, LFP…</small></span><span>Al foil</span></p>
+        <p>Electrolyte — LiPF₆ in carbonate solvents — fills the pores of both electrodes and the separator. It is not a layer.</p>
+        <table>
+          <thead><tr><th scope="col"></th><th scope="col">Discharge</th><th scope="col">Charge</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">e⁻, outside</th><td>− → load → +</td><td>+ → charger → −</td></tr>
+            <tr><th scope="row">Li⁺, inside</th><td>− → +</td><td>+ → −</td></tr>
+            <tr><th scope="row">Anode (oxidation)</th><td>negative</td><td>positive</td></tr>
+          </tbody>
+        </table>
+        <p class="cheat-note">Industry calls the negative electrode “the anode” at all times. Copper on the negative side, aluminium on the positive: each survives only there.</p>
+        <p class="cheat-link"><a href="../fundamentals/cell-anatomy/">Lesson 1</a> · <a href="../fundamentals/cell-architecture/">Lesson 1B</a></p>
+      </section>
+
+      <section class="cheat-card" aria-labelledby="cheat-formulas">
+        <h2 id="cheat-formulas">Formulas</h2>
+        <table class="cheat-formulas">
+          <tbody>
+            <tr><th scope="row">Current</th><td><i>I</i> = <i>C</i> × <i>Q</i></td><td>A = h⁻¹ × Ah</td></tr>
+            <tr><th scope="row">C-rate</th><td><i>C</i> = <i>I</i> / <i>Q</i></td><td>1C on 20 Ah = 20 A</td></tr>
+            <tr><th scope="row">Ideal duration</th><td><i>t</i> = 1 / <i>C</i></td><td>2C → 30 min; a definition, not a runtime</td></tr>
+            <tr><th scope="row">Energy</th><td><i>E</i> = <i>Q</i> × <i>V</i><sub>nom</sub></td><td>20 Ah × 3.65 V = 73 Wh</td></tr>
+            <tr><th scope="row">Packs</th><td colspan="2">Series adds voltage; parallel adds capacity; energy adds either way.</td></tr>
+            <tr><th scope="row">Arrhenius</th><td><i>k</i>(<i>T</i>)/<i>k</i>(<i>T</i><sub>ref</sub>) = exp[(<i>E</i><sub>a</sub>/<i>R</i>)(1/<i>T</i><sub>ref</sub> − 1/<i>T</i>)]</td><td>kelvin; about ×2 per +10 °C near 50 kJ/mol</td></tr>
+            <tr><th scope="row">SEI film</th><td><i>δ</i> ∝ √<i>t</i></td><td>4 × the time → 2 × the film</td></tr>
+            <tr><th scope="row">Fick’s first law</th><td><i>J</i> = −<i>D</i> d<i>c</i>/d<i>x</i></td><td>flux runs down the gradient</td></tr>
+          </tbody>
+        </table>
+        <p class="cheat-link"><a href="../fundamentals/capacity-and-c-rate/">Lesson 2</a> · <a href="../fundamentals/battery-aging/#arrhenius">Lesson 4</a> · <a href="../transport/ficks-first-law/">Fick’s law</a></p>
+      </section>
+
+      <section class="cheat-card" aria-labelledby="cheat-numbers">
+        <h2 id="cheat-numbers">Typical numbers</h2>
+        <table>
+          <tbody>
+            <tr><th scope="row">Nominal cell voltage</th><td>graphite/NMC 3.6–3.7 V · graphite/LFP 3.2–3.3 V</td></tr>
+            <tr><th scope="row">Electrode potential vs Li</th><td>graphite ≈ 0.1 V · layered oxide ≈ 3.7–3.9 V · LFP ≈ 3.4 V</td></tr>
+            <tr><th scope="row">Foils</th><td>copper 6–10 µm · aluminium 10–15 µm</td></tr>
+            <tr><th scope="row">Separator</th><td>10–25 µm thick, about 40 % porous</td></tr>
+            <tr><th scope="row">Electrode porosity</th><td>about 20–35 % after calendering</td></tr>
+            <tr><th scope="row">Electrolyte</th><td>about 1 mol/L LiPF₆ · about 10 mS/cm</td></tr>
+            <tr><th scope="row">Specific capacity</th><td>graphite 372 mAh/g · lithium metal 3,860 mAh/g (theoretical)</td></tr>
+            <tr><th scope="row">End of life</th><td>80 % of rated capacity, by convention</td></tr>
+            <tr><th scope="row">Air travel</th><td>spare batteries up to 100 Wh in hand luggage</td></tr>
+          </tbody>
+        </table>
+        <p class="cheat-link"><a href="../fundamentals/cell-anatomy/#voltage">Lesson 1</a> · <a href="../fundamentals/cell-architecture/">Lesson 1B</a> · <a href="../fundamentals/capacity-and-c-rate/#energy">Lesson 2</a></p>
+      </section>
+
+      <section class="cheat-card" aria-labelledby="cheat-production">
+        <h2 id="cheat-production">How cells are made</h2>
+        <ol class="cheat-steps">
+          <li><strong>Electrode manufacturing</strong> — mixing → coating → drying → calendering → slitting → vacuum drying</li>
+          <li><strong>Cell assembly</strong>, in a dry room at a dew point of about −30 to −60 °C — separation → stacking or winding → tab welding → packaging → electrolyte filling → wetting</li>
+          <li><strong>Cell finishing</strong> — formation (first charge at about 0.1–0.5C; builds the SEI) → degassing → aging (up to about three weeks; screens for internal shorts) → end-of-line testing and grading</li>
+        </ol>
+        <p class="cheat-note">Calendering sets porosity. A burr from slitting can short a cell. Cells shipped alone by air: at most 30 % state of charge.</p>
+        <p class="cheat-link"><a href="../fundamentals/cell-production/">Lesson 3</a></p>
+      </section>
+
+      <section class="cheat-card" aria-labelledby="cheat-solid">
+        <h2 id="cheat-solid">Solid-state electrolytes</h2>
+        <table>
+          <thead><tr><th scope="col">Family</th><th scope="col">Conductivity</th><th scope="col">Made dense by</th><th scope="col">Watch out for</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Sulfide</th><td>≈ 1–10 mS/cm</td><td>pressing</td><td>H₂S with moisture</td></tr>
+            <tr><th scope="row">Oxide</th><td>≈ 0.1–1 mS/cm</td><td>sintering</td><td>brittle; contact</td></tr>
+            <tr><th scope="row">Halide</th><td>≈ 1 mS/cm</td><td>pressing</td><td>reduced by Li metal</td></tr>
+            <tr><th scope="row">Polymer</th><td>≈ 0.1 mS/cm warm</td><td>extrusion</td><td>needs 60–80 °C</td></tr>
+          </tbody>
+        </table>
+        <p class="cheat-note">Disappears: electrolyte filling and wetting. Appears: electrolyte layer forming, densification, lithium-metal anode handling, stack pressure.</p>
+        <p class="cheat-link"><a href="../fundamentals/solid-state-cell-production/">Lesson 3B</a></p>
+      </section>
+
+      <section class="cheat-card" aria-labelledby="cheat-aging">
+        <h2 id="cheat-aging">Why cells age</h2>
+        <table>
+          <thead><tr><th scope="col">Mechanism</th><th scope="col">Feeds mainly</th><th scope="col">Accelerated by</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Corrosion</th><td>impedance ↑</td><td>temperature</td></tr>
+            <tr><th scope="row">SEI growth</th><td>capacity ↓</td><td>temperature, time, high state of charge</td></tr>
+            <tr><th scope="row">Gas</th><td>capacity ↓, safety</td><td>temperature, overcharge</td></tr>
+            <tr><th scope="row">Surface deposits</th><td>impedance ↑ (power fade)</td><td>cycling</td></tr>
+            <tr><th scope="row">Lithium plating</th><td>self-discharge ↑, shorts</td><td>cold charging, high current</td></tr>
+            <tr><th scope="row">Cracking</th><td>capacity ↓ and impedance ↑</td><td>deep cycling</td></tr>
+          </tbody>
+        </table>
+        <p class="cheat-note">Three signals: capacity fade, impedance rise, self-discharge rise. Heat speeds most aging; cold charging adds plating — so the best temperature window is moderate.</p>
+        <p class="cheat-link"><a href="../fundamentals/battery-aging/">Lesson 4</a></p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>Battery Core · A project of Lemonergy</p>
+    <div>
+      <a href="../">Course home</a>
+      <a href="../glossary/">Glossary</a>
+      <a href="../cheat-sheet/">Cheat sheet</a>
+      <a href="../about/">About and FAQ</a>
+      <a href="../license/">AGPL-3.0-or-later</a>
+      <a href="../license/#commercial">Commercial use</a>
+    </div>
+  </footer>
+
+</body>
+</html>

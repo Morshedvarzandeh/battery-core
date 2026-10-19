@@ -29,6 +29,7 @@ from battery_core.aging import arrhenius_factor
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
+BASICS = DOCS / "fundamentals" / "battery-basics" / "index.html"
 ANATOMY = DOCS / "fundamentals" / "cell-anatomy" / "index.html"
 ARCHITECTURE = DOCS / "fundamentals" / "cell-architecture" / "index.html"
 CAPACITY = DOCS / "fundamentals" / "capacity-and-c-rate" / "index.html"
@@ -36,7 +37,16 @@ PRODUCTION = DOCS / "fundamentals" / "cell-production" / "index.html"
 SOLID_STATE = DOCS / "fundamentals" / "solid-state-cell-production" / "index.html"
 AGING = DOCS / "fundamentals" / "battery-aging" / "index.html"
 FICK = DOCS / "transport" / "ficks-first-law" / "index.html"
-LESSONS = (ANATOMY, ARCHITECTURE, CAPACITY, PRODUCTION, SOLID_STATE, AGING, FICK)
+LESSONS = (
+    BASICS,
+    ANATOMY,
+    ARCHITECTURE,
+    CAPACITY,
+    PRODUCTION,
+    SOLID_STATE,
+    AGING,
+    FICK,
+)
 COACH = DOCS / "assets" / "study-coach.js"
 TIMES = "\N{MULTIPLICATION SIGN}"  # as printed in the lesson tables
 
@@ -99,6 +109,7 @@ def test_lesson_follows_the_course_discipline(page: Path) -> None:
 @pytest.mark.parametrize(
     ("page", "part", "item"),
     [
+        (BASICS, "Lesson 0", "p00"),
         (ANATOMY, "Lesson 1", "p01"),
         (ARCHITECTURE, "Lesson 1B", "p01b"),
         (CAPACITY, "Lesson 2", "p02"),
@@ -106,7 +117,15 @@ def test_lesson_follows_the_course_discipline(page: Path) -> None:
         (SOLID_STATE, "Lesson 3B", "p03b"),
         (AGING, "Lesson 4", "p04"),
     ],
-    ids=["lesson-1", "lesson-1b", "lesson-2", "lesson-3", "lesson-3b", "lesson-4"],
+    ids=[
+        "lesson-0",
+        "lesson-1",
+        "lesson-1b",
+        "lesson-2",
+        "lesson-3",
+        "lesson-3b",
+        "lesson-4",
+    ],
 )
 def test_practice_quiz_is_scoped_to_its_part(page: Path, part: str, item: str) -> None:
     html = page.read_text(encoding="utf-8")
@@ -119,7 +138,8 @@ def test_practice_quiz_is_scoped_to_its_part(page: Path, part: str, item: str) -
 
 def test_coach_links_point_at_the_on_site_lessons() -> None:
     coach = COACH.read_text(encoding="utf-8")
-    for page in (ANATOMY, ARCHITECTURE, CAPACITY, PRODUCTION, SOLID_STATE, AGING):
+    lessons = (BASICS, ANATOMY, ARCHITECTURE, CAPACITY, PRODUCTION, SOLID_STATE, AGING)
+    for page in lessons:
         assert f'module: "../fundamentals/{page.parent.name}/"' in coach, page
     # The labs are reached through their lessons, not directly from the quiz.
     for lab in ("cell-anatomy-workbench", "lithium-ion-cell-architecture",
